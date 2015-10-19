@@ -1,0 +1,79 @@
+---
+title: "Notes: COSvis"
+author: "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
+output:
+  pdf_document: 
+    highlight: kate
+urlcolor: red
+---
+## Introduction
+**COSvis** is an R based visualisation tool for **COSEROreg**. It is still in its infancy and currently maintained by [Daniel Klotz](https://online.boku.ac.at/BOKUonline/visitenkarte.show_vcard?pPersonenId=6E56AD7273C135A3&pPersonenGruppe=3). We hope that it will soon grow into a nice and usefull tool. 
+
+The purpose of this document is to collect notes regarding its usage and future developements. It is structured as following: Firstly, in *1. Overview* the program requirements and structure is presented. In *2. Setup*  a short help for the program-usage is given. Section *3. Control Options* gives a list of the options for manipulation the program output. Finally, *4. Developement* gives an overview of the future plans regarding the program.
+
+## 1. Overview 
+**COSvis** makes extenstive use of R-packages. To date, the following packages are in use: *dplyr*, *ggplot2*, *gridExtra*, *hydroGOF*, *shiny* & *xts* (see: 2. Setup). The "program" comprises the following files:
+
+```{r, eval=FALSE}
+* folder::"APP"
+    + file::"calculations.R"
+    + file::"server.R"
+    + file::"ui.R"
+    + folder::"www"
+          - file::"bootstrap.CSS"
+          - ...
+* file::"COSvis_notes.pdf"
+* file::"COSvis_notes.Rmd"
+* file::"start.R"
+```
+
+Furthermore, the code is currently not DRY (but aspires to be so, asap!). In this case DRY is an acronym DRY and stands for "Don't Repeat Yourself"; which is a programming paradigm that tries to minimize the amount of repeated code, while pertaining legibility. Currently the entire calculations are done before the App/Visualsiation itself runs. In future versions this will be done more smartely. Nevertheless, parts of the code have allready been optimised with regards to calculation-speed, e.g.: Most "big" loops have been transformed in [a-z]pply statements or vectorized directly. 
+
+
+
+
+## 2. Setup 
+1. Download & install the R programming language from from [https://www.r-project.org/](https://www.r-project.org/) (It might also be usefull to get and IDE, such as [Rstudio](https://www.rstudio.com/) ). 
+2. Open R & install the needed packages: 
+```{r, eval=FALSE}
+      install.packages("shiny")
+      install.packages("hydroGOF")
+      install.packages("ggplot2")
+      install.packages("xts")
+      install.packages("dplyr")
+      install.packages("grid")
+      install.packages("gridExtra")
+```
+3. Open start.R in your COSvis folder and set up the options according to your will (see: ctrl-Cheatsheet). 
+4. Now you can either 
+    + copy the start.R and paste it into your R command window, or
+    + execute start.R from the IDE of your choice
+
+## 3. Control Options
+The control options are defined in the start.R file, within the variable `ctrl`. 
+
+Variable  | Usage | Format
+---------------- | -------------  | ------------- 
+`ctrl` | Containts the control-options of **COSvis** | list
+`ctrl$pathtoCosero` | Path to the **COSEROreg** folder | string::path
+`ctrl$pathtoApp` | Path to App folder in **COSvis** | string::path
+`ctrl$ctrl_span` | timespan for the header year | {integer::year1,integer::year2} 
+`ctrl$colors` | colors for the pltos | {string::col1,...,string::col4}
+`ctrl$clr_NSEmid` | midpoint of the color scale for the NSE | real::value
+`ctrl$yearName` | string for the x-axis title of the hydrological years | string::Name
+
+## 4. Developement 
+### 4.1 Scheduled Updates 
+- Use gitHub as versioning and distribution tool
+- Make **COSvis** drier 
+- Visualisation for Water Balance 
+
+
+### 4.2 Wishlist/Ideas
+- More dynamic read-in for files 
+- Make it possible to reload files from within the App
+
+
+
+***
+
