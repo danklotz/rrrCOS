@@ -25,6 +25,7 @@ The purpose of this document is to collect notes regarding its usage and future 
 * file::"COSvis_notes.pdf"
 * file::"COSvis_notes.Rmd"
 * file::"start.R"
+* file::"readme.md"
 ```
 
 Furthermore, the code is currently not DRY (but aspires to be so, asap!). In this case DRY is an acronym DRY and stands for "Don't Repeat Yourself"; which is a programming paradigm that tries to minimize the amount of repeated code, while pertaining legibility. Currently the entire calculations are done before the App/Visualsiation itself runs. In future versions this will be done more smartely. Nevertheless, parts of the code have allready been optimised with regards to calculation-speed, e.g.: Most "big" loops have been transformed in [a-z]pply statements or vectorized directly. 
