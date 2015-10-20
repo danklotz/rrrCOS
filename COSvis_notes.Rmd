@@ -9,7 +9,7 @@ urlcolor: red
 ## Introduction
 **COSvis** is an R based visualisation tool for **COSEROreg**. It is still in its infancy and currently maintained by [Daniel Klotz](https://online.boku.ac.at/BOKUonline/visitenkarte.show_vcard?pPersonenId=6E56AD7273C135A3&pPersonenGruppe=3). We hope that it will soon grow into a nice and usefull tool. 
 
-The purpose of this document is to collect notes regarding its usage and future developements. It is structured as following: Firstly, in *1. Overview* the program requirements and structure is presented. In *2. Setup*  a short help for the program-usage is given. Section *3. Control Options* gives a list of the options for manipulation the program output. Finally, *4. Developement* gives an overview of the future plans regarding the program.
+The purpose of this document is to collect notes regarding its usage and future developements. It is structured as following: Firstly, in *1. Overview* the program requirements and structure is presented. In *2. Setup*  a short help for the program-usage is given. Section *3. Control Options* gives a list of the options for manipulation the program output.
 
 ## 1. Overview 
 **COSvis** makes extenstive use of R-packages. To date, the following packages are in use: *dplyr*, *ggplot2*, *gridExtra*, *hydroGOF*, *shiny* & *xts* (see: 2. Setup). The "program" comprises the following files:
@@ -64,19 +64,6 @@ Variable  | Usage | Format
 `ctrl$colors` | colors for the pltos | {string::col1,...,string::col4}
 `ctrl$clr_NSEmid` | midpoint of the color scale for the NSE | real::value
 `ctrl$yearName` | string for the x-axis title of the hydrological years | string::Name
-
-## 4. Developement 
-### 4.1 Scheduled Updates 
-- Use gitHub as versioning and distribution tool
-- Make **COSvis** drier 
-- Visualisation for Water Balance 
-
-
-### 4.2 Wishlist/Ideas
-- More dynamic read-in for files 
-- Make it possible to reload files from within the App
-
-
 
 ***
 
