@@ -7,12 +7,13 @@ maintainer: Daniel Klotz
 
 ## Planned Updates 
 
+- [ ] Implement table-outputs
 - [ ] Make default cntrl-file, which can be used as fall back options 
 - [ ] Introduce furhter control options
 - [ ] Reduce amount of code-clutter -> Do some cleaning
 - [ ] Remove developemnt chapter from notes  
 
-## Lates things we done
+## Latest things we have done
 
 - [x] Use gitHub as versioning and distribution tool 
 - [x] Use readme as instant information 
