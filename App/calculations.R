@@ -10,7 +10,7 @@ oldw <- getOption("warn")
 # read in 
 ######################################################################################
 # load runoff files
-d_raw <- read.table("output/output.runoff",header = TRUE, skip = 22)  # Johannes - runoff[m3/s]
+d_raw <- read.table(paste( ctrl$ofoldername, "/output.runoff", sep=""), header = TRUE, skip = 22)  # Johannes - runoff[m3/s]
 #
 colmax <- function(x) lapply(X = d_raw,FUN = max) # 
 idx_temp <- which(colmax(d_raw) == -999)
@@ -23,7 +23,7 @@ eval_size <- length(temp_names)-5
 d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
 d_raw_names <- names(d_raw)[6:length(d_raw)]
 # remove spinup-time
-tmp <- readLines("output/statistics.txt")
+tmp <- readLines( paste(  ctrl$ofoldername, "/statsfile.txt", sep="") )
 lngth_spinup <- grep("start time-step of evaluation",tmp) %>% tmp[.] %>% sub('.*:', '',.) %>% as.integer(.)
 lngth_sim <- dim(d_runoff)[1] 
 d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)

@@ -1,3 +1,6 @@
+#individual files
+start.R
+
 # not needed files in www
 App/www/*.html
 App/www/*.jpg

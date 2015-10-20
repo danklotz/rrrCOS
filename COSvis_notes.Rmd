@@ -44,6 +44,7 @@ Furthermore, the code is currently not DRY (but aspires to be so, asap!). In thi
       install.packages("dplyr")
       install.packages("grid")
       install.packages("gridExtra")
+      install.packages("dygraphs")
 ```
 3. Open start.R in your COSvis folder and set up the options according to your will (see: ctrl-Cheatsheet). 
 4. Now you can either 
@@ -58,6 +59,7 @@ Variable  | Usage | Format
 `ctrl` | Containts the control-options of **COSvis** | list
 `ctrl$pathtoCosero` | Path to the **COSEROreg** folder | string::path
 `ctrl$pathtoApp` | Path to App folder in **COSvis** | string::path
+`ctrl$ofoldername` | Path to output folder in **COSEROreg** | string::folder
 `ctrl$ctrl_span` | timespan for the header year | {integer::year1,integer::year2} 
 `ctrl$colors` | colors for the pltos | {string::col1,...,string::col4}
 `ctrl$clr_NSEmid` | midpoint of the color scale for the NSE | real::value
