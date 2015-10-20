@@ -20,6 +20,6 @@ maintainer: Daniel Klotz
 
 ## Wishlist 
 
-- [ ] More dynamic readin for files 
+- [ ] More dynamic reading for files 
 - [ ] Make it possibple to reload files from App
 - [ ] Introduce Waterbalance visualisation 
