@@ -11,6 +11,7 @@ maintainer: Daniel Klotz
 - [ ] Introduce furhter control options
 - [ ] Reduce amount of code-clutter -> Do some cleaning
 - [ ] Remove developemnt chapter from notes  
+
 ## Lates things we done
 
 - [x] Use gitHub as versioning and distribution tool 
