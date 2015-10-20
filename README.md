@@ -17,7 +17,7 @@ maintainer: Daniel Klotz
 - [x] Use gitHub as versioning and distribution tool 
 - [x] Use readme as instant information 
 
-# Wishlist 
+## Wishlist 
 
 - [ ] More dynamic readin for files 
 - [ ] Make it possibple to reload files from App
