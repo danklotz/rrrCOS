@@ -20,6 +20,7 @@ maintainer: Daniel Klotz
 
 ## Wishlist 
 
+- [ ] Buttons for hydrological years and for zoom to all/year
 - [ ] More dynamic reading for files 
 - [ ] Make it possibple to reload files from App
 - [ ] Introduce Waterbalance visualisation 
