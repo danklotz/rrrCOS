@@ -9,8 +9,8 @@ maintainer: Daniel Klotz
 
 - [ ] Implement table-outputs
 - [ ] Make default cntrl-file, which can be used as fall back options 
-- [ ] Introduce furhter control options
-- [ ] Reduce amount of code-clutter -> Do some cleaning
+- [ ] Introduce further control options
+- [ ] Reduce amount of code-clutter -> Do some cleaning (Daniel!!!)
 - [ ] Remove developemnt chapter from notes  
 
 ## Latest things we have done

@@ -14,15 +14,15 @@ ctrl <- list()  # variable pre-set for the conntrols
   ctrl$pathtoCosero <- "C:/Users/H0740147/Cosero_Mur/COSERO/MitExcel" 
   ctrl$pathtoApp <- "C:/Users/H0740147/Cosero_Mur/COSERO/Auswertung/COSvis_DJ/COSvis/App" 
 # folder names:
-  ctrl$ofoldername <- "output_foldername"
+  ctrl$ofoldername <- "output_60min"
 # Interactive Overview: 
   ctrl$ctrl_span  	<- c(2003,2003) 
 # OF plot options:
   # naming:
   ctrl$yearName   	<- "Jahr" 
   # color-settings:
-  ctrl$colors      		<- c('#FF3300','#f6f3a1','#1dcc3a',"purple4") 
-  ctrl$clr_NSEmid  	<- 0.7 
+  ctrl$colors      		<- c('#FF3300','#f6f3a1',"darkgreen","purple4") 
+  ctrl$clr_NSEmid  	<- 0.75 
 
 ######################################################################################
 # run COSvis

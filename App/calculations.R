@@ -23,7 +23,7 @@ eval_size <- length(temp_names)-5
 d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
 d_raw_names <- names(d_raw)[6:length(d_raw)]
 # remove spinup-time
-tmp <- readLines( paste(  ctrl$ofoldername, "/statsfile.txt", sep="") )
+tmp <- readLines( paste(  ctrl$ofoldername, "/Statistics.txt", sep="") )
 lngth_spinup <- grep("start time-step of evaluation",tmp) %>% tmp[.] %>% sub('.*:', '',.) %>% as.integer(.)
 lngth_sim <- dim(d_runoff)[1] 
 d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
@@ -94,6 +94,10 @@ pBIAS_total <- hydroGOF::pbias(tempSIM,tempOBS)
 cor_total <- cor(tempSIM,tempOBS) %>% diag(.)
 #
 rm(tempOBS,tempSIM)
+write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total), 
+            file = paste(substr(ctrl$pathtoApp, 1, nchar(ctrl$pathtoApp)-3), "NSE_Hydyear.csv", sep=""),
+            row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
+
 
 ######################################################################################
 # pre calculation  objective functions (of)
