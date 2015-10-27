@@ -1,5 +1,5 @@
 # COSvis
-lightweight, R-based visualisation tool for COSEROreg
+lightweight, R-based visualisation tool for COSEROreg;
 authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 maintainer: Daniel Klotz 
 
