@@ -21,8 +21,8 @@ ctrl <- list()  # variable pre-set for the conntrols
   # naming:
   ctrl$yearName   	<- "Jahr" 
   # color-settings:
-  ctrl$colors      		<- c('#FF3300','#f6f3a1',"darkgreen","purple4") 
-  ctrl$clr_NSEmid  	<- 0.75 
+  ctrl$colors      		<- c('#FF3300','#f6f3a1','#002600',"purple4") 
+  ctrl$clr_NSEmid  	<- 0.7 
 
 ######################################################################################
 # run COSvis

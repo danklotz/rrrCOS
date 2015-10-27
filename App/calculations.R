@@ -120,11 +120,13 @@ plt_ynse <- ggplot(of_ynse, aes(hydyears,numberBasins, fill = NSEvalue)) +
   xlab(ctrl$yearName) + 
   scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
   scale_x_discrete( breaks = hydyears_in_d) +
-  scale_fill_gradient2(low = ctrl$colors[1],
+  scale_fill_gradient2(space = "lab", 
+                       low = ctrl$colors[1],
                        mid= ctrl$colors[2] , 
                        high = ctrl$colors[3],
                        midpoint = ctrl$clr_NSEmid, 
-                       limits= c(0,1) ) +
+                       limits= c(0,1),
+                       na.value = ctrl$colors[3]) +
   theme_bw(base_size = 15) +
   theme( legend.position="none" )  + 
   geom_tile(color = "white", size = 0.25 ) + 
@@ -159,7 +161,8 @@ plt_tnse <- ggplot(of_tnse , aes(total,numberBasins, fill = NSEvalue)) + geom_ra
                        mid= ctrl$colors[2], 
                        high = ctrl$colors[3],
                        midpoint = ctrl$clr_NSEmid, 
-                       limits = c(0,1) )
+                       limits = c(0,1),
+                       na.value = ctrl$colors[3])
 options(warn = oldw)
 ######################################################################################
 #********************************
@@ -237,7 +240,7 @@ plt_ykge <- ggplot(of_ykge, aes(hydyears,numberBasins, fill = KGEvalue)) +
   scale_fill_gradient2(low = ctrl$colors[1],
                        mid= ctrl$colors[2] , 
                        high = ctrl$colors[3],
-                       midpoint = 0.75, 
+                       midpoint = ctrl$clr_NSEmid, 
                        limits= c(0,1) ) +
   theme_bw(base_size = 15) +
   theme( legend.position="none" )  + 
@@ -272,7 +275,7 @@ plt_tkge <- ggplot(of_tkge , aes(total,numberBasins, fill = KGEvalue)) + geom_ra
   scale_fill_gradient2(low = ctrl$colors[1],
                        mid= ctrl$colors[2], 
                        high = ctrl$colors[3],
-                       midpoint = 0.75, 
+                       midpoint = ctrl$clr_NSEmid, 
                        limits = c(0,1) )
 options(warn = oldw)
 ######################################################################################
@@ -365,7 +368,7 @@ plt_exp_NSE <- lapply(1:eval_size,
                         scale_fill_gradient2(low = ctrl$colors[1],
                                              mid = ctrl$colors[2] , 
                                              high = ctrl$colors[3], 
-                                             midpoint = 0.7, 
+                                             midpoint = ctrl$clr_NSEmid, 
                                              limits = c(0,1) )
 )
 # 3. htmlFile KGE (cause shiny does not like multiple graphics)
@@ -430,7 +433,7 @@ dev.off()
                           scale_fill_gradient2(low = ctrl$colors[1],
                                                mid = ctrl$colors[2] , 
                                                high = ctrl$colors[3], 
-                                               midpoint = 0.7, 
+                                               midpoint = ctrl$clr_NSEmid, 
                                                limits = c(0,1) )
   )
   options(warn = oldw)
