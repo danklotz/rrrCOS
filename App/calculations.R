@@ -130,7 +130,7 @@ plt_ynse <- ggplot(of_ynse, aes(hydyears,numberBasins, fill = NSEvalue)) +
   theme_bw(base_size = 15) +
   theme( legend.position="none" )  + 
   geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins, label = round(NSEvalue,2)), size = 4 , color= "black")
+  geom_text(aes(hydyears,numberBasins, label = round(NSEvalue,2)), size = ctrl$OFsize , color= "black")
 options(warn = oldw)
 #********************************
 # Total NSE
@@ -155,7 +155,7 @@ plt_tnse <- ggplot(of_tnse , aes(total,numberBasins, fill = NSEvalue)) + geom_ra
         panel.grid.minor = element_blank(), 
         plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
   geom_tile(color="white", size = 0.25) + 
-  geom_text(aes( total, numberBasins ,label = round(NSEvalue,2) ), size = 4 ,color="black") +
+  geom_text(aes( total, numberBasins ,label = round(NSEvalue,2) ), size = ctrl$OFsize ,color="black") +
   scale_y_reverse() +
   scale_fill_gradient2(low = ctrl$colors[1],
                        mid= ctrl$colors[2], 
@@ -184,11 +184,11 @@ plt_ypbias <- ggplot(of_ypbias, aes(hydyears,numberBasins, fill = biasValue)) +
                        mid = ctrl$colors[3],  
                        high = ctrl$colors[1],
                        midpoint = 0, 
-                       limits = c(-200,200) ) +
+                       limits = c(-100,100) ) +
   theme_bw(base_size = 15) +
   theme( legend.position="none" )  + 
   geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins,label = round(biasValue,2)), size = 4,color = "black")
+  geom_text(aes(hydyears,numberBasins,label = round(biasValue,2)), size = ctrl$OFsize,color = "black")
 options(warn = oldw)
 #********************************
 # Plot: Total %Bias
@@ -211,13 +211,13 @@ plt_tpbias <- ggplot(of_tpbias , aes(total,numberBasins, fill = biasValue)) + ge
         panel.grid.minor = element_blank(), 
         plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
   geom_tile(color = "white", size = 0.25) + 
-  geom_text(aes( total,numberBasins,label= round(biasValue,2) ), size = 4 ,color = "black") +
+  geom_text(aes( total,numberBasins,label= round(biasValue,2) ), size = ctrl$OFsize ,color = "black") +
   scale_y_reverse() +
   scale_fill_gradient2(low = ctrl$colors[4],
                        mid= ctrl$colors[3],  
                        high = ctrl$colors[1],
                        midpoint = 0, 
-                       limits = c(-200,200) )
+                       limits = c(-100,100) )
 options(warn = oldw)
 ######################################################################################
 #********************************
@@ -245,7 +245,7 @@ plt_ykge <- ggplot(of_ykge, aes(hydyears,numberBasins, fill = KGEvalue)) +
   theme_bw(base_size = 15) +
   theme( legend.position="none" )  + 
   geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins,label = round(KGEvalue,2)), size = 4,color = "black")
+  geom_text(aes(hydyears,numberBasins,label = round(KGEvalue,2)), size = ctrl$OFsize,color = "black")
 options(warn = oldw)
 #********************************
 # Plot: Total KGE
@@ -270,7 +270,7 @@ plt_tkge <- ggplot(of_tkge , aes(total,numberBasins, fill = KGEvalue)) + geom_ra
         panel.grid.minor = element_blank(), 
         plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
   geom_tile(color = "white", size = 0.25) + 
-  geom_text(aes( total,numberBasins,label = round(KGEvalue,2) ), size = 4 ,color = "black") +
+  geom_text(aes( total,numberBasins,label = round(KGEvalue,2) ), size = ctrl$OFsize ,color = "black") +
   scale_y_reverse() +
   scale_fill_gradient2(low = ctrl$colors[1],
                        mid= ctrl$colors[2], 
@@ -303,7 +303,7 @@ plt_ycor <- ggplot(of_ycor, aes(hydyears,numberBasins, fill = Correlation)) +
   theme_bw(base_size = 15) +
   theme( legend.position = "none" )  + 
   geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins,label = round(Correlation,2)), size = 4,color = "black")
+  geom_text(aes(hydyears,numberBasins,label = round(Correlation,2)), size = ctrl$OFsize,color = "black")
 options(warn = oldw)
 #********************************
 # Plot: Total Correlation
@@ -327,7 +327,7 @@ plt_tcor <- ggplot(of_tcor, aes(total,numberBasins, fill = Correlation)) + geom_
         panel.grid.minor = element_blank(), 
         plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
   geom_tile(color = "white", size = 0.25) + 
-  geom_text(aes( total,numberBasins,label = round(Correlation,2) ), size = 4 ,color = "black") +
+  geom_text(aes( total,numberBasins,label = round(Correlation,2) ), size = ctrl$OFsize ,color = "black") +
   scale_y_reverse() +
   scale_fill_gradient2(low = ctrl$colors[1],
                        mid= ctrl$colors[2], 
