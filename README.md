@@ -7,7 +7,6 @@ Maintainer: Daniel Klotz
 
 ## Planned Updates 
 
-- [ ] Implement table-outputs
 - [ ] Make default cntrl-file, which can be used as fall back options 
 - [ ] Introduce further control options
 - [ ] Reduce amount of code-clutter -> Do some cleaning (Daniel!!!)
@@ -15,6 +14,7 @@ Maintainer: Daniel Klotz
 
 ## Latest things we have done
 
+- [x] Implement table-outputs
 - [x] Use gitHub as versioning and distribution tool 
 - [x] Use readme as instant information 
 
@@ -22,5 +22,5 @@ Maintainer: Daniel Klotz
 
 - [ ] Buttons for hydrological years and for zoom to all/year
 - [ ] More dynamic reading for files 
-- [ ] Make it possibple to reload files from App
+- [ ] Make it possible to reload files from App
 - [ ] Introduce Waterbalance visualisation 
