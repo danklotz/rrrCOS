@@ -37,6 +37,7 @@ Furthermore, the code is currently not DRY (but aspires to be so, asap!). In thi
 1. Download & install the R programming language from from [https://www.r-project.org/](https://www.r-project.org/) (It might also be usefull to get and IDE, such as [Rstudio](https://www.rstudio.com/) ). 
 2. Open R & install the needed packages: 
 ```{r, eval=FALSE}
+      install.packages("data.table")
       install.packages("shiny")
       install.packages("hydroGOF")
       install.packages("ggplot2")

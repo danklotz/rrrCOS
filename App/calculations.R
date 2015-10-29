@@ -1,3 +1,4 @@
+require("data.table")
 require("shiny")
 require("hydroGOF")
 require("ggplot2")
@@ -12,7 +13,8 @@ source(paste(ctrl$pathtoApp,"/f_rasterplot_functions.R",sep=""))
 # read in 
 ######################################################################################
 # load runoff files
-d_raw <- read.table(paste( ctrl$ofoldername, "/output.runoff", sep=""), header = TRUE, skip = 22)
+d_raw <- data.table::fread(paste( ctrl$ofoldername, "/output.runoff", sep=""), header = TRUE, skip = 22, check.names = TRUE) %>%
+  as.data.frame(.)
 #
 colmax <- function(x) lapply(X = d_raw,FUN = max) # 
 idx_temp <- which(colmax(d_raw) == -999)
@@ -167,7 +169,7 @@ plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 plt_ctrl$gtitle <- "Total %-Bias"
 #
-plt_tpBias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
+plt_tpbias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
 
 #********************************
 # expanded barplots & htmlfiles

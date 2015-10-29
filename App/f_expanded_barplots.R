@@ -60,17 +60,18 @@ save_expnd_barplts <-function(list_barplts,eval_size,s_ctrl) {
     writeLines(text = plt_hmtlInfos,fileConn )
     #
     jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-    do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
+      do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
     dev.off()
-    
+    gc(verbose = FALSE)
   }
   plt_name <- paste(s_ctrl$jpgfilename ,i+1,".jpg", sep="")
   plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
   plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
   #
   writeLines( plt_hmtlInfos,fileConn)
+  gc(verbose = FALSE)
   jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-  do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
+    do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
   dev.off()
   close(fileConn)
 }
