@@ -5,7 +5,7 @@ shinyUI(fluidPage(
   theme = "bootstrap.css",
   # Application title
   titlePanel("COS.vis"), 
-  h6("v0.1 by Klotz, Wesemann & Herrnegger"),
+  h6("v0.2 by Klotz, Wesemann & Herrnegger"),
   # runoff 
   h3("<runoff check>"),
   selectInput("basin_num",

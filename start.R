@@ -1,5 +1,5 @@
 ######################################################################################
-# COSvis 0.1 
+# COSvis 0.2 
 # authors: Klotz, Wesemann, Herrnegger; 10/2015
 # mantainer: Klotz Daniel, daniel.klotz@boku.ac.at
 # info: COSvis_Notes.pdf
