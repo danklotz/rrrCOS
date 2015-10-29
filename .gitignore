@@ -6,6 +6,9 @@ App/www/*.html
 App/www/*.jpg
 App/www/*.jpeg
 
+# files in out 
+App/out/*
+
 # History files
 .Rhistory
 .Rapp.history
