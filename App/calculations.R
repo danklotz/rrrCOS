@@ -99,7 +99,7 @@ write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
             file = paste(substr(ctrl$pathtoApp, 1, nchar(ctrl$pathtoApp)-3), "NSE_Hydyear.csv", sep=""),
             row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
 #
-# define plot function for hyd-yearly plots:
+# define raster plot function for hyd-yearly plots:
 plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
   require("reshape2")
   of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
@@ -126,11 +126,43 @@ plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
     geom_text(aes(hydyears,numberBasins, label = round(OFvalue,2)), size = ctrl$OFsize , color= "black")
   return(plt_out)
 }
-  
 
-
-
-
+# define rasterplot functions for total OF 
+plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
+  of_t <- expand.grid(total = 1, numberBasins = 1:eval_size) 
+  temp <- OF_total; 
+  # replace values under lower boundary:
+  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut 
+  # prepare dataframe for ggplot
+  temp <- melt(temp)
+  of_t$OFvalue = temp$value
+  #
+  plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue)) +
+    geom_raster(position = "identity") +
+    ggtitle(plt_ctrl$gtitle) + 
+    theme_bw(base_size = 15) +
+    theme(axis.title.y = element_blank(), 
+          axis.title.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.text.x = element_blank(),
+          legend.text = element_text(size = 12),
+          axis.ticks = element_blank(),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
+    geom_tile(color="white", size = 0.25) + 
+    geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = ctrl$OFsize ,color="black") +
+    scale_y_reverse() +
+    scale_fill_gradient2(space = "Lab",
+                         name = plt_ctrl$gtitle,
+                         low = plt_ctrl$clr1,
+                         mid= plt_ctrl$clr2, 
+                         high = plt_ctrl$clr3,
+                         midpoint = plt_ctrl$midpoint, 
+                         limits = plt_ctrl$limits,
+                         na.value = plt_ctrl$clr3)
+  return(plt_t)
+}
 
 
 ######################################################################################
@@ -153,39 +185,12 @@ plt_ctrl$limits <- c(0,1)
 plt_ctrl$lb_cut <- 0.0
 #
 plt_ynse <- plt_yOF(NSE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-
 #********************************
 # Total NSE
 #********************************
-of_tnse <- expand.grid(total = 1, numberBasins = 1:eval_size) 
-temp <- NSE_total; 
-temp[temp < -0.0] <- -0.0
-temp <- melt(temp)
-of_tnse$NSEvalue = temp$value
+plt_ctrl$gtitle <- "Total NSE"
 #
-options(warn = -1)
-plt_tnse <- ggplot(of_tnse , aes(total,numberBasins, fill = NSEvalue)) + geom_raster(position = "identity") +
-  ggtitle("Total NSE") + 
-  theme_bw(base_size = 15) +
-  theme(axis.title.y = element_blank(), 
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.text.x = element_blank(),
-        legend.text = element_text(size = 12),
-        axis.ticks = element_blank(),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
-  geom_tile(color="white", size = 0.25) + 
-  geom_text(aes( total, numberBasins ,label = round(NSEvalue,2) ), size = ctrl$OFsize ,color="black") +
-  scale_y_reverse() +
-  scale_fill_gradient2(low = ctrl$colors[1],
-                       mid= ctrl$colors[2], 
-                       high = ctrl$colors[3],
-                       midpoint = ctrl$clr_NSEmid, 
-                       limits = c(0,1),
-                       na.value = ctrl$colors[3])
-options(warn = oldw)
+plt_tnse <- plt_tOF(NSE_total,eval_size, plt_ctrl)
 ######################################################################################
 #********************************
 # Plot: Yearly %Bias
@@ -198,7 +203,7 @@ plt_ctrl$clr1 <- ctrl$colors[1]
 plt_ctrl$clr2 <- ctrl$colors[3]
 plt_ctrl$clr3 <- ctrl$colors[1]
 plt_ctrl$clr4 <- ctrl$colors[1]
-plt_ctrl$midpoint <- ctrl$clr_NSEmid
+plt_ctrl$midpoint <- 0.0
 plt_ctrl$limits <- c(-100,100)
 plt_ctrl$lb_cut <- -1000.0
 #
@@ -206,32 +211,10 @@ plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # Plot: Total %Bias
 #********************************
-of_tpbias <- expand.grid(total = 1, numberBasins = 1:eval_size) 
-temp <- melt(pBIAS_total)
-of_tpbias$biasValue = temp$value
+plt_ctrl$gtitle <- "Total %-Bias"
 #
-options(warn = -1)
-plt_tpbias <- ggplot(of_tpbias , aes(total,numberBasins, fill = biasValue)) + geom_raster(position = "identity") +
-  ggtitle("Total %-Bias") + 
-  theme_bw(base_size = 15) +
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        legend.text = element_text(size = 12),
-        axis.ticks= element_blank(),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
-  geom_tile(color = "white", size = 0.25) + 
-  geom_text(aes( total,numberBasins,label= round(biasValue,2) ), size = ctrl$OFsize ,color = "black") +
-  scale_y_reverse() +
-  scale_fill_gradient2(low = ctrl$colors[4],
-                       mid= ctrl$colors[3],  
-                       high = ctrl$colors[1],
-                       midpoint = 0, 
-                       limits = c(-100,100) )
-options(warn = oldw)
+plt_tpBias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
+
 ######################################################################################
 #********************************
 # Plot: Yearly KGE
@@ -252,34 +235,9 @@ plt_ykge <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # Plot: Total KGE
 #********************************
-of_tkge <- expand.grid(total = 1, numberBasins = 1:eval_size) 
-temp <- KGE_total; 
-temp[temp < -0.0] <- -0.0
-temp <- melt(temp)
-of_tkge$KGEvalue = temp$value
+plt_ctrl$gtitle <- "Total KGE"
 #
-options(warn = -1)
-plt_tkge <- ggplot(of_tkge , aes(total,numberBasins, fill = KGEvalue)) + geom_raster(position = "identity") +
-  ggtitle("Total KGE") + 
-  theme_bw(base_size = 15) +
-  theme(axis.title.y = element_blank(), 
-        axis.text.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        legend.text = element_text(size = 12),
-        axis.ticks= element_blank(),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
-  geom_tile(color = "white", size = 0.25) + 
-  geom_text(aes( total,numberBasins,label = round(KGEvalue,2) ), size = ctrl$OFsize ,color = "black") +
-  scale_y_reverse() +
-  scale_fill_gradient2(low = ctrl$colors[1],
-                       mid= ctrl$colors[2], 
-                       high = ctrl$colors[3],
-                       midpoint = ctrl$clr_NSEmid, 
-                       limits = c(0,1) )
-options(warn = oldw)
+plt_tkge <- plt_tOF(KGE_total,eval_size, plt_ctrl)
 ######################################################################################
 #********************************
 # Plot: Yearly Correlation
@@ -301,33 +259,9 @@ plt_ycor <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # Plot: Total Correlation
 #********************************
-of_tcor <- expand.grid(total = 1, numberBasins = 1:eval_size) 
-temp <- cor_total; 
-temp <- melt(temp)
-of_tcor$Correlation = temp$value
+plt_ctrl$gtitle <- "Total Correlation"
 #
-options(warn = -1)
-plt_tcor <- ggplot(of_tcor, aes(total,numberBasins, fill = Correlation)) + geom_raster(position = "identity") +
-  ggtitle("Total Correlation") + 
-  theme_bw(base_size = 15) +
-  theme(axis.title.y = element_blank(), 
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks = element_blank(),
-        legend.text = element_text(size = 12),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
-  geom_tile(color = "white", size = 0.25) + 
-  geom_text(aes( total,numberBasins,label = round(Correlation,2) ), size = ctrl$OFsize ,color = "black") +
-  scale_y_reverse() +
-  scale_fill_gradient2(low = ctrl$colors[1],
-                       mid= ctrl$colors[2], 
-                       high = ctrl$colors[3],
-                       midpoint = 0.6, 
-                       limits = c(0,1) )
-options(warn = oldw)
+plt_tcor <- plt_tOF(cor_total,eval_size, plt_ctrl)
 
 ######################################################################################
 # Expanded Plots
