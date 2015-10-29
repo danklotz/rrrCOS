@@ -11,10 +11,10 @@ rm(list=ls())  # removes all the variables in the enviorments
 ctrl <- list()  # variable pre-set for the conntrols
 #************************************************************************************
 # Paths:
-#  ctrl$pathtoCosero <- "C:/Users/H0740147/Cosero_Mur/COSERO/MitExcel" 
-#  ctrl$pathtoApp <- "C:/Users/H0740147/Cosero_Mur/COSERO/Auswertung/COSvis_DJ/COSvis/App" 
- ctrl$pathtoCosero <- "/Users/ido87/Dropbox/Arbeit-Anderes/scripts_evalCOSwithR" 
- ctrl$pathtoApp <- "/Users/ido87/Documents/COSvis/App" 
+ctrl$pathtoCosero <- "C:/Users/H0740147/Cosero_Mur/COSERO/MitExcel" 
+ctrl$pathtoApp <- "C:/Users/H0740147/Cosero_Mur/COSERO/Auswertung/COSvis_DJ/COSvis/App" 
+# ctrl$pathtoCosero <- "/Users/ido87/Dropbox/Arbeit-Anderes/scripts_evalCOSwithR" 
+# ctrl$pathtoApp <- "/Users/ido87/Documents/COSvis/App" 
 # folder names:
   ctrl$ofoldername <- "output"
 # Interactive Overview: 

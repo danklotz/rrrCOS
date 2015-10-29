@@ -137,7 +137,7 @@ plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
   temp <- melt(temp)
   of_t$OFvalue = temp$value
   #
-  plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue)) +
+  plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue),environmnet = environment()) +
     geom_raster(position = "identity") +
     ggtitle(plt_ctrl$gtitle) + 
     theme_bw(base_size = 15) +
@@ -164,13 +164,91 @@ plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
   return(plt_t)
 }
 
+list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) {
+  # creates a list of bar-plots for a the yearly objective functions (OF)
+  # see: description-follows-soonTM
+  # ***
+  # calculations:
+  # replace values under lower boundary:
+  temp <- OF_hydyearly;
+  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut 
+  # prepare data for plotting
+  d_OFyearly <- as.data.frame(temp)
+  newNames <- paste(plt_ctrl$gtitle,d_nums,sep="") 
+  names(d_OFyearly)  <- newNames
+  years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
+  d_OFyearly$hydyear <- hydyears_in_d
+  # make list of plots
+  barplts <- list()
+  barplts <- lapply(1:eval_size, 
+                        function(k) ggplot(data = d_OFyearly,environmnet = environment()) +
+                                      geom_bar(stat="identity",
+                                               position = "identity",
+                                               aes_string(x="hydyear", y=newNames[k],fill = newNames[k])) +
+                                      theme_bw(base_size = 15) +
+                                      ggtitle(newNames[k]) +
+                                      xlab(plt_ctrl$xlab) +
+                                      ylab(plt_ctrl$ylab ) +
+                                      scale_y_continuous(limits = plt_ctrl$limits ) + 
+                                      theme(legend.position= "none", 
+                                            axis.text.x = element_text(angle = 50, hjust = 1), 
+                                            plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) +
+                                      scale_fill_gradient2(space = "Lab", 
+                                                           low = plt_ctrl$clr1,
+                                                           mid = plt_ctrl$clr2, 
+                                                           high = plt_ctrl$clr3, 
+                                                           midpoint = plt_ctrl$midpoint, 
+                                                           limits = plt_ctrl$limits )
+            )
+  return(barplts)
+} 
+
+
+
+save_expnd_barplts <-function(list_barplts,eval_size,s_ctrl) {
+  # some pre sets for calculations:
+  num_plots <- ceiling(eval_size/9)
+  g <- seq(from = 1, to = (eval_size-9) , by=9)
+  max_plots <- (length(g)+1)
+  # connect to a html file in www folder 
+  fileConn <- file(paste(ctrl$pathtoApp,"/www/",s_ctrl$hmtlfilename,".html",sep=""),"w")
+    # write html header
+    writeLines(text = '<!DOCTYPE html>',fileConn)
+    writeLines(text = '<html>',fileConn)
+    writeLines(text = '<body>',fileConn)
+    # save everything localy & link it within the html file
+    for ( i in 1:(max_plots-1) )
+    {
+      j = g[i]
+      plt_name <- paste(s_ctrl$jpgfilename ,i,".jpg", sep = "")
+      plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep = "")
+      plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
+      writeLines(text = plt_hmtlInfos,fileConn )
+      #
+      jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
+      do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
+      dev.off()
+      
+    }
+    plt_name <- paste(s_ctrl$jpgfilename ,i+1,".jpg", sep="")
+    plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
+    plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
+    #
+    writeLines( plt_hmtlInfos,fileConn)
+    jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
+    do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
+    dev.off()
+  close(fileConn)
+}
+
+
+
 
 ######################################################################################
-# pre calculation  objective functions (of)
+# plots: NSE
 ######################################################################################
-
 #********************************
-# Yearly NSE
+# yearly
 #********************************
 plt_ctrl <- list() # reset list 
 plt_ctrl$gtitle <- "Yearly NSE"
@@ -186,14 +264,30 @@ plt_ctrl$lb_cut <- 0.0
 #
 plt_ynse <- plt_yOF(NSE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
-# Total NSE
+# total
 #********************************
 plt_ctrl$gtitle <- "Total NSE"
 #
 plt_tnse <- plt_tOF(NSE_total,eval_size, plt_ctrl)
+#********************************
+# expanded barplots & htmlfiles
+#********************************
+# update list
+plt_ctrl$gtitle <- "Basin"
+plt_ctrl$ylab <- "NSE"
+#
+plt_exp_NSE <- list_yOF_barplts(NSE_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+# save formated list into htmlFile  (cause shiny does not like multiple graphics)
+s_ctrl <- list() # reset save control (s_ctrl)
+s_ctrl$hmtlfilename <- "expnd_nse"
+s_ctrl$jpgfilename <- "expnd_nse"
+save_expnd_barplts(plt_exp_NSE,eval_size,s_ctrl)
+
+######################################################################################
+# plots: %-bias
 ######################################################################################
 #********************************
-# Plot: Yearly %Bias
+# yearly
 #********************************
 plt_ctrl <- list() # reset list 
 plt_ctrl$gtitle <- "Yearly %-Bias"
@@ -208,16 +302,33 @@ plt_ctrl$limits <- c(-100,100)
 plt_ctrl$lb_cut <- -1000.0
 #
 plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
+
 #********************************
-# Plot: Total %Bias
+# total
 #********************************
 plt_ctrl$gtitle <- "Total %-Bias"
 #
 plt_tpBias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
 
+#********************************
+# expanded barplots & htmlfiles
+#********************************
+# pre-sets & plotting list creation
+plt_ctrl$gtitle <- "Basin"
+plt_ctrl$ylab <- "%-Bias"
+#
+plt_exp_pBias <- list_yOF_barplts(pBias_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+# save formated list into htmlFile  (cause shiny does not like multiple graphics)
+s_ctrl <- list() # reset save control (s_ctrl)
+s_ctrl$hmtlfilename <- "expnd_pbias"
+s_ctrl$jpgfilename <- "expnd_pbias"
+save_expnd_barplts(plt_exp_pBias,eval_size,s_ctrl)
+
+######################################################################################
+# plots: KGE 
 ######################################################################################
 #********************************
-# Plot: Yearly KGE
+# yearly 
 #********************************
 plt_ctrl <- list() # reset list 
 plt_ctrl$gtitle <- "Yearly KGE"
@@ -233,14 +344,30 @@ plt_ctrl$lb_cut <- 0.0
 #
 plt_ykge <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
-# Plot: Total KGE
+# total
 #********************************
 plt_ctrl$gtitle <- "Total KGE"
 #
 plt_tkge <- plt_tOF(KGE_total,eval_size, plt_ctrl)
+#********************************
+# expanded barplots & htmlfiles
+#********************************
+# update list
+plt_ctrl$gtitle <- "Basin"
+plt_ctrl$ylab <- "KGE"
+#
+plt_exp_KGE <- list_yOF_barplts(KGE_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+# save formated list into htmlFile  (cause shiny does not like multiple graphics)
+s_ctrl <- list() # reset save control (s_ctrl)
+s_ctrl$hmtlfilename <- "expnd_kge"
+s_ctrl$jpgfilename <- "expnd_kge"
+save_expnd_barplts(plt_exp_KGE,eval_size,s_ctrl)
+
+######################################################################################
+# plots: Correlation
 ######################################################################################
 #********************************
-# Plot: Yearly Correlation
+# yearly 
 #********************************
 plt_ctrl <- list() # reset list 
 plt_ctrl$gtitle <- "Yearly Correlation"
@@ -254,278 +381,28 @@ plt_ctrl$midpoint <- ctrl$clr_NSEmid
 plt_ctrl$limits <- c(0,1)
 plt_ctrl$lb_cut <- -1.0
 #
-plt_ycor <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
+plt_ycor <- plt_yOF(cor_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 
 #********************************
-# Plot: Total Correlation
+# total
 #********************************
 plt_ctrl$gtitle <- "Total Correlation"
 #
 plt_tcor <- plt_tOF(cor_total,eval_size, plt_ctrl)
 
+#********************************
+# expanded barplots & htmlfiles
+#********************************
+# update list
+plt_ctrl$gtitle <- "Basin"
+plt_ctrl$ylab <- "Correlation"
+#
+plt_exp_cor <- list_yOF_barplts(cor_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+# save formated list into htmlFile  (cause shiny does not like multiple graphics)
+s_ctrl <- list() # reset save control (s_ctrl)
+s_ctrl$hmtlfilename <- "expnd_cor"
+s_ctrl$jpgfilename <- "expnd_cor"
+save_expnd_barplts(plt_exp_cor,eval_size,s_ctrl)
 ######################################################################################
 # Expanded Plots
 ######################################################################################
-#********************************
-# NSE
-#********************************
-# 1. NSE calculations
-temp <- NSE_hydyearly;
-temp[temp < 0.0] <- 0.0
-d_NSEyearly <- as.data.frame(temp)
-newNames <- paste("basin",d_nums,sep="") #old: names(d_NSEyearly) %>% gsub("V","basin",.)
-names(d_NSEyearly)  <- newNames
-years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
-d_NSEyearly$hydyear <- hydyears_in_d
-# 2. NSE plots
-plt_exp_NSE <- list()
-plt_exp_NSE <- lapply(1:eval_size, 
-                      function(k) ggplot(data = d_NSEyearly) +
-                        geom_bar(stat="identity",
-                                 position = "identity",
-                                 aes_string(x="hydyear", y=newNames[k],fill=newNames[k])) +
-                        theme_bw(base_size = 15) +
-                        ggtitle(newNames[k]) +
-                        xlab(ctrl$yearName) +
-                        ylab("nse") +
-                        scale_y_continuous( limits = c(0,1) ) + 
-                        theme(legend.position= "none", 
-                              axis.text.x = element_text(angle = 50, hjust = 1), 
-                              plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) +
-                        scale_fill_gradient2(low = ctrl$colors[1],
-                                             mid = ctrl$colors[2] , 
-                                             high = ctrl$colors[3], 
-                                             midpoint = ctrl$clr_NSEmid, 
-                                             limits = c(0,1) )
-)
-# 3. htmlFile KGE (cause shiny does not like multiple graphics)
-# some pre sets for calculations:
-num_plots <- ceiling(eval_size/9)
-g <- seq(from = 1, to = (eval_size-9) , by=9)
-max_plots <- (length(g)+1)
-NSE_sepplots <- list()
-fileConn <- file(paste(ctrl$pathtoApp,"/www/expnd_nse.html",sep=""),"w")
-writeLines(text = '<!DOCTYPE html>',fileConn)
-writeLines(text = '<html>',fileConn)
-writeLines(text = '<body>',fileConn)
-# save everything
-for ( i in 1:(max_plots-1) )
-{
-  j = g[i]
-  plt_name <- paste("expnd_nse",i,".jpg", sep = "")
-  plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep = "")
-  plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-  writeLines(text = plt_hmtlInfos,fileConn )
-  #
-  jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-  do.call("grid.arrange",c(plt_exp_NSE[j:(j+8)],list(ncol = 3, nrow = 3) ))
-  dev.off()
-  
-}
-plt_name <- paste("expnd_nse",i+1,".jpg", sep="")
-plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
-plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-#
-writeLines( plt_hmtlInfos,fileConn)
-close(fileConn)
-jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-do.call("grid.arrange",c(plt_exp_NSE[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
-dev.off()
-#********************************
-# KGE
-#********************************
-# 1. KGE calculations
-  temp <- KGE_hydyearly; temp[temp < 0.0] <- 0.0
-  d_KGEyearly <- as.data.frame(temp)
-  newNames <- paste("basin",d_nums,sep = "")
-  names(d_KGEyearly)  <- newNames
-  years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
-  d_KGEyearly$hydyear <- hydyears_in_d
-# 2. KGE plots
-  options(warn = -1)
-  plt_exp_KGE <- list()
-  plt_exp_KGE <- lapply(1:eval_size, 
-                        function(k) ggplot(data = d_KGEyearly) +
-                          geom_bar(stat= "identity",
-                                   position = "identity",
-                                   aes_string(x="hydyear", y=newNames[k],fill=newNames[k])) +
-                          theme_bw(base_size = 15) +
-                          ggtitle(newNames[k]) +
-                          xlab(ctrl$yearName) +
-                          ylab("kge") +
-                          scale_y_continuous( limits = c(0,1) ) + 
-                          theme(legend.position= "none", 
-                                axis.text.x = element_text(angle = 50, hjust = 1), 
-                                plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) +
-                          scale_fill_gradient2(low = ctrl$colors[1],
-                                               mid = ctrl$colors[2] , 
-                                               high = ctrl$colors[3], 
-                                               midpoint = ctrl$clr_NSEmid, 
-                                               limits = c(0,1) )
-  )
-  options(warn = oldw)
-# 3. htmlFile KGE (cause shiny does not like multiple graphics)
-  # some pre sets for calculations:
-  num_plots <- ceiling(eval_size/9)
-  g <- seq(from = 1, to = (eval_size-9) , by=9)
-  max_plots <- (length(g)+1)
-  KGE_sepplots <- list()
-  fileConn <- file(paste(ctrl$pathtoApp,"/www/expnd_kge.html",sep=""),"w")
-  writeLines(text = '<!DOCTYPE html>',fileConn)
-  writeLines(text = '<html>',fileConn)
-  writeLines(text = '<body>',fileConn)
-  # save everything
-  for ( i in 1:(max_plots-1) )
-  {
-    j = g[i]
-    plt_name <- paste("expnd_kge",i,".jpg", sep = "")
-    plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep = "")
-    plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-    writeLines(text = plt_hmtlInfos,fileConn )
-    #
-    jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-    do.call("grid.arrange",c(plt_exp_KGE[j:(j+8)],list(ncol = 3, nrow = 3) ))
-    dev.off()
-    
-  }
-  plt_name <- paste("expnd_kge",i+1,".jpg", sep="")
-  plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
-  plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-  #
-  writeLines( plt_hmtlInfos,fileConn)
-  close(fileConn)
-  jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-  do.call("grid.arrange",c(plt_exp_KGE[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
-  dev.off()
-#********************************
-# pBias
-#********************************
-# 1. pBias calculations
-  temp <- pBias_hydyearly; 
-  d_pBiasyearly <- as.data.frame(temp)
-  newNames <- paste("basin",d_nums,sep = "")
-  names(d_pBiasyearly)  <- newNames
-  years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
-  d_pBiasyearly$hydyear <- hydyears_in_d
-# 2. pBias plots
-  options(warn = -1)
-  plt_exp_pBias <- list()
-  plt_exp_pBias <- lapply(1:eval_size, 
-                          function(k) ggplot(data = d_pBiasyearly) +
-                            geom_bar(stat= "identity",
-                                     position = "identity",
-                                     aes_string(x="hydyear", y=newNames[k],fill=newNames[k])) +
-                            theme_bw(base_size = 15) +
-                            ggtitle(newNames[k]) +
-                            xlab(ctrl$yearName) +
-                            ylab("%-Bias") +
-                            scale_y_continuous( limits = c(-200,200) ) + 
-                            theme(legend.position= "none", 
-                                  axis.text.x = element_text(angle = 50, hjust = 1), 
-                                  plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) +
-                            scale_fill_gradient2(low = ctrl$colors[4],
-                                                 mid = ctrl$colors[3],  
-                                                 high = ctrl$colors[1],
-                                                 midpoint = 0, 
-                                                 limits = c(-200,200) )
-  )
-  options(warn = oldw)
-# 3. htmlFile pBias (cause shiny does not like multiple graphics)
-  # some pre sets for calculations:
-  num_plots <- ceiling(eval_size/9)
-  g <- seq(from = 1, to = (eval_size-9) , by=9)
-  max_plots <- (length(g)+1)
-  pBias_sepplots <- list()
-  fileConn <- file(paste(ctrl$pathtoApp,"/www/expnd_pbias.html",sep=""),"w")
-  writeLines(text = '<!DOCTYPE html>',fileConn)
-  writeLines(text = '<html>',fileConn)
-  writeLines(text = '<body>',fileConn)
-  # save everything
-  for ( i in 1:(max_plots-1) )
-  {
-    j = g[i]
-    plt_name <- paste("expnd_pbias",i,".jpg", sep = "")
-    plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep = "")
-    plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-    writeLines(text = plt_hmtlInfos,fileConn )
-    #
-    jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-    do.call("grid.arrange",c(plt_exp_pBias[j:(j+8)],list(ncol = 3, nrow = 3) ))
-    dev.off()
-    
-  }
-  plt_name <- paste("expnd_pbias",i+1,".jpg", sep="")
-  plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
-  plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-  #
-  writeLines( plt_hmtlInfos,fileConn)
-  close(fileConn)
-  jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-  do.call("grid.arrange",c(plt_exp_pBias[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
-  dev.off()
-#********************************
-# CORR
-#********************************
-# 1. cor calculations
-  temp <- cor_hydyearly
-  d_coryearly <- as.data.frame(temp)
-  newNames <- paste("basin",d_nums,sep = "")
-  names(d_coryearly)  <- newNames
-  years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
-  d_coryearly$hydyear <- hydyears_in_d
-# 2. cor plots
-  options(warn = -1)
-  plt_exp_cor <- list()
-  plt_exp_cor <- lapply(1:eval_size, 
-                        function(k) ggplot(data = d_coryearly) +
-                          geom_bar(stat= "identity",
-                                   position = "identity",
-                                   aes_string(x="hydyear", y=newNames[k],fill=newNames[k])) +
-                          theme_bw(base_size = 15) +
-                          ggtitle(newNames[k]) +
-                          xlab(ctrl$yearName) +
-                          ylab("correlation") +
-                          scale_y_continuous( limits = c(0,1) ) + 
-                          theme(legend.position= "none", 
-                                axis.text.x = element_text(angle = 50, hjust = 1), 
-                                plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) +
-                          scale_fill_gradient2(low = ctrl$colors[1],
-                                               mid = ctrl$colors[2] , 
-                                               high = ctrl$colors[3], 
-                                               midpoint = 0.7, 
-                                               limits = c(0,1) )
-  )
-  options(warn = oldw)
-# 3. htmlFile cor (cause shiny does not like multiple graphics)
-  # some pre sets for calculations:
-  num_plots <- ceiling(eval_size/9)
-  g <- seq(from = 1, to = (eval_size-9) , by=9)
-  max_plots <- (length(g)+1)
-  cor_sepplots <- list()
-  fileConn <- file(paste(ctrl$pathtoApp,"/www/expnd_cor.html",sep=""),"w")
-  writeLines(text = '<!DOCTYPE html>',fileConn)
-  writeLines(text = '<html>',fileConn)
-  writeLines(text = '<body>',fileConn)
-  # save everything
-  for ( i in 1:(max_plots-1) )
-  {
-    j = g[i]
-    plt_name <- paste("expnd_cor",i,".jpg", sep = "")
-    plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep = "")
-    plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-    writeLines(text = plt_hmtlInfos,fileConn )
-    #
-    jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-    do.call("grid.arrange",c(plt_exp_cor[j:(j+8)],list(ncol = 3, nrow = 3) ))
-    dev.off()
-    
-  }
-  plt_name <- paste("expnd_cor",i+1,".jpg", sep="")
-  plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
-  plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-  #
-  writeLines( plt_hmtlInfos,fileConn)
-  close(fileConn)
-  jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-  do.call("grid.arrange",c(plt_exp_cor[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
-  dev.off()
