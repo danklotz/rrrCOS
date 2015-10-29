@@ -10,7 +10,7 @@ oldw <- getOption("warn")
 # read in 
 ######################################################################################
 # load runoff files
-d_raw <- read.table(paste( ctrl$ofoldername, "/output.runoff", sep=""), header = TRUE, skip = 22)  # Johannes - runoff[m3/s]
+d_raw <- read.table(paste( ctrl$ofoldername, "/output.runoff", sep=""), header = TRUE, skip = 22)
 #
 colmax <- function(x) lapply(X = d_raw,FUN = max) # 
 idx_temp <- which(colmax(d_raw) == -999)
@@ -72,7 +72,7 @@ rm(tmp,idx_temp,tmp_lngth,tmp_d_YearX)
 ######################################################################################
 # total & yearly (hydyears) evalution of the NSE, KGE,  percentage Bias & Correlation
 ######################################################################################
-
+# calculations:
 NSE_hydyearly <- matrix(nrow = num_hydyears, ncol = as.integer(eval_size), data = NA)
 KGE_hydyearly <- NSE_hydyearly 
 pBias_hydyearly <- NSE_hydyearly
@@ -92,46 +92,68 @@ NSE_total <- hydroGOF::NSE(tempSIM,tempOBS)
 KGE_total <- hydroGOF::KGE(tempSIM,tempOBS)
 pBIAS_total <- hydroGOF::pbias(tempSIM,tempOBS)
 cor_total <- cor(tempSIM,tempOBS) %>% diag(.)
-#
+# some cleaning
 rm(tempOBS,tempSIM)
+# write out .txt files (still curde !! )
 write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total), 
             file = paste(substr(ctrl$pathtoApp, 1, nchar(ctrl$pathtoApp)-3), "NSE_Hydyear.csv", sep=""),
             row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
+#
+# define plot function for hyd-yearly plots:
+plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
+  require("reshape2")
+  of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
+  temp <- OF_hydyearly; 
+  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
+  temp <- melt(temp)[3]
+  of_y$OFvalue = temp$value
+  #
+  plt_out <- ggplot(of_y, aes(hydyears,numberBasins, fill = OFvalue),environmnet = environment()) + 
+    ggtitle(plt_ctrl$gtitle) + 
+    geom_raster(position = "identity") + 
+    ylab(plt_ctrl$ylab) + 
+    xlab(plt_ctrl$xlab) + 
+    scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
+    scale_x_discrete( breaks = hydyears_in_d) +
+    scale_fill_gradient2(space = "Lab", 
+                         low = plt_ctrl$clr1 , mid= plt_ctrl$clr2 , high = plt_ctrl$clr3 ,
+                         midpoint = plt_ctrl$midpoint, 
+                         limits= plt_ctrl$limits ,
+                         na.value = plt_ctrl$clr4) +
+    theme_bw(base_size = 15) +
+    theme( legend.position="none" )  + 
+    geom_tile(color = "white", size = 0.25 ) + 
+    geom_text(aes(hydyears,numberBasins, label = round(OFvalue,2)), size = ctrl$OFsize , color= "black")
+  return(plt_out)
+}
+  
+
+
+
+
 
 
 ######################################################################################
 # pre calculation  objective functions (of)
 ######################################################################################
-require("reshape2")
+
 #********************************
 # Yearly NSE
 #********************************
-of_ynse <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
-temp <- NSE_hydyearly; 
-temp[temp < 0.0] <- 0.0
-temp <- melt(temp)[3]
-of_ynse$NSEvalue = temp$value
+plt_ctrl <- list() # reset list 
+plt_ctrl$gtitle <- "Yearly NSE"
+plt_ctrl$ylab <- "basin number"
+plt_ctrl$xlab <- ctrl$yearName
+plt_ctrl$clr1 <- ctrl$colors[1]
+plt_ctrl$clr2 <- ctrl$colors[2]
+plt_ctrl$clr3 <- ctrl$colors[3]
+plt_ctrl$clr4 <- ctrl$colors[4]
+plt_ctrl$midpoint <- ctrl$clr_NSEmid
+plt_ctrl$limits <- c(0,1)
+plt_ctrl$lb_cut <- 0.0
 #
-options(warn = -1)
-plt_ynse <- ggplot(of_ynse, aes(hydyears,numberBasins, fill = NSEvalue)) + 
-  ggtitle("Yearly NSE") + 
-  geom_raster(position = "identity") + 
-  ylab("basin number") + 
-  xlab(ctrl$yearName) + 
-  scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
-  scale_x_discrete( breaks = hydyears_in_d) +
-  scale_fill_gradient2(space = "lab", 
-                       low = ctrl$colors[1],
-                       mid= ctrl$colors[2] , 
-                       high = ctrl$colors[3],
-                       midpoint = ctrl$clr_NSEmid, 
-                       limits= c(0,1),
-                       na.value = ctrl$colors[3]) +
-  theme_bw(base_size = 15) +
-  theme( legend.position="none" )  + 
-  geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins, label = round(NSEvalue,2)), size = ctrl$OFsize , color= "black")
-options(warn = oldw)
+plt_ynse <- plt_yOF(NSE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
+
 #********************************
 # Total NSE
 #********************************
@@ -168,28 +190,19 @@ options(warn = oldw)
 #********************************
 # Plot: Yearly %Bias
 #********************************
-of_ypbias <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
-temp <- melt(pBias_hydyearly)[3]
-of_ypbias$biasValue = temp$value
+plt_ctrl <- list() # reset list 
+plt_ctrl$gtitle <- "Yearly %-Bias"
+plt_ctrl$ylab <- "basin number"
+plt_ctrl$xlab <- ctrl$yearName
+plt_ctrl$clr1 <- ctrl$colors[1]
+plt_ctrl$clr2 <- ctrl$colors[3]
+plt_ctrl$clr3 <- ctrl$colors[1]
+plt_ctrl$clr4 <- ctrl$colors[1]
+plt_ctrl$midpoint <- ctrl$clr_NSEmid
+plt_ctrl$limits <- c(-100,100)
+plt_ctrl$lb_cut <- -1000.0
 #
-options(warn = -1)
-plt_ypbias <- ggplot(of_ypbias, aes(hydyears,numberBasins, fill = biasValue)) + 
-  ggtitle("Yearly %-Bias") + 
-  geom_raster(position = "identity") + 
-  ylab("basin number") + 
-  xlab(ctrl$yearName) + 
-  scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
-  scale_x_discrete( breaks = hydyears_in_d) +
-  scale_fill_gradient2(low = ctrl$colors[4],
-                       mid = ctrl$colors[3],  
-                       high = ctrl$colors[1],
-                       midpoint = 0, 
-                       limits = c(-100,100) ) +
-  theme_bw(base_size = 15) +
-  theme( legend.position="none" )  + 
-  geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins,label = round(biasValue,2)), size = ctrl$OFsize,color = "black")
-options(warn = oldw)
+plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # Plot: Total %Bias
 #********************************
@@ -223,30 +236,19 @@ options(warn = oldw)
 #********************************
 # Plot: Yearly KGE
 #********************************
-of_ykge <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
-temp <- KGE_hydyearly; 
-temp[temp < 0.0] <- 0.0
-temp <- melt(temp)[3]
-of_ykge$KGEvalue = temp$value
+plt_ctrl <- list() # reset list 
+plt_ctrl$gtitle <- "Yearly KGE"
+plt_ctrl$ylab <- "basin number"
+plt_ctrl$xlab <- ctrl$yearName
+plt_ctrl$clr1 <- ctrl$colors[1]
+plt_ctrl$clr2 <- ctrl$colors[2]
+plt_ctrl$clr3 <- ctrl$colors[3]
+plt_ctrl$clr4 <- ctrl$colors[4]
+plt_ctrl$midpoint <- ctrl$clr_NSEmid
+plt_ctrl$limits <- c(0,1)
+plt_ctrl$lb_cut <- 0.0
 #
-options(warn = -1)
-plt_ykge <- ggplot(of_ykge, aes(hydyears,numberBasins, fill = KGEvalue)) + 
-  ggtitle("Yearly KGE") + 
-  geom_raster(position = "identity") + 
-  ylab("basin number") + 
-  xlab(ctrl$yearName) + 
-  scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
-  scale_x_discrete( breaks = hydyears_in_d) +
-  scale_fill_gradient2(low = ctrl$colors[1],
-                       mid= ctrl$colors[2] , 
-                       high = ctrl$colors[3],
-                       midpoint = ctrl$clr_NSEmid, 
-                       limits= c(0,1) ) +
-  theme_bw(base_size = 15) +
-  theme( legend.position="none" )  + 
-  geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins,label = round(KGEvalue,2)), size = ctrl$OFsize,color = "black")
-options(warn = oldw)
+plt_ykge <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # Plot: Total KGE
 #********************************
@@ -282,29 +284,20 @@ options(warn = oldw)
 #********************************
 # Plot: Yearly Correlation
 #********************************
-of_ycor <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
-temp <- cor_hydyearly
-temp <- melt(temp)[3]
-of_ycor$Correlation = temp$value
+plt_ctrl <- list() # reset list 
+plt_ctrl$gtitle <- "Yearly Correlation"
+plt_ctrl$ylab <- "basin number"
+plt_ctrl$xlab <- ctrl$yearName
+plt_ctrl$clr1 <- ctrl$colors[1]
+plt_ctrl$clr2 <- ctrl$colors[2]
+plt_ctrl$clr3 <- ctrl$colors[3]
+plt_ctrl$clr4 <- ctrl$colors[4]
+plt_ctrl$midpoint <- ctrl$clr_NSEmid
+plt_ctrl$limits <- c(0,1)
+plt_ctrl$lb_cut <- -1.0
 #
-options(warn = -1)
-plt_ycor <- ggplot(of_ycor, aes(hydyears,numberBasins, fill = Correlation)) + 
-  ggtitle("Yearly Correlation") + 
-  geom_raster(position = "identity") + 
-  ylab("basin number") + 
-  xlab(ctrl$yearName) + 
-  scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
-  scale_x_discrete( breaks = hydyears_in_d) +
-  scale_fill_gradient2(low = ctrl$colors[1],
-                       mid= ctrl$colors[2] , 
-                       high = ctrl$colors[3],
-                       midpoint = 0.75, 
-                       limits= c(0,1) ) +
-  theme_bw(base_size = 15) +
-  theme( legend.position = "none" )  + 
-  geom_tile(color = "white", size = 0.25 ) + 
-  geom_text(aes(hydyears,numberBasins,label = round(Correlation,2)), size = ctrl$OFsize,color = "black")
-options(warn = oldw)
+plt_ycor <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
+
 #********************************
 # Plot: Total Correlation
 #********************************
