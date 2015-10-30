@@ -6,6 +6,7 @@ require("xts")
 require("dplyr")
 require("grid")
 require("gridExtra")
+require("reshape2")
 # 
 source(paste(ctrl$pathtoApp,"/f_expanded_barplots.R",sep=""))
 source(paste(ctrl$pathtoApp,"/f_rasterplot_functions.R",sep=""))
@@ -87,7 +88,7 @@ for (k in 1:num_hydyears)
   tempSIM <- filter(d_runoff,hydyyyy == hydyears_in_d[k]) %>% select(.,starts_with("QSIM_"))
   NSE_hydyearly[k,1:eval_size] <- hydroGOF::NSE(tempSIM,tempOBS)
   KGE_hydyearly[k,1:eval_size] <- hydroGOF::KGE(tempSIM,tempOBS)
-  pBias_hydyearly[k,1:eval_size] <-  hydroGOF::pbias(tempSIM,tempOBS)
+  pBias_hydyearly[k,1:eval_size] <- hydroGOF::pbias(tempSIM,tempOBS)
   cor_hydyearly[k,1:eval_size] <- cor(tempSIM,tempOBS) %>% diag(.)
 }
 tempOBS <- select(d_runoff,starts_with("QOBS_"))
@@ -103,6 +104,7 @@ pathtoOut <- paste(ctrl$pathtoApp,"/out/",sep="")
 write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total), 
             file = paste(pathtoOut,"NSE_Hydyear.csv", sep=""),
             row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
+rm(pathtoOut)
 #
 
 ######################################################################################

@@ -1,9 +1,8 @@
 plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
-  require("reshape2")
   of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
   temp <- OF_hydyearly; 
   temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
-  temp <- melt(temp)[3]
+  temp <- reshape2::melt(temp)[3]
   of_y$OFvalue = temp$value
   #
   plt_out <- ggplot(of_y, aes(hydyears,numberBasins, fill = OFvalue),environmnet = environment()) + 

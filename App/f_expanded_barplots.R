@@ -37,11 +37,7 @@ list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) 
   return(barplts)
 } 
 
-# require(compiler)
-
-
 save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
-  dev.control("inhibit")
   # some pre sets for calculations:
   num_plots <- ceiling(eval_size/9)
   g <- seq(from = 1, to = (eval_size-9) , by=9)
@@ -62,6 +58,7 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
     writeLines(text = plt_hmtlInfos,fileConn )
     #
     tmp <- do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
+    dev.control("inhibit")
     jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
       tmp
     dev.off()
@@ -75,7 +72,7 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
   jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
     do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
   dev.off()
+  dev.control("enable")
   gc(verbose = FALSE)
   close(fileConn)
-  dev.control("enable")
 }
