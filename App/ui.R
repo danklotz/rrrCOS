@@ -4,7 +4,7 @@ require(shiny)
 shinyUI(fluidPage(
   theme = "bootstrap.css",
   # Application title
-  titlePanel("COS.vis"), 
+  titlePanel(img(src="icon_cosvis.png", height = 210, width = 210)), 
   h6("v0.2 by Klotz, Wesemann & Herrnegger"),
   # runoff 
   h3("<runoff check>"),
