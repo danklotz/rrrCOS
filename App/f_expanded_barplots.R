@@ -37,9 +37,10 @@ list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) 
   return(barplts)
 } 
 
+# require(compiler)
 
 
-save_expnd_barplts <-function(list_barplts,eval_size,s_ctrl) {
+save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
   dev.control("inhibit")
   # some pre sets for calculations:
   num_plots <- ceiling(eval_size/9)

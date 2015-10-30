@@ -32,10 +32,8 @@ l
 # run COSvis
 ######################################################################################
 setwd(ctrl$pathtoCosero ) 
-  require(lineprof)
-  l <- lineprof(
+
 source(paste(ctrl$pathtoApp,"/calculations.R",sep="")) # executes calculation file
-  )
 require(dygraphs)
 
 runApp(ctrl$pathtoApp) # executes shinyApp
