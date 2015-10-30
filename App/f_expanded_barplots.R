@@ -40,6 +40,7 @@ list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) 
 
 
 save_expnd_barplts <-function(list_barplts,eval_size,s_ctrl) {
+  dev.control("inhibit")
   # some pre sets for calculations:
   num_plots <- ceiling(eval_size/9)
   g <- seq(from = 1, to = (eval_size-9) , by=9)
@@ -59,8 +60,9 @@ save_expnd_barplts <-function(list_barplts,eval_size,s_ctrl) {
     plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
     writeLines(text = plt_hmtlInfos,fileConn )
     #
+    tmp <- do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
     jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-      do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
+      tmp
     dev.off()
     gc(verbose = FALSE)
   }
@@ -69,9 +71,10 @@ save_expnd_barplts <-function(list_barplts,eval_size,s_ctrl) {
   plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
   #
   writeLines( plt_hmtlInfos,fileConn)
-  gc(verbose = FALSE)
   jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
     do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
   dev.off()
+  gc(verbose = FALSE)
   close(fileConn)
+  dev.control("enable")
 }
