@@ -3,7 +3,7 @@ plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
   temp <- OF_hydyearly; 
   temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
   temp <- reshape2::melt(temp)[3]
-  of_y$OFvalue = temp$value
+  of_y$OFvalue = round(temp$value,2)
   #
   plt_out <- ggplot(of_y, aes(hydyears,numberBasins, fill = OFvalue),environmnet = environment()) + 
     ggtitle(plt_ctrl$gtitle) + 
@@ -20,7 +20,7 @@ plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
     theme_bw(base_size = 15) +
     theme( legend.position="none" )  + 
     geom_tile(color = "white", size = 0.25 ) + 
-    geom_text(aes(hydyears,numberBasins, label = round(OFvalue,2)), size = ctrl$OFsize , color= "black")
+    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = ctrl$OFsize , color= "black")
   return(plt_out)
 }
 
