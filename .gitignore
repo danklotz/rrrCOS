@@ -9,6 +9,9 @@ App/www/*.jpeg
 # files in out 
 App/out/*.csv
 
+# in folder 
+in/
+
 # History files
 .Rhistory
 .Rapp.history
