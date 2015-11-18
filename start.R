@@ -26,7 +26,7 @@ l
   # color-settings:
   ctrl$colors      		<- c('#FF3300','#f6f3a1','#005900',"purple4") 
   ctrl$clr_NSEmid  	<- 0.5 
-  ctrl$OFsize       <- 5
+  ctrl$OFsize       <- 5.5
 
 ######################################################################################
 # run COSvis

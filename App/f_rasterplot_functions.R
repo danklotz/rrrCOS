@@ -17,7 +17,7 @@ plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
                          midpoint = plt_ctrl$midpoint, 
                          limits= plt_ctrl$limits ,
                          na.value = plt_ctrl$clr4) +
-    theme_bw(base_size = 15) +
+    theme_bw(base_size = 20) +
     theme( legend.position="none" )  + 
     geom_tile(color = "white", size = 0.25 ) + 
     geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = ctrl$OFsize , color= "black")
@@ -37,7 +37,7 @@ plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
   plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue),environmnet = environment()) +
     geom_raster(position = "identity") +
     ggtitle(plt_ctrl$gtitle) + 
-    theme_bw(base_size = 15) +
+    theme_bw(base_size = 20) +
     theme(axis.title.y = element_blank(), 
           axis.title.x = element_blank(),
           axis.text.y = element_blank(),

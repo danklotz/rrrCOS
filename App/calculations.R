@@ -161,7 +161,7 @@ plt_ctrl <- list() # reset list
 plt_ctrl$gtitle <- "Yearly %-Bias"
 plt_ctrl$ylab <- "basin number"
 plt_ctrl$xlab <- ctrl$yearName
-plt_ctrl$clr1 <- ctrl$colors[1]
+plt_ctrl$clr1 <- ctrl$colors[4]
 plt_ctrl$clr2 <- ctrl$colors[3]
 plt_ctrl$clr3 <- ctrl$colors[1]
 plt_ctrl$clr4 <- ctrl$colors[1]
