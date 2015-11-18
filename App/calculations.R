@@ -53,10 +53,10 @@ d_xts <- select(d_runoff,-starts_with("QOSI_")) %>%
 #********************************
 # calculate hydrological years:
 #********************************
-num_hydyears <- length(years_in_data_shrt)
+num_hydyears <- length(years_in_data_shrt) - 1
 # cut months before first year & after last year : 
-if (d_runoff$mm[1] < 9) num_hydyears <- num_hydyears - 1
-if (d_runoff$mm[lngth_sim] >= 9) num_hydyears <- num_hydyears - 1
+if (d_runoff$mm[1] > 9) num_hydyears <- num_hydyears - 1
+if (d_runoff$mm[lngth_sim] < 9) num_hydyears <- num_hydyears - 1
 hydyears_in_d <- years_in_data_shrt[1:num_hydyears]
 # get hydrological years
 cnt <- 0

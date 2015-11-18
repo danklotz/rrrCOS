@@ -12,14 +12,14 @@ l
  ctrl <- list()  # variable pre-set for the conntrols
 #************************************************************************************
 # Paths:
-ctrl$pathtoCosero <- "C:/Users/H0740147/Cosero_Mur/COSERO/MitExcel" 
-ctrl$pathtoApp <- "C:/Users/H0740147/Cosero_Mur/COSERO/Auswertung/COSvis_DJ/COSvis/App" 
+  ctrl$pathtoCosero <- "C:/Users/H0740147/Cosero_Mur/COSERO/MitExcel" 
+  ctrl$pathtoApp <- "C:/Users/H0740147/Cosero_Mur/COSERO/Auswertung/COSvis_DJ/COSvis/App" 
 #  ctrl$pathtoCosero <- "D:/Arbeit/2015/003_Projekte/COSvis/in" 
 #  ctrl$pathtoApp <- "D:/Arbeit/2015/003_Projekte/COSvis/App"
 #  ctrl$pathtoCosero <- "/Users/ido87/Dropbox/Arbeit-Anderes/scripts_evalCOSwithR" 
 #  ctrl$pathtoApp <- "/Users/ido87/Documents/COSvis/App" 
 # folder names:
-  ctrl$ofoldername <- "output_60min"
+  ctrl$ofoldername <- "output_MS1_Validierung"
 # Interactive Overview: 
   ctrl$ctrl_span  	<- c(2009,2012) 
 # OF plot options:
