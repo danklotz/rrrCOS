@@ -46,7 +46,7 @@ plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
           axis.ticks = element_blank(),
           panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(), 
-          plot.margin = grid::unit(c(0.5,2,0.8,-0.5), "cm") ) +
+          plot.margin = grid::unit(c(0.5,2,1.25,-0.5), "cm") ) +
     geom_tile(color="white", size = 0.25) + 
     geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = ctrl$OFsize ,color="black") +
     scale_y_reverse() +

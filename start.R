@@ -19,7 +19,7 @@ l
 # folder names:
   ctrl$ofoldername <- "output_60min"
 # Interactive Overview: 
-  ctrl$ctrl_span  	<- c(2003,2008) 
+  ctrl$ctrl_span  	<- c(2009,2012) 
 # OF plot options:
   # naming:
   ctrl$yearName   	<- "Jahr" 
