@@ -99,11 +99,16 @@ pBIAS_total <- hydroGOF::pbias(tempSIM,tempOBS)
 cor_total <- cor(tempSIM,tempOBS) %>% diag(.)
 # some cleaning
 rm(tempOBS,tempSIM)
-# write out NSE .txt files
-pathtoOut <- paste(ctrl$pathtoApp,"/out/",sep="")
-write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total), 
-            file = paste(pathtoOut,"NSE_Hydyear.csv", sep=""),
+# write out NSE .txt & total text files
+pathtoOut <- paste(ctrl$pathtoApp,"/out/",sep = "")
+write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
+            file = paste(pathtoOut,"NSE_Hydyear.csv", sep = ""),
             row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
+cbind(d_nums,NSE_total,KGE_total,pBIAS_total,cor_total) %>%
+  write.table(.,file = paste(pathtoOut,"OF_total.csv", sep = ""),
+              row.names = FALSE, 
+              col.names = c("#","NSEtotal","KGEtotal","pBIAStotal","CORRtotal"),
+              sep = ";")
 rm(pathtoOut)
 #
 

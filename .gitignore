@@ -7,7 +7,7 @@ App/www/*.jpg
 App/www/*.jpeg
 
 # files in out 
-App/out/*
+App/out/*.csv
 
 # History files
 .Rhistory
