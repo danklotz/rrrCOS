@@ -29,7 +29,7 @@ d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
 d_raw_names <- names(d_raw)[6:length(d_raw)]
 # remove spinup-time
 tmp <- readLines( paste(  ctrl$ofoldername, "/Statistics.txt", sep="") )
-lngth_spinup <- grep("start time-step of evaluation",tmp) %>% tmp[.] %>% sub('.*:', '',.) %>% as.integer(.)
+lngth_spinup <- grep("start time-step of evaluation",tmp) %>% tmp[.] %>% sub('.*:', '',.) %>% as.integer(.) + 1
 lngth_sim <- dim(d_runoff)[1] 
 d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
 # add a (nice) formated date to the variables

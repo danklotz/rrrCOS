@@ -58,7 +58,7 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
     writeLines(text = plt_hmtlInfos,fileConn )
     #
     tmp <- do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
-    dev.control("inhibit")
+    dev.control("enable")
     jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
       tmp
     dev.off()
