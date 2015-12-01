@@ -26,7 +26,7 @@ list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) 
                       scale_y_continuous(limits = plt_ctrl$limits ) + 
                       theme(legend.position= "none", 
                             axis.text.x = element_text(angle = 50, hjust = 1), 
-                            plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) +
+                            plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) + # von obem im urzeiger sinn
                       scale_fill_gradient2(space = "Lab", 
                                            low = plt_ctrl$clr1,
                                            mid = plt_ctrl$clr2, 
@@ -55,14 +55,11 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
     plt_name <- paste(s_ctrl$jpgfilename ,i,".jpg", sep = "")
     plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep = "")
     plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
-    writeLines(text = plt_hmtlInfos,fileConn )
     #
-    tmp <- do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
-    dev.control("enable")
+    writeLines(text = plt_hmtlInfos,fileConn )
     jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-      tmp
+      do.call("grid.arrange",c(list_barplts[j:(j+8)],list(ncol = 3, nrow = 3) ))
     dev.off()
-    gc(verbose = FALSE)
   }
   plt_name <- paste(s_ctrl$jpgfilename ,i+1,".jpg", sep="")
   plt_pathANDname <- paste(ctrl$pathtoApp,"/www/",plt_name,sep="")
@@ -72,7 +69,5 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
   jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
     do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
   dev.off()
-  dev.control("enable")
-  gc(verbose = FALSE)
   close(fileConn)
 }

@@ -48,7 +48,7 @@ years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
 num_years = length(years_in_data)
 d_runoff$hydyyyy <- as.character(rdate)
 # convert d_runoff to time series (i.e. "xts")
-d_xts <- select(d_runoff,-starts_with("QOSI_")) %>%
+d_xts <- dplyr::select(d_runoff,-starts_with("QOSI_")) %>%
   filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
 #********************************
 # calculate hydrological years:
@@ -134,7 +134,9 @@ plt_ynse <- plt_yOF(NSE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # total
 #********************************
-plt_ctrl$gtitle <- "Total NSE"
+plt_ctrl$gtitle <- "Total NSE   "
+plt_ctrl$ltitle <- "NSE"
+
 #
 plt_tnse <- plt_tOF(NSE_total,eval_size, plt_ctrl)
 #********************************
@@ -175,6 +177,8 @@ plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 # total
 #********************************
 plt_ctrl$gtitle <- "Total %-Bias"
+plt_ctrl$ltitle <- "%-Bias"
+
 #
 plt_tpbias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
 
@@ -214,7 +218,9 @@ plt_ykge <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # total
 #********************************
-plt_ctrl$gtitle <- "Total KGE"
+plt_ctrl$gtitle <- "Total KGE   "
+plt_ctrl$ltitle <- "KGE"
+
 #
 plt_tkge <- plt_tOF(KGE_total,eval_size, plt_ctrl)
 #********************************
@@ -254,7 +260,9 @@ plt_ycor <- plt_yOF(cor_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
 #********************************
 # total
 #********************************
-plt_ctrl$gtitle <- "Total Correlation"
+plt_ctrl$gtitle <- "Total Corr  "
+plt_ctrl$ltitle <- "Corr"
+
 #
 plt_tcor <- plt_tOF(cor_total,eval_size, plt_ctrl)
 
@@ -271,6 +279,3 @@ s_ctrl <- list() # reset save control (s_ctrl)
 s_ctrl$hmtlfilename <- "expnd_cor"
 s_ctrl$jpgfilename <- "expnd_cor"
 save_expnd_barplts(plt_exp_cor,eval_size,s_ctrl)
-######################################################################################
-# Expanded Plots
-######################################################################################

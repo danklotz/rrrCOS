@@ -42,17 +42,19 @@ plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
           axis.title.x = element_blank(),
           axis.text.y = element_blank(),
           axis.text.x = element_blank(),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 15),
           axis.ticks = element_blank(),
+          legend.text = element_text(size = 17),
+          legend.title = element_text(size = 20),
+          legend.key.width = unit(3,"line"),
+          legend.key.height = unit(4,"line"),
           panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(), 
-          plot.margin = grid::unit(c(0.5,2,1.25,-0.5), "cm") ) +
+          plot.margin = grid::unit(c(0.5,0.5,1.25,-0.7), "cm") ) + # von oben im urzeiger sinn
     geom_tile(color="white", size = 0.25) + 
     geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = ctrl$OFsize ,color="black") +
     scale_y_reverse() +
     scale_fill_gradient2(space = "Lab",
-                         name = plt_ctrl$gtitle,
+                         name = plt_ctrl$ltitle,
                          low = plt_ctrl$clr1,
                          mid= plt_ctrl$clr2, 
                          high = plt_ctrl$clr3,
