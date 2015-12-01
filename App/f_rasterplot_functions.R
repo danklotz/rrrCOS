@@ -1,3 +1,4 @@
+# define rasterplot funcions for yearly OF
 plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
   of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
   temp <- OF_hydyearly; 

@@ -17,7 +17,7 @@
 #  ctrl$pathtoCosero <- "/Users/ido87/Dropbox/Arbeit-Anderes/scripts_evalCOSwithR" 
 #  ctrl$pathtoApp <- "/Users/ido87/Documents/COSvis/App" 
 # folder names:
-  ctrl$ofoldername <- "output_MS1_Validierung"
+  ctrl$ofoldername <- "output_60min_finalValidierung"
 # Interactive Overview: 
   ctrl$ctrl_span  	<- c(2009,2012) 
 # OF plot options:
