@@ -1,13 +1,14 @@
 # Define UI for application that draws a histogram
-# 
+library(shinyFiles)
+library(dygraphs)
 
 shinyUI(
   fluidPage(
     theme = "bootstrap.css",
     tags$style(type="text/css", "body {padding-top: 50px;}"),
     # header
-    h1(img(src="icon_cosvis.png", height = 210, width = 210), align="center"), 
-    h6("v0.2 by Klotz, Wesemann & Herrnegger", align="center"),
+    h1(img(src="icon_cosvis.png", height = 210, width = 210), align = "center"), 
+    h6("v0.2 by Klotz, Wesemann & Herrnegger", align = "center"),
     tags$hr(),  
   navbarPage(title = "Navigation:",
     tabPanel("data_load",
@@ -56,5 +57,5 @@ shinyUI(
                     )
       )
     ),
-  position="fixed-top")
+  position = "fixed-top")
 ))

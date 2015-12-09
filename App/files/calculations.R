@@ -8,9 +8,10 @@ require("grid")
 require("gridExtra")
 require("reshape2")
 #
-ctrl$pathDotRunoff  <- file.choose() %>% strsplit("/") %>% .[[1]]%>% .[1:(length(.)-1)] %>% paste(.,collapse = "/")
-source(paste(ctrl$pathtoApp,"/files/f_expanded_barplots.R",sep=""))
-source(paste(ctrl$pathtoApp,"/files/f_rasterplot_functions.R",sep=""))
+ctrl$pathDotRunoff  <- file.choose() %>% strsplit("\\\\") %>% .[[1]]%>% .[1:(length(.)-1)] %>% paste(.,collapse = "/")
+# mac: strsplit("/") %>% 
+source("files/f_expanded_barplots.R")
+source("files/f_rasterplot_functions.R")
 ######################################################################################
 # read in 
 ######################################################################################
@@ -101,7 +102,7 @@ cor_total <- cor(tempSIM,tempOBS) %>% diag(.)
 # some cleaning
 rm(tempOBS,tempSIM)
 # write out NSE .txt & total text files
-pathtoOut <- paste(ctrl$pathtoApp,"/out/",sep = "")
+pathtoOut <- paste("out/",sep = "")
 write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
             file = paste(pathtoOut,"NSE_Hydyear.csv", sep = ""),
             row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
