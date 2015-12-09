@@ -1,7 +1,28 @@
+library(shiny)
+library(shinyFiles)
+
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-
-
+shinyServer(function(input, output, session) {
+# executes calculation file
+  
+  s_string <- eventReactive(input$goButton,
+    "lala"
+  )
+  
+  volumes <- getVolumes() 
+  shinyDirChoose(input, 
+                 'APPfolder',
+                 roots=volumes, 
+                 session=session, 
+                 restrictions=system.file(package='base') 
+  )
+  shinyDirChoose(input, 
+                 'COSfolder',
+                 roots=volumes, 
+                 session=session, 
+                 restrictions=system.file(package='base') 
+                 )
+  
   xts_slctd_data <-  reactive({
     select(d_xts,matches(d_raw_names[ as.integer(input$basin_num)*3 - 2 ]),matches(d_raw_names[ as.integer(input$basin_num)*3 ] )) %>%
     select(., Qobs = matches( d_raw_names[ as.integer(input$basin_num)*3 - 2 ]),
