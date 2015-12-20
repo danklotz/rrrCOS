@@ -1,16 +1,21 @@
 #individual files
-start.R
+R/sstart.R
 
 # not needed files in www
-App/www/*.html
-App/www/*.jpg
-App/www/*.jpeg
+R/App/www/*.html
+R/App/www/*.jpg
+R/App/www/*.jpeg
+
 
 # files in out 
-App/out/*.csv
+R/App/out/*.csv
 
 # in folder 
 in/
+
+# runoff files etc
+*.runoff
+*.stats
 
 # History files
 .Rhistory
