@@ -15,6 +15,7 @@ in/
 
 # runoff files etc
 *.runoff
+App/www/output.runoff
 Statistics.txt
 
 # History files
