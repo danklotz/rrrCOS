@@ -10,9 +10,9 @@ visCOS.explore <- function(runoff_path,ctrl) {
   require("gridExtra")
   require("reshape2")
   #
-  source("functions/get_path.R")
-  source("functions/f_expanded_barplots.R")
-  source("functions/f_rasterplot_functions.R")
+  source("R/get_runoffpath.R")
+  source("R/f_expanded_barplots.R")
+  source("R/f_rasterplot_functions.R")
   ######################################################################################
   # SETUP
   ######################################################################################
@@ -35,7 +35,8 @@ visCOS.explore <- function(runoff_path,ctrl) {
   if ( exists("runoff_path") ) {
     ctrl$pathDotRunoff <- runoff_path
   } else { 
-    ctrl$pathDotRunoff  <- get.runoffpath()
+    print("no runoff path provided, choose interactively!")
+    ctrl$pathDotRunoff  <- file.choose()
   }
 
 
@@ -44,7 +45,7 @@ visCOS.explore <- function(runoff_path,ctrl) {
   # read in 
   ######################################################################################
   # load runoff files
-  d_raw <- data.table::fread(paste(  ctrl$pathDotRunoff, "output.runoff", sep="/"), header = TRUE, skip = 22) %>%
+  d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
   #
   colmax <- function(x) lapply(X = d_raw,FUN = max) # 
@@ -58,18 +59,26 @@ visCOS.explore <- function(runoff_path,ctrl) {
   d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
   d_raw_names <- names(d_raw)[6:length(d_raw)]
   # remove spinup-time
-  tmp <- readLines( paste(   ctrl$pathDotRunoff, "Statistics.txt", sep="/") )
-  lngth_spinup <- grep("start time-step of evaluation",tmp) %>% tmp[.] %>% sub('.*:', '',.) %>% as.integer(.) + 1
+  pathToStatsFile <- sweep.path(ctrl$pathDotRunoff) %>% paste( "Statistics.txt", sep="") 
+  pattern_spinup <- "start time-step of evaluation"
+  lngth_spinup <- fetch.spinup(pathToStatsFile,pattern_spinup)
   lngth_sim <- dim(d_runoff)[1] 
   d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
-  # add a (nice) formated date to the variables
-  rdate <- paste(d_runoff$yyyy,
-                  sprintf("%02d",d_runoff$mm),
-                  sprintf("%02d",d_runoff$dd),
-                  sprintf("%02d",d_runoff$hh),
-                  sprintf("%02d",d_runoff$mm.1),
-                  sep= "" ) %>% 
-            as.POSIXct(format = "%Y%m%d%H%M",tz="UTC")
+  # check for the date format 
+  ThereAreSimpleDates <- (any(names(d_runoff)=="yyyy"))
+  ThereAreTSDates <- (any(names(d_raw)=="POSIXdate"))
+  # add full date information to data 
+  if (ThereAreSimpleDates & !ThereAreTSDates) {
+    # add ts-dates
+    POSIXdate <- paste(d_runoff$yyyy,
+                    sprintf("%02d",d_runoff$mm),
+                    sprintf("%02d",d_runoff$dd),
+                    sprintf("%02d",d_runoff$hh),
+                    sprintf("%02d",d_runoff$mm.1),
+                    sep= "" ) %>% 
+      as.POSIXct(format = "%Y%m%d%H%M",tz="UTC")
+  }
+
   d_runoff$rdate <- rdate
   #
   lngth_sim <- dim(d_runoff)[1] 
