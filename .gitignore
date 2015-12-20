@@ -15,7 +15,7 @@ in/
 
 # runoff files etc
 *.runoff
-*.stats
+Statistics.txt
 
 # History files
 .Rhistory
