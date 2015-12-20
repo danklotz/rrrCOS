@@ -17,6 +17,7 @@ in/
 *.runoff
 R/App/www/output.runoff
 Statistics.txt
+bfg.jar
 
 # History files
 .Rhistory
@@ -31,4 +32,3 @@ Statistics.txt
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
-.Rproj.user
