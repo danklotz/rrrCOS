@@ -32,3 +32,4 @@ bfg.jar
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+.Rproj.user

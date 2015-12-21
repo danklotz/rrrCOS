@@ -10,7 +10,7 @@ visCOS.explore <- function(runoff_path,ctrl) {
   require("gridExtra")
   require("reshape2")
   #
-  source("R/get_runoffpath.R")
+  source("R/fetch.R")
   source("R/f_expanded_barplots.R")
   source("R/f_rasterplot_functions.R")
   ######################################################################################
@@ -41,52 +41,49 @@ visCOS.explore <- function(runoff_path,ctrl) {
 
 
 
-  ######################################################################################
-  # read in 
-  ######################################################################################
-  # load runoff files
+######################################################################################
+# read in 
+######################################################################################
+# load runoff files
   d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
-    as.data.frame(.)
-  #
-  colmax <- function(x) lapply(X = d_raw,FUN = max) # 
-  idx_temp <- which(colmax(d_raw) == -999)
-  idx_slct <- sort(c(idx_temp,idx_temp+1,idx_temp+2))
-  d_runoff <- d_raw[-idx_slct]
-  # get amount of used basins and their respective names
+      as.data.frame(.)
+# eliminate basins withouth observations:
+  d_runoff <- sweep.NoSim(d_raw)
+
+# get amount of used basins and their respective names
   temp_names <- names(d_runoff)
   temp_names <- gsub('.*_', '' ,temp_names) %>% unique(.) # replaces everything before "_" and gets the unique names
   eval_size <- length(temp_names)-5 
   d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
   d_raw_names <- names(d_raw)[6:length(d_raw)]
-  # remove spinup-time
+# remove spinup-time
   pathToStatsFile <- sweep.path(ctrl$pathDotRunoff) %>% paste( "Statistics.txt", sep="") 
   pattern_spinup <- "start time-step of evaluation"
   lngth_spinup <- fetch.spinup(pathToStatsFile,pattern_spinup)
   lngth_sim <- dim(d_runoff)[1] 
   d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
-  # check for the date format 
-  ThereAreSimpleDates <- (any(names(d_runoff)=="yyyy"))
-  ThereAreTSDates <- (any(names(d_raw)=="POSIXdate"))
-  # add full date information to data 
-  if (ThereAreSimpleDates & !ThereAreTSDates) {
-    # add ts-dates
-    POSIXdate <- paste(d_runoff$yyyy,
-                    sprintf("%02d",d_runoff$mm),
-                    sprintf("%02d",d_runoff$dd),
-                    sprintf("%02d",d_runoff$hh),
-                    sprintf("%02d",d_runoff$mm.1),
-                    sep= "" ) %>% 
-      as.POSIXct(format = "%Y%m%d%H%M",tz="UTC")
+# add full date information to data 
+  ThereAreCOSdates <- any(names(d_runoff)=="yyyy")
+  ThereArePOSIXctDates <- any(names(d_runoff)=="POSIXdate")
+  if ( is.logical(ThereAreCOSdates) & is.logical(ThereArePOSIXctDates) ) {
+    if (!ThereAreCOSdates & !ThereArePOSIXctDates) {
+      stop("No COSdates and no POSIXct-dates in the data!")
+    } else if (ThereAreCOSdates & !ThereArePOSIXctDates) {
+      # add ts-dates
+      d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
+    } else if (!ThereAreCOSdates & ThereArePOSIXctDates) {
+      stop("POSIXct to COSdates not yet supported :(")
+    }
+  } else { 
+    stop("Something seems to be wrong with the date and time formats :(")
   }
-
-  d_runoff$rdate <- rdate
   #
   lngth_sim <- dim(d_runoff)[1] 
   years_in_data <- unique(d_runoff$yyyy)
   years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
   num_years = length(years_in_data)
-  d_runoff$hydyyyy <- as.character(rdate)
-  # convert d_runoff to time series (i.e. "xts")
+  d_runoff$hydyyyy <- as.character(POSIXdate)
+  # convert d_runoff to time series object (i.e. "xts")
   d_xts <- dplyr::select(d_runoff,-starts_with("QOSI_")) %>%
     filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
   #********************************
