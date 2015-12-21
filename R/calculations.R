@@ -1,4 +1,4 @@
-visCOS.explore <- function(runoff_path,ctrl) {
+visCOS.explore <- function(runoff_path,spinup,ctrl) {
   # loaded dependencies 
   require("data.table") 
   require("shiny")
@@ -57,9 +57,23 @@ visCOS.explore <- function(runoff_path,ctrl) {
   d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
   d_raw_names <- names(d_raw)[6:length(d_raw)]
 # remove spinup-time
-  pathToStatsFile <- sweep.path(ctrl$pathDotRunoff) %>% paste( "Statistics.txt", sep="") 
-  pattern_spinup <- "start time-step of evaluation"
-  lngth_spinup <- fetch.spinup(pathToStatsFile,pattern_spinup)
+  # much of this will be removed in the future, but its nice to have it for now
+  # the exists arguments do not WORK THIS WAY!!!!!
+  if (exists("spinup")) {
+    lngth_spinup <- spinup
+  } else if ( exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
+    path_Spinup <- ctrl$pathSpinup
+    pattern_spinup <- ctrl$pattern_spinup
+    lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+  } else if ( !exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
+    pathSpinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+    pattern_spinup <- "start time-step of evaluation"
+    lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+  } else {
+    path_Spinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+    pattern_spinup <- "start time-step of evaluation"
+    lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+  }
   lngth_sim <- dim(d_runoff)[1] 
   d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
 # add full date information to data 
@@ -78,17 +92,19 @@ visCOS.explore <- function(runoff_path,ctrl) {
     stop("Something seems to be wrong with the date and time formats :(")
   }
   #
-  lngth_sim <- dim(d_runoff)[1] 
+# convert d_runoff to time series object (i.e. "xts")
+  d_xts <- d_runoff %>% 
+              dplyr::select(.,-starts_with("QOSI_")) %>%
+              filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
+#********************************
+# calculate hydrological years:
+#********************************
   years_in_data <- unique(d_runoff$yyyy)
-  years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
+  years_in_data_shrt <- years_in_data %>% 
+    as.character %>% 
+    substring(.,3,4)
   num_years = length(years_in_data)
-  d_runoff$hydyyyy <- as.character(POSIXdate)
-  # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- dplyr::select(d_runoff,-starts_with("QOSI_")) %>%
-    filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
-  #********************************
-  # calculate hydrological years:
-  #********************************
+  d_runoff$hydyear <- as.character(d_runoff$POSIXdate)
   num_hydyears <- length(years_in_data_shrt) - 1
   # cut months before first year & after last year : 
   if (d_runoff$mm[1] > 9) num_hydyears <- num_hydyears - 1
@@ -100,11 +116,12 @@ visCOS.explore <- function(runoff_path,ctrl) {
   {
     hydyears_in_d[i] <- paste(years_in_data_shrt[i],years_in_data_shrt[i+1], sep = "/")
     tmp_d_YearX <- filter(d_runoff, yyyy == years_in_data[i] | yyyy == years_in_data[i+1])  %>% 
-      filter(., (yyyy == years_in_data[i] & mm >= 9 ) | (yyyy == years_in_data[i+1] & mm < 9 ) ) %>%
-      select(.,hydyyyy) %>%
-      transform(.,hydyyyy = hydyears_in_d[i])
+      filter(yyyy == years_in_data[i] & mm >= 9 ) %>%
+      filter(yyyy == years_in_data[i+1] & mm < 9 ) %>%
+      select(hydyear) %>%
+      transform(hydyear = hydyears_in_d[i])
     tmp_lngth <- dim(tmp_d_YearX)[1]
-    d_runoff$hydyyyy[(cnt+1):(cnt+tmp_lngth)] <- tmp_d_YearX$hydyyyy
+    d_runoff$hydyear[(cnt+1):(cnt+tmp_lngth)] <- tmp_d_YearX$hydyear
     cnt = cnt + tmp_lngth
   }
   rm(tmp,idx_temp,tmp_lngth,tmp_d_YearX)
@@ -120,8 +137,8 @@ visCOS.explore <- function(runoff_path,ctrl) {
   cor_hydyearly <- NSE_hydyearly
   for (k in 1:num_hydyears) 
   {
-    tempOBS <- filter(d_runoff,hydyyyy == hydyears_in_d[k]) %>% select(.,starts_with("QOBS_"))
-    tempSIM <- filter(d_runoff,hydyyyy == hydyears_in_d[k]) %>% select(.,starts_with("QSIM_"))
+    tempOBS <- filter(d_runoff,hydyear == hydyears_in_d[k]) %>% select(.,starts_with("QOBS_"))
+    tempSIM <- filter(d_runoff,hydyear == hydyears_in_d[k]) %>% select(.,starts_with("QSIM_"))
     NSE_hydyearly[k,1:eval_size] <- hydroGOF::NSE(tempSIM,tempOBS)
     KGE_hydyearly[k,1:eval_size] <- hydroGOF::KGE(tempSIM,tempOBS)
     pBias_hydyearly[k,1:eval_size] <- hydroGOF::pbias(tempSIM,tempOBS)

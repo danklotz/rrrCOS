@@ -3,5 +3,6 @@
 export(fetch.spinup)
 export(implode.Cosdate)
 export(sweep.NoSim)
+export(sweep.hydyears)
 export(sweep.path)
 importFrom(magrittr,"%>%")

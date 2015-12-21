@@ -17,3 +17,5 @@ fetch.spinup <- function(filepath,pattern) {
     as.integer(.) + 1
   return(spinup)
 }
+
+
