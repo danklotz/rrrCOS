@@ -1,4 +1,4 @@
-list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) {
+list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,plt_ctrl) {
   # creates a list of bar-plots for a the yearly objective functions (OF)
   # see: description-follows-soonTM
   # ***
@@ -10,7 +10,6 @@ list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl) 
   d_OFyearly <- as.data.frame(temp)
   newNames <- paste(plt_ctrl$gtitle,d_nums,sep="") 
   names(d_OFyearly)  <- newNames
-  years_in_data_shrt <- as.character(years_in_data) %>% substring(.,3,4)
   d_OFyearly$hydyear <- hydyears_in_d
   # make list of plots
   barplts <- list()

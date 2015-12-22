@@ -82,13 +82,13 @@ sweep.hydyears <- function(runoff_data) {
   #
   years <- fetch.yearsindata(runoff_data)
   num_years = length(years$in_data)
-  hydyears_in_d <- fetch.hydyears(d_runoff,years)
+  runoff_data$hydyear <- as.character(runoff_data$POSIXdate)
+  hydyears_in_d <- fetch.hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)
   # calculate and format hydrological years
   cnt <- 0
   for (i in 1:(num_hydyears)) 
   {
-    hydyears_in_d[i] <- paste(years$in_data_shrt[i],years$in_data_shrt[i+1], sep = "/")
     tmp_d_YearX <- filter(runoff_data, yyyy == years$in_data[i] | yyyy == years$in_data[i+1])  %>% 
       filter(.,(yyyy == years$in_data[i] & mm >= 9 ) | (yyyy == years$in_data[i+1] & mm < 9 ) ) %>%
       select(hydyear) %>%

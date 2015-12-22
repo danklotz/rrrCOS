@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
     select(d_xts,matches(d_raw_names[ as.integer(input$basin_num)*3 - 2 ]),matches(d_raw_names[ as.integer(input$basin_num)*3 ] )) %>%
     select(., Qobs = matches( d_raw_names[ as.integer(input$basin_num)*3 - 2 ]),
              Qsim = matches( d_raw_names[ as.integer(input$basin_num)*3])) %>%
-    xts(.,order.by = d_xts$rdate)
+    xts(.,order.by = d_xts$POSIXdate)
   })
 
   xts_slctd_error <- reactive({
@@ -36,7 +36,7 @@ shinyServer(function(input, output, session) {
              Qsim = matches( d_raw_names[ as.integer(input$basin_num)*3])) %>%
     mutate(.,error = Qsim-Qobs) %>% 
     select(.,error) %>%
-    xts(.,order.by = d_xts$rdate)
+    xts(.,order.by = d_xts$POSIXdate)
   })
    bsns_obs <- reactive({
      d_raw_names[(input$basin_num*3)-2]

@@ -58,6 +58,10 @@ fetch.hydyears <- function(runoff_data,years) {
   if (runoff_data$mm[1] > 9) start <- start + 1
   if (runoff_data$mm[lngth_sim] < 9) lefin <- lefin - 1
   hydyears_in_d <- years$in_data_shrt[start:lefin]
+  num_hydyears <- length(hydyears_in_d)
+  for (i in 1:(num_hydyears)) {
+    hydyears_in_d[i] <- paste(years$in_data_shrt[i],years$in_data_shrt[i+1], sep = "/")
+    }
   return(hydyears_in_d)
 }
 

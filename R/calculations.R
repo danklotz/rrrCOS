@@ -2,7 +2,9 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   # loaded dependencies 
   require("data.table") 
   require("shiny")
+  require("shinyFiles")
   require("hydroGOF")
+  require("dygraphs")
   require("ggplot2")
   require("xts")
   require("dplyr")
@@ -10,7 +12,6 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   require("gridExtra")
   require("reshape2")
   #
-  source("R/fetch.R")
   source("R/f_expanded_barplots.R")
   source("R/f_rasterplot_functions.R")
   ######################################################################################
@@ -46,11 +47,11 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
       pattern_spinup <- ctrl$pattern_spinup
       lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     } else if ( !exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
-      pathSpinup <- sweep.path("pathSpinup",where = ctrl) %>% paste("Statistics.txt", sep="") 
-      pattern_spinup <- "start time-step of evaluation"
+      pathSpinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+      pattern_spinup <- ctrl$pattern_spinup
       lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     } else {
-      path_Spinup <- sweep.path("pathSpinup",where = ctrl) %>% paste("Statistics.txt", sep="") 
+      path_Spinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
       pattern_spinup <- "start time-step of evaluation"
       lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     }
@@ -78,7 +79,8 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
                 filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
   # calculate hydrological years:
     d_runoff <- sweep.hydyears(d_runoff)
-    hydyears_in_d <- fetch.hydyears(d_runoff)
+    years <- fetch.yearsindata(d_runoff)
+    hydyears_in_d <- fetch.hydyears(d_runoff,years)
     num_hydyears <- length(hydyears_in_d)
   ######################################################################################
   # do calculations
@@ -107,7 +109,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   # some cleaning
   rm(tempOBS,tempSIM)
   # write out NSE .txt & total text files
-  pathtoOut <- paste("out/",sep = "")
+  pathtoOut <- "R/App/www/" #§ temporary solution
   write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
               file = paste(pathtoOut,"NSE_Hydyear.csv", sep = ""),
               row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
@@ -143,7 +145,6 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   #********************************
   plt_ctrl$gtitle <- "Total NSE   "
   plt_ctrl$ltitle <- "NSE"
-  
   #
   plt_tnse <- plt_tOF(NSE_total,eval_size, plt_ctrl)
   #********************************
@@ -153,7 +154,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- list_yOF_barplts(NSE_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+  plt_exp_NSE <- list_yOF_barplts(NSE_hydyearly,eval_size,d_nums,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
   s_ctrl$hmtlfilename <- "expnd_nse"
@@ -196,7 +197,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "%-Bias"
   #
-  plt_exp_pBias <- list_yOF_barplts(pBias_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+  plt_exp_pBias <- list_yOF_barplts(pBias_hydyearly,eval_size,d_nums,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
   s_ctrl$hmtlfilename <- "expnd_pbias"
@@ -237,7 +238,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "KGE"
   #
-  plt_exp_KGE <- list_yOF_barplts(KGE_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+  plt_exp_KGE <- list_yOF_barplts(KGE_hydyearly,eval_size,d_nums,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
   s_ctrl$hmtlfilename <- "expnd_kge"
@@ -280,7 +281,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "Correlation"
   #
-  plt_exp_cor <- list_yOF_barplts(cor_hydyearly,eval_size,d_nums,d_OFyearly,plt_ctrl)
+  plt_exp_cor <- list_yOF_barplts(cor_hydyearly,eval_size,d_nums,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
   s_ctrl$hmtlfilename <- "expnd_cor"
