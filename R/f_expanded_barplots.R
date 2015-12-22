@@ -43,7 +43,7 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
   g <- seq(from = 1, to = (eval_size-9) , by=9)
   max_plots <- (length(g)+1)
   # connect to a html file in www folder 
-  fileConn <- file(paste("www/",s_ctrl$hmtlfilename,".html",sep=""),"w")
+  fileConn <- file(paste("R/App/www/",s_ctrl$hmtlfilename,".html",sep=""),"w")
   # write html header
   writeLines(text = '<!DOCTYPE html>',fileConn)
   writeLines(text = '<html>',fileConn)
@@ -53,7 +53,7 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
   {
     j = g[i]
     plt_name <- paste(s_ctrl$jpgfilename ,i,".jpg", sep = "")
-    plt_pathANDname <- paste("www/",plt_name,sep = "")
+    plt_pathANDname <- paste("R/App/www/",plt_name,sep = "")
     plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
     #
     writeLines(text = plt_hmtlInfos,fileConn )
@@ -62,7 +62,7 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
     dev.off()
   }
   plt_name <- paste(s_ctrl$jpgfilename ,i+1,".jpg", sep="")
-  plt_pathANDname <- paste("www/",plt_name,sep="")
+  plt_pathANDname <- paste("R/App/www/",plt_name,sep="")
   plt_hmtlInfos <- paste("<img src=\"",plt_name,'" alt="nothing" style="width:800px;height:500px;">' ,sep = "")
   #
   writeLines( plt_hmtlInfos,fileConn)

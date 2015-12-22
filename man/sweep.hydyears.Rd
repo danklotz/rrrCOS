@@ -6,6 +6,13 @@
 \usage{
 sweep.hydyears(runoff_data)
 }
+\arguments{
+\item{runoff_data}{The data.frame, which contains the runoff information}
+}
+\value{
+The runoff data.frame reduced and ordered according to the hydrological years within the data. 
+\strong{Note:} The hydrological years are formatted as characters.
+}
 \description{
 calculate hydrological years
 }

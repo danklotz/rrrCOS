@@ -28,7 +28,9 @@ sweep.path <- function(filepath) {
 #' sweeps the basins withouth observation away
 #' 
 #' Removes basins withouth observation (-999/NA values) away from the provided dataframe 
-#' @param d_AllBasins raw dataframe with 
+#' 
+#' @param d_AllBasins A raw runoff dataframe, which may containts basins withouth observations. 
+#' \strong{Note:} It is assumed that all available basins are simulated!
 #' @return data.frame without the observation-free basins
 #' @export
 sweep.NoSim <- function(d_AllBasins) {
@@ -63,6 +65,9 @@ implode.Cosdate <- function(data_frame) {
 
 #' calculate hydrological years
 #' 
+#' @param runoff_data The data.frame, which contains the runoff information
+#' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
+#' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
 sweep.hydyears <- function(runoff_data) {
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
@@ -75,30 +80,17 @@ sweep.hydyears <- function(runoff_data) {
     runoff_data$POSIXdate <- implode.Cosdate(runoff_data)
   }
   #
-  years_in_data <- unique(runoff_data$yyyy)
-  years_in_data_shrt <- years_in_data %>% 
-                          as.character %>% 
-                          substring(.,3,4)
-  num_years = length(years_in_data)
-  runoff_data$hydyear <- as.character(runoff_data$POSIXdate)
-  years_in_data_shrt <- years_in_data %>% 
-    as.character %>% 
-    substring(.,3,4)
-  num_hydyears <- length(years_in_data_shrt)
-  # cut months before first year & after last year : 
-  if (runoff_data$mm[1] > 9) num_hydyears <- num_hydyears - 1
-  if (runoff_data$mm[lngth_sim] < 9) num_hydyears <- num_hydyears - 1
-  hydyears_in_d <- years_in_data_shrt[1:num_hydyears]
-  # get hydrological years
+  years <- fetch.yearsindata(runoff_data)
+  num_years = length(years$in_data)
+  hydyears_in_d <- fetch.hydyears(d_runoff,years)
+  num_hydyears <- length(hydyears_in_d)
+  # calculate and format hydrological years
   cnt <- 0
   for (i in 1:(num_hydyears)) 
   {
-    hydyears_in_d[i] <- paste(years_in_data_shrt[i],years_in_data_shrt[i+1], sep = "/")
-    tmp_d_YearX <- runoff_data %>% 
-      filter(yyyy == years_in_data[i])  %>% 
-      filter(yyyy == years_in_data[i+1]) %>%
-      filter(yyyy == years_in_data[i] & mm >= 9 ) %>%
-      filter(yyyy == years_in_data[i+1] & mm < 9 ) %>%
+    hydyears_in_d[i] <- paste(years$in_data_shrt[i],years$in_data_shrt[i+1], sep = "/")
+    tmp_d_YearX <- filter(runoff_data, yyyy == years$in_data[i] | yyyy == years$in_data[i+1])  %>% 
+      filter(.,(yyyy == years$in_data[i] & mm >= 9 ) | (yyyy == years$in_data[i+1] & mm < 9 ) ) %>%
       select(hydyear) %>%
       transform(hydyear = hydyears_in_d[i])
     tmp_lngth <- dim(tmp_d_YearX)[1]

@@ -7,7 +7,8 @@
 sweep.NoSim(d_AllBasins)
 }
 \arguments{
-\item{d_AllBasins}{raw dataframe with}
+\item{d_AllBasins}{A raw runoff dataframe, which may containts basins withouth observations. 
+\strong{Note:} It is assumed that all available basins are simulated!}
 }
 \value{
 data.frame without the observation-free basins

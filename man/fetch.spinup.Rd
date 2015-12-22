@@ -8,6 +8,8 @@ fetch.spinup(filepath, pattern)
 }
 \arguments{
 \item{filepath}{path to the given file}
+
+\item{pattern}{string used to mark that the next integer is the spinup time}
 }
 \value{
 Integer indicating the length of the spin-up time in hours

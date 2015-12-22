@@ -15,119 +15,73 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   source("R/f_rasterplot_functions.R")
   ######################################################################################
   # SETUP
-  ######################################################################################
-  if ( !exists("ctrl") ) {
-    ctrl <- list()
-    # ******************
-    # arbitrary presets:
-    ctrl$ofoldername <- "test"
-    # Interactive Overview: 
-    ctrl$ctrl_span  	<- c(2009,2012) 
-    # OF plot options:
-    # naming:
-    ctrl$yearName   	<- "Jahr" 
-    # color-settings:
-    ctrl$colors      		<- c('#FF3300','#f6f3a1','#005900',"purple4") 
-    ctrl$clr_NSEmid  	<- 0.5 
-    ctrl$OFsize       <- 5.5
-  }
-  
-  if ( exists("runoff_path") ) {
-    ctrl$pathDotRunoff <- runoff_path
-  } else { 
-    print("no runoff path provided, choose interactively!")
-    ctrl$pathDotRunoff  <- file.choose()
-  }
-
-
-
-######################################################################################
-# read in 
-######################################################################################
-# load runoff files
-  d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
-      as.data.frame(.)
-# eliminate basins withouth observations:
-  d_runoff <- sweep.NoSim(d_raw)
-
-# get amount of used basins and their respective names
-  temp_names <- names(d_runoff)
-  temp_names <- gsub('.*_', '' ,temp_names) %>% unique(.) # replaces everything before "_" and gets the unique names
-  eval_size <- length(temp_names)-5 
-  d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
-  d_raw_names <- names(d_raw)[6:length(d_raw)]
-# remove spinup-time
-  # much of this will be removed in the future, but its nice to have it for now
-  # the exists arguments do not WORK THIS WAY!!!!!
-  if (exists("spinup")) {
-    lngth_spinup <- spinup
-  } else if ( exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
-    path_Spinup <- ctrl$pathSpinup
-    pattern_spinup <- ctrl$pattern_spinup
-    lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-  } else if ( !exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
-    pathSpinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
-    pattern_spinup <- "start time-step of evaluation"
-    lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-  } else {
-    path_Spinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
-    pattern_spinup <- "start time-step of evaluation"
-    lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-  }
-  lngth_sim <- dim(d_runoff)[1] 
-  d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
-# add full date information to data 
-  ThereAreCOSdates <- any(names(d_runoff)=="yyyy")
-  ThereArePOSIXctDates <- any(names(d_runoff)=="POSIXdate")
-  if ( is.logical(ThereAreCOSdates) & is.logical(ThereArePOSIXctDates) ) {
-    if (!ThereAreCOSdates & !ThereArePOSIXctDates) {
-      stop("No COSdates and no POSIXct-dates in the data!")
-    } else if (ThereAreCOSdates & !ThereArePOSIXctDates) {
-      # add ts-dates
-      d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
-    } else if (!ThereAreCOSdates & ThereArePOSIXctDates) {
-      stop("POSIXct to COSdates not yet supported :(")
+    if ( !exists("ctrl") ) {
+      ctrl <- fetch.ctrl()
     }
-  } else { 
-    stop("Something seems to be wrong with the date and time formats :(")
-  }
-  #
-# convert d_runoff to time series object (i.e. "xts")
-  d_xts <- d_runoff %>% 
-              dplyr::select(.,-starts_with("QOSI_")) %>%
-              filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
-#********************************
-# calculate hydrological years:
-#********************************
-  years_in_data <- unique(d_runoff$yyyy)
-  years_in_data_shrt <- years_in_data %>% 
-    as.character %>% 
-    substring(.,3,4)
-  num_years = length(years_in_data)
-  d_runoff$hydyear <- as.character(d_runoff$POSIXdate)
-  num_hydyears <- length(years_in_data_shrt) - 1
-  # cut months before first year & after last year : 
-  if (d_runoff$mm[1] > 9) num_hydyears <- num_hydyears - 1
-  if (d_runoff$mm[lngth_sim] < 9) num_hydyears <- num_hydyears - 1
-  hydyears_in_d <- years_in_data_shrt[1:num_hydyears]
-  # get hydrological years
-  cnt <- 0
-  for (i in 1:(num_hydyears)) 
-  {
-    hydyears_in_d[i] <- paste(years_in_data_shrt[i],years_in_data_shrt[i+1], sep = "/")
-    tmp_d_YearX <- filter(d_runoff, yyyy == years_in_data[i] | yyyy == years_in_data[i+1])  %>% 
-      filter(yyyy == years_in_data[i] & mm >= 9 ) %>%
-      filter(yyyy == years_in_data[i+1] & mm < 9 ) %>%
-      select(hydyear) %>%
-      transform(hydyear = hydyears_in_d[i])
-    tmp_lngth <- dim(tmp_d_YearX)[1]
-    d_runoff$hydyear[(cnt+1):(cnt+tmp_lngth)] <- tmp_d_YearX$hydyear
-    cnt = cnt + tmp_lngth
-  }
-  rm(tmp,idx_temp,tmp_lngth,tmp_d_YearX)
-  
-  
+    #
+    if ( exists("runoff_path") ) {
+      ctrl$pathDotRunoff <- runoff_path
+    } else { 
+      print("no runoff path provided, choose interactively!")
+      ctrl$pathDotRunoff  <- file.choose()
+    }
+
+  # load runoff files
+    d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+        as.data.frame(.)
+  # eliminate basins withouth observations:
+    d_runoff <- sweep.NoSim(d_raw)
+  # get amount of used basins and their respective names
+    temp_names <- names(d_runoff)
+    temp_names <- gsub('.*_', '' ,temp_names) %>% unique(.) # replaces everything before "_" and gets the unique names
+    eval_size <- length(temp_names)-5 
+    d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
+    d_raw_names <- names(d_raw)[6:length(d_raw)]
+  # remove spinup-time
+  # much of this will be removed in the future, but its nice to have it for now
+    if (exists("spinup")) {
+      lngth_spinup <- spinup
+    } else if ( exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
+      path_Spinup <- ctrl$pathSpinup
+      pattern_spinup <- ctrl$pattern_spinup
+      lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+    } else if ( !exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
+      pathSpinup <- sweep.path("pathSpinup",where = ctrl) %>% paste("Statistics.txt", sep="") 
+      pattern_spinup <- "start time-step of evaluation"
+      lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+    } else {
+      path_Spinup <- sweep.path("pathSpinup",where = ctrl) %>% paste("Statistics.txt", sep="") 
+      pattern_spinup <- "start time-step of evaluation"
+      lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+    }
+    lngth_sim <- dim(d_runoff)[1] 
+    d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
+  # add full date information to data 
+    ThereAreCOSdates <- any(names(d_runoff)=="yyyy")
+    ThereArePOSIXctDates <- any(names(d_runoff)=="POSIXdate")
+    if ( is.logical(ThereAreCOSdates) & is.logical(ThereArePOSIXctDates) ) {
+      if (!ThereAreCOSdates & !ThereArePOSIXctDates) {
+        stop("No COSdates and no POSIXct-dates in the data!")
+      } else if (ThereAreCOSdates & !ThereArePOSIXctDates) {
+        # add ts-dates
+        d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
+      } else if (!ThereAreCOSdates & ThereArePOSIXctDates) {
+        stop("POSIXct to COSdates not yet supported :(")
+      }
+    } else { 
+      stop("Something seems to be wrong with the date and time formats :(")
+    }
+    #
+  # convert d_runoff to time series object (i.e. "xts")
+    d_xts <- d_runoff %>% 
+                dplyr::select(.,-starts_with("QOSI_")) %>%
+                filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
+  # calculate hydrological years:
+    d_runoff <- sweep.hydyears(d_runoff)
+    hydyears_in_d <- fetch.hydyears(d_runoff)
+    num_hydyears <- length(hydyears_in_d)
   ######################################################################################
+  # do calculations
   # total & yearly (hydyears) evalution of the NSE, KGE,  percentage Bias & Correlation
   ######################################################################################
   # calculations:
