@@ -82,3 +82,18 @@ fetch.yearsindata <- function(runoff_data) {
   return(years)
 }
 
+#' Get some objective functions (OF)
+#' 
+#' Get some basic objective functions used in hydrology, i.e.: Root Mean Squared Error, Correlation, NSE, KGE, pbias
+#' @return data.frame contianing basic OF
+#' @export
+fetch.hydOF<- function(obs,sim) {
+  require(hydroGOF)
+  out$RMSE <- rmse(sim,obs)
+  out$corr <- cor(sim,obs) %>% diag(.)
+  out$NSE <- NSE(sim,obs)
+  out$KGE <- KGE(sim,obs)
+  out$pBias <- pbias(sim,obs)
+  return(out)
+}
+
