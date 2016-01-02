@@ -19,5 +19,5 @@ shinyUI(
       dygraphOutput("dygrph2", width = "100%", height = "100px"),
     h3("stats"),
     textOutput("slctd_info"),
-    dataTableOutput("slctd_OF")
+    tableOutput("slctd_OF")
 ))
