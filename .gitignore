@@ -5,31 +5,24 @@ R/sstart.R
 R/App/www/*.html
 R/App/www/*.jpg
 R/App/www/*.jpeg
-
-
 # files in out 
 R/App/out/*.csv
-
 # in folder 
 in/
-
 # runoff files etc
 *.runoff
 R/App/www/output.runoff
 Statistics.txt
 bfg.jar
-
 # History files
 .Rhistory
 .Rapp.history
-
 # Example code in package build process
 *-Ex.R
-
 # RStudio files
 .Rproj.user/
-
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
 .Rproj.user
+packrat/lib*/

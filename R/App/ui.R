@@ -1,31 +1,15 @@
 # Define UI for application that draws a histogram
-library(shinyFiles)
 library(dygraphs)
 
 shinyUI(
   fluidPage(
-    theme = "bootstrap.css",
-    tags$style(type="text/css", "body {padding-top: 50px;}"),
-    # header
+    theme = "bootstrap.css", # modified theme 
+    tags$style(type="text/css", "body {padding-top: 50px;}"), # pulls header down-such, cause of menue
+    # header specs: 
     h1(img(src="icon_cosvis.png", height = 210, width = 210), align = "center"), 
     h6("v0.2 by Klotz, Wesemann & Herrnegger", align = "center"),
     tags$hr(),  
   navbarPage(title = "Navigation:",
-    tabPanel("data_load",
-      tags$p('Choose the App folder:'),
-      shinyDirButton('APPfolder', 
-        label='App Folder', 
-        title='Please select the App folder'
-      ),
-      tags$p(),
-      tags$p('Choose the COSEROreg folder:'),
-      shinyDirButton('COSfolder', 
-                     label='COSEROreg folder', 
-                     title='Please select the COSEROreg folder'
-                     ),
-      tags$p(),
-      actionButton("goButton", "Go!")
-      ),
     tabPanel("runoff",
       # runoff 
       h3("<runoff check>"),
