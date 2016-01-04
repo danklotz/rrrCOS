@@ -57,13 +57,13 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
     lngth_sim <- dim(d_runoff)[1] 
     d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
   # add full date information to data 
+    #§ looks terrible :,(  
     ThereAreCOSdates <- any(names(d_runoff)=="yyyy")
     ThereArePOSIXctDates <- any(names(d_runoff)=="POSIXdate")
     if ( is.logical(ThereAreCOSdates) & is.logical(ThereArePOSIXctDates) ) {
       if (!ThereAreCOSdates & !ThereArePOSIXctDates) {
         stop("No COSdates and no POSIXct-dates in the data!")
-      } else if (ThereAreCOSdates & !ThereArePOSIXctDates) {
-        # add ts-dates
+      } else if (ThereAreCOSdates & !ThereArePOSIXctDates) { 
         d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
       } else if (!ThereAreCOSdates & ThereArePOSIXctDates) {
         stop("POSIXct to COSdates not yet supported :(")

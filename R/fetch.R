@@ -71,8 +71,11 @@ fetch.hydyears <- function(runoff_data,years) {
 #' Thus, they may only be usefull for plotting
 #' @export
 fetch.yearsindata <- function(runoff_data) {
-  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+  require(magrittr)
   #
+  # defense 
+  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+  # calc
   years <- list()
   years$in_data <- unique(runoff_data$yyyy)
   years$in_data_shrt <- years$in_data %>% 
@@ -87,8 +90,10 @@ fetch.yearsindata <- function(runoff_data) {
 #' Get some basic objective functions used in hydrology, i.e.: Root Mean Squared Error, Correlation, NSE, KGE, pbias
 #' @return data.frame contianing basic OF
 #' @export
-fetch.hydOF<- function(obs,sim) {
+fetch.hydOF <- function(obs,sim) {
   require(hydroGOF)
+  require(magrittr)
+  # calc
   out <- data.frame(
     RMSE = -999,
     corr = -999, 

@@ -7,13 +7,23 @@
 #' @export
 sweep.path <- function(filepath) {
   if (exists("filepath")) {
-    sweep.path<- filepath %>%
-      strsplit("\\\\") %>% .[[1]] %>% 
-      strsplit("/") %>% .[[1]] %>% 
-      .[1:(length(.)-1)] %>% 
-      paste(.,collapse = "/") %>%
-      paste(.,"/",sep="")
-    return(sweep.path)
+    # check for system depented path 
+    sysIswindos <- grepl('\\\\',filepath)
+    if (sysIswindos) {
+      sweep.path <- filepath %>%
+        strsplit("\\\\") %>% .[[1]] %>% 
+        .[1:(length(.)-1)] %>% 
+        paste(.,collapse = "/") %>%
+        paste(.,"/",sep="")
+      return(sweep.path)
+    } else { 
+      sweep.path <- filepath %>%
+        strsplit("/") %>% .[[1]] %>% 
+        .[1:(length(.)-1)] %>% 
+        paste(.,collapse = "/") %>%
+        paste(.,"/",sep="")
+      return(sweep.path)
+    }
   } else { 
     stop("no filepath provided!")
 #       sweep.path  <- file.choose() %>%

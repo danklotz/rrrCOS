@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {# executes calculation file
   # stats header
   output$slctd_info <- renderText({
     if (!is.null(input$dygrph1_date_window))
-      paste(strftime(slctd_from(), format = "%d %b %Y),
+      paste(strftime(slctd_from(), format = "%d %b %Y"),
             "-",
             strftime(slctd_to(), format = "%d %b %Y"),
             sep = " ")
@@ -59,7 +59,6 @@ shinyServer(function(input, output, session) {# executes calculation file
                         strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
                         sep = "/")]
   })
-
   output$slctd_OF <- renderTable({
     if (!is.null(input$dygrph1_date_window))
       fetch.hydOF( sub_slctd()$Qobs,sub_slctd()$Qsim )
