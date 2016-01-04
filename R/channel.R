@@ -1,41 +1,47 @@
-#' sweeps the filename away
+#' channels the filename away
 #' 
 #' Removes the filename from a path 
 #' @param filepath path to a given file
 #' @return path to the file
-#' @importFrom magrittr %>%
 #' @export
-sweep.path <- function(filepath) {
+channel.path <- function(filepath) {
+  ##########################
+  # pre
+  ##########################
+  require(magrittr)
+  ##########################
+  # calc
+  ##########################
   if (exists("filepath")) {
     # check for system depented path 
     sysIswindos <- grepl('\\\\',filepath)
     if (sysIswindos) {
-      sweep.path <- filepath %>%
+      channel.path <- filepath %>%
         strsplit("\\\\") %>% .[[1]] %>% 
         .[1:(length(.)-1)] %>% 
         paste(.,collapse = "/") %>%
         paste(.,"/",sep="")
-      return(sweep.path)
+      return(channel.path)
     } else { 
-      sweep.path <- filepath %>%
+      channel.path <- filepath %>%
         strsplit("/") %>% .[[1]] %>% 
         .[1:(length(.)-1)] %>% 
         paste(.,collapse = "/") %>%
         paste(.,"/",sep="")
-      return(sweep.path)
+      return(channel.path)
     }
   } else { 
     stop("no filepath provided!")
-#       sweep.path  <- file.choose() %>%
+#       channel.path  <- file.choose() %>%
 #         strsplit("\\\\") %>% .[[1]] %>% 
 #         strsplit("/") %>% .[[1]] %>% 
 #         .[1:(length(.)-1)] %>% 
 #         paste(.,collapse = "/")
-#       return(sweep.path)
+#       return(channel.path)
     }
 }
 
-#' sweeps the basins withouth observation away
+#' channels the basins withouth observation away
 #' 
 #' Removes basins withouth observation (-999/NA values) away from the provided dataframe 
 #' 
@@ -43,7 +49,7 @@ sweep.path <- function(filepath) {
 #' \strong{Note:} It is assumed that all available basins are simulated!
 #' @return data.frame without the observation-free basins
 #' @export
-sweep.NoSim <- function(d_AllBasins) {
+channel.NoSim <- function(d_AllBasins) {
   if ( is.data.frame(d_AllBasins) ) {
     d_AllBasins[is.na(d_AllBasins)] = -999
     colmax <- function(x) lapply(X = d_AllBasins, FUN = max) # get max values of each column
@@ -55,6 +61,7 @@ sweep.NoSim <- function(d_AllBasins) {
     stop("Input Data must be a data.frame in the right format")
   }
 }
+
 
 #' transforms COSdate into a nice date format
 #' 
@@ -79,7 +86,7 @@ implode.Cosdate <- function(data_frame) {
 #' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-sweep.hydyears <- function(runoff_data) {
+channel.hydyears <- function(runoff_data) {
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
   #
   if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
@@ -108,4 +115,65 @@ sweep.hydyears <- function(runoff_data) {
     cnt = cnt + tmp_lngth
   }
   return(runoff_data)
+}
+
+
+
+#' complete the date-formats with xts or COSdate
+#' 
+#' Completes the data formats of the runoff_data data.frame by adding either the needed xts-dates or COSdates
+#' 
+#' @param runoff_data The data.frame, which contains the runoff information
+#' @return The new runoff data.frame with the added data-format. 
+#' @export
+channel.completeDate <- function(runoff_data) {
+  # pre 
+  require(magrittr)
+  # defense 
+  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+  # calc
+  OK_Cosdates <- any(names(runoff_data)=="yyyy")
+  OK_POSIXdates <- any(names(runoff_data)=="POSIXdate")
+  if ( is.logical(OK_Cosdates) & is.logical(OK_POSIXdates) ) {
+    if (!OK_Cosdates & !OK_POSIXdates) {
+      stop("No COSdates and no POSIXct-dates in the data!")
+    } else if (OK_Cosdates & !OK_POSIXdates) { 
+      runoff_data$POSIXdate <- implode.Cosdate(runoff_data)
+    } else if (!OK_Cosdates & OK_POSIXdates) {
+      stop("POSIXct to COSdates not yet supported :(")
+    }
+  } else { 
+    stop("Something seems to be wrong with the date and time formats :(")
+  }
+  return(runoff_data)
+}
+
+
+
+#' Explore runoff_data time series with shiny
+#' 
+#' Runs a Shiny App which can be used to get an overview of a runoff_data time series object
+#' 
+#' @param d_xts runoff_data formatted as time series
+#' @export
+explore.runoff <- function(d_xts) {
+  ##########################
+  # pre
+  ##########################
+  require("data.table") 
+  require("magrittr")
+  require("shiny")
+  ##########################
+  # defences
+  ##########################
+  
+  ##########################
+  # calc
+  ##########################
+  # get d_nums 
+  names <- names(d_xts)
+  names %<>% gsub('.*_', '' ,.) %>% unique(.) # replaces everything before "_" and gets the unique names
+  d_nums <- names[!grepl("[a-z]",names)] %>% as.integer(.)
+  
+  runApp("R/AppExplore")
 }

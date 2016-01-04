@@ -7,9 +7,11 @@
 #' @param filepath path to the given file
 #' @param pattern string used to mark that the next integer is the spinup time
 #' @return Integer indicating the length of the spin-up time in hours
-#' @importFrom magrittr %>%
 #' @export
 fetch.spinup <- function(filepath,pattern) {
+  # pre 
+  require(magrittr)
+  # 
   tmp <- filepath %>% paste %>% readLines
   spinup <- grep(pattern,tmp) %>%
     tmp[.] %>% 

@@ -22,7 +22,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
     if ( exists("runoff_path") ) {
       ctrl$pathDotRunoff <- runoff_path
     } else { 
-      print("no runoff path provided, choose interactively!")
+      print("no runoff path provided, choose one!")
       ctrl$pathDotRunoff  <- file.choose()
     }
 
@@ -30,15 +30,17 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
     d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
         as.data.frame(.)
   # eliminate basins withouth observations:
-    d_runoff <- sweep.NoSim(d_raw)
-  # get amount of used basins and their respective names
+    d_runoff <- channel.NoSim(d_raw)
+  # get num of used basins and their respective 
+    #§ shall I wrap this into a channel function??
     temp_names <- names(d_runoff)
-    temp_names <- gsub('.*_', '' ,temp_names) %>% unique(.) # replaces everything before "_" and gets the unique names
+    temp_names %<>% gsub('.*_', '' ,.) %>% unique(.) # replaces everything before "_" and gets the unique names
     eval_size <- length(temp_names)-5 
-    d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
+    d_nums <- temp_names[!grepl("[a-z]",temp_names)] %>% as.integer(.)
     d_raw_names <- names(d_raw)[6:length(d_raw)]
   # remove spinup-time
-  # much of this will be removed in the future, but its nice to have it for now
+  #§ much of this will be removed in the future, but its nice to have it for now
+    #§ should be wrapped into a chzannel funciton
     if (exists("spinup")) {
       lngth_spinup <- spinup
     } else if ( exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
@@ -46,18 +48,19 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
       pattern_spinup <- ctrl$pattern_spinup
       lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     } else if ( !exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
-      pathSpinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+      pathSpinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
       pattern_spinup <- ctrl$pattern_spinup
       lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     } else {
-      path_Spinup <- sweep.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+      path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
       pattern_spinup <- "start time-step of evaluation"
       lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     }
     lngth_sim <- dim(d_runoff)[1] 
     d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
   # add full date information to data 
-    #§ looks terrible :,(  
+    #§ looks terrible :,( 
+    #$ should be in a channel function 
     ThereAreCOSdates <- any(names(d_runoff)=="yyyy")
     ThereArePOSIXctDates <- any(names(d_runoff)=="POSIXdate")
     if ( is.logical(ThereAreCOSdates) & is.logical(ThereArePOSIXctDates) ) {
@@ -77,7 +80,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
                 dplyr::select(.,-starts_with("QOSI_")) %>%
                 filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
   # calculate hydrological years:
-    d_runoff <- sweep.hydyears(d_runoff)
+    d_runoff <- channel.hydyears(d_runoff)
     years <- fetch.yearsindata(d_runoff)
     hydyears_in_d <- fetch.hydyears(d_runoff,years)
     num_hydyears <- length(hydyears_in_d)

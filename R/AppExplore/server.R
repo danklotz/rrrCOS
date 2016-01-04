@@ -1,15 +1,25 @@
 library(shiny)
 
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {# executes calculation file
   # select the basin from the data
+  select_OBS <- reactive({sprintf("QOBS_%04d", as.integer(input$basin_num))})
+  select_SIM <- reactive({sprintf("QSIM_%04d", as.integer(input$basin_num))})
+  
   slctd_data <- reactive({
     select(d_xts,
-           matches(d_raw_names[ as.integer(input$basin_num)*3 - 2 ]),
-           matches(d_raw_names[ as.integer(input$basin_num)*3 ] )) %>%
-    select(Qobs = matches( d_raw_names[ as.integer(input$basin_num)*3 - 2 ]),
-           Qsim = matches( d_raw_names[ as.integer(input$basin_num)*3])) 
+           matches( select_OBS() ),
+           matches( select_SIM() )
+           ) %>%
+    select(Qobs = matches( select_OBS() ),
+           Qsim = matches( select_SIM() )) 
   })
+  
+  
+  
+  
+  
   
   xts_slctd_data <- reactive ({
     xts(slctd_data(),order.by = d_xts$POSIXdate)
