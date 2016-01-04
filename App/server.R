@@ -1,7 +1,14 @@
 library(shiny)
 library(shinyFiles)
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+# executes calculation file
+  
+  s_string <- eventReactive(input$goButton,
+    "lala"
+  )
+  
   volumes <- getVolumes() 
   shinyDirChoose(input, 
                  'APPfolder',

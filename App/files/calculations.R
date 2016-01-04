@@ -7,14 +7,15 @@ require("dplyr")
 require("grid")
 require("gridExtra")
 require("reshape2")
-# 
-source(paste(ctrl$pathtoApp,"/f_expanded_barplots.R",sep=""))
-source(paste(ctrl$pathtoApp,"/f_rasterplot_functions.R",sep=""))
+#
+ctrl$pathDotRunoff  <- file.choose() %>% strsplit("/") %>% .[[1]]%>% .[1:(length(.)-1)] %>% paste(.,collapse = "/")
+source(paste(ctrl$pathtoApp,"/files/f_expanded_barplots.R",sep=""))
+source(paste(ctrl$pathtoApp,"/files/f_rasterplot_functions.R",sep=""))
 ######################################################################################
 # read in 
 ######################################################################################
 # load runoff files
-d_raw <- data.table::fread(paste( ctrl$ofoldername, "/output.runoff", sep=""), header = TRUE, skip = 22, check.names = TRUE) %>%
+d_raw <- data.table::fread(paste(  ctrl$pathDotRunof, "output.runoff", sep="/"), header = TRUE, skip = 22, check.names = TRUE) %>%
   as.data.frame(.)
 #
 colmax <- function(x) lapply(X = d_raw,FUN = max) # 
@@ -28,7 +29,7 @@ eval_size <- length(temp_names)-5
 d_nums <- temp_names[6:(5+eval_size)] %>% as.integer(.)
 d_raw_names <- names(d_raw)[6:length(d_raw)]
 # remove spinup-time
-tmp <- readLines( paste(  ctrl$ofoldername, "/Statistics.txt", sep="") )
+tmp <- readLines( paste(   ctrl$pathDotRunoff, "Statistics.txt", sep="/") )
 lngth_spinup <- grep("start time-step of evaluation",tmp) %>% tmp[.] %>% sub('.*:', '',.) %>% as.integer(.) + 1
 lngth_sim <- dim(d_runoff)[1] 
 d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
@@ -279,3 +280,4 @@ s_ctrl <- list() # reset save control (s_ctrl)
 s_ctrl$hmtlfilename <- "expnd_cor"
 s_ctrl$jpgfilename <- "expnd_cor"
 save_expnd_barplts(plt_exp_cor,eval_size,s_ctrl)
+

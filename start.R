@@ -12,7 +12,6 @@
 #************************************************************************************
 # Paths:
 #  ctrl$pathtoCosero <- "C:/Users/H0740147/Cosero_Mur/COSERO/MitExcel" 
- ctrl$pathtoCosero  <- file.choose() %>% strsplit("/") %>% .[[1]]%>% .[1:(length(.)-1)] %>% paste(.,collapse = "/")
  ctrl$pathtoApp <- file.choose() %>% strsplit("/") %>% .[[1]]%>% .[1:(length(.)-1)] %>% paste(.,collapse = "/")
 # folder names:
   ctrl$ofoldername <- "test"
@@ -30,8 +29,8 @@
 # run COSvis
 ######################################################################################
 setwd(ctrl$pathtoCosero ) 
-source(paste(ctrl$pathtoApp,"/calculations.R",sep="")) # executes calculation file
 #
+  source("files/calculations.R", local = FALSE) 
 require(dygraphs)
 runApp(ctrl$pathtoApp) # executes shinyApp
 
