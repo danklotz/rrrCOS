@@ -1,6 +1,12 @@
-#' channels the filename away
-#' 
+###################################################################################################
+# channel fucntions are used to manipulate data cut stuff away etc. 
+
+###################################################################################################
+
+###################################################################################################
 #' Removes the filename from a path 
+#' 
+#' Removes the filename from a given path 
 #' @param filepath path to a given file
 #' @return path to the file
 #' @export
@@ -41,86 +47,82 @@ channel.path <- function(filepath) {
     }
 }
 
-#' channels the basins withouth observation away
+
+###################################################################################################
+#' remove basins withouth observations
 #' 
 #' Removes basins withouth observation (-999/NA values) away from the provided dataframe 
 #' 
-#' @param d_AllBasins A raw runoff dataframe, which may containts basins withouth observations. 
+#' @param runoff_data A raw runoff_data data.frame, which may containts basins withouth observations. 
 #' \strong{Note:} It is assumed that all available basins are simulated!
 #' @return data.frame without the observation-free basins
 #' @export
-channel.onlyObserved <- function(d_AllBasins) {
-  ##########################
+channel.onlyObserved <- function(runoff_data) {
   # defences
-  ##########################
-  if ( !is.data.frame(d_AllBasins) ){
-    stop("Input Data must be a data.frame in the runoff_data format (see: help xxx)")
-  } 
-  ##########################
-  # calc
-  ##########################
-  d_AllBasins[is.na(d_AllBasins)] = -999
-  colmax <- function(x) lapply(X = d_AllBasins, FUN = max) # get max values of each column
-  idx_temp <- which(colmax(d_AllBasins) == -999)
+    if ( !is.data.frame(runoff_data) ){
+      stop("Input Data must be a data.frame in the runoff_data format (see: help xxx)")
+    } 
+  # 
+  runoff_data[is.na(runoff_data)] = -999
+  colmax <- function(x) lapply(X = runoff_data, FUN = max) # get max values of each column
+  idx_temp <- which(colmax(runoff_data) == -999)
   idx_slct <- sort(c(idx_temp,idx_temp+1,idx_temp+2))
-  d_onlyObserved <- d_AllBasins[-idx_slct]
+  d_onlyObserved <- runoff_data[-idx_slct]
   return(d_onlyObserved)
 
 }
 
 ###################################################################################################
-#' removes bloat in runoff_data
+#' removes chunk in runoff_data
 #' 
 #' Removes all collumns which are not foreseen in the runoff_data format (see: xxx)
 #' 
 #' @param runoff_data data.frame object containing at lesast COSdate, Qsim and Qobs (see: xxx)
-#' @return data.frame object withouth the bloat
+#' @return data.frame object withouth the chunk
 #' @export
-channel.removeBloat <- function(runoff_data) {
-  ##########################
+channel.removeChunk <- function(runoff_data) {
   # pre
-  ##########################
-  require(dplyr)
-  ##########################
+    require(dplyr)
   # defences
-  ##########################
-  if ( !is.data.frame(runoff_data) ){
-    stop("Input Data must be a data.frame object")
-  } 
-  ##########################
+    if ( !is.data.frame(runoff_data) ){
+      stop("Input Data must be a data.frame object")
+    } 
   # calc
-  ##########################
-  g <- select(runoff_data, 
-              matches("yyyy"),
-              matches("mm"),
-              matches("dd"),
-              matches("hh"),
-              matches("min"),
-              matches("Qsim|Qobs"), 
-              matches("POSIXdate|hydyear"))
-  # 
-  return(runoff_data)
+  runoff_data <- select(runoff_data, 
+                matches("yyyy"),
+                matches("mm"),
+                matches("dd"),
+                matches("hh"),
+                matches("min"),
+                matches("Qsim|Qobs"), 
+                matches("POSIXdate|hydyear"))
+    return(runoff_data)
 }
 
 
 ###################################################################################################
-#' transforms COSdate into a nice date format
+#' transforms COSdate into the nicer POSIXct-date format
 #' 
-#' Takes a data_frame containing the COSdate format and transforms it into a POSIX date series
+#' Takes a data.frame, which contains the COSdate format (see: xxxx) and transforms it into a POSIXct series.
+#' Note that time is assumbed to be in UTC
 #' @param data_frame A data.frame object containing a time series of the COSdate format
 #' @return dates in the format of the POSIXct-class 
 #' @export
 implode.Cosdate <- function(data_frame) {
+  if (any(names(data_frame == "POSIXdate"))) stop("data_frame dos allreay contain POSIXdate") 
+  #
   POSIXdate <- paste(data_frame$yyyy,
                      sprintf("%02d",data_frame$mm),
                      sprintf("%02d",data_frame$dd),
                      sprintf("%02d",data_frame$hh),
                      sprintf("%02d",data_frame$min),
                      sep= "" ) %>% 
-                 as.POSIXct(format = "%Y%m%d%H%M",tz="UTC")
+                 as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
   return(POSIXdate)
 }
 
+
+###################################################################################################
 #' calculate hydrological years
 #' 
 #' @param runoff_data The data.frame, which contains the runoff information
@@ -159,7 +161,7 @@ channel.hydyears <- function(runoff_data) {
 }
 
 
-
+###################################################################################################
 #' complete the date-formats with xts or COSdate
 #' 
 #' Completes the data formats of the runoff_data data.frame by adding either the needed xts-dates or COSdates
@@ -170,8 +172,8 @@ channel.hydyears <- function(runoff_data) {
 channel.completeDate <- function(runoff_data) {
   # pre 
   require(magrittr)
-  # defense 
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+  # 
   # calc
   OK_Cosdates <- any(names(runoff_data)=="yyyy")
   OK_POSIXdates <- any(names(runoff_data)=="POSIXdate")
@@ -190,32 +192,31 @@ channel.completeDate <- function(runoff_data) {
 }
 
 
-#' Explore runoff_data time series with shiny
+###################################################################################################
+#' Convert runoff_data to xts-format 
 #' 
-#' Runs a Shiny App which can be used to get an overview of a runoff_data time series object
+#' Converts the runoff_data (class: data_frame) into an xts object
 #' 
-#' @param d_xts runoff_data formatted as time series
+#' @param runoff_data data_frame of the runoff_data (see: xxx)
+#' @return xts object of the runoff_data data.frame
 #' @export
-explore.runoff <- function(d_xts) {
-  ##########################
+channel.dxts <- function(runoff_data) {
   # pre
-  ##########################
-  require("data.table") 
-  require("magrittr")
-  require("shiny")
-  ##########################
-  # defences
-  ##########################
-  
-  ##########################
-  # calc
-  ##########################
-  # get d_nums 
-  names <- names(d_xts)
-  names %<>% gsub('.*_', '' ,.) %>% unique(.) # replaces everything before "_" and gets the unique names
-  d_nums <- names[!grepl("[a-z]",names)] %>% as.integer(.)
-  
-  runApp("R/AppExplore")
+    require(dplyr)
+    testfor.dataframe(runoff_data)
+    testfor.Chunk(runoff_data)
+  # calculations:
+  d_xts <- d_runoff %>% 
+    filter(yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
+  return(d_xts)
 }
+
+
+
+
+
+
+
+
 
 

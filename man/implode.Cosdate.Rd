@@ -2,7 +2,7 @@
 % Please edit documentation in R/channel.R
 \name{implode.Cosdate}
 \alias{implode.Cosdate}
-\title{transforms COSdate into a nice date format}
+\title{transforms COSdate into the nicer POSIXct-date format}
 \usage{
 implode.Cosdate(data_frame)
 }
@@ -13,6 +13,7 @@ implode.Cosdate(data_frame)
 dates in the format of the POSIXct-class
 }
 \description{
-Takes a data_frame containing the COSdate format and transforms it into a POSIX date series
+Takes a data.frame, which contains the COSdate format (see: xxxx) and transforms it into a POSIXct series.
+Note that time is assumbed to be in UTC
 }
 

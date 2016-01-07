@@ -1,3 +1,4 @@
+###################################################################################################
 #' Extract spinup time from stats file
 #' 
 #' Spinup-time is an integer. It is the time in hours, which is not used for the model-evalution. 
@@ -20,6 +21,7 @@ fetch.spinup <- function(filepath,pattern) {
   return(spinup)
 }
 
+###################################################################################################
 #' Sets ctrl with arbitrary values
 #' 
 #' Some pre-sets for the ctrl list
@@ -44,6 +46,7 @@ fetch.ctrl <- function() {
   return(ctrl)
 }
 
+###################################################################################################
 #' Get hydrological years of the runoff_data
 #' 
 #' @return list with (short named) hydrological years
@@ -67,6 +70,7 @@ fetch.hydyears <- function(runoff_data,years) {
   return(hydyears_in_d)
 }
 
+###################################################################################################
 #' Get years of the runoff_data
 #' 
 #' @return list with (short and long named) years. \strong{Note:} Short names years are just characters.
@@ -74,8 +78,6 @@ fetch.hydyears <- function(runoff_data,years) {
 #' @export
 fetch.yearsindata <- function(runoff_data) {
   require(magrittr)
-  #
-  # defense 
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
   # calc
   years <- list()
@@ -87,6 +89,7 @@ fetch.yearsindata <- function(runoff_data) {
   return(years)
 }
 
+###################################################################################################
 #' Get some objective functions (OF)
 #' 
 #' Get some basic objective functions used in hydrology, i.e.: Root Mean Squared Error, Correlation, NSE, KGE, pbias
@@ -111,3 +114,27 @@ fetch.hydOF <- function(obs,sim) {
   return(out)
 }
 
+###################################################################################################
+#' Get numbers of the different basins 
+#' 
+#' @param runoff_data runoff data_frame (see: xxx) 
+#' @return vector of integers containing the numbers of the given basins
+#' @export
+fetch.d_num <- function(runoff_data) {
+  require(magrittr)
+  testfor.dataframe(runoff_data)
+  #
+  d_names <- names(runoff_data)
+  d_nums <- d_names  %>% gsub('\\D','',.) %>% unique
+  d_nums <- d_nums[!(d_nums=="")] %>% as.integer
+  return(d_nums)
+}
+
+###################################################################################################
+#' RegEx Pattern for runoff_data
+#'  
+#' returns the regular expression needed to check if there is Chunk in the the runoff_data data.frame(see: xxx) 
+fetch.runoff_dataRegEx <- function() {
+  RegExPattern  <- "^yyyy$|^mm$|^dd$|^hh$|^min$|qobs.*|qsim.*|posixdate|hydyear"
+  return(RegExPattern)
+}

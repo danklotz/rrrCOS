@@ -2,7 +2,7 @@
 % Please edit documentation in R/channel.R
 \name{channel.path}
 \alias{channel.path}
-\title{channels the filename away}
+\title{Removes the filename from a path}
 \usage{
 channel.path(filepath)
 }
@@ -13,6 +13,6 @@ channel.path(filepath)
 path to the file
 }
 \description{
-Removes the filename from a path
+Removes the filename from a given path
 }
 

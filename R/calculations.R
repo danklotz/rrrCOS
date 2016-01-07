@@ -1,4 +1,4 @@
-visCOS.explore <- function(runoff_path,spinup,ctrl) {
+visCOS.example <- function(runoff_path,spinup,ctrl) {
   # loaded dependencies 
    require("data.table") 
    require("shiny")
@@ -30,59 +30,23 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
     d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
         as.data.frame(.)
   # eliminate basins withouth observations:
-    
     d_runoff <- d_raw %>% 
-      channel.removeBloat %>% 
+      channel.removeChunk %>% 
       channel.onlyObserved
     
-  # get num of used basins and their respective 
+  # get num of used basins and their respective num
     #§ shall I wrap this into a channel function??
-    temp_names <- names(d_runoff)
-    temp_names %<>% gsub('.*_', '' ,.) %>% unique(.) # replaces everything before "_" and gets the unique names
-    eval_size <- length(temp_names)-5 
-    d_nums <- temp_names[!grepl("[a-z]",temp_names)] %>% as.integer(.)
-    d_raw_names <- names(d_raw)[6:length(d_raw)]
+    d_nums <- fetch.d_num(d_runoff)
   # remove spinup-time
-  #§ much of this will be removed in the future, but its nice to have it for now
-    #§ should be wrapped into a chzannel funciton
-    if (exists("spinup")) {
-      lngth_spinup <- spinup
-    } else if ( exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
-      path_Spinup <- ctrl$pathSpinup
-      pattern_spinup <- ctrl$pattern_spinup
-      lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-    } else if ( !exists("pathSpinup",where = ctrl) & exists("pattern_spinup", where = ctrl) ) {
-      pathSpinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
-      pattern_spinup <- ctrl$pattern_spinup
-      lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-    } else {
-      path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
-      pattern_spinup <- "start time-step of evaluation"
-      lngth_spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-    }
-    lngth_sim <- dim(d_runoff)[1] 
-    d_runoff <- slice(d_runoff,lngth_spinup:lngth_sim)
-  # add full date information to data 
-    #§ looks terrible :,( 
-    #$ should be in a channel function 
-    ThereAreCOSdates <- any(names(d_runoff)=="yyyy")
-    ThereArePOSIXctDates <- any(names(d_runoff)=="POSIXdate")
-    if ( is.logical(ThereAreCOSdates) & is.logical(ThereArePOSIXctDates) ) {
-      if (!ThereAreCOSdates & !ThereArePOSIXctDates) {
-        stop("No COSdates and no POSIXct-dates in the data!")
-      } else if (ThereAreCOSdates & !ThereArePOSIXctDates) { 
-        d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
-      } else if (!ThereAreCOSdates & ThereArePOSIXctDates) {
-        stop("POSIXct to COSdates not yet supported :(")
-      }
-    } else { 
-      stop("Something seems to be wrong with the date and time formats :(")
-    }
+    path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+    pattern_spinup <- "start time-step of evaluation"
+    spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     #
+    d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
+  # add full date information to data 
+    d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
   # convert d_runoff to time series object (i.e. "xts")
-    d_xts <- d_runoff %>% 
-                dplyr::select(.,-starts_with("QOSI_")) %>%
-                filter(.,yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
+    d_xts <- channel.dxts(d_runoff)
   # calculate hydrological years:
     d_runoff <- channel.hydyears(d_runoff)
     years <- fetch.yearsindata(d_runoff)
@@ -93,6 +57,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   # total & yearly (hydyears) evalution of the NSE, KGE,  percentage Bias & Correlation
   ######################################################################################
   # calculations:
+  eval_size <- length(temp_names)-5 
   NSE_hydyearly <- matrix(nrow = num_hydyears, ncol = as.integer(eval_size), data = NA)
   KGE_hydyearly <- NSE_hydyearly 
   pBias_hydyearly <- NSE_hydyearly
@@ -267,7 +232,7 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$clr4 <- ctrl$colors[4]
   plt_ctrl$midpoint <- ctrl$clr_NSEmid
   plt_ctrl$limits <- c(0,1)
-  plt_ctrl$lb_cut <- -1.0
+  plt_ctrl$lb_cut <- -10.
   #
   plt_ycor <- plt_yOF(cor_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
   

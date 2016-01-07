@@ -2,12 +2,12 @@
 % Please edit documentation in R/channel.R
 \name{channel.onlyObserved}
 \alias{channel.onlyObserved}
-\title{channels the basins withouth observation away}
+\title{remove basins withouth observations}
 \usage{
-channel.onlyObserved(d_AllBasins)
+channel.onlyObserved(runoff_data)
 }
 \arguments{
-\item{d_AllBasins}{A raw runoff dataframe, which may containts basins withouth observations. 
+\item{runoff_data}{A raw runoff_data data.frame, which may containts basins withouth observations. 
 \strong{Note:} It is assumed that all available basins are simulated!}
 }
 \value{
