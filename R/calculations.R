@@ -1,33 +1,26 @@
 visCOS.example <- function(runoff_path,spinup,ctrl) {
   # loaded dependencies 
-   require("data.table") 
-   require("shiny")
-   require("hydroGOF")
-   require("dygraphs")
-   require("ggplot2")
-   require("xts")
-   require("dplyr")
-   require("grid")
-   require("gridExtra")
-   require("reshape2")
+#    require("data.table") 
+#    require("shiny")
+#    require("hydroGOF")
+#    require("dygraphs")
+#    require("ggplot2")
+#    require("xts")
+#    require("dplyr")
+#    require("grid")
+#    require("gridExtra")
+#    require("reshape2")
   #
-  source("R/f_expanded_barplots.R")
-  source("R/f_rasterplot_functions.R")
+#   source("R/f_expanded_barplots.R")
+#   source("R/f_rasterplot_functions.R")
   ######################################################################################
-  # SETUP
-    if ( !exists("ctrl") ) {
-      ctrl <- fetch.ctrl()
-    }
-    #
-    if ( exists("runoff_path") ) {
-      ctrl$pathDotRunoff <- runoff_path
-    } else { 
-      print("no runoff path provided, choose one!")
-      ctrl$pathDotRunoff  <- file.choose()
-    }
-
+  # SETUP #§ temporary !?
+    ctrl <- fetch.ctrl()
+    ctrl$pathDotRunoff  <- file.choose()
   # load runoff files
-    d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+    require("dplyr")
+    require("data.table")
+    d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
         as.data.frame(.)
   # eliminate basins withouth observations:
     d_runoff <- d_raw %>% 
