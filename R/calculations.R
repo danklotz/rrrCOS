@@ -30,7 +30,11 @@ visCOS.explore <- function(runoff_path,spinup,ctrl) {
     d_raw <- data.table::fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
         as.data.frame(.)
   # eliminate basins withouth observations:
-    d_runoff <- channel.NoSim(d_raw)
+    
+    d_runoff <- d_raw %>% 
+      channel.removeBloat %>% 
+      channel.onlyObserved
+    
   # get num of used basins and their respective 
     #§ shall I wrap this into a channel function??
     temp_names <- names(d_runoff)

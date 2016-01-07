@@ -15,12 +15,7 @@ shinyServer(function(input, output, session) {# executes calculation file
     select(Qobs = matches( select_OBS() ),
            Qsim = matches( select_SIM() )) 
   })
-  
-  
-  
-  
-  
-  
+  # create xts-formated table for use in dygraphs
   xts_slctd_data <- reactive ({
     xts(slctd_data(),order.by = d_xts$POSIXdate)
   })

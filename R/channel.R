@@ -49,20 +49,61 @@ channel.path <- function(filepath) {
 #' \strong{Note:} It is assumed that all available basins are simulated!
 #' @return data.frame without the observation-free basins
 #' @export
-channel.NoSim <- function(d_AllBasins) {
-  if ( is.data.frame(d_AllBasins) ) {
-    d_AllBasins[is.na(d_AllBasins)] = -999
-    colmax <- function(x) lapply(X = d_AllBasins, FUN = max) # get max values of each column
-    idx_temp <- which(colmax(d_AllBasins) == -999)
-    idx_slct <- sort(c(idx_temp,idx_temp+1,idx_temp+2))
-    d_onlyObserved <- d_AllBasins[-idx_slct]
-    return(d_onlyObserved)
-  } else {
-    stop("Input Data must be a data.frame in the right format")
-  }
+channel.onlyObserved <- function(d_AllBasins) {
+  ##########################
+  # defences
+  ##########################
+  if ( !is.data.frame(d_AllBasins) ){
+    stop("Input Data must be a data.frame in the runoff_data format (see: help xxx)")
+  } 
+  ##########################
+  # calc
+  ##########################
+  d_AllBasins[is.na(d_AllBasins)] = -999
+  colmax <- function(x) lapply(X = d_AllBasins, FUN = max) # get max values of each column
+  idx_temp <- which(colmax(d_AllBasins) == -999)
+  idx_slct <- sort(c(idx_temp,idx_temp+1,idx_temp+2))
+  d_onlyObserved <- d_AllBasins[-idx_slct]
+  return(d_onlyObserved)
+
+}
+
+###################################################################################################
+#' removes bloat in runoff_data
+#' 
+#' Removes all collumns which are not foreseen in the runoff_data format (see: xxx)
+#' 
+#' @param runoff_data data.frame object containing at lesast COSdate, Qsim and Qobs (see: xxx)
+#' @return data.frame object withouth the bloat
+#' @export
+channel.removeBloat <- function(runoff_data) {
+  ##########################
+  # pre
+  ##########################
+  require(dplyr)
+  ##########################
+  # defences
+  ##########################
+  if ( !is.data.frame(runoff_data) ){
+    stop("Input Data must be a data.frame object")
+  } 
+  ##########################
+  # calc
+  ##########################
+  g <- select(runoff_data, 
+              matches("yyyy"),
+              matches("mm"),
+              matches("dd"),
+              matches("hh"),
+              matches("min"),
+              matches("Qsim|Qobs"), 
+              matches("POSIXdate|hydyear"))
+  # 
+  return(runoff_data)
 }
 
 
+###################################################################################################
 #' transforms COSdate into a nice date format
 #' 
 #' Takes a data_frame containing the COSdate format and transforms it into a POSIX date series
@@ -149,7 +190,6 @@ channel.completeDate <- function(runoff_data) {
 }
 
 
-
 #' Explore runoff_data time series with shiny
 #' 
 #' Runs a Shiny App which can be used to get an overview of a runoff_data time series object
@@ -177,3 +217,5 @@ explore.runoff <- function(d_xts) {
   
   runApp("R/AppExplore")
 }
+
+
