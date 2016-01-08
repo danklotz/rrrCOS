@@ -58,19 +58,26 @@ channel.path <- function(filepath) {
 #' @return data.frame without the observation-free basins
 #' @export
 channel.onlyObserved <- function(runoff_data) {
-  # defences
-    if ( !is.data.frame(runoff_data) ){
-      stop("Input Data must be a data.frame in the runoff_data format (see: help xxx)")
-    } 
+  # pre
+  require(magrittr)
+  testfor.dataframe(runoff_data)
+  testfor.Chunk(runoff_data)
+  #colmax <- function(x) lapply(X = runoff_data, FUN = max) # get max values of each column
   # 
-  runoff_data[is.na(runoff_data)] = -999
-  colmax <- function(x) lapply(X = runoff_data, FUN = max) # get max values of each column
-  idx_temp <- which(colmax(runoff_data) == -999)
-  idx_slct <- sort(c(idx_temp,idx_temp+1,idx_temp+2))
+  runoff_data[is.na(runoff_data)] <- -999
+  colmax <- lapply(X = runoff_data, FUN = max)
+  idx_temp <- which(colmax == -999) # check for unobserved basins 
+  # make shure that there are only qobs which have max -999
+  OnlyQobsSelected <- names(idx_temp) %>% tolower  %>% grepl("qobs.*",.) %>% any
+  if (!OnlyQobsSelected){
+    stop("There are Qsim withouth simulation (i.e. only -999 values). Pls remove them first")
+  }
+  # add +1 to the idx to get also the simulations 
+  idx_slct <- c(idx_temp,idx_temp + 1) %>% sort() 
   d_onlyObserved <- runoff_data[-idx_slct]
   return(d_onlyObserved)
-
 }
+
 
 ###################################################################################################
 #' removes chunk in runoff_data

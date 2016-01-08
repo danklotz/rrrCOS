@@ -1,6 +1,7 @@
 #' test for Chunk 
 #'  
 #' tests if there is still chunk in the runoff_data data frame
+#' @
 testfor.Chunk <- function(runoff_data) {
   require(magrittr)
   regEx <- fetch.runoff_dataRegEx()

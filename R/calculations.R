@@ -43,46 +43,28 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # calculate hydrological years:
     d_runoff <- channel.hydyears(d_runoff)
     years <- fetch.yearsindata(d_runoff)
+    #§ its not realy smart to handle it like this, whit two strange variables. Maybe better solution possible?
     hydyears_in_d <- fetch.hydyears(d_runoff,years)
     num_hydyears <- length(hydyears_in_d)
-  ######################################################################################
+    
+######################################################################################
+    
   # do calculations
-  # total & yearly (hydyears) evalution of the NSE, KGE,  percentage Bias & Correlation
-  ######################################################################################
   # calculations:
-  eval_size <- length(temp_names)-5 
-  NSE_hydyearly <- matrix(nrow = num_hydyears, ncol = as.integer(eval_size), data = NA)
-  KGE_hydyearly <- NSE_hydyearly 
-  pBias_hydyearly <- NSE_hydyearly
-  cor_hydyearly <- NSE_hydyearly
-  for (k in 1:num_hydyears) 
-  {
-    tempOBS <- filter(d_runoff,hydyear == hydyears_in_d[k]) %>% select(.,starts_with("QOBS_"))
-    tempSIM <- filter(d_runoff,hydyear == hydyears_in_d[k]) %>% select(.,starts_with("QSIM_"))
-    NSE_hydyearly[k,1:eval_size] <- hydroGOF::NSE(tempSIM,tempOBS)
-    KGE_hydyearly[k,1:eval_size] <- hydroGOF::KGE(tempSIM,tempOBS)
-    pBias_hydyearly[k,1:eval_size] <- hydroGOF::pbias(tempSIM,tempOBS)
-    cor_hydyearly[k,1:eval_size] <- cor(tempSIM,tempOBS) %>% diag(.)
-  }
-  tempOBS <- select(d_runoff,starts_with("QOBS_"))
-  tempSIM <- select(d_runoff,starts_with("QSIM_"))
-  NSE_total <- hydroGOF::NSE(tempSIM,tempOBS)
-  KGE_total <- hydroGOF::KGE(tempSIM,tempOBS)
-  pBIAS_total <- hydroGOF::pbias(tempSIM,tempOBS)
-  cor_total <- cor(tempSIM,tempOBS) %>% diag(.)
-  # some cleaning
-  rm(tempOBS,tempSIM)
-  # write out NSE .txt & total text files
-  pathtoOut <- "R/App/www/" #§ temporary solution
-  write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
-              file = paste(pathtoOut,"NSE_Hydyear.csv", sep = ""),
-              row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
-  cbind(d_nums,NSE_total,KGE_total,pBIAS_total,cor_total) %>%
-    write.table(.,file = paste(pathtoOut,"OF_total.csv", sep = ""),
-                row.names = FALSE, 
-                col.names = c("#","NSEtotal","KGEtotal","pBIAStotal","CORRtotal"),
-                sep = ";")
-  rm(pathtoOut)
+    require(hydroGOF)
+    bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
+  #$ write out NSE .txt & total text files
+  #§ not sure if this should be a pour function?? maybe the user should to it??? 
+#     pathtoOut <- "R/App/www/" #§ temporary solution
+#     write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
+#               file = paste(pathtoOut,"NSE_Hydyear.csv", sep = ""),
+#               row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
+#     cbind(d_nums,NSE_total,KGE_total,pBIAS_total,cor_total) %>%
+#     write.table(.,file = paste(pathtoOut,"OF_total.csv", sep = ""),
+#                 row.names = FALSE, 
+#                 col.names = c("#","NSEtotal","KGEtotal","pBIAStotal","CORRtotal"),
+#                 sep = ";")
+#     rm(pathtoOut)
   #
   
   ######################################################################################
@@ -111,6 +93,8 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$ltitle <- "NSE"
   #
   plt_tnse <- plt_tOF(NSE_total,eval_size, plt_ctrl)
+  
+  
   #********************************
   # expanded barplots & htmlfiles
   #********************************
