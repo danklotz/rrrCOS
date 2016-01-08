@@ -124,10 +124,11 @@ fetch.hydOF <- function(obs,sim) {
 fetch.d_num <- function(runoff_data) {
   require(magrittr)
   testfor.dataframe(runoff_data)
+  testfor.Chunk(runoff_data)
   #
   d_names <- names(runoff_data)
   d_nums <- d_names  %>% gsub('\\D','',.) %>% unique
-  d_nums <- d_nums[!(d_nums=="")] %>% as.integer
+  d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)
 }
 
@@ -173,10 +174,10 @@ fetch.basicOfun <- function(runoff_data, hydyears_in_data) {
   }
   tempOBS <- select(runoff_data,starts_with("qobs"))
   tempSIM <- select(runoff_data,starts_with("qsim"))
-  OF$NSE <- hydroGOF::NSE(tempSIM,tempOBS)
-  OF$KGE <- hydroGOF::KGE(tempSIM,tempOBS)
-  OF$pBIAS <- hydroGOF::pbias(tempSIM,tempOBS)
-  OF$CORR <- cor(tempSIM,tempOBS) %>% diag(.)
+  Ofun$NSE <- hydroGOF::NSE(tempSIM,tempOBS)
+  Ofun$KGE <- hydroGOF::KGE(tempSIM,tempOBS)
+  Ofun$pBIAS <- hydroGOF::pbias(tempSIM,tempOBS)
+  Ofun$CORR <- cor(tempSIM,tempOBS) %>% diag(.)
   #
-  return(OF)
+  return(Ofun)
 }

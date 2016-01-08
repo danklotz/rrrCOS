@@ -18,7 +18,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     ctrl <- fetch.ctrl()
     ctrl$pathDotRunoff  <- file.choose()
   # load runoff files
-    require("dplyr")
+    require("magrittr")
     require("data.table")
     d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
         as.data.frame(.)
@@ -35,6 +35,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     pattern_spinup <- "start time-step of evaluation"
     spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     #
+    require(dplyr)
     d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   # add full date information to data 
     d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
@@ -48,24 +49,11 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     num_hydyears <- length(hydyears_in_d)
     
 ######################################################################################
-    
-  # do calculations
   # calculations:
-    require(hydroGOF)
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
-  #$ write out NSE .txt & total text files
-  #§ not sure if this should be a pour function?? maybe the user should to it??? 
-#     pathtoOut <- "R/App/www/" #§ temporary solution
-#     write.table(cbind(d_nums,t(NSE_hydyearly), NSE_total),
-#               file = paste(pathtoOut,"NSE_Hydyear.csv", sep = ""),
-#               row.names = FALSE, col.names = c("#",paste("HY",hydyears_in_d),"TOTAL"), quote = FALSE, sep = ";")
-#     cbind(d_nums,NSE_total,KGE_total,pBIAS_total,cor_total) %>%
-#     write.table(.,file = paste(pathtoOut,"OF_total.csv", sep = ""),
-#                 row.names = FALSE, 
-#                 col.names = c("#","NSEtotal","KGEtotal","pBIAStotal","CORRtotal"),
-#                 sep = ";")
-#     rm(pathtoOut)
-  #
+
+######################################################################################
+  # make some plots:
   
   ######################################################################################
   # plots: NSE

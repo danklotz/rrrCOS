@@ -15,3 +15,15 @@ testfor.Chunk <- function(runoff_data) {
 testfor.dataframe <- function(data) {
   if ( !is.data.frame(data) ) stop("runoff_data is no data_frame!")
 }
+
+
+#' test if everything is OK with the basic objective function list
+#' 
+#' returns error messages if the basicOF object is not a list or 
+#' does not contain all the basic OFs or 
+#' if it contains more then the basic OFs
+testfor.basicOF <- function(basicOF) {
+  if ( !is.list(basicOF) ) stop("The basic objective funcitons are not stored in a list!")
+  testforRightOF <- any( grepl("NSE.*|KGE.*|pBIAS.*|CORR.*",names(basicOF)) == TRUE)
+  if ( !tsetforRightOF ) stop("The basic objective function do not contain the right objective functions (see: xxx)") 
+}

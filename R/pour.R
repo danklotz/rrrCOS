@@ -1,15 +1,54 @@
-#' yearöy runoff list 
+# rasterplot funcions for hydyearly objective functions
+pour.yOF <- function(Ofun_hydyearly,choice,hydyears_in_d,plt_ctrl) {
+  require(ggplot2)
+  require(magrittr)
+  require(reshape2)
+  testfor.basicOF(Ofun)
+  #
+  eval_size <- dim(Ofun_hydyearly)[2] # NsE is just arbitrary, don't worry
+  of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
+  temp <- Ofun_hydyearly; 
+  temp[Ofun_hydyearly < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
+  temp <- melt(temp)[3]
+  of_y$OFvalue = round(temp$value,2)
+  # plot with ggplot2
+  plt_out <- ggplot(of_y, aes(hydyears,numberBasins, fill = OFvalue),environmnet = environment()) + 
+    ggtitle(plt_ctrl$gtitle) + 
+    geom_raster(position = "identity") + 
+    ylab(plt_ctrl$ylab) + 
+    xlab(plt_ctrl$xlab) + 
+    scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
+    scale_x_discrete( breaks = hydyears_in_d) +
+    scale_fill_gradient2(space = "Lab", 
+                         low = plt_ctrl$clr1 , mid= plt_ctrl$clr2 , high = plt_ctrl$clr3 ,
+                         midpoint = plt_ctrl$midpoint, 
+                         limits= plt_ctrl$limits ,
+                         na.value = plt_ctrl$clr4) +
+    theme_bw(base_size = 20) +
+    theme( legend.position="none" )  + 
+    geom_tile(color = "white", size = 0.25 ) + 
+    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = ctrl$OFsize , color= "black")
+  return(plt_out)
+}
+
+
+
+
+
+
+
+
+
+#' yearly runoff list 
 #' 
 #'
 #' creates a list of bar-plots for a the yearly objective functions (OF)
 #' see: description-follows-soonTM
 #' ***
-
 # replace values under lower boundary:
-
-list_yOF_barplts <- function(OF_hydyearly,eval_size,d_nums,plt_ctrl) {
+list_yOF_barplts <- function(Ofun_hydyearly,eval_size,d_nums,plt_ctrl) {
   # calculations:
-  temp <- OF_hydyearly;
+  temp <- Ofun_hydyearly;
   temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut 
   # prepare data for plotting
   d_OFyearly <- as.data.frame(temp)
@@ -74,33 +113,6 @@ save_expnd_barplts <- function(list_barplts,eval_size,s_ctrl) {
   do.call("grid.arrange",c(list_barplts[(j+9):eval_size],list(ncol = 3, nrow = 3) )) 
   dev.off()
   close(fileConn)
-}
-
-# define rasterplot funcions for yearly OF
-plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
-  of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
-  temp <- OF_hydyearly; 
-  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
-  temp <- reshape2::melt(temp)[3]
-  of_y$OFvalue = round(temp$value,2)
-  #
-  plt_out <- ggplot(of_y, aes(hydyears,numberBasins, fill = OFvalue),environmnet = environment()) + 
-    ggtitle(plt_ctrl$gtitle) + 
-    geom_raster(position = "identity") + 
-    ylab(plt_ctrl$ylab) + 
-    xlab(plt_ctrl$xlab) + 
-    scale_y_reverse(breaks = 1:eval_size, labels = d_nums) + 
-    scale_x_discrete( breaks = hydyears_in_d) +
-    scale_fill_gradient2(space = "Lab", 
-                         low = plt_ctrl$clr1 , mid= plt_ctrl$clr2 , high = plt_ctrl$clr3 ,
-                         midpoint = plt_ctrl$midpoint, 
-                         limits= plt_ctrl$limits ,
-                         na.value = plt_ctrl$clr4) +
-    theme_bw(base_size = 20) +
-    theme( legend.position="none" )  + 
-    geom_tile(color = "white", size = 0.25 ) + 
-    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = ctrl$OFsize , color= "black")
-  return(plt_out)
 }
 
 # define rasterplot functions for total OF 
