@@ -152,12 +152,16 @@ channel.hydyears <- function(runoff_data) {
   runoff_data$hydyear <- as.character(runoff_data$POSIXdate)
   hydyears_in_d <- fetch.hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)
+  # 
   # calculate and format hydrological years
   cnt <- 0
+  g <- runoff_data$hydyear
+  g[runoff_data$yyyy == years$in_data[i] & runoff_data$mm < 9] <- "pre"
+  
   for (i in 1:(num_hydyears)) 
   {
     tmp_d_YearX <- filter(runoff_data, yyyy == years$in_data[i] | yyyy == years$in_data[i+1])  %>% 
-      filter(.,(yyyy == years$in_data[i] & mm >= 9 ) | (yyyy == years$in_data[i+1] & mm < 9 ) ) %>%
+      filter( (yyyy == years$in_data[i] & mm >= 9 ) | (yyyy == years$in_data[i+1] & mm < 9 ) ) %>%
       select(hydyear) %>%
       transform(hydyear = hydyears_in_d[i])
     tmp_lngth <- dim(tmp_d_YearX)[1]
