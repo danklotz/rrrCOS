@@ -137,8 +137,10 @@ implode.Cosdate <- function(data_frame) {
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
 channel.hydyears <- function(runoff_data) {
+  # pre 
+  require(dplyr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  #
+  
   if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
     stop("data.frame does neiter contain POSIXdate nor COSdate")
   } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
@@ -149,24 +151,25 @@ channel.hydyears <- function(runoff_data) {
   #
   years <- fetch.yearsindata(runoff_data)
   num_years = length(years$in_data)
-  runoff_data$hydyear <- as.character(runoff_data$POSIXdate)
   hydyears_in_d <- fetch.hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)
-  # 
+  # cut away data outside of hydyears (#§ bad solution, below is an idea for a better one?)
+  runoff_data %<>% filter(yyyy > years$in_data[1] | mm >= 9 ) %>% 
+                   filter(yyyy < years$in_data[num_years] | mm < 9)
+  #§ solution so far is kinda bad, cause we throw data away. some maybe something like the style proposed in the following can be usefull?
+    #   g <- as.character(runoff_data$POSIXdate)
+    #   g[runoff_data$yyyy == years$in_data[1] & runoff_data$mm < 9] <- "pre"
+    #   g[runoff_data$yyyy == years$in_data[num_years] & runoff_data$mm > 9] <- "post"
+    #   runoff_data$hydyear <- g
+  #§
   # calculate and format hydrological years
-  cnt <- 0
-  g <- runoff_data$hydyear
-  g[runoff_data$yyyy == years$in_data[i] & runoff_data$mm < 9] <- "pre"
-  
+  runoff_data$hydyear <- as.character(runoff_data$POSIXdate)
   for (i in 1:(num_hydyears)) 
   {
-    tmp_d_YearX <- filter(runoff_data, yyyy == years$in_data[i] | yyyy == years$in_data[i+1])  %>% 
-      filter( (yyyy == years$in_data[i] & mm >= 9 ) | (yyyy == years$in_data[i+1] & mm < 9 ) ) %>%
-      select(hydyear) %>%
-      transform(hydyear = hydyears_in_d[i])
-    tmp_lngth <- dim(tmp_d_YearX)[1]
-    runoff_data$hydyear[(cnt+1):(cnt+tmp_lngth)] <- tmp_d_YearX$hydyear
-    cnt = cnt + tmp_lngth
+    runoff_data %<>% mutate(  hydyear = ifelse(
+                                (yyyy == years$in_data[i] & mm >= 9 ) | (yyyy == years$in_data[i+1] & mm <= 8 ),
+                                hydyears_in_d[i],
+                                hydyear)  ) 
   }
   return(runoff_data)
 }

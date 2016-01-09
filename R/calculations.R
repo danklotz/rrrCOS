@@ -60,8 +60,8 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
                     select(starts_with("qobs"), starts_with("qsim")) %>%
                     apply(.,2,cumsum) %>% 
                     as.data.frame
-        RegExPattern <- names(d_run_cum) %>% paste(collapse = "|")
-        selectionQobsAndSim <- grepl(pattern,names(d_run))
+        RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
+        selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
         d_cum <- d_run
         d_cum[selectionQobsAndSim] <- tmp_cum
       #2. (hydyearly water bilance)
