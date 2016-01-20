@@ -5,6 +5,7 @@ R/sstart.R
 R/App/www/*.html
 R/App/www/*.jpg
 R/App/www/*.jpeg
+R/Examples1.html
 # files in out 
 R/App/out/*.csv
 # in folder 
