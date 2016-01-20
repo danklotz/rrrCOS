@@ -1,12 +1,12 @@
-#§  
-# DONT USE THIS 
+#§
+# DONT USE THIS
 # Temporary test file, will not be used in future
 # to be replaced with Examples1.Rmd
 #§
 
 visCOS.example <- function(runoff_path,spinup,ctrl) {
-  # loaded dependencies 
-#    require("data.table") 
+  # loaded dependencies
+#    require("data.table")
 #    require("shiny")
 #    require("hydroGOF")
 #    require("dygraphs")
@@ -29,21 +29,21 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
         as.data.frame(.)
   # eliminate basins withouth observations:
-    d_runoff <- d_raw %>% 
-      channel.removeChunk %>% 
+    d_runoff <- d_raw %>%
+      channel.removeChunk %>%
       channel.onlyObserved
   # get num of used basins and their respective num
     #§ shall I wrap this into a channel function??
     d_nums <- fetch.d_num(d_runoff)
   # remove spinup-time
     #§ use this later in the examples:
-      #  path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+      #  path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
       #  pattern_spinup <- "start time-step of evaluation"
       #  spinup <- fetch.spinup(path_Spinup,pattern_spinup)
       #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
     #§
 
-  # add full date information to data 
+  # add full date information to data
     d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
   # convert d_runoff to time series object (i.e. "xts")
     d_xts <- channel.dxts(d_runoff)
@@ -53,11 +53,11 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     #§ its not realy smart to handle it like this, whit two strange variables. Maybe better solution possible?
     hydyears_in_d <- fetch.hydyears(d_runoff,years)
     num_hydyears <- length(hydyears_in_d)
-    
+
 ######################################################################################
   # calculations:
     require("shiny")
-    bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
+    bOF <- fetch.some_ofun(d_runoff,hydyears_in_d)
 
 
 # makse some plots --------------------------------------------------------------
@@ -65,32 +65,32 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     # basic objective functions:
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
     #§
-    # waterbilance 
+    # waterbilance
       # 1. total water bilance
-        d_run <- d_runoff %>% 
+        d_run <- d_runoff %>%
                   select(yyyy:QSIM_0001,POSIXdate,hydyear)
-        tmp_cum <- d_run %>% 
+        tmp_cum <- d_run %>%
                     select(starts_with("qobs"), starts_with("qsim")) %>%
-                    apply(.,2,cumsum) %>% 
+                    apply(.,2,cumsum) %>%
                     as.data.frame
         RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
         selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
         d_cum <- d_run
         d_cum[selectionQobsAndSim] <- tmp_cum
       #2. (hydyearly water bilance)
-        
+
     #§
-    
+
 ######################################################################################
   # make some plots:
-  
+
   ######################################################################################
   # plots: NSE
   ######################################################################################
   #********************************
 
   # yearly
-    plt_ctrl <- list() # reset list 
+    plt_ctrl <- list() # reset list
     plt_ctrl$gtitle <- "Yearly NSE"
     plt_ctrl$ylab <- "basin number"
     plt_ctrl$xlab <- ctrl$yearName
@@ -121,14 +121,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     s_ctrl$hmtlfilename <- "expnd_nse"
     s_ctrl$jpgfilename <- "expnd_nse"
     save_expnd_barplts(plt_exp_NSE,eval_size,s_ctrl)
-  
+
   ######################################################################################
   # plots: %-bias
   ######################################################################################
   #********************************
   # yearly
   #********************************
-  plt_ctrl <- list() # reset list 
+  plt_ctrl <- list() # reset list
   plt_ctrl$gtitle <- "Yearly %-Bias"
   plt_ctrl$ylab <- "basin number"
   plt_ctrl$xlab <- ctrl$yearName
@@ -141,16 +141,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$lb_cut <- -1000.0
   #
   plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-  
+
   #********************************
   # total
   #********************************
   plt_ctrl$gtitle <- "Total %-Bias"
   plt_ctrl$ltitle <- "%-Bias"
-  
+
   #
   plt_tpbias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
-  
+
   #********************************
   # expanded barplots & htmlfiles
   #********************************
@@ -164,14 +164,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   s_ctrl$hmtlfilename <- "expnd_pbias"
   s_ctrl$jpgfilename <- "expnd_pbias"
   save_expnd_barplts(plt_exp_pBias,eval_size,s_ctrl)
-  
+
   ######################################################################################
-  # plots: KGE 
+  # plots: KGE
   ######################################################################################
   #********************************
-  # yearly 
+  # yearly
   #********************************
-  plt_ctrl <- list() # reset list 
+  plt_ctrl <- list() # reset list
   plt_ctrl$gtitle <- "Yearly KGE"
   plt_ctrl$ylab <- "basin number"
   plt_ctrl$xlab <- ctrl$yearName
@@ -189,7 +189,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   #********************************
   plt_ctrl$gtitle <- "Total KGE   "
   plt_ctrl$ltitle <- "KGE"
-  
+
   #
   plt_tkge <- plt_tOF(KGE_total,eval_size, plt_ctrl)
   #********************************
@@ -205,14 +205,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   s_ctrl$hmtlfilename <- "expnd_kge"
   s_ctrl$jpgfilename <- "expnd_kge"
   save_expnd_barplts(plt_exp_KGE,eval_size,s_ctrl)
-  
+
   ######################################################################################
   # plots: Correlation
   ######################################################################################
   #********************************
-  # yearly 
+  # yearly
   #********************************
-  plt_ctrl <- list() # reset list 
+  plt_ctrl <- list() # reset list
   plt_ctrl$gtitle <- "Yearly Correlation"
   plt_ctrl$ylab <- "basin number"
   plt_ctrl$xlab <- ctrl$yearName
@@ -225,16 +225,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$lb_cut <- -10.
   #
   plt_ycor <- plt_yOF(cor_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-  
+
   #********************************
   # total
   #********************************
   plt_ctrl$gtitle <- "Total Corr  "
   plt_ctrl$ltitle <- "Corr"
-  
+
   #
   plt_tcor <- plt_tOF(cor_total,eval_size, plt_ctrl)
-  
+
   #********************************
   # expanded barplots & htmlfiles
   #********************************
@@ -248,7 +248,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   s_ctrl$hmtlfilename <- "expnd_cor"
   s_ctrl$jpgfilename <- "expnd_cor"
   save_expnd_barplts(plt_exp_cor,eval_size,s_ctrl)
-  
+
   ######################################################################################
   # now I need to run the app somehow!!!
   ######################################################################################
