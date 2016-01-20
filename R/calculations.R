@@ -34,7 +34,6 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     pattern_spinup <- "start time-step of evaluation"
     spinup <- fetch.spinup(path_Spinup,pattern_spinup)
     #
-    require(dplyr)
     d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   # add full date information to data 
     d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
@@ -49,12 +48,41 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
 ######################################################################################
   # calculations:
+<<<<<<< HEAD
     require("shiny")
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
 
 
 # makse some plots --------------------------------------------------------------
 # NSE
+=======
+    # basic objective functions:
+    bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
+    #§
+    # waterbilance 
+      # 1. total water bilance
+        d_run <- d_runoff %>% 
+                  select(yyyy:QSIM_0001,POSIXdate,hydyear)
+        tmp_cum <- d_run %>% 
+                    select(starts_with("qobs"), starts_with("qsim")) %>%
+                    apply(.,2,cumsum) %>% 
+                    as.data.frame
+        RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
+        selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
+        d_cum <- d_run
+        d_cum[selectionQobsAndSim] <- tmp_cum
+      #2. (hydyearly water bilance)
+        
+    #§
+    
+######################################################################################
+  # make some plots:
+  
+  ######################################################################################
+  # plots: NSE
+  ######################################################################################
+  #********************************
+>>>>>>> origin/AddImplodeExplode
   # yearly
     plt_ctrl <- list() # reset list 
     plt_ctrl$gtitle <- "Yearly NSE"
