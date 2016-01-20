@@ -1,27 +1,28 @@
 #individual files
-start.R
+R/sstart.R
 
 # not needed files in www
-App/www/*.html
-App/www/*.jpg
-App/www/*.jpeg
-
+R/App/www/*.html
+R/App/www/*.jpg
+R/App/www/*.jpeg
 # files in out 
-App/out/*.csv
-
+R/App/out/*.csv
 # in folder 
 in/
-
+# runoff files etc
+*.runoff
+R/App/www/output.runoff
+Statistics.txt
+bfg.jar
 # History files
 .Rhistory
 .Rapp.history
-
 # Example code in package build process
 *-Ex.R
-
 # RStudio files
 .Rproj.user/
-
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+.Rproj.user
+packrat/lib*/
