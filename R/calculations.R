@@ -1,3 +1,9 @@
+#§  
+# DONT USE THIS 
+# Temporary test file, will not be used in future
+# to be replaced with Examples1.Rmd
+#§
+
 visCOS.example <- function(runoff_path,spinup,ctrl) {
   # loaded dependencies 
 #    require("data.table") 
@@ -48,14 +54,12 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
 ######################################################################################
   # calculations:
-<<<<<<< HEAD
     require("shiny")
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
 
 
 # makse some plots --------------------------------------------------------------
 # NSE
-=======
     # basic objective functions:
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
     #§
@@ -82,7 +86,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # plots: NSE
   ######################################################################################
   #********************************
->>>>>>> origin/AddImplodeExplode
+
   # yearly
     plt_ctrl <- list() # reset list 
     plt_ctrl$gtitle <- "Yearly NSE"
