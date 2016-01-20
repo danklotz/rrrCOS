@@ -1,16 +1,16 @@
 #' Get basic objective function for runoff_data 
-#' 
-#' Calculate basic objective functions (i.e. NSE, KGE, percentage BIAS, COrrelation (see: xxx)) for 
-#' every basin and the inherint hydrological years 
-#'  
+#'
+#' Calculate basic objective functions (i.e. NSE, KGE, percentage BIAS, COrrelation (see: xxx)) for
+#' every basin and the inherint hydrological years
+#'
 #' @param runoff_data runoff_data data.frame (see:xxx).
 #' @return list of baisc objective function evaluated for the different hydrological years and over the whole timespan.
 #' @export
-fetch.basicOfun <- function(runoff_data, hydyears_in_data) {  
+fetch.basicOfun <- function(runoff_data, hydyears_in_data) {
   require(hydroGOF)
   require(dplyr)
-  testfor.dataframe(runoff_data)
-  testfor.dataframe(runoff_data)
+  assert.dataframe(runoff_data)
+  assert.dataframe(runoff_data)
   #
   eval_size <- runoff_data %>% names %>% unique %>% tolower %>% grepl("qobs.*",.) %>% sum
   num_hydyears <- length(hydyears_in_data)
@@ -19,7 +19,7 @@ fetch.basicOfun <- function(runoff_data, hydyears_in_data) {
   Ofun$KGE.hydyearly <- Ofun$NSE.hydyearly
   Ofun$pBIAS.hydyearly <- Ofun$NSE.hydyearly
   Ofun$CORR.hydyearly <- Ofun$NSE.hydyearly
-  for (k in 1:num_hydyears) 
+  for (k in 1:num_hydyears)
   {
     tempOBS <- filter(runoff_data,hydyear == hydyears_in_data[k]) %>% select(.,starts_with("qobs"))
     tempSIM <- filter(runoff_data,hydyear == hydyears_in_data[k]) %>% select(.,starts_with("qsim"))
