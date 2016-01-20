@@ -1,9 +1,32 @@
-# rasterplot funcions for hydyearly objective functions
-pour.yOF <- function(Ofun_hydyearly,choice,hydyears_in_d,plt_ctrl) {
+# "pour"-functions plot or save processes data 
+###################################################################################################
+
+
+# pour bOFy ---------------------------------------------------------------
+#' ggplot wrapper for the hydyearly objective functions
+#' 
+#' plot table of the yearly basic objective function
+#' 
+#' @param bOF list, as returned by \code{\link[visCOS]{fetch.basicOfun}}
+#' @param string with the chosen baisc objective function. 
+#' \code{\link[visCOS]{fetch.basicOfun}} provides "NSE", "KGE", "pBIAS" or "CORR"
+#' @param hydyears_in_d hydrears in data, as returned by \code{\link[visCOS]{fetch.hydyears}}
+#' @param xxx yet to be defined control list 
+#' @export
+pour.basicOfunYearly <- function(bOF,choice="NSE",hydyears_in_d,plt_ctrl) {
   require(ggplot2)
   require(magrittr)
   require(reshape2)
-  testfor.basicOF(Ofun)
+  testfor.basicOF(bOF)
+  if (choice == "NSE") {
+    Ofun_hydyearly = bOF$NSE.hydyearly
+  } else if (choice == "KGE") {
+    Ofun_hydyearly = bOF$KGE.hydyearly
+  } else if (choice == "pBIAS"){
+    Ofun_hydyearly = bOF$pBIAS.hydyearly
+  } else if (choice == "CORR") {
+    Ofun_hydyearly = bOF$CORR.hydyearly
+  }
   #
   eval_size <- dim(Ofun_hydyearly)[2] # NsE is just arbitrary, don't worry
   of_y <- expand.grid(hydyears = hydyears_in_d, numberBasins = 1:eval_size) 
@@ -32,7 +55,48 @@ pour.yOF <- function(Ofun_hydyearly,choice,hydyears_in_d,plt_ctrl) {
 }
 
 
-
+# define rasterplot functions for total OF 
+plt_tOF <- function(bOF,choice = "NSE",plt_ctrl) {
+  testfor.basicOF(bOF)
+  Ofun_hydyearly <- bOF[choice]
+  eval_size <- dim(Ofun_hydyearly)[2] # NsE is just arbitrary, don't worry
+  of_t <- expand.grid(total = 1, numberBasins = 1:eval_size) 
+  temp <- OF_total; 
+  # replace values under lower boundary:
+  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut 
+  # prepare dataframe for ggplot
+  temp <- melt(temp)
+  of_t$OFvalue = temp$value
+  #
+  plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue),environmnet = environment()) +
+    geom_raster(position = "identity") +
+    ggtitle(plt_ctrl$gtitle) + 
+    theme_bw(base_size = 20) +
+    theme(axis.title.y = element_blank(), 
+          axis.title.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks = element_blank(),
+          legend.text = element_text(size = 17),
+          legend.title = element_text(size = 20),
+          legend.key.width = unit(3,"line"),
+          legend.key.height = unit(4,"line"),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          plot.margin = grid::unit(c(0.5,0.5,1.25,-0.7), "cm") ) + # von oben im urzeiger sinn
+    geom_tile(color="white", size = 0.25) + 
+    geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = ctrl$OFsize ,color="black") +
+    scale_y_reverse() +
+    scale_fill_gradient2(space = "Lab",
+                         name = plt_ctrl$ltitle,
+                         low = plt_ctrl$clr1,
+                         mid= plt_ctrl$clr2, 
+                         high = plt_ctrl$clr3,
+                         midpoint = plt_ctrl$midpoint, 
+                         limits = plt_ctrl$limits,
+                         na.value = plt_ctrl$clr3)
+  return(plt_t)
+}
 
 
 

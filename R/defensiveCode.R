@@ -1,3 +1,5 @@
+# defensive code is defensive
+###################################################################################################
 #' test for Chunk 
 #'  
 #' tests if there is still chunk in the runoff_data data frame
@@ -25,5 +27,5 @@ testfor.dataframe <- function(data) {
 testfor.basicOF <- function(basicOF) {
   if ( !is.list(basicOF) ) stop("The basic objective funcitons are not stored in a list!")
   testforRightOF <- any( grepl("NSE.*|KGE.*|pBIAS.*|CORR.*",names(basicOF)) == TRUE)
-  if ( !tsetforRightOF ) stop("The basic objective function do not contain the right objective functions (see: xxx)") 
+  if ( !testforRightOF ) stop("The basic objective function do not contain the right objective functions (see: xxx)") 
 }

@@ -11,9 +11,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 #    require("gridExtra")
 #    require("reshape2")
   #
-#   source("R/f_expanded_barplots.R")
-#   source("R/f_rasterplot_functions.R")
-  ######################################################################################
+   source("R/f_expanded_barplots.R")
+   source("R/f_rasterplot_functions.R")
+# data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
     ctrl <- fetch.ctrl()
     ctrl$pathDotRunoff  <- file.choose()
@@ -26,7 +26,6 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     d_runoff <- d_raw %>% 
       channel.removeChunk %>% 
       channel.onlyObserved
-    
   # get num of used basins and their respective num
     #§ shall I wrap this into a channel function??
     d_nums <- fetch.d_num(d_runoff)
@@ -50,52 +49,44 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
 ######################################################################################
   # calculations:
+    require("shiny")
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
 
-######################################################################################
-  # make some plots:
-  
-  ######################################################################################
-  # plots: NSE
-  ######################################################################################
-  #********************************
+
+# makse some plots --------------------------------------------------------------
+# NSE
   # yearly
-  #********************************
-  plt_ctrl <- list() # reset list 
-  plt_ctrl$gtitle <- "Yearly NSE"
-  plt_ctrl$ylab <- "basin number"
-  plt_ctrl$xlab <- ctrl$yearName
-  plt_ctrl$clr1 <- ctrl$colors[1]
-  plt_ctrl$clr2 <- ctrl$colors[2]
-  plt_ctrl$clr3 <- ctrl$colors[3]
-  plt_ctrl$clr4 <- ctrl$colors[4]
-  plt_ctrl$midpoint <- ctrl$clr_NSEmid
-  plt_ctrl$limits <- c(0,1)
-  plt_ctrl$lb_cut <- 0.0
-  #
-  plt_ynse <- plt_yOF(NSE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-  #********************************
+    plt_ctrl <- list() # reset list 
+    plt_ctrl$gtitle <- "Yearly NSE"
+    plt_ctrl$ylab <- "basin number"
+    plt_ctrl$xlab <- ctrl$yearName
+    plt_ctrl$clr1 <- ctrl$colors[1]
+    plt_ctrl$clr2 <- ctrl$colors[2]
+    plt_ctrl$clr3 <- ctrl$colors[3]
+    plt_ctrl$clr4 <- ctrl$colors[4]
+    plt_ctrl$midpoint <- ctrl$clr_NSEmid
+    plt_ctrl$limits <- c(0,1)
+    plt_ctrl$lb_cut <- 0.0
+    #
+    plt_ynse <- pour.basicOfunYearly(bOF,"NSE",hydyears_in_d,plt_ctrl)
   # total
-  #********************************
-  plt_ctrl$gtitle <- "Total NSE   "
-  plt_ctrl$ltitle <- "NSE"
-  #
-  plt_tnse <- plt_tOF(NSE_total,eval_size, plt_ctrl)
-  
-  
-  #********************************
-  # expanded barplots & htmlfiles
-  #********************************
-  # update list
-  plt_ctrl$gtitle <- "Basin"
-  plt_ctrl$ylab <- "NSE"
-  #
-  plt_exp_NSE <- list_yOF_barplts(NSE_hydyearly,eval_size,d_nums,plt_ctrl)
-  # save formated list into htmlFile  (cause shiny does not like multiple graphics)
-  s_ctrl <- list() # reset save control (s_ctrl)
-  s_ctrl$hmtlfilename <- "expnd_nse"
-  s_ctrl$jpgfilename <- "expnd_nse"
-  save_expnd_barplts(plt_exp_NSE,eval_size,s_ctrl)
+    plt_ctrl$gtitle <- "Total NSE   "
+    plt_ctrl$ltitle <- "NSE"
+    #
+    plt_tnse <- plt_tOF(bOF$NSE,eval_size, plt_ctrl)
+    #********************************
+    # expanded barplots & htmlfiles
+    #********************************
+    # update list
+    plt_ctrl$gtitle <- "Basin"
+    plt_ctrl$ylab <- "NSE"
+    #
+    plt_exp_NSE <- list_yOF_barplts(NSE_hydyearly,eval_size,d_nums,plt_ctrl)
+    # save formated list into htmlFile  (cause shiny does not like multiple graphics)
+    s_ctrl <- list() # reset save control (s_ctrl)
+    s_ctrl$hmtlfilename <- "expnd_nse"
+    s_ctrl$jpgfilename <- "expnd_nse"
+    save_expnd_barplts(plt_exp_NSE,eval_size,s_ctrl)
   
   ######################################################################################
   # plots: %-bias
@@ -228,3 +219,12 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # now I need to run the app somehow!!!
   ######################################################################################
 }
+
+
+
+# test --------------------------------------------------------------------
+
+# this is a long textthis is a long textthis is a long textthis is a long
+# textthis is a long textthis is a long textthis is a long textthis is a long
+# textthis is a long textthis is a long textthis is a long textthis is a long
+# textthis is a long textthis is a long text

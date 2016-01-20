@@ -1,4 +1,7 @@
+# dive function let you explore data via shiny
 ###################################################################################################
+
+# Dive With OF ------------------------------------------------------------
 #' Explore runoff_data time series with shiny
 #' 
 #' Runs a Shiny App which can be used to get an overview of a runoff_data time series object
@@ -19,3 +22,13 @@ explore.runoff <- function(d_xts) {
   #
   runApp("R/AppExplore") #$ how do I fix the path to the app?
 }
+
+
+
+
+
+
+
+
+
+

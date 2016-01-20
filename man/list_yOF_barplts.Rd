@@ -6,9 +6,9 @@
 see: description-follows-soonTM
 ***}
 \usage{
-list_yOF_barplts(OF_hydyearly, eval_size, d_nums, plt_ctrl)
+list_yOF_barplts(Ofun_hydyearly, eval_size, d_nums, plt_ctrl)
 
-list_yOF_barplts(OF_hydyearly, eval_size, d_nums, plt_ctrl)
+list_yOF_barplts(Ofun_hydyearly, eval_size, d_nums, plt_ctrl)
 }
 \description{
 creates a list of bar-plots for a the yearly objective functions (OF)
