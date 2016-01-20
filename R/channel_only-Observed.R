@@ -11,18 +11,20 @@ channel.onlyObserved <- function(runoff_data) {
   require(magrittr)
   assert.dataframe(runoff_data)
   assert.Chunk(runoff_data)
-  #colmax <- function(x) lapply(X = runoff_data, FUN = max) # get max values of each column
-  #
-  runoff_data[is.na(runoff_data)] <- -999
-  colmax <- lapply(X = runoff_data, FUN = max)
-  idx_temp <- which(colmax == -999) # check for unobserved basins
-  # make shure that there are only qobs which have max -999
-  OnlyQobsSelected <- names(idx_temp) %>% tolower  %>% grepl("qobs.*",.) %>% any
-  if (!OnlyQobsSelected){
-    stop("There are Qsim withouth simulation (i.e. only -999 values). Pls remove them first")
+  # calc
+  runoff_data[is.na(runoff_data)] <- -999 
+  colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
+  if ( any(colmax == -999) ){
+    # make shure that there are only qobs which have max -999
+    idx_temp <- which(colmax == -999) 
+    OnlyQobsSelected <- names(idx_temp) %>% tolower %>% grepl("qobs.*",.) %>% any
+    if (!OnlyQobsSelected){
+      stop("There are Qsim withouth simulation (i.e. only -999 values). Pls remove them first")
+    }
+    idx_slct <- c(idx_temp,idx_temp + 1) %>% sort() # we add +1 to the idx to get also the simulations
+    d_onlyObserved <- runoff_data[-idx_slct]
+    return(d_onlyObserved)
+  } else {
+    return(runoff_data)
   }
-  # add +1 to the idx to get also the simulations
-  idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
-  d_onlyObserved <- runoff_data[-idx_slct]
-  return(d_onlyObserved)
 }
