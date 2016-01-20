@@ -6,8 +6,10 @@
 #' @return dates in the format of the POSIXct-class 
 #' @export
 implode.Cosdate <- function(data_frame) {
-  if (any(names(data_frame == "POSIXdate"))) stop("data_frame dos allreay contain POSIXdate") 
-  #
+  # def
+  name_string <-  data_frame %>% names %>% tolower 
+  if (any(name_string == "posixdate")) stop("data_frame dos allreay contain POSIXdate") 
+  # calc
   POSIXdate <- paste(data_frame$yyyy,
                      sprintf("%02d",data_frame$mm),
                      sprintf("%02d",data_frame$dd),

@@ -36,11 +36,13 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     #§ shall I wrap this into a channel function??
     d_nums <- fetch.d_num(d_runoff)
   # remove spinup-time
-    path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
-    pattern_spinup <- "start time-step of evaluation"
-    spinup <- fetch.spinup(path_Spinup,pattern_spinup)
-    #
-    d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
+    #§ use this later in the examples:
+      #  path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="") 
+      #  pattern_spinup <- "start time-step of evaluation"
+      #  spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+      #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
+    #§
+
   # add full date information to data 
     d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
   # convert d_runoff to time series object (i.e. "xts")
