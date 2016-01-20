@@ -1,3 +1,6 @@
+#' Get an example runoff_data
+#'
+#' @export
 fetch.exampleRunoff <- function() {
 example <- structure(list(yyyy = c(2009L, 2009L, 2009L, 2009L, 2009L, 2009L,
 2009L, 2009L, 2009L, 2009L, 2009L, 2009L, 2009L, 2009L, 2009L,

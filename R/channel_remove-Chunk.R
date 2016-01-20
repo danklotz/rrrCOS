@@ -7,7 +7,7 @@
 #' @export
 channel.removeChunk <- function(runoff_data) {
   # pre
-  require(dplyr)
+  require(dplyr, quietly = TRUE, warn.conflicts = FALSE)
   # defences
   if ( !is.data.frame(runoff_data) ){
     stop("Input Data must be a data.frame object")
