@@ -44,6 +44,17 @@ Version: 1.0-14
 Hash: e31a3b38f3190f8fb9badc76d70e2f6e
 Requires: gstat, reshape, sp
 
+Package: bitops
+Source: CRAN
+Version: 1.0-6
+Hash: 67d0775189fd0041d95abca618c5c07e
+
+Package: caTools
+Source: CRAN
+Version: 1.17.1
+Hash: 97cb6f6293cd18d17df77a6383cc6763
+Requires: bitops
+
 Package: chron
 Source: CRAN
 Version: 2.3-47
@@ -87,6 +98,17 @@ Source: CRAN
 Version: 1.6-7
 Hash: a8b909c7e06f7bfcbdbbad439799e25d
 
+Package: evaluate
+Source: CRAN
+Version: 0.8
+Hash: aac00bd789bac10970b50e3b7e0cab04
+Requires: stringr
+
+Package: formatR
+Source: CRAN
+Version: 1.2.1
+Hash: 54c730c712edd6087972ecf99bf87c55
+
 Package: ggplot2
 Source: CRAN
 Version: 2.0.0
@@ -103,6 +125,11 @@ Package: gtable
 Source: CRAN
 Version: 0.1.2
 Hash: 38a0f066373a60824cd3ade2362af363
+
+Package: highr
+Source: CRAN
+Version: 0.5.1
+Hash: 114ef5abcf58bebbf6ac083b9cacbbd8
 
 Package: htmltools
 Source: CRAN
@@ -144,6 +171,12 @@ Source: CRAN
 Version: 0.9.19
 Hash: 4a983f753b6e88ae0f5a6ac152d8cc32
 
+Package: knitr
+Source: CRAN
+Version: 1.12
+Hash: bbb197833ff9b57c328c0fc9f924cb92
+Requires: digest, evaluate, formatR, highr, markdown, stringr, yaml
+
 Package: labeling
 Source: CRAN
 Version: 0.3
@@ -158,6 +191,12 @@ Package: magrittr
 Source: CRAN
 Version: 1.5
 Hash: bdc4d48c3135e8f3b399536ddf160df4
+
+Package: markdown
+Source: CRAN
+Version: 0.7.7
+Hash: fea2343a1119d61b0cc5c0a950d103a3
+Requires: mime
 
 Package: mime
 Source: CRAN
@@ -197,6 +236,12 @@ Version: 1.4.1
 Hash: 193899598711fc9776f383bbdf266118
 Requires: Rcpp, plyr, stringr
 
+Package: rmarkdown
+Source: CRAN
+Version: 0.9.2
+Hash: 62ef7e7066b3e768f7684feb9bf9d693
+Requires: caTools, htmltools, knitr, yaml
+
 Package: scales
 Source: CRAN
 Version: 0.3.0
@@ -205,8 +250,8 @@ Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
 
 Package: shiny
 Source: CRAN
-Version: 0.12.2
-Hash: 31cd1fe3028ac7ef846adacf8ed5bfd2
+Version: 0.13.0
+Hash: b4e074e7ffd1281dc9eaa83f91ee6e86
 Requires: R6, digest, htmltools, httpuv, jsonlite, mime, xtable
 
 Package: sp

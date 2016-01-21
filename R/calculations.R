@@ -42,14 +42,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_xts <- channel.runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- channel.hydyears(d_runoff)
-  years <- fetch.yearsindata(d_runoff)
+  years <- fetch.years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whit two strange variables. Maybe better solution possible?
   hydyears_in_d <- fetch.hydyears(d_runoff,years)
   num_hydyears <- length(hydyears_in_d)
   
   ######################################################################################
   # calculations:
-  bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
+  bOF <- fetch.some_ofun_4_hydyears(d_runoff,hydyears_in_d)
   
   
   

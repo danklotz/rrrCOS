@@ -8,16 +8,15 @@ channel.hydyears <- function(runoff_data) {
   # pre 
   require(dplyr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  
   if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
     stop("data.frame does neiter contain POSIXdate nor COSdate")
   } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
     stop("transformation from POSIXdate to COSdate not yet available :(")
   } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-    runoff_data$POSIXdate <- implode.Cosdate(runoff_data)
+    runoff_data$POSIXdate <- channel.implode_cosdate(runoff_data)
   }
-  #
-  years <- fetch.yearsindata(runoff_data)
+  # calc
+  years <- fetch.years_in_data(runoff_data)
   num_years = length(years$in_data)
   hydyears_in_d <- fetch.hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)

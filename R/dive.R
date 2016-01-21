@@ -18,7 +18,7 @@ explore.runoff <- function(d_xts) {
   d_names <- names(d_xts)
   idx_names <- d_names %>% tolower %>% grepl("qobs.*|qsim.*" ,.)
   d_names <<- d_names[idx_names]
-  d_nums <<- fetch.d_num(d_xts) 
+  d_nums <<- d_xts %>% as.data.frame %>% fetch(.,number_of_basins) 
   #
   runApp("R/AppExplore") #$ how do I fix the path to the app?
 }
