@@ -7,11 +7,10 @@
 #' @export
 channel.dxts <- function(runoff_data) {
   # pre
-  require(dplyr)
+  require("xts")
   assert.dataframe(runoff_data)
   assert.Chunk(runoff_data)
   # calculations:
-  d_xts <- d_runoff %>%
-    filter(yyyy >= ctrl$ctrl_span[1],yyyy <= ctrl$ctrl_span[2])
-  return(d_xts)
+  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate)
+  return(runoff_data_as_xts)
 }

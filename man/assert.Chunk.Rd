@@ -2,15 +2,11 @@
 % Please edit documentation in R/assert_Chunk.R
 \name{assert.Chunk}
 \alias{assert.Chunk}
-\title{test for Chunk 
- 
-tests if there is still chunk in the runoff_data data frame}
+\title{test for Chunk}
 \usage{
 assert.Chunk(runoff_data)
 }
 \description{
-test for Chunk 
- 
 tests if there is still chunk in the runoff_data data frame
 }
 

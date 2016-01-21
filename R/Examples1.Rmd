@@ -1,5 +1,5 @@
 ---
-title: "visCOS Example 1"
+title: "Example 1"
 author: "Daniel Klotz"
 output: html_document
 ---
@@ -10,15 +10,15 @@ output: html_document
   source("f_expanded_barplots.R")
   source("f_rasterplot_functions.R")
 ```
-
 Let us first *fetch* some exemplary runoff and take a look
 ```{r}
-  d_raw <- fetch.exampleRunoff() # get example runoff
+  d_raw <- fetch.runoff_example() # get example runoff
   head(d_raw)
 ```
-We can see that the file contains the dates in the form of the **COSdate** format (xxx) and some unnessary colums named QOSI. We can easily remove the not needed columns with `channel.removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **hydyear** (the name testing is not case-sensitive)
+We can see that the file contains the dates in the form of the **COSdate** format (see: xxx) and some unnessary colums named QOSI. We can easily remove the not needed columns with `channel.removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **hydyear** (the name testing is not case-sensitive)
 ```{r}
-  d_raw %>% channel.removeChunk %>% head
+  d_runoff <- channel.removeChunk(d_raw)
+  head(d_runoff)
 ```      
 
 As a next step we might then want to remove unobserved basins. This can be done with `channel.onlyObserved`
@@ -30,6 +30,17 @@ As a next step we might then want to remove unobserved basins. This can be done 
     channel.onlyObserved %>% 
     head
 ```
+
+**visCOS** makes use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  runoff_data data.frame (xxx) can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `channel.implode_cosdate` function. Noting that `channel.implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
+
+If teh 
+```{r}
+  d_runoff$POSIXdate <- channel.implode_cosdate(d_runoff)
+  
+```
+
+
+
 
 
 and get the basic control setup 

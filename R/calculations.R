@@ -21,13 +21,13 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   #           as.data.frame(.)
   #§
   # eliminate basins withouth observations:
-  d_raw <- fetch.exampleRunoff()
+  d_raw <- fetch.runoff_example()
   d_runoff <- d_raw %>% 
     channel.removeChunk %>% 
     channel.onlyObserved
   # get num of used basins and their respective num
   #§ shall I wrap this into a channel function??
-  d_nums <- fetch.d_num(d_runoff)
+  num_basins <- fetch.number_of_basins(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
   #  path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
@@ -37,7 +37,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   #§
   
   # add full date information to data
-  d_runoff$POSIXdate <- implode.Cosdate(d_runoff)
+  d_runoff$POSIXdate <- channel.implode_cosdate(d_runoff)
   # convert d_runoff to time series object (i.e. "xts")
   d_xts <- channel.dxts(d_runoff)
   # calculate hydrological years:
