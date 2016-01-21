@@ -5,7 +5,7 @@
 #' @param runoff_data data_frame of the runoff_data (see: xxx)
 #' @return xts object of the runoff_data data.frame
 #' @export
-channel.dxts <- function(runoff_data) {
+channel.runoff_as_xts <- function(runoff_data) {
   # pre
   require("xts")
   assert.dataframe(runoff_data)

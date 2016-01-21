@@ -39,7 +39,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # add full date information to data
   d_runoff$POSIXdate <- channel.implode_cosdate(d_runoff)
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- channel.dxts(d_runoff)
+  d_xts <- channel.runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- channel.hydyears(d_runoff)
   years <- fetch.yearsindata(d_runoff)
