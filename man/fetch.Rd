@@ -2,11 +2,16 @@
 % Please edit documentation in R/fetch.R
 \name{fetch}
 \alias{fetch}
-\title{get different}
+\title{get different data}
 \usage{
 fetch(what, ...)
 }
 \description{
-get different
+get different data
+}
+\examples{
+runoff_data <- fetch(what = "runoff_example") 
+head(runoff_data)
+fetch("number_of_basins",channel.removeChunk(runoff_data))
 }
 

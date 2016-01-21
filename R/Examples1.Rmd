@@ -12,7 +12,7 @@ output: html_document
 ```
 Let us first *fetch* some exemplary runoff and take a look
 ```{r}
-  d_raw <- fetch.runoff_example() # get example runoff
+  d_raw <- fetch(runoff_example) # get example runoff
   head(d_raw)
 ```
 We can see that the file contains the dates in the form of the **COSdate** format (see: xxx) and some unnessary colums named QOSI. We can easily remove the not needed columns with `channel.removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **hydyear** (the name testing is not case-sensitive)
