@@ -1,12 +1,12 @@
-#' Get basic objective function for runoff_data 
+#' Get basic objective function for runoff_data
 #'
 #' Calculate basic objective functions (i.e. NSE, KGE, percentage BIAS, COrrelation (see: xxx)) for
-#' every basin and the inherint hydrological years
+#' every basin and hydrological year
 #'
 #' @param runoff_data runoff_data data.frame (see:xxx).
 #' @return list of baisc objective function evaluated for the different hydrological years and over the whole timespan.
 #' @export
-fetch.basicOfun <- function(runoff_data, hydyears_in_data) {
+fetch.some_ofun_4_hydyears <- function(runoff_data, hydyears_in_data) {
   require(hydroGOF)
   require(dplyr)
   assert.dataframe(runoff_data)
