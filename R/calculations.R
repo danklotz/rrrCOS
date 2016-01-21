@@ -5,17 +5,7 @@
 #§
 
 visCOS.example <- function(runoff_path,spinup,ctrl) {
-  # loaded dependencies 
-#    require("data.table") 
-#    require("shiny")
-#    require("hydroGOF")
-#    require("dygraphs")
-#    require("ggplot2")
-#    require("xts")
-#    require("dplyr")
-#    require("grid")
-#    require("gridExtra")
-#    require("reshape2")
+  require("magrittr")
   #
    source("R/f_expanded_barplots.R")
    source("R/f_rasterplot_functions.R")
@@ -24,11 +14,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     ctrl <- fetch.ctrl()
     ctrl$pathDotRunoff  <- file.choose()
   # load runoff files
-    require("magrittr")
-    require("data.table")
-    d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
-        as.data.frame(.)
+
+#§ assumed to be done by the user!!!
+#       require("data.table")
+#       d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+#           as.data.frame(.)
+#§
   # eliminate basins withouth observations:
+    d_raw <- fetch.exampleRunoff()
     d_runoff <- d_raw %>% 
       channel.removeChunk %>% 
       channel.onlyObserved
@@ -56,7 +49,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
 ######################################################################################
   # calculations:
-    require("shiny")
+
     bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
 
 
