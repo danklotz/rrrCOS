@@ -12,14 +12,12 @@ more descirption goes here xxx
 \details{
 and here xxx
 \itemize{
- \item{ \code{fetch(ctrl)} } { wraps: \code{fetch.ctrl} }
- \item{ \code{fetch(control)} } {alternvative formulation for fetch(ctrl), wraps \code{fetch.ctrl} }
- \item{}
- \item{ \code{fetch(number_of_basins,runoff_data)} } {  }
- - fetch(spinup, filepath, pattern),wraps: fetch.spinup
- - , fetch.number_of_basins
- - fetch(hydears, runoff_data, years_in_data), wraps: fetch.hydyears
- - fetch(years_in_data, runoff_data), wraps fetch.years_in_data
+ \item{ \code{fetch(ctrl)} } { Wraps: \code{fetch.ctrl} }
+ \item{ \code{fetch(control)} } {Alternvative formulation for fetch(ctrl), wraps: \code{fetch.ctrl} }
+ \item{ \code{fetch(spinup,filepath, pattern)} } Wraps: \code{fetch.spinup}
+ \item{ \code{fetch(number_of_basins,runoff_data)} } { Wraps: \code{fetch.number_of_basins} }
+ \item{ \code{hydears,runoff_data, years_in_data} } { Wraps: \code{fetch.hydyears}} 
+ \item{ \code{years_in_data, runoff_data} } { Wraps: \code{fetch.years_in_data} }
  }
 }
 \examples{
