@@ -1,11 +1,11 @@
 #' complete the date-formats with xts or COSdate
 #' 
-#' Completes the data formats of the runoff_data data.frame by adding either the needed xts-dates or COSdates
+#' 
 #' 
 #' @param runoff_data The data.frame, which contains the runoff information
 #' @return The new runoff data.frame with the added data-format. 
 #' @export
-channel.completeDate <- function(runoff_data) {
+channel.complete_date <- function(runoff_data) {
   # pre 
   require(magrittr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
