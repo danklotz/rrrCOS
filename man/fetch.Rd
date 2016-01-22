@@ -7,17 +7,14 @@
 fetch(what, ...)
 }
 \description{
-more descirption goes here xxx
-}
-\details{
-and here xxx
+The \code{fetch} function is a wrapper around the fetch.whatever functions. It works as following: 
 \itemize{
- \item{ \code{fetch(ctrl)} } { Wraps: \code{fetch.ctrl} }
- \item{ \code{fetch(control)} } {Alternvative formulation for fetch(ctrl), wraps: \code{fetch.ctrl} }
- \item{ \code{fetch(spinup,filepath, pattern)} } Wraps: \code{fetch.spinup}
- \item{ \code{fetch(number_of_basins,runoff_data)} } { Wraps: \code{fetch.number_of_basins} }
- \item{ \code{hydears,runoff_data, years_in_data} } { Wraps: \code{fetch.hydyears}} 
- \item{ \code{years_in_data, runoff_data} } { Wraps: \code{fetch.years_in_data} }
+ \item{ \code{fetch(ctrl)} } { Wraps: \code{\link[visCOS]{fetch.ctrl}} }
+ \item{ \code{fetch(control)} } {Alternvative formulation for fetch(ctrl), wraps: \code{\link[visCOS]{fetch.ctrl}} }
+ \item{ \code{fetch(spinup,filepath, pattern)} } { Wraps: \code{\link[visCOS]{fetch.spinup}} }
+ \item{ \code{fetch(number_of_basins,runoff_data)} } { Wraps: \code{\link[visCOS]{fetch.number_of_basins}} }
+ \item{ \code{hydears,runoff_data, years_in_data} } { Wraps: \code{\link[visCOS]{fetch.hydyears}} }
+ \item{ \code{years_in_data, runoff_data} } { Wraps: \code{\link[visCOS]{fetch.years_in_data}} }
  }
 }
 \examples{
