@@ -1,5 +1,17 @@
 #' get different data
 #' 
+#' more descirption goes here xxx
+#' @details and here xxx
+#' \itemize{
+#'  \item{ \code{fetch(ctrl)} } { wraps: \code{fetch.ctrl} }
+#'  \item{ \code{fetch(control)} } {alternvative formulation for fetch(ctrl), wraps \code{fetch.ctrl} }
+#'  \item{ \code{fetch(spinup,filepath, pattern)} }, wraps:  
+#'  \item{ \code{fetch(number_of_basins,runoff_data)} } {  }
+#'  - fetch(spinup, filepath, pattern),wraps: fetch.spinup
+#'  - , fetch.number_of_basins
+#'  - fetch(hydears, runoff_data, years_in_data), wraps: fetch.hydyears
+#'  - fetch(years_in_data, runoff_data), wraps fetch.years_in_data
+#'  }
 #' @export
 #' @examples 
 #' # get some example data
@@ -24,6 +36,7 @@ fetch <- function(what, ...) {
   # 
   switch(choice, 
          ctrl = fetch.ctrl(), 
+         control = fetch.ctrl(), 
          hydyears = fetch.hydyears(...),
          number_of_basins = fetch.number_of_basins(runoff_data = ...),
          runoff_example = fetch.runoff_example(),
