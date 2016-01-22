@@ -1,14 +1,16 @@
 #' Get hydrological years of the runoff_data
 #' 
+#' @param runoff_data runoff data.frame as defined in xxx
+#' @param years_in_data list as returned by \code{\link[visCOS]{fetch.years_in_data}}
 #' @return list with (short named) hydrological years
 #' @export
-fetch.hydyears <- function(runoff_data,years) {
+fetch.hydyears <- function(runoff_data,years_in_data) {
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
   if ( missing(years) ) {
     years <- fetch.yearsindata(runoff_data)
   }
   #
-  #$ bad code ... 
+  #§ bad code :(
   lngth_sim <- dim(runoff_data)[1]
   start <- 1
   lefin <- length(years$in_data_shrt) - 1 # at least 1 year less then normal years
@@ -20,4 +22,5 @@ fetch.hydyears <- function(runoff_data,years) {
     hydyears_in_d[i] <- paste(years$in_data_shrt[i],years$in_data_shrt[i+1], sep = "/")
   }
   return(hydyears_in_d)
+  #§
 }

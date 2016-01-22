@@ -10,8 +10,11 @@ fetch(what, ...)
 get different data
 }
 \examples{
-runoff_data <- fetch(what = "runoff_example") 
+# get some example data
+runoff_data <- fetch(runoff_example) 
 head(runoff_data)
-fetch("number_of_basins",channel.removeChunk(runoff_data))
+# 
+runoff_data <- fetch(runoff_example) 
+fetch(number_of_basins,channel.removeChunk(runoff_data))
 }
 

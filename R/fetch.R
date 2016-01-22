@@ -2,9 +2,15 @@
 #' 
 #' @export
 #' @examples 
+#' # get some example data
 #' runoff_data <- fetch(runoff_example) 
 #' head(runoff_data)
+#' # 
+#' runoff_data <- fetch(runoff_example) 
 #' fetch(number_of_basins,channel.removeChunk(runoff_data))
+#' #
+#' runoff_data <- fetch(runoff_example) 
+#' fetch(years_in_data,runoff_data)
 fetch <- function(what, ...) {
   # def
   input <- substitute(what)
@@ -17,10 +23,14 @@ fetch <- function(what, ...) {
   }
   # 
   switch(choice, 
-         number_of_basins = fetch.number_of_basins(...),
-         runoff_example = fetch.runoff_example(),
          ctrl = fetch.ctrl(), 
          hydyears = fetch.hydyears(...),
+         number_of_basins = fetch.number_of_basins(runoff_data = ...),
+         runoff_example = fetch.runoff_example(),
+         some_ofun = fetch.some_ofun(...),
+         some_ofun_4_hydyears = fetch.some_ofun_4_hydyears(...),
+         spinup = fetch.spinup(...),
+         years_in_data = fetch.years_in_data(runoff_data = ...),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for fetch", sep = " " ) )
          )
 }

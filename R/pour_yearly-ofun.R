@@ -9,7 +9,7 @@
 #' @param hydyears_in_d hydrears in data, as returned by \code{\link[visCOS]{fetch.hydyears}}
 #' @param xxx yet to be defined control list
 #' @export
-pour.yearlyOfun <- function(bOF,choice="NSE",hydyears_in_d,plt_ctrl) {
+pour.yearly_ofun <- function(bOF,choice="NSE",hydyears_in_d,plt_ctrl) {
   require(ggplot2)
   require(magrittr)
   require(reshape2)

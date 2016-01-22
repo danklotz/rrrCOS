@@ -4,7 +4,12 @@
 \alias{fetch.hydyears}
 \title{Get hydrological years of the runoff_data}
 \usage{
-fetch.hydyears(runoff_data, years)
+fetch.hydyears(runoff_data, years_in_data)
+}
+\arguments{
+\item{runoff_data}{runoff data.frame as defined in xxx}
+
+\item{years_in_data}{list as returned by \code{\link[visCOS]{fetch.years_in_data}}}
 }
 \value{
 list with (short named) hydrological years
