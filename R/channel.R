@@ -1,6 +1,6 @@
 #' order different data 
 #' 
-#' more descriptiuon will follow xxx
+#' more descriptiuon will follow xxx (analougosly to )
 #' @export
 channel <- function(this, from_that) {
   # def
