@@ -13,6 +13,6 @@ channel.complete_date(runoff_data)
 The new runoff data.frame with the added data-format.
 }
 \description{
-Completes the data formats of the runoff_data data.frame by adding either the needed xts-dates or COSdates
+complete the date-formats with xts or COSdate
 }
 

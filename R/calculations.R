@@ -23,8 +23,8 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # eliminate basins withouth observations:
   d_raw <- fetch.runoff_example()
   d_runoff <- d_raw %>% 
-    channel.removeChunk %>% 
-    channel.onlyObserved
+    channel.remove_chunk %>% 
+    channel.only_observed
   # get num of used basins and their respective num
   #§ shall I wrap this into a channel function??
   num_basins <- fetch.number_of_basins(d_runoff)
@@ -225,25 +225,25 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   s_ctrl$hmtlfilename <- "expnd_cor"
   s_ctrl$jpgfilename <- "expnd_cor"
   save_expnd_barplts(plt_exp_cor,eval_size,s_ctrl)
-  
-  ######################################################################################
-  # now I need to run the app somehow!!!
-  ######################################################################################
-}
 
-# waterbilance
-# 1. total water bilance
-d_run <- d_runoff %>%
-  select(yyyy:QSIM_0001,POSIXdate,hydyear)
-tmp_cum <- d_run %>%
-  select(starts_with("qobs"), starts_with("qsim")) %>%
-  apply(.,2,cumsum) %>%
-  as.data.frame
-RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
-selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
-d_cum <- d_run
-d_cum[selectionQobsAndSim] <- tmp_cum
-#2. (hydyearly water bilance)
+  
+  # waterbilance
+  # 1. total water bilance
+  d_run <- fetch.runoff()
+  tmp_cum <- d_run %>%
+    select(starts_with("qobs"), starts_with("qsim")) %>%
+    apply(.,2,cumsum) %>%
+    as.data.frame
+  RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
+  selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
+  d_cum <- d_run
+  d_cum[selectionQobsAndSim] <- tmp_cum
+  #2. (hydyearly water bilance)
+
+  
+  }
+
+
 
 # test --------------------------------------------------------------------
 

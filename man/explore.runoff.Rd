@@ -4,7 +4,7 @@
 \alias{explore.runoff}
 \title{Explore runoff_data time series with shiny}
 \usage{
-explore.runoff(d_xts)
+explore.runoff(runoff_data, d_xts)
 }
 \arguments{
 \item{d_xts}{runoff_data formatted as time series}

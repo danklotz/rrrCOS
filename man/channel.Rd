@@ -7,6 +7,6 @@
 channel(this, from_that)
 }
 \description{
-more descriptiuon will follow xxx
+more descriptiuon will follow xxx (analougosly to )
 }
 
