@@ -8,7 +8,7 @@
 #' 
 #' @param d_xts runoff_data formatted as time series
 #' @export
-explore.runoff <- function(d_xts) {
+explore.runoff <- function(runoff_data,d_xts) {
   # pre
   require("data.table") 
   require("magrittr")
@@ -18,7 +18,7 @@ explore.runoff <- function(d_xts) {
   d_names <- names(d_xts)
   idx_names <- d_names %>% tolower %>% grepl("qobs.*|qsim.*" ,.)
   d_names <<- d_names[idx_names]
-  d_nums <<- d_xts %>% as.data.frame %>% fetch(.,number_of_basins) 
+  d_nums <<- d_xts %>% as.data.frame %>% fetch("number_of_basins",.) 
   #
   runApp("R/AppExplore") #$ how do I fix the path to the app?
 }

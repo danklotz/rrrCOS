@@ -2,7 +2,7 @@
 #' 
 #' more descriptiuon will follow xxx (analougosly to )
 #' @export
-channel <- function(this, from_that) {
+channel <- function(this, from_that, ...) {
   # def
   input <- substitute(this)
   if ( is.character(input) ) {
@@ -15,8 +15,8 @@ channel <- function(this, from_that) {
   # calc
   switch(choice, 
          completeDate = channel.complete_date(from_that), 
-         hydyears = channel.hydyears(from_that),
-         implode_cosdate = channel.implode_cosdate(from_that),
+         hydyears = channel.hydyears(from_that, ...),
+         implode_cosdate = channel.implode_cosdate(data_frame = from_that),
          onlyObserved = channel.onlyObserved(from_that),
          path = channel.path(from_that),
          remove_chunk = channel.remove_chunk(from_that),

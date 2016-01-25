@@ -30,13 +30,14 @@ pour.yearly_ofun <- function(bOF,choice="NSE",hydyears_in_d,plt_ctrl) {
   temp[Ofun_hydyearly < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
   temp <- melt(temp)[3]
   of_y$OFvalue = round(temp$value,2)
+  number_of_basins <- d_xts %>% as.data.frame %>% fetch(number_of_basins,.)
   # plot with ggplot2
   plt_out <- ggplot(of_y, aes(hydyears,numberBasins, fill = OFvalue),environmnet = environment()) +
     ggtitle(plt_ctrl$gtitle) +
     geom_raster(position = "identity") +
     ylab(plt_ctrl$ylab) +
     xlab(plt_ctrl$xlab) +
-    scale_y_reverse(breaks = 1:eval_size, labels = d_nums) +
+    scale_y_reverse(breaks = 1:eval_size, labels = number_of_basins) +
     scale_x_discrete( breaks = hydyears_in_d) +
     scale_fill_gradient2(space = "Lab",
                          low = plt_ctrl$clr1 , mid= plt_ctrl$clr2 , high = plt_ctrl$clr3 ,

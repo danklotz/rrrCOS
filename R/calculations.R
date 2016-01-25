@@ -5,7 +5,7 @@
 #§
 
 visCOS.example <- function(runoff_path,spinup,ctrl) {
-  
+  require(magrittr)
   #
   source("R/f_expanded_barplots.R")
   source("R/f_rasterplot_functions.R")
@@ -42,9 +42,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_xts <- channel.runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- channel.hydyears(d_runoff)
-  years <- fetch.years_in_data(d_runoff)
+  years_in_data <- fetch.years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whit two strange variables. Maybe better solution possible?
-  hydyears_in_d <- fetch.hydyears(d_runoff,years)
+  d_runoff$hydyear <- fetch.hydyears(d_runoff,years_in_data)
   num_hydyears <- length(hydyears_in_d)
   
   ######################################################################################
@@ -55,23 +55,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   
   # makse some plots --------------------------------------------------------------
   # NSE
-  # basic objective functions:
-  bOF <- fetch.basicOfun(d_runoff,hydyears_in_d)
-  #§
-  # waterbilance
-  # 1. total water bilance
-  d_run <- d_runoff %>%
-    select(yyyy:QSIM_0001,POSIXdate,hydyear)
-  tmp_cum <- d_run %>%
-    select(starts_with("qobs"), starts_with("qsim")) %>%
-    apply(.,2,cumsum) %>%
-    as.data.frame
-  RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
-  selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
-  d_cum <- d_run
-  d_cum[selectionQobsAndSim] <- tmp_cum
-  #2. (hydyearly water bilance)
-  
+
   #§
   
   ######################################################################################
@@ -95,7 +79,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$limits <- c(0,1)
   plt_ctrl$lb_cut <- 0.0
   #
-  plt_ynse <- pour.basicOfunYearly(bOF,"NSE",hydyears_in_d,plt_ctrl)
+  plt_ynse <- pour.yearly_ofun(bOF,"NSE",hydyears_in_d,plt_ctrl)
   # total
   plt_ctrl$gtitle <- "Total NSE   "
   plt_ctrl$ltitle <- "NSE"
@@ -247,7 +231,19 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
 }
 
-
+# waterbilance
+# 1. total water bilance
+d_run <- d_runoff %>%
+  select(yyyy:QSIM_0001,POSIXdate,hydyear)
+tmp_cum <- d_run %>%
+  select(starts_with("qobs"), starts_with("qsim")) %>%
+  apply(.,2,cumsum) %>%
+  as.data.frame
+RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
+selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
+d_cum <- d_run
+d_cum[selectionQobsAndSim] <- tmp_cum
+#2. (hydyearly water bilance)
 
 # test --------------------------------------------------------------------
 

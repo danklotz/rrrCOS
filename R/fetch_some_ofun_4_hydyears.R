@@ -10,7 +10,6 @@ fetch.some_ofun_4_hydyears <- function(runoff_data, hydyears_in_data) {
   require(hydroGOF)
   require(dplyr)
   assert.dataframe(runoff_data)
-  assert.dataframe(runoff_data)
   #
   eval_size <- runoff_data %>% names %>% unique %>% tolower %>% grepl("qobs.*",.) %>% sum
   num_hydyears <- length(hydyears_in_data)
