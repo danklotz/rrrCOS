@@ -60,6 +60,11 @@ Version: 1.17.1
 Hash: 97cb6f6293cd18d17df77a6383cc6763
 Requires: bitops
 
+Package: chron
+Source: CRAN
+Version: 2.3-47
+Hash: d25d96d908cd21080f24c89eed4c80a0
+
 Package: colorspace
 Source: CRAN
 Version: 1.2-6
@@ -69,6 +74,12 @@ Package: curl
 Source: CRAN
 Version: 0.9.4
 Hash: f0845d30266233da7d910ac687a5174b
+
+Package: data.table
+Source: CRAN
+Version: 1.9.6
+Hash: f92ef1f73afa43bf6fd69a22f3794abd
+Requires: chron
 
 Package: devtools
 Source: CRAN
@@ -92,6 +103,12 @@ Source: CRAN
 Version: 0.4.3
 Hash: d7005d9f57021e610fa38635d7a0b8e0
 Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr
+
+Package: dygraphs
+Source: CRAN
+Version: 0.6
+Hash: b02fc4b803daadd33556094a1dce1186
+Requires: htmlwidgets, magrittr, xts, zoo
 
 Package: e1071
 Source: CRAN
@@ -147,6 +164,12 @@ Source: CRAN
 Version: 0.3
 Hash: 7ccc01f4d22d73d0d9b0d2a7781e7ff6
 Requires: digest
+
+Package: htmlwidgets
+Source: CRAN
+Version: 0.5
+Hash: 0aa33e8666baac6fcff4e376789b9c2e
+Requires: htmltools, jsonlite, yaml
 
 Package: httpuv
 Source: CRAN

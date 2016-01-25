@@ -8,7 +8,7 @@ shinyServer(function(input, output, session) {# executes calculation file
   select_SIM <- reactive({sprintf("QSIM_%04d", as.integer(input$basin_num))})
   
   slctd_data <- reactive({
-    select(d_xts,
+    select(d_runoff,
            matches( select_OBS() ),
            matches( select_SIM() )
            ) %>%
@@ -17,14 +17,14 @@ shinyServer(function(input, output, session) {# executes calculation file
   })
   # create xts-formated table for use in dygraphs
   xts_slctd_data <- reactive ({
-    xts(slctd_data(),order.by = d_xts$POSIXdate)
+    xts(slctd_data(),order.by = d_runoff$POSIXdate)
   })
   # get error of the basin
   xts_slctd_error <- reactive({
     slctd_data() %>% 
     mutate(error = Qsim-Qobs) %>% 
     select(error) %>%
-    xts(order.by = d_xts$POSIXdate)
+    xts(order.by = d_runoff$POSIXdate)
   })
   # plots
   output$dygrph1 <- renderDygraph({
@@ -66,6 +66,6 @@ shinyServer(function(input, output, session) {# executes calculation file
   })
   output$slctd_OF <- renderTable({
     if (!is.null(input$dygrph1_date_window))
-      fetch.hydOF( sub_slctd()$Qobs,sub_slctd()$Qsim )
+      fetch.some_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
   })
 })
