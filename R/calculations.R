@@ -65,12 +65,12 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- list_yOF_barplts(bOF$NSE.hydyearly,years,eval_size,d_nums,plt_ctrl)
+  plt_exp_NSE <- pour.expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
-  s_ctrl$hmtlfilename <- "expnd_nse"
-  s_ctrl$jpgfilename <- "expnd_nse"
-  save_expnd_barplts(plt_exp_NSE,eval_size,s_ctrl)
+  pour.expandedbars.intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
+
+  #§ here we go ... 
   
   # plots: %-bias -----------------------------------------------------------
   #

@@ -1,10 +1,10 @@
-#' yearly runoff list
+#' hydyearly list of expaned barpltos 
 #'
 #'
 #' creates a list of bar-plots for a the yearly objective functions (OF) xxx
 #' see: description-follows-soonTM xxx
 #' @export
-pour.list_of_ofun_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl) {
+pour.expanded_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl) {
   if (missing(plt_ctrl)) {plt_ctrl <- fetch.plt_ctrl()}
   # calc:
   rename.withEndings <- function(dataframe,name,endings) {
