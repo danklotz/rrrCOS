@@ -1,4 +1,87 @@
-# pour bOFy ---------------------------------------------------------------
+
+# raster hydyearly NSE ----------------------------------------------------
+#' NSE raster plot for the available hydrological years
+#' xxx description to follow 
+#' 
+#' @export
+pour.hydyearly_NSE <- function(from, given, ...) {
+  if (!exists("ctrl") ) {
+    ctrl <- fetch.ctrl()
+  }
+  if ( !exists("plt_ctrl") ) {
+    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl$gtitle <- "Yearly NSE"
+    plt_ctrl$ylab <- "basin number"
+  }
+  # calc
+  plt_NSE <- pour.hydyearly_ofun("NSE",from, given, plt_ctrl)
+  return(plt_NSE)
+}
+
+# raster hydyearly KGE ----------------------------------------------------
+#' KGE raster plot for the available hydrological years
+#' xxx description to follow 
+#' 
+#' @export
+pour.hydyearly_KGE<- function(from, given, ...) {
+  if (!exists("ctrl") ) {
+    ctrl <- fetch.ctrl()
+  }
+  if ( !exists("plt_ctrl") ) {
+    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl$gtitle <- "Yearly KGE"
+    plt_ctrl$ylab <- "basin number"
+  }
+  # calc
+  plt_KGE <- pour.hydyearly_ofun("KGE",from, given, plt_ctrl)
+  return(plt_KGE)
+}
+
+# raster hydyearly pBIAS ----------------------------------------------------
+#' Percentage Bias raster plot for the available hydrological years
+#' xxx description to follow 
+#' 
+#' @export
+pour.hydyearly_pBIAS <- function(from, given, ...) {
+  if (!exists("ctrl") ) {
+    ctrl <- fetch.ctrl()
+  }
+  if ( !exists("plt_ctrl") ) {
+    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl$gtitle <- "Yearly %-Bias"
+    plt_ctrl$ylab <- "basin number"
+    plt_ctrl$midpoint <- 0.0
+    plt_ctrl$limits <- c(-100,100)
+    plt_ctrl$lb_cut <- -1000.0
+  }
+  # calc
+  plt_pBIAS <- pour.hydyearly_ofun("pBIAS",from, given, plt_ctrl)
+  return(plt_pBIAS)
+}
+
+# raster hydyearly Corr -----------------------------------------------------
+#' Correlation raster plot for the available hydrological years
+#' xxx description to follow 
+#' 
+#' @export
+pour.hydyearly_Corr <- function(from, given, ...) {
+  if (!exists("ctrl") ) {
+    ctrl <- fetch.ctrl()
+  }
+  if ( !exists("plt_ctrl") ) {
+    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl$gtitle <- "Yearly Correlation"
+    plt_ctrl$ylab <- "basin number"
+    plt_ctrl$limits <- c(0,1)
+    plt_ctrl$lb_cut <- -10.
+
+  }
+  # calc
+  plt_Corr <- pour.hydyearly_ofun("CORR",from, given, plt_ctrl)
+  return(plt_Corr)
+}
+
+# pour yearly ofun ---------------------------------------------------------------
 #' ggplot wrapper for the hydyearly objective functions
 #'
 #' plot table of the yearly basic objective function
@@ -9,11 +92,13 @@
 #' @param hydyears_in_d hydrears in data, as returned by \code{\link[visCOS]{fetch.hydyears}}
 #' @param xxx yet to be defined control list
 #' @export
-pour.yearly_ofun <- function(bOF,choice="NSE",hydyears_in_d,plt_ctrl) {
+pour.hydyearly_ofun <- function(choice, bOF,hydyears_in_d,plt_ctrl) {
+  #
   require(ggplot2)
   require(magrittr)
   require(reshape2)
   assert.basicOF(bOF)
+  # calc
   if (choice == "NSE") {
     Ofun_hydyearly = bOF$NSE.hydyearly
   } else if (choice == "KGE") {
@@ -47,6 +132,6 @@ pour.yearly_ofun <- function(bOF,choice="NSE",hydyears_in_d,plt_ctrl) {
     theme_bw(base_size = 20) +
     theme( legend.position="none" )  +
     geom_tile(color = "white", size = 0.25 ) +
-    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = ctrl$OFsize , color= "black")
+    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = plt_ctrl$OFsize , color= "black")
   return(plt_out)
 }

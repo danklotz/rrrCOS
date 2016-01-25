@@ -43,88 +43,41 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # calculate hydrological years:
   d_runoff <- channel.hydyears(d_runoff)
   years_in_data <- fetch.years_in_data(d_runoff)
-  #§ its not realy smart to handle it like this, whit two strange variables. Maybe better solution possible?
-  d_runoff$hydyear <- fetch.hydyears(d_runoff,years_in_data)
+  #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
+  hydyears_in_d <- fetch.hydyears(d_runoff,years_in_data)
   num_hydyears <- length(hydyears_in_d)
   
-  ######################################################################################
-  # calculations:
+
+# calculations ------------------------------------------------------------
   bOF <- fetch.some_ofun_4_hydyears(d_runoff,hydyears_in_d)
   
   
   
-  # makse some plots --------------------------------------------------------------
-  # NSE
-
-  #§
-  
-  ######################################################################################
-  # make some plots:
-  
-  ######################################################################################
-  # plots: NSE
-  ######################################################################################
-  #********************************
-  
-  # yearly
-  plt_ctrl <- list() # reset list
-  plt_ctrl$gtitle <- "Yearly NSE"
-  plt_ctrl$ylab <- "basin number"
-  plt_ctrl$xlab <- ctrl$yearName
-  plt_ctrl$clr1 <- ctrl$colors[1]
-  plt_ctrl$clr2 <- ctrl$colors[2]
-  plt_ctrl$clr3 <- ctrl$colors[3]
-  plt_ctrl$clr4 <- ctrl$colors[4]
-  plt_ctrl$midpoint <- ctrl$clr_NSEmid
-  plt_ctrl$limits <- c(0,1)
-  plt_ctrl$lb_cut <- 0.0
-  #
-  plt_ynse <- pour.yearly_ofun(bOF,"NSE",hydyears_in_d,plt_ctrl)
-  # total
-  plt_ctrl$gtitle <- "Total NSE   "
-  plt_ctrl$ltitle <- "NSE"
-  #
-  plt_tnse <- plt_tOF(bOF$NSE,eval_size, plt_ctrl)
-  #********************************
-  # expanded barplots & htmlfiles
-  #********************************
-  # update list
+# plotting --------------------------------------------------------------
+  ## NSE
+  ### yearly
+    plt_ynse <- pour.yearly_NSE(from = bOF, given = hydyears_in_d)
+  ### total
+    pour.totalNSE(from = bOF)
+  ### expanded barplots & htmlfiles
+  # fetch new list:
+  plt_ctrl <- fetch.plt_ctrl()
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- list_yOF_barplts(NSE_hydyearly,eval_size,d_nums,plt_ctrl)
+  plt_exp_NSE <- list_yOF_barplts(bOF$NSE.hydyearly,years,eval_size,d_nums,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
   s_ctrl$hmtlfilename <- "expnd_nse"
   s_ctrl$jpgfilename <- "expnd_nse"
   save_expnd_barplts(plt_exp_NSE,eval_size,s_ctrl)
   
-  ######################################################################################
-  # plots: %-bias
-  ######################################################################################
-  #********************************
-  # yearly
-  #********************************
-  plt_ctrl <- list() # reset list
-  plt_ctrl$gtitle <- "Yearly %-Bias"
-  plt_ctrl$ylab <- "basin number"
-  plt_ctrl$xlab <- ctrl$yearName
-  plt_ctrl$clr1 <- ctrl$colors[4]
-  plt_ctrl$clr2 <- ctrl$colors[3]
-  plt_ctrl$clr3 <- ctrl$colors[1]
-  plt_ctrl$clr4 <- ctrl$colors[1]
-  plt_ctrl$midpoint <- 0.0
-  plt_ctrl$limits <- c(-100,100)
-  plt_ctrl$lb_cut <- -1000.0
+  # plots: %-bias -----------------------------------------------------------
   #
-  plt_ypbias <- plt_yOF(pBias_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-  
-  #********************************
+  pour.hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
   # total
-  #********************************
   plt_ctrl$gtitle <- "Total %-Bias"
   plt_ctrl$ltitle <- "%-Bias"
-  
   #
   plt_tpbias <- plt_tOF(pBIAS_total,eval_size, plt_ctrl)
   
@@ -144,35 +97,15 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   
   ######################################################################################
   # plots: KGE
-  ######################################################################################
-  #********************************
   # yearly
-  #********************************
-  plt_ctrl <- list() # reset list
-  plt_ctrl$gtitle <- "Yearly KGE"
-  plt_ctrl$ylab <- "basin number"
-  plt_ctrl$xlab <- ctrl$yearName
-  plt_ctrl$clr1 <- ctrl$colors[1]
-  plt_ctrl$clr2 <- ctrl$colors[2]
-  plt_ctrl$clr3 <- ctrl$colors[3]
-  plt_ctrl$clr4 <- ctrl$colors[4]
-  plt_ctrl$midpoint <- ctrl$clr_NSEmid
-  plt_ctrl$limits <- c(0,1)
-  plt_ctrl$lb_cut <- 0.0
-  #
-  plt_ykge <- plt_yOF(KGE_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-  #********************************
+  plt_ykge <- pour.hydyearly_KGE(from = bOF, given = hydyears_in_d)
   # total
-  #********************************
   plt_ctrl$gtitle <- "Total KGE   "
   plt_ctrl$ltitle <- "KGE"
-  
   #
   plt_tkge <- plt_tOF(KGE_total,eval_size, plt_ctrl)
   #********************************
   # expanded barplots & htmlfiles
-  #********************************
-  # update list
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "KGE"
   #
@@ -185,27 +118,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   
   ######################################################################################
   # plots: Correlation
-  ######################################################################################
-  #********************************
   # yearly
-  #********************************
-  plt_ctrl <- list() # reset list
-  plt_ctrl$gtitle <- "Yearly Correlation"
-  plt_ctrl$ylab <- "basin number"
-  plt_ctrl$xlab <- ctrl$yearName
-  plt_ctrl$clr1 <- ctrl$colors[1]
-  plt_ctrl$clr2 <- ctrl$colors[2]
-  plt_ctrl$clr3 <- ctrl$colors[3]
-  plt_ctrl$clr4 <- ctrl$colors[4]
-  plt_ctrl$midpoint <- ctrl$clr_NSEmid
-  plt_ctrl$limits <- c(0,1)
-  plt_ctrl$lb_cut <- -10.
-  #
-  plt_ycor <- plt_yOF(cor_hydyearly,hydyears_in_d,eval_size,plt_ctrl)
-  
-  #********************************
+  pour.hydyearly_Corr(from = bOF, given = hydyears_in_d)
   # total
-  #********************************
   plt_ctrl$gtitle <- "Total Corr  "
   plt_ctrl$ltitle <- "Corr"
   
@@ -225,6 +140,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   s_ctrl$hmtlfilename <- "expnd_cor"
   s_ctrl$jpgfilename <- "expnd_cor"
   save_expnd_barplts(plt_exp_cor,eval_size,s_ctrl)
+
+
+
 
   
   # waterbilance

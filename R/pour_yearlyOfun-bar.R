@@ -1,23 +1,27 @@
 #' yearly runoff list
 #'
 #'
-#' creates a list of bar-plots for a the yearly objective functions (OF)
-#' see: description-follows-soonTM
-#' ***
-# replace values under lower boundary:
-pour.yearlyOfun_bar <- function(Ofun_hydyearly,eval_size,d_nums,plt_ctrl) {
-  # calculations:
-  temp <- Ofun_hydyearly;
-  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
-  # prepare data for plotting
-  d_OFyearly <- as.data.frame(temp)
-  newNames <- paste(plt_ctrl$gtitle,d_nums,sep = "")
-  names(d_OFyearly)  <- newNames
-  d_OFyearly$hydyear <- hydyears_in_d
+#' creates a list of bar-plots for a the yearly objective functions (OF) xxx
+#' see: description-follows-soonTM xxx
+#' @export
+pour.list_of_ofun_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl) {
+  if (missing(plt_ctrl)) {plt_ctrl <- fetch.plt_ctrl()}
+  # calc:
+  rename.withEndings <- function(dataframe,name,endings) {
+    newNames <- paste(name,endings,sep = "")
+    names(dataframe)  <- newNames
+    return(dataframe)
+  }
+  d_ofun_yearly <- Ofun_hydyearly %>% 
+                    cut.lowerbound(.,plt_ctrl$lb_cut) %>% 
+                    as.data.frame %>%
+                    rename.withEndings(.,plt_ctrl$gtitle,num_basins)
+  d_ofun_yearly$hydyear <- hydyears_in_data
   # make list of plots
-  barplts <- list()
-  barplts <- lapply(1:eval_size,
-                    function(k) ggplot(data = d_OFyearly,environmnet = environment()) +
+  list_of_barplots <- list()
+  eval_size <- ncol(Ofun_hydyearly)
+  list_of_barplots <- lapply(1:eval_size,
+                    function(k) ggplot(data = d_ofun_yearly,environmnet = environment()) +
                       geom_bar(stat="identity",
                                position = "identity",
                                aes_string(x= "hydyear", y = newNames[k],fill = newNames[k])) +
@@ -36,5 +40,5 @@ pour.yearlyOfun_bar <- function(Ofun_hydyearly,eval_size,d_nums,plt_ctrl) {
                                            midpoint = plt_ctrl$midpoint,
                                            limits = plt_ctrl$limits )
   )
-  return(barplts)
+  return(list_of_barplots)
 }

@@ -1,14 +1,56 @@
-# define rasterplot functions for total OF
-pour.totalOfun <- function(bOF,choice = "NSE",plt_ctrl) {
+
+# NSE ---------------------------------------------------------------------
+#' rasterpolots for the NSE of the whole period
+#' 
+#' xxx description follows
+#' @export
+pour.totalNSE <- function(from,...) {
+  # def
+  assert.basicOF(from)
+  if (!exists("ctrl") ) {
+    ctrl <- fetch.ctrl()
+  }
+  if ( !exists("plt_ctrl") ) {
+    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl$gtitle <- "Total NSE  "
+    plt_ctrl$ltitle <- "NSE"
+  }
+  # calc
+  total <- pour.totalOfun("NSE",from,plt_ctrl) 
+  return(total)
+}
+
+# KGE ---------------------------------------------------------------------
+#' rasterpolots for the KGE of the whole period
+#' 
+#' xxx description follows
+#' @export
+pour.totalKGE <- function(from,...) {
+  # def
+  assert.basicOF(from)
+  if (!exists("ctrl") ) {
+    ctrl <- fetch.ctrl()
+  }
+  if ( !exists("plt_ctrl") ) {
+    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl$gtitle <- "Total KGE   "
+    plt_ctrl$ltitle <- "KGE"
+  }
+  # calc
+  total <- pour.totalOfun("KGE",from,plt_ctrl) 
+  return(total)
+}
+
+#' define rasterplot functions for total OF
+pour.totalOfun <- function(choice,bOF,plt_ctrl) {
+  # def 
   assert.basicOF(bOF)
-  Ofun_hydyearly <- bOF[choice]
-  eval_size <- dim(Ofun_hydyearly)[2] # NsE is just arbitrary, don't worry
+  #
+  Ofun_total<- bOF[[choice]]
+  eval_size <- length(Ofun_total)
   of_t <- expand.grid(total = 1, numberBasins = 1:eval_size)
-  temp <- OF_total;
-  # replace values under lower boundary:
-  temp[temp < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
-  # prepare dataframe for ggplot
-  temp <- melt(temp)
+  # replace values under lower boundary & prepare dataframe for ggplot
+  temp <- Ofun_total %>% as.data.frame %>% cut.lowerbound(.,plt_ctrl$lb_cut) %>% melt
   of_t$OFvalue = temp$value
   #
   plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue),environmnet = environment()) +
@@ -28,7 +70,7 @@ pour.totalOfun <- function(bOF,choice = "NSE",plt_ctrl) {
           panel.grid.minor = element_blank(),
           plot.margin = grid::unit(c(0.5,0.5,1.25,-0.7), "cm") ) + # von oben im urzeiger sinn
     geom_tile(color="white", size = 0.25) +
-    geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = ctrl$OFsize ,color="black") +
+    geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = plt_ctrl$OFsize ,color="black") +
     scale_y_reverse() +
     scale_fill_gradient2(space = "Lab",
                          name = plt_ctrl$ltitle,
