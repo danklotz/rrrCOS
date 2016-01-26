@@ -4,8 +4,9 @@ require("xts")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {# executes calculation file
   # select the basin from the data
-  select_OBS <- reactive({sprintf("QOBS_%04d", as.integer(input$basin_num))})
-  select_SIM <- reactive({sprintf("QSIM_%04d", as.integer(input$basin_num))})
+  #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
+  select_OBS <- reactive({sprintf("QOBS_%02d", as.integer(input$basin_num))})
+  select_SIM <- reactive({sprintf("QSIM_%02d", as.integer(input$basin_num))})
   
   slctd_data <- reactive({
     select(d_runoff,
