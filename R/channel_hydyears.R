@@ -23,12 +23,6 @@ channel.hydyears <- function(runoff_data) {
   # cut away data outside of hydyears (#§ bad solution, below is an idea for a better one?)
   runoff_data %<>% filter(yyyy > years$in_data[1] | mm >= 9 ) %>% 
     filter(yyyy < years$in_data[num_years] | mm < 9)
-  #§ solution so far is kinda bad, cause we throw data away. some maybe something like the style proposed in the following can be usefull?
-  #   g <- as.character(runoff_data$POSIXdate)
-  #   g[runoff_data$yyyy == years$in_data[1] & runoff_data$mm < 9] <- "pre"
-  #   g[runoff_data$yyyy == years$in_data[num_years] & runoff_data$mm > 9] <- "post"
-  #   runoff_data$hydyear <- g
-  #§
   # calculate and format hydrological years
   runoff_data$hydyear <- as.character(runoff_data$POSIXdate)
   for (i in 1:(num_hydyears)) 
@@ -40,3 +34,10 @@ channel.hydyears <- function(runoff_data) {
   }
   return(runoff_data)
 }
+
+#§ solution so far is kinda bad, cause we throw data away. some maybe something like the style proposed in the following can be usefull?
+#   g <- as.character(runoff_data$POSIXdate)
+#   g[runoff_data$yyyy == years$in_data[1] & runoff_data$mm < 9] <- "pre"
+#   g[runoff_data$yyyy == years$in_data[num_years] & runoff_data$mm > 9] <- "post"
+#   runoff_data$hydyear <- g
+#§
