@@ -1,0 +1,49 @@
+---
+title: "Example 1"
+author: "Daniel Klotz"
+output: 
+  html_document:
+    highlight: pygments
+---
+
+```{r, echo = FALSE, message=FALSE}
+  require("visCOS")
+  require("magrittr")
+  source("f_expanded_barplots.R")
+  source("f_rasterplot_functions.R")
+```
+Let us first *fetch* some exemplary runoff and take a look
+```{r}
+  d_raw <- fetch(runoff_example) # get example runoff
+  head(d_raw)
+```
+We can see that the file contains the dates in the form of the **COSdate** format (see: xxx) and some unnessary colums named QOSI. We can easily remove the not needed columns with `channel.removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **hydyear** (the name testing is not case-sensitive)
+```{r}
+  d_runoff <- channel(this = remove_chunk, from_that = d_raw)
+  head(d_runoff)
+```      
+
+As a next step we might then want to remove unobserved basins. This can be done with `channel.onlyObserved`
+```{r}
+  QobsNotObserved <- d_raw  # copy data frame from the example
+  QobsNotObserved$QOBS_0002 <- NA # overwrite a Qobs-Column with NA's
+  QobsNotObserved %>% channel.remove_chunk %>% channel.only_observed %>% head
+```
+
+**visCOS** makes use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  runoff_data data.frame (xxx) can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `channel.implode_cosdate` function. Noting that `channel.implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
+
+If the 
+```{r}
+  d_runoff$POSIXdate <- channel(this = implode_cosdate, from_that = d_runoff)
+  
+```
+
+
+
+
+
+and get the basic control setup 
+```{r}
+  ctrl <- fetch(control) # pre-set (basic) control-setup
+```
+

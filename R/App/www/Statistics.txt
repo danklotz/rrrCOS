@@ -1,0 +1,1624 @@
+COSERO_Mur                                        , 17:13 18.11.2015
+ 
+ 
+input files:
+ data file: Q_Obs_60min_smooth.txt                            
+ parameter file: para_MurGans.par                                  
+ 
+hydrological model:
+ simulated subbasins:    1,    2,    3,    4,    5,    6,    7,    8,    9,   10,   11,   12,   13,   14,   15,   16,   17,   18,   19,   20,   21,   22,   23,   24,   25,   26,   27,   28,   29,   30,   31,   32,   33,   34,   35,   36,   37,   38,   39,   40,   41,   42,   43,   44,   45,   46,   47,   48,   49,   50,   51,   52,   53,   54,   55,   56,   57,   58,   59,   60,   61,   62,   63,   64,   65,   66,   67,   68,   69,   70,   71,   72,   73,   74,   75,   76,   77,   78,   79,   80,   81,   82,   83,   84,   85,   86,   87,   88,   89,   90,   91,   92,   93,   94,   95,   96,   97,   98,   99,  100,  101,  102,  103,  104,  105,  106,  107,  108,  109,  110,  111,  112,  
+ not simulated subbasins:  
+ links:    1to   2,    2to   7,    3to   5,    4to   5,    5to   7,    6to   7,    7to   9,    8to   9,    9to  13,   10to  13,   11to  12,   12to  13,   13to  16,   14to  15,   15to  16,   16to  17,   17to  18,   18to  20,   19to  20,   20to  23,   21to  23,   22to  23,   23to  24,   24to  25,   25to  26,   26to  34,   27to  28,   28to  36,   29to  36,   30to  32,   31to  32,   32to  33,   33to  34,   34to  36,   35to  36,   36to  37,   37to  43,   38to  39,   39to  43,   40to  41,   41to  42,   42to  44,   43to  44,   44to  45,   45to  53,   46to  53,   47to  48,   48to  49,   49to  52,   50to  52,   51to  52,   52to  53,   53to  54,   54to  55,   55to  56,   56to  58,   57to  58,   58to  59,   59to  61,   60to  61,   61to  63,   62to  63,   63to  64,   64to  65,   65to  66,   66to  67,   67to  68,   68to  70,   69to  70,   70to  71,   71to  73,   72to  73,   73to  74,   74to  87,   75to  82,   76to  81,   77to  78,   78to  79,   79to  80,   80to  81,   81to  82,   82to  85,   83to  85,   84to  85,   85to  86,   86to  87,   87to  88,   88to  89,   89to  92,   90to  91,   91to  92,   92to 107,   93to  94,   94to  99,   95to  97,   96to  97,   97to  99,   98to  99,   99to 105,  100to 102,  101to 102,  102to 104,  103to 104,  104to 105,  105to 106,  106to 107,  107to 109,  108to 109,  109to 110,  110to 112,  111to   0,  112to   0, 
+ 
+simulation period:
+ start date (year, month, day, hour, minute): 2009  9  1  0  0
+   end date (year, month, day, hour, minute): 2012 12 31 23  0
+             total time-steps: 29232
+ start time-step of evaluation:    5831
+ 
+ 
+      #### Statistics ####
+ 
+ 
+* compare QSIM_T to QOBS_T
+ 
+ daily root mean squared error (DRMS):
+subbasin   1:     3.67
+subbasin   2:     3.71
+subbasin   3:     1.52
+subbasin   4:     1.18
+subbasin   5:     4.10
+subbasin   6:     0.00
+subbasin   7:     0.00
+subbasin   8:     0.80
+subbasin   9:     7.45
+subbasin  10:     0.00
+subbasin  11:     0.00
+subbasin  12:     0.00
+subbasin  13:     0.00
+subbasin  14:     0.00
+subbasin  15:     0.00
+subbasin  16:     0.00
+subbasin  17:     0.00
+subbasin  18:     0.00
+subbasin  19:     0.00
+subbasin  20:     8.77
+subbasin  21:     0.00
+subbasin  22:     0.00
+subbasin  23:     0.00
+subbasin  24:    10.78
+subbasin  25:     0.00
+subbasin  26:     0.00
+subbasin  27:     1.13
+subbasin  28:     0.00
+subbasin  29:     0.00
+subbasin  30:     1.61
+subbasin  31:     0.00
+subbasin  32:     3.15
+subbasin  33:     0.00
+subbasin  34:    11.82
+subbasin  35:     1.69
+subbasin  36:     0.00
+subbasin  37:     0.00
+subbasin  38:     1.70
+subbasin  39:     0.00
+subbasin  40:     0.00
+subbasin  41:     1.20
+subbasin  42:     0.00
+subbasin  43:    17.73
+subbasin  44:     0.00
+subbasin  45:     0.00
+subbasin  46:     0.73
+subbasin  47:     4.06
+subbasin  48:     0.00
+subbasin  49:     6.26
+subbasin  50:     0.50
+subbasin  51:     2.20
+subbasin  52:     7.29
+subbasin  53:    21.97
+subbasin  54:     0.00
+subbasin  55:     0.00
+subbasin  56:     0.00
+subbasin  57:     0.00
+subbasin  58:     0.00
+subbasin  59:     0.00
+subbasin  60:     1.31
+subbasin  61:     0.00
+subbasin  62:     0.00
+subbasin  63:    23.41
+subbasin  64:     0.00
+subbasin  65:     0.00
+subbasin  66:     0.00
+subbasin  67:    27.62
+subbasin  68:     0.00
+subbasin  69:     0.00
+subbasin  70:     0.00
+subbasin  71:     0.00
+subbasin  72:     0.00
+subbasin  73:     0.00
+subbasin  74:    29.58
+subbasin  75:     1.95
+subbasin  76:     0.00
+subbasin  77:     0.00
+subbasin  78:     0.00
+subbasin  79:     0.00
+subbasin  80:     0.00
+subbasin  81:     0.00
+subbasin  82:     0.00
+subbasin  83:     0.00
+subbasin  84:     0.59
+subbasin  85:     6.34
+subbasin  86:     0.00
+subbasin  87:     0.00
+subbasin  88:     0.00
+subbasin  89:     0.00
+subbasin  90:     0.92
+subbasin  91:     0.00
+subbasin  92:     0.00
+subbasin  93:     0.77
+subbasin  94:     1.18
+subbasin  95:     0.63
+subbasin  96:     0.36
+subbasin  97:     1.43
+subbasin  98:     0.66
+subbasin  99:     3.18
+subbasin 100:     0.67
+subbasin 101:     0.58
+subbasin 102:     1.84
+subbasin 103:     2.22
+subbasin 104:     0.00
+subbasin 105:     7.26
+subbasin 106:     0.00
+subbasin 107:     0.00
+subbasin 108:     0.00
+subbasin 109:    31.74
+subbasin 110:    32.10
+subbasin 111:     0.00
+subbasin 112:     0.00
+ 
+ bias of mean daily error (BIAS):
+subbasin   1:    -1.27
+subbasin   2:    -1.43
+subbasin   3:    -0.75
+subbasin   4:    -0.03
+subbasin   5:    -1.22
+subbasin   6:      NaN
+subbasin   7:      NaN
+subbasin   8:    -0.10
+subbasin   9:    -3.72
+subbasin  10:      NaN
+subbasin  11:      NaN
+subbasin  12:      NaN
+subbasin  13:      NaN
+subbasin  14:      NaN
+subbasin  15:      NaN
+subbasin  16:      NaN
+subbasin  17:      NaN
+subbasin  18:      NaN
+subbasin  19:      NaN
+subbasin  20:    -1.70
+subbasin  21:      NaN
+subbasin  22:      NaN
+subbasin  23:      NaN
+subbasin  24:    -1.30
+subbasin  25:      NaN
+subbasin  26:      NaN
+subbasin  27:     0.21
+subbasin  28:      NaN
+subbasin  29:      NaN
+subbasin  30:     0.07
+subbasin  31:      NaN
+subbasin  32:     0.32
+subbasin  33:      NaN
+subbasin  34:     0.78
+subbasin  35:    -0.05
+subbasin  36:      NaN
+subbasin  37:      NaN
+subbasin  38:     0.20
+subbasin  39:      NaN
+subbasin  40:      NaN
+subbasin  41:     0.15
+subbasin  42:      NaN
+subbasin  43:     4.85
+subbasin  44:      NaN
+subbasin  45:      NaN
+subbasin  46:     0.15
+subbasin  47:     1.53
+subbasin  48:      NaN
+subbasin  49:     2.81
+subbasin  50:     0.13
+subbasin  51:     0.52
+subbasin  52:     3.52
+subbasin  53:     7.82
+subbasin  54:      NaN
+subbasin  55:      NaN
+subbasin  56:      NaN
+subbasin  57:      NaN
+subbasin  58:      NaN
+subbasin  59:      NaN
+subbasin  60:    -0.44
+subbasin  61:      NaN
+subbasin  62:      NaN
+subbasin  63:     5.73
+subbasin  64:      NaN
+subbasin  65:      NaN
+subbasin  66:      NaN
+subbasin  67:    15.55
+subbasin  68:      NaN
+subbasin  69:      NaN
+subbasin  70:      NaN
+subbasin  71:      NaN
+subbasin  72:      NaN
+subbasin  73:      NaN
+subbasin  74:    18.39
+subbasin  75:     0.22
+subbasin  76:      NaN
+subbasin  77:      NaN
+subbasin  78:      NaN
+subbasin  79:      NaN
+subbasin  80:      NaN
+subbasin  81:      NaN
+subbasin  82:      NaN
+subbasin  83:      NaN
+subbasin  84:    -0.06
+subbasin  85:     1.16
+subbasin  86:      NaN
+subbasin  87:      NaN
+subbasin  88:      NaN
+subbasin  89:      NaN
+subbasin  90:     0.11
+subbasin  91:      NaN
+subbasin  92:      NaN
+subbasin  93:     0.12
+subbasin  94:     0.29
+subbasin  95:    -0.15
+subbasin  96:     0.13
+subbasin  97:     0.18
+subbasin  98:     0.21
+subbasin  99:     1.25
+subbasin 100:     0.05
+subbasin 101:     0.07
+subbasin 102:     0.52
+subbasin 103:     1.01
+subbasin 104:      NaN
+subbasin 105:     3.34
+subbasin 106:      NaN
+subbasin 107:      NaN
+subbasin 108:      NaN
+subbasin 109:    10.98
+subbasin 110:    12.73
+subbasin 111:      NaN
+subbasin 112:      NaN
+ 
+ sum of error (QSIM-QOBS) (SUMERR):
+subbasin   1:-29664.42
+subbasin   2:-33464.07
+subbasin   3:-17573.43
+subbasin   4:  -774.38
+subbasin   5:-28535.20
+subbasin   6:     0.00
+subbasin   7:     0.00
+subbasin   8: -2280.26
+subbasin   9:-86991.00
+subbasin  10:     0.00
+subbasin  11:     0.00
+subbasin  12:     0.00
+subbasin  13:     0.00
+subbasin  14:     0.00
+subbasin  15:     0.00
+subbasin  16:     0.00
+subbasin  17:     0.00
+subbasin  18:     0.00
+subbasin  19:     0.00
+subbasin  20:-39782.33
+subbasin  21:     0.00
+subbasin  22:     0.00
+subbasin  23:     0.00
+subbasin  24:-30472.29
+subbasin  25:     0.00
+subbasin  26:     0.00
+subbasin  27:  4908.72
+subbasin  28:     0.00
+subbasin  29:     0.00
+subbasin  30:  1663.07
+subbasin  31:     0.00
+subbasin  32:  7445.45
+subbasin  33:     0.00
+subbasin  34: 18349.79
+subbasin  35: -1072.02
+subbasin  36:     0.00
+subbasin  37:     0.00
+subbasin  38:  4737.25
+subbasin  39:     0.00
+subbasin  40:     0.00
+subbasin  41:  3604.54
+subbasin  42:     0.00
+subbasin  43:113404.05
+subbasin  44:     0.00
+subbasin  45:     0.00
+subbasin  46:  3493.89
+subbasin  47: 35862.84
+subbasin  48:     0.00
+subbasin  49: 65755.23
+subbasin  50:  3132.26
+subbasin  51: 12112.33
+subbasin  52: 82387.16
+subbasin  53:182912.98
+subbasin  54:     0.00
+subbasin  55:     0.00
+subbasin  56:     0.00
+subbasin  57:     0.00
+subbasin  58:     0.00
+subbasin  59:     0.00
+subbasin  60:-10327.71
+subbasin  61:     0.00
+subbasin  62:     0.00
+subbasin  63:134035.50
+subbasin  64:     0.00
+subbasin  65:     0.00
+subbasin  66:     0.00
+subbasin  67:363985.22
+subbasin  68:     0.00
+subbasin  69:     0.00
+subbasin  70:     0.00
+subbasin  71:     0.00
+subbasin  72:     0.00
+subbasin  73:     0.00
+subbasin  74:430268.50
+subbasin  75:  5252.72
+subbasin  76:     0.00
+subbasin  77:     0.00
+subbasin  78:     0.00
+subbasin  79:     0.00
+subbasin  80:     0.00
+subbasin  81:     0.00
+subbasin  82:     0.00
+subbasin  83:     0.00
+subbasin  84: -1308.49
+subbasin  85: 27077.31
+subbasin  86:     0.00
+subbasin  87:     0.00
+subbasin  88:     0.00
+subbasin  89:     0.00
+subbasin  90:  2599.64
+subbasin  91:     0.00
+subbasin  92:     0.00
+subbasin  93:  2918.22
+subbasin  94:  6739.83
+subbasin  95: -3622.56
+subbasin  96:  2933.90
+subbasin  97:  4322.88
+subbasin  98:  4875.52
+subbasin  99: 29138.01
+subbasin 100:  1195.08
+subbasin 101:  1698.42
+subbasin 102: 12206.66
+subbasin 103: 23713.74
+subbasin 104:     0.00
+subbasin 105: 78155.84
+subbasin 106:     0.00
+subbasin 107:     0.00
+subbasin 108:     0.00
+subbasin 109:256851.02
+subbasin 110:297863.34
+subbasin 111:     0.00
+subbasin 112:     0.00
+ 
+ mean absolute error (ABSERR):
+subbasin   1:     2.69
+subbasin   2:     2.72
+subbasin   3:     0.95
+subbasin   4:     0.70
+subbasin   5:     2.47
+subbasin   6:      NaN
+subbasin   7:      NaN
+subbasin   8:     0.51
+subbasin   9:     5.26
+subbasin  10:      NaN
+subbasin  11:      NaN
+subbasin  12:      NaN
+subbasin  13:      NaN
+subbasin  14:      NaN
+subbasin  15:      NaN
+subbasin  16:      NaN
+subbasin  17:      NaN
+subbasin  18:      NaN
+subbasin  19:      NaN
+subbasin  20:     6.23
+subbasin  21:      NaN
+subbasin  22:      NaN
+subbasin  23:      NaN
+subbasin  24:     7.00
+subbasin  25:      NaN
+subbasin  26:      NaN
+subbasin  27:     0.70
+subbasin  28:      NaN
+subbasin  29:      NaN
+subbasin  30:     0.88
+subbasin  31:      NaN
+subbasin  32:     1.65
+subbasin  33:      NaN
+subbasin  34:     7.94
+subbasin  35:     0.97
+subbasin  36:      NaN
+subbasin  37:      NaN
+subbasin  38:     1.16
+subbasin  39:      NaN
+subbasin  40:      NaN
+subbasin  41:     0.81
+subbasin  42:      NaN
+subbasin  43:    11.66
+subbasin  44:      NaN
+subbasin  45:      NaN
+subbasin  46:     0.52
+subbasin  47:     2.38
+subbasin  48:      NaN
+subbasin  49:     3.77
+subbasin  50:     0.26
+subbasin  51:     1.24
+subbasin  52:     5.38
+subbasin  53:    16.01
+subbasin  54:      NaN
+subbasin  55:      NaN
+subbasin  56:      NaN
+subbasin  57:      NaN
+subbasin  58:      NaN
+subbasin  59:      NaN
+subbasin  60:     0.60
+subbasin  61:      NaN
+subbasin  62:      NaN
+subbasin  63:    16.62
+subbasin  64:      NaN
+subbasin  65:      NaN
+subbasin  66:      NaN
+subbasin  67:    21.16
+subbasin  68:      NaN
+subbasin  69:      NaN
+subbasin  70:      NaN
+subbasin  71:      NaN
+subbasin  72:      NaN
+subbasin  73:      NaN
+subbasin  74:    22.73
+subbasin  75:     0.88
+subbasin  76:      NaN
+subbasin  77:      NaN
+subbasin  78:      NaN
+subbasin  79:      NaN
+subbasin  80:      NaN
+subbasin  81:      NaN
+subbasin  82:      NaN
+subbasin  83:      NaN
+subbasin  84:     0.20
+subbasin  85:     4.27
+subbasin  86:      NaN
+subbasin  87:      NaN
+subbasin  88:      NaN
+subbasin  89:      NaN
+subbasin  90:     0.29
+subbasin  91:      NaN
+subbasin  92:      NaN
+subbasin  93:     0.32
+subbasin  94:     0.63
+subbasin  95:     0.40
+subbasin  96:     0.23
+subbasin  97:     0.84
+subbasin  98:     0.32
+subbasin  99:     2.05
+subbasin 100:     0.37
+subbasin 101:     0.29
+subbasin 102:     1.18
+subbasin 103:     1.42
+subbasin 104:      NaN
+subbasin 105:     5.20
+subbasin 106:      NaN
+subbasin 107:      NaN
+subbasin 108:      NaN
+subbasin 109:    22.86
+subbasin 110:    23.69
+subbasin 111:      NaN
+subbasin 112:      NaN
+ 
+ maximum absolute error (ABSMAX):
+subbasin   1:    25.11
+subbasin   2:    24.12
+subbasin   3:    14.13
+subbasin   4:     8.98
+subbasin   5:    38.34
+subbasin   6:     0.00
+subbasin   7:     0.00
+subbasin   8:     9.16
+subbasin   9:    62.21
+subbasin  10:     0.00
+subbasin  11:     0.00
+subbasin  12:     0.00
+subbasin  13:     0.00
+subbasin  14:     0.00
+subbasin  15:     0.00
+subbasin  16:     0.00
+subbasin  17:     0.00
+subbasin  18:     0.00
+subbasin  19:     0.00
+subbasin  20:    63.40
+subbasin  21:     0.00
+subbasin  22:     0.00
+subbasin  23:     0.00
+subbasin  24:   119.65
+subbasin  25:     0.00
+subbasin  26:     0.00
+subbasin  27:    44.00
+subbasin  28:     0.00
+subbasin  29:     0.00
+subbasin  30:    41.45
+subbasin  31:     0.00
+subbasin  32:    73.43
+subbasin  33:     0.00
+subbasin  34:   114.06
+subbasin  35:    24.26
+subbasin  36:     0.00
+subbasin  37:     0.00
+subbasin  38:    17.92
+subbasin  39:     0.00
+subbasin  40:     0.00
+subbasin  41:    11.15
+subbasin  42:     0.00
+subbasin  43:   154.55
+subbasin  44:     0.00
+subbasin  45:     0.00
+subbasin  46:     6.76
+subbasin  47:    51.58
+subbasin  48:     0.00
+subbasin  49:    69.67
+subbasin  50:    18.80
+subbasin  51:    56.03
+subbasin  52:    57.85
+subbasin  53:   157.05
+subbasin  54:     0.00
+subbasin  55:     0.00
+subbasin  56:     0.00
+subbasin  57:     0.00
+subbasin  58:     0.00
+subbasin  59:     0.00
+subbasin  60:    47.74
+subbasin  61:     0.00
+subbasin  62:     0.00
+subbasin  63:   209.38
+subbasin  64:     0.00
+subbasin  65:     0.00
+subbasin  66:     0.00
+subbasin  67:   206.07
+subbasin  68:     0.00
+subbasin  69:     0.00
+subbasin  70:     0.00
+subbasin  71:     0.00
+subbasin  72:     0.00
+subbasin  73:     0.00
+subbasin  74:   183.63
+subbasin  75:    40.83
+subbasin  76:     0.00
+subbasin  77:     0.00
+subbasin  78:     0.00
+subbasin  79:     0.00
+subbasin  80:     0.00
+subbasin  81:     0.00
+subbasin  82:     0.00
+subbasin  83:     0.00
+subbasin  84:    19.92
+subbasin  85:    95.35
+subbasin  86:     0.00
+subbasin  87:     0.00
+subbasin  88:     0.00
+subbasin  89:     0.00
+subbasin  90:    29.88
+subbasin  91:     0.00
+subbasin  92:     0.00
+subbasin  93:    14.15
+subbasin  94:    19.40
+subbasin  95:    15.23
+subbasin  96:     8.15
+subbasin  97:    34.50
+subbasin  98:    14.06
+subbasin  99:    45.28
+subbasin 100:     9.32
+subbasin 101:     9.13
+subbasin 102:    27.60
+subbasin 103:    39.22
+subbasin 104:     0.00
+subbasin 105:    85.31
+subbasin 106:     0.00
+subbasin 107:     0.00
+subbasin 108:     0.00
+subbasin 109:   356.83
+subbasin 110:   272.40
+subbasin 111:     0.00
+subbasin 112:     0.00
+ 
+ maximum positive error (QSIM-QOBS) (MAXPOS):
+subbasin   1:    25.11
+subbasin   2:    24.12
+subbasin   3:     2.68
+subbasin   4:     8.60
+subbasin   5:    26.70
+subbasin   6:     0.00
+subbasin   7:     0.00
+subbasin   8:     5.74
+subbasin   9:    33.04
+subbasin  10:     0.00
+subbasin  11:     0.00
+subbasin  12:     0.00
+subbasin  13:     0.00
+subbasin  14:     0.00
+subbasin  15:     0.00
+subbasin  16:     0.00
+subbasin  17:     0.00
+subbasin  18:     0.00
+subbasin  19:     0.00
+subbasin  20:    55.29
+subbasin  21:     0.00
+subbasin  22:     0.00
+subbasin  23:     0.00
+subbasin  24:    55.77
+subbasin  25:     0.00
+subbasin  26:     0.00
+subbasin  27:    11.12
+subbasin  28:     0.00
+subbasin  29:     0.00
+subbasin  30:    41.45
+subbasin  31:     0.00
+subbasin  32:    73.43
+subbasin  33:     0.00
+subbasin  34:   114.06
+subbasin  35:    24.26
+subbasin  36:     0.00
+subbasin  37:     0.00
+subbasin  38:    17.92
+subbasin  39:     0.00
+subbasin  40:     0.00
+subbasin  41:    11.15
+subbasin  42:     0.00
+subbasin  43:   154.55
+subbasin  44:     0.00
+subbasin  45:     0.00
+subbasin  46:     6.76
+subbasin  47:    51.58
+subbasin  48:     0.00
+subbasin  49:    69.67
+subbasin  50:     7.09
+subbasin  51:     8.69
+subbasin  52:    46.95
+subbasin  53:   157.05
+subbasin  54:     0.00
+subbasin  55:     0.00
+subbasin  56:     0.00
+subbasin  57:     0.00
+subbasin  58:     0.00
+subbasin  59:     0.00
+subbasin  60:     5.27
+subbasin  61:     0.00
+subbasin  62:     0.00
+subbasin  63:   180.13
+subbasin  64:     0.00
+subbasin  65:     0.00
+subbasin  66:     0.00
+subbasin  67:   181.62
+subbasin  68:     0.00
+subbasin  69:     0.00
+subbasin  70:     0.00
+subbasin  71:     0.00
+subbasin  72:     0.00
+subbasin  73:     0.00
+subbasin  74:   183.63
+subbasin  75:    40.83
+subbasin  76:     0.00
+subbasin  77:     0.00
+subbasin  78:     0.00
+subbasin  79:     0.00
+subbasin  80:     0.00
+subbasin  81:     0.00
+subbasin  82:     0.00
+subbasin  83:     0.00
+subbasin  84:     3.72
+subbasin  85:    95.35
+subbasin  86:     0.00
+subbasin  87:     0.00
+subbasin  88:     0.00
+subbasin  89:     0.00
+subbasin  90:    11.19
+subbasin  91:     0.00
+subbasin  92:     0.00
+subbasin  93:    14.15
+subbasin  94:    16.84
+subbasin  95:     5.64
+subbasin  96:     3.68
+subbasin  97:    11.90
+subbasin  98:     6.44
+subbasin  99:    32.10
+subbasin 100:     8.53
+subbasin 101:     9.13
+subbasin 102:    27.60
+subbasin 103:    29.62
+subbasin 104:     0.00
+subbasin 105:    85.31
+subbasin 106:     0.00
+subbasin 107:     0.00
+subbasin 108:     0.00
+subbasin 109:   356.83
+subbasin 110:   239.35
+subbasin 111:     0.00
+subbasin 112:     0.00
+ 
+ maximum negative error (QSIM-QOBS) (MAXNEG):
+subbasin   1:   -16.47
+subbasin   2:   -18.48
+subbasin   3:   -14.13
+subbasin   4:    -8.98
+subbasin   5:   -38.34
+subbasin   6:     0.00
+subbasin   7:     0.00
+subbasin   8:    -9.16
+subbasin   9:   -62.21
+subbasin  10:     0.00
+subbasin  11:     0.00
+subbasin  12:     0.00
+subbasin  13:     0.00
+subbasin  14:     0.00
+subbasin  15:     0.00
+subbasin  16:     0.00
+subbasin  17:     0.00
+subbasin  18:     0.00
+subbasin  19:     0.00
+subbasin  20:   -63.40
+subbasin  21:     0.00
+subbasin  22:     0.00
+subbasin  23:     0.00
+subbasin  24:  -119.65
+subbasin  25:     0.00
+subbasin  26:     0.00
+subbasin  27:   -44.00
+subbasin  28:     0.00
+subbasin  29:     0.00
+subbasin  30:   -23.36
+subbasin  31:     0.00
+subbasin  32:   -23.05
+subbasin  33:     0.00
+subbasin  34:   -81.58
+subbasin  35:   -19.30
+subbasin  36:     0.00
+subbasin  37:     0.00
+subbasin  38:    -8.33
+subbasin  39:     0.00
+subbasin  40:     0.00
+subbasin  41:    -6.76
+subbasin  42:     0.00
+subbasin  43:   -99.05
+subbasin  44:     0.00
+subbasin  45:     0.00
+subbasin  46:    -5.83
+subbasin  47:   -17.76
+subbasin  48:     0.00
+subbasin  49:   -34.08
+subbasin  50:   -18.80
+subbasin  51:   -56.03
+subbasin  52:   -57.85
+subbasin  53:  -135.63
+subbasin  54:     0.00
+subbasin  55:     0.00
+subbasin  56:     0.00
+subbasin  57:     0.00
+subbasin  58:     0.00
+subbasin  59:     0.00
+subbasin  60:   -47.74
+subbasin  61:     0.00
+subbasin  62:     0.00
+subbasin  63:  -209.38
+subbasin  64:     0.00
+subbasin  65:     0.00
+subbasin  66:     0.00
+subbasin  67:  -206.07
+subbasin  68:     0.00
+subbasin  69:     0.00
+subbasin  70:     0.00
+subbasin  71:     0.00
+subbasin  72:     0.00
+subbasin  73:     0.00
+subbasin  74:  -169.75
+subbasin  75:    -9.39
+subbasin  76:     0.00
+subbasin  77:     0.00
+subbasin  78:     0.00
+subbasin  79:     0.00
+subbasin  80:     0.00
+subbasin  81:     0.00
+subbasin  82:     0.00
+subbasin  83:     0.00
+subbasin  84:   -19.92
+subbasin  85:   -75.04
+subbasin  86:     0.00
+subbasin  87:     0.00
+subbasin  88:     0.00
+subbasin  89:     0.00
+subbasin  90:   -29.88
+subbasin  91:     0.00
+subbasin  92:     0.00
+subbasin  93:    -7.31
+subbasin  94:   -19.40
+subbasin  95:   -15.23
+subbasin  96:    -8.15
+subbasin  97:   -34.50
+subbasin  98:   -14.06
+subbasin  99:   -45.28
+subbasin 100:    -9.32
+subbasin 101:    -7.30
+subbasin 102:   -23.42
+subbasin 103:   -39.22
+subbasin 104:     0.00
+subbasin 105:   -69.75
+subbasin 106:     0.00
+subbasin 107:     0.00
+subbasin 108:     0.00
+subbasin 109:  -234.59
+subbasin 110:  -272.40
+subbasin 111:     0.00
+subbasin 112:     0.00
+ 
+ peak difference (maxQSIM-maxQOBS) (PDIFF):
+subbasin   1:    12.03
+subbasin   2:    -0.48
+subbasin   3:    -2.85
+subbasin   4:     8.34
+subbasin   5:    22.89
+subbasin   6:     0.00
+subbasin   7:     0.00
+subbasin   8:    -5.35
+subbasin   9:   -43.60
+subbasin  10:     0.00
+subbasin  11:     0.00
+subbasin  12:     0.00
+subbasin  13:     0.00
+subbasin  14:     0.00
+subbasin  15:     0.00
+subbasin  16:     0.00
+subbasin  17:     0.00
+subbasin  18:     0.00
+subbasin  19:     0.00
+subbasin  20:    -5.14
+subbasin  21:     0.00
+subbasin  22:     0.00
+subbasin  23:     0.00
+subbasin  24:   -83.05
+subbasin  25:     0.00
+subbasin  26:     0.00
+subbasin  27:   -25.65
+subbasin  28:     0.00
+subbasin  29:     0.00
+subbasin  30:    -8.34
+subbasin  31:     0.00
+subbasin  32:    21.55
+subbasin  33:     0.00
+subbasin  34:    57.92
+subbasin  35:     6.57
+subbasin  36:     0.00
+subbasin  37:     0.00
+subbasin  38:    15.27
+subbasin  39:     0.00
+subbasin  40:     0.00
+subbasin  41:     3.12
+subbasin  42:     0.00
+subbasin  43:   103.36
+subbasin  44:     0.00
+subbasin  45:     0.00
+subbasin  46:    -0.19
+subbasin  47:    21.56
+subbasin  48:     0.00
+subbasin  49:    59.89
+subbasin  50:    -7.17
+subbasin  51:   -38.21
+subbasin  52:   -11.58
+subbasin  53:   133.05
+subbasin  54:     0.00
+subbasin  55:     0.00
+subbasin  56:     0.00
+subbasin  57:     0.00
+subbasin  58:     0.00
+subbasin  59:     0.00
+subbasin  60:   -26.58
+subbasin  61:     0.00
+subbasin  62:     0.00
+subbasin  63:   143.36
+subbasin  64:     0.00
+subbasin  65:     0.00
+subbasin  66:     0.00
+subbasin  67:   155.82
+subbasin  68:     0.00
+subbasin  69:     0.00
+subbasin  70:     0.00
+subbasin  71:     0.00
+subbasin  72:     0.00
+subbasin  73:     0.00
+subbasin  74:   158.85
+subbasin  75:    39.22
+subbasin  76:     0.00
+subbasin  77:     0.00
+subbasin  78:     0.00
+subbasin  79:     0.00
+subbasin  80:     0.00
+subbasin  81:     0.00
+subbasin  82:     0.00
+subbasin  83:     0.00
+subbasin  84:   -18.10
+subbasin  85:    29.79
+subbasin  86:     0.00
+subbasin  87:     0.00
+subbasin  88:     0.00
+subbasin  89:     0.00
+subbasin  90:   -12.99
+subbasin  91:     0.00
+subbasin  92:     0.00
+subbasin  93:     2.36
+subbasin  94:    -9.63
+subbasin  95:    -6.14
+subbasin  96:    -7.42
+subbasin  97:   -34.20
+subbasin  98:    -6.56
+subbasin  99:    -9.95
+subbasin 100:     0.18
+subbasin 101:     5.23
+subbasin 102:   -21.63
+subbasin 103:   -28.12
+subbasin 104:     0.00
+subbasin 105:    -6.68
+subbasin 106:     0.00
+subbasin 107:     0.00
+subbasin 108:     0.00
+subbasin 109:   220.40
+subbasin 110:   164.52
+subbasin 111:     0.00
+subbasin 112:     0.00
+ 
+ Nash-Sutcliffe measure (NASHSUT):
+subbasin   1:    0.384
+subbasin   2:    0.530
+subbasin   3:    0.639
+subbasin   4:    0.613
+subbasin   5:    0.718
+subbasin   6:      NaN
+subbasin   7:      NaN
+subbasin   8:    0.767
+subbasin   9:    0.775
+subbasin  10:      NaN
+subbasin  11:      NaN
+subbasin  12:      NaN
+subbasin  13:      NaN
+subbasin  14:      NaN
+subbasin  15:      NaN
+subbasin  16:      NaN
+subbasin  17:      NaN
+subbasin  18:      NaN
+subbasin  19:      NaN
+subbasin  20:    0.841
+subbasin  21:      NaN
+subbasin  22:      NaN
+subbasin  23:      NaN
+subbasin  24:    0.879
+subbasin  25:      NaN
+subbasin  26:      NaN
+subbasin  27:    0.246
+subbasin  28:      NaN
+subbasin  29:      NaN
+subbasin  30:    0.766
+subbasin  31:      NaN
+subbasin  32:    0.725
+subbasin  33:      NaN
+subbasin  34:    0.882
+subbasin  35:    0.806
+subbasin  36:      NaN
+subbasin  37:      NaN
+subbasin  38:    0.812
+subbasin  39:      NaN
+subbasin  40:      NaN
+subbasin  41:    0.727
+subbasin  42:      NaN
+subbasin  43:    0.862
+subbasin  44:      NaN
+subbasin  45:      NaN
+subbasin  46:    0.770
+subbasin  47:    0.488
+subbasin  48:      NaN
+subbasin  49:    0.404
+subbasin  50:    0.310
+subbasin  51:    0.541
+subbasin  52:    0.779
+subbasin  53:    0.885
+subbasin  54:      NaN
+subbasin  55:      NaN
+subbasin  56:      NaN
+subbasin  57:      NaN
+subbasin  58:      NaN
+subbasin  59:      NaN
+subbasin  60:    0.613
+subbasin  61:      NaN
+subbasin  62:      NaN
+subbasin  63:    0.891
+subbasin  64:      NaN
+subbasin  65:      NaN
+subbasin  66:      NaN
+subbasin  67:    0.852
+subbasin  68:      NaN
+subbasin  69:      NaN
+subbasin  70:      NaN
+subbasin  71:      NaN
+subbasin  72:      NaN
+subbasin  73:      NaN
+subbasin  74:    0.826
+subbasin  75:    0.202
+subbasin  76:      NaN
+subbasin  77:      NaN
+subbasin  78:      NaN
+subbasin  79:      NaN
+subbasin  80:      NaN
+subbasin  81:      NaN
+subbasin  82:      NaN
+subbasin  83:      NaN
+subbasin  84:    0.519
+subbasin  85:    0.577
+subbasin  86:      NaN
+subbasin  87:      NaN
+subbasin  88:      NaN
+subbasin  89:      NaN
+subbasin  90:    0.476
+subbasin  91:      NaN
+subbasin  92:      NaN
+subbasin  93:   -1.318
+subbasin  94:    0.525
+subbasin  95:    0.514
+subbasin  96:    0.384
+subbasin  97:    0.696
+subbasin  98:    0.577
+subbasin  99:    0.648
+subbasin 100:    0.415
+subbasin 101:    0.539
+subbasin 102:    0.703
+subbasin 103:    0.603
+subbasin 104:      NaN
+subbasin 105:    0.705
+subbasin 106:      NaN
+subbasin 107:      NaN
+subbasin 108:      NaN
+subbasin 109:    0.859
+subbasin 110:    0.863
+subbasin 111:      NaN
+subbasin 112:      NaN
+ 
+ coefficient of first lag autocorrelation of error (RCOEF):
+subbasin   1:    0.559
+subbasin   2:    0.468
+subbasin   3:    0.508
+subbasin   4:    0.374
+subbasin   5:    0.312
+subbasin   6:      NaN
+subbasin   7:      NaN
+subbasin   8:    0.254
+subbasin   9:    0.253
+subbasin  10:      NaN
+subbasin  11:      NaN
+subbasin  12:      NaN
+subbasin  13:      NaN
+subbasin  14:      NaN
+subbasin  15:      NaN
+subbasin  16:      NaN
+subbasin  17:      NaN
+subbasin  18:      NaN
+subbasin  19:      NaN
+subbasin  20:    0.154
+subbasin  21:      NaN
+subbasin  22:      NaN
+subbasin  23:      NaN
+subbasin  24:    0.129
+subbasin  25:      NaN
+subbasin  26:      NaN
+subbasin  27:    0.682
+subbasin  28:      NaN
+subbasin  29:      NaN
+subbasin  30:    0.197
+subbasin  31:      NaN
+subbasin  32:    0.241
+subbasin  33:      NaN
+subbasin  34:    0.113
+subbasin  35:    0.193
+subbasin  36:      NaN
+subbasin  37:      NaN
+subbasin  38:    0.167
+subbasin  39:      NaN
+subbasin  40:      NaN
+subbasin  41:    0.283
+subbasin  42:      NaN
+subbasin  43:    0.131
+subbasin  44:      NaN
+subbasin  45:      NaN
+subbasin  46:    0.205
+subbasin  47:    0.393
+subbasin  48:      NaN
+subbasin  49:    0.419
+subbasin  50:    0.557
+subbasin  51:    0.518
+subbasin  52:    0.212
+subbasin  53:    0.111
+subbasin  54:      NaN
+subbasin  55:      NaN
+subbasin  56:      NaN
+subbasin  57:      NaN
+subbasin  58:      NaN
+subbasin  59:      NaN
+subbasin  60:    0.573
+subbasin  61:      NaN
+subbasin  62:      NaN
+subbasin  63:    0.106
+subbasin  64:      NaN
+subbasin  65:      NaN
+subbasin  66:      NaN
+subbasin  67:    0.143
+subbasin  68:      NaN
+subbasin  69:      NaN
+subbasin  70:      NaN
+subbasin  71:      NaN
+subbasin  72:      NaN
+subbasin  73:      NaN
+subbasin  74:    0.163
+subbasin  75:    0.509
+subbasin  76:      NaN
+subbasin  77:      NaN
+subbasin  78:      NaN
+subbasin  79:      NaN
+subbasin  80:      NaN
+subbasin  81:      NaN
+subbasin  82:      NaN
+subbasin  83:      NaN
+subbasin  84:    0.879
+subbasin  85:    0.354
+subbasin  86:      NaN
+subbasin  87:      NaN
+subbasin  88:      NaN
+subbasin  89:      NaN
+subbasin  90:    0.691
+subbasin  91:      NaN
+subbasin  92:      NaN
+subbasin  93:    1.213
+subbasin  94:    0.443
+subbasin  95:    0.454
+subbasin  96:    0.572
+subbasin  97:    0.378
+subbasin  98:    0.444
+subbasin  99:    0.363
+subbasin 100:    0.438
+subbasin 101:    0.364
+subbasin 102:    0.286
+subbasin 103:    0.438
+subbasin 104:      NaN
+subbasin 105:    0.314
+subbasin 106:      NaN
+subbasin 107:      NaN
+subbasin 108:      NaN
+subbasin 109:    0.130
+subbasin 110:    0.129
+subbasin 111:      NaN
+subbasin 112:      NaN
+ 
+ correlation of QSIM and QOBS (CORR):
+subbasin   1:    0.739
+subbasin   2:    0.793
+subbasin   3:    0.868
+subbasin   4:    0.813
+subbasin   5:    0.863
+subbasin   6:      NaN
+subbasin   7:      NaN
+subbasin   8:    0.878
+subbasin   9:    0.912
+subbasin  10:      NaN
+subbasin  11:      NaN
+subbasin  12:      NaN
+subbasin  13:      NaN
+subbasin  14:      NaN
+subbasin  15:      NaN
+subbasin  16:      NaN
+subbasin  17:      NaN
+subbasin  18:      NaN
+subbasin  19:      NaN
+subbasin  20:    0.926
+subbasin  21:      NaN
+subbasin  22:      NaN
+subbasin  23:      NaN
+subbasin  24:    0.939
+subbasin  25:      NaN
+subbasin  26:      NaN
+subbasin  27:    0.655
+subbasin  28:      NaN
+subbasin  29:      NaN
+subbasin  30:    0.901
+subbasin  31:      NaN
+subbasin  32:    0.884
+subbasin  33:      NaN
+subbasin  34:    0.943
+subbasin  35:    0.901
+subbasin  36:      NaN
+subbasin  37:      NaN
+subbasin  38:    0.923
+subbasin  39:      NaN
+subbasin  40:      NaN
+subbasin  41:    0.860
+subbasin  42:      NaN
+subbasin  43:    0.940
+subbasin  44:      NaN
+subbasin  45:      NaN
+subbasin  46:    0.906
+subbasin  47:    0.862
+subbasin  48:      NaN
+subbasin  49:    0.892
+subbasin  50:    0.734
+subbasin  51:    0.761
+subbasin  52:    0.918
+subbasin  53:    0.952
+subbasin  54:      NaN
+subbasin  55:      NaN
+subbasin  56:      NaN
+subbasin  57:      NaN
+subbasin  58:      NaN
+subbasin  59:      NaN
+subbasin  60:    0.832
+subbasin  61:      NaN
+subbasin  62:      NaN
+subbasin  63:    0.949
+subbasin  64:      NaN
+subbasin  65:      NaN
+subbasin  66:      NaN
+subbasin  67:    0.950
+subbasin  68:      NaN
+subbasin  69:      NaN
+subbasin  70:      NaN
+subbasin  71:      NaN
+subbasin  72:      NaN
+subbasin  73:      NaN
+subbasin  74:    0.950
+subbasin  75:    0.842
+subbasin  76:      NaN
+subbasin  77:      NaN
+subbasin  78:      NaN
+subbasin  79:      NaN
+subbasin  80:      NaN
+subbasin  81:      NaN
+subbasin  82:      NaN
+subbasin  83:      NaN
+subbasin  84:    0.761
+subbasin  85:    0.827
+subbasin  86:      NaN
+subbasin  87:      NaN
+subbasin  88:      NaN
+subbasin  89:      NaN
+subbasin  90:    0.696
+subbasin  91:      NaN
+subbasin  92:      NaN
+subbasin  93:    0.608
+subbasin  94:    0.791
+subbasin  95:    0.773
+subbasin  96:    0.738
+subbasin  97:    0.840
+subbasin  98:    0.798
+subbasin  99:    0.845
+subbasin 100:    0.814
+subbasin 101:    0.835
+subbasin 102:    0.865
+subbasin 103:    0.830
+subbasin 104:      NaN
+subbasin 105:    0.878
+subbasin 106:      NaN
+subbasin 107:      NaN
+subbasin 108:      NaN
+subbasin 109:    0.944
+subbasin 110:    0.946
+subbasin 111:      NaN
+subbasin 112:      NaN
+ 
+ autocorrelation of error (QSIM-QOBS) (ACERR):
+lag (days):        1        2        5       10       20 
+subbasin   1:    0.930    0.812    0.550    0.470    0.364 
+subbasin   2:    0.951    0.857    0.625    0.558    0.461 
+subbasin   3:    0.996    0.989    0.963    0.922    0.860 
+subbasin   4:    0.998    0.993    0.970    0.930    0.871 
+subbasin   5:    0.996    0.989    0.960    0.908    0.834 
+subbasin   6:      NaN      NaN      NaN      NaN      NaN 
+subbasin   7:      NaN      NaN      NaN      NaN      NaN 
+subbasin   8:    0.981    0.950    0.872    0.788    0.722 
+subbasin   9:    0.992    0.973    0.909    0.843    0.741 
+subbasin  10:      NaN      NaN      NaN      NaN      NaN 
+subbasin  11:      NaN      NaN      NaN      NaN      NaN 
+subbasin  12:      NaN      NaN      NaN      NaN      NaN 
+subbasin  13:      NaN      NaN      NaN      NaN      NaN 
+subbasin  14:      NaN      NaN      NaN      NaN      NaN 
+subbasin  15:      NaN      NaN      NaN      NaN      NaN 
+subbasin  16:      NaN      NaN      NaN      NaN      NaN 
+subbasin  17:      NaN      NaN      NaN      NaN      NaN 
+subbasin  18:      NaN      NaN      NaN      NaN      NaN 
+subbasin  19:      NaN      NaN      NaN      NaN      NaN 
+subbasin  20:    0.988    0.967    0.901    0.820    0.724 
+subbasin  21:      NaN      NaN      NaN      NaN      NaN 
+subbasin  22:      NaN      NaN      NaN      NaN      NaN 
+subbasin  23:      NaN      NaN      NaN      NaN      NaN 
+subbasin  24:    0.990    0.971    0.902    0.810    0.671 
+subbasin  25:      NaN      NaN      NaN      NaN      NaN 
+subbasin  26:      NaN      NaN      NaN      NaN      NaN 
+subbasin  27:    0.950    0.872    0.770    0.700    0.650 
+subbasin  28:      NaN      NaN      NaN      NaN      NaN 
+subbasin  29:      NaN      NaN      NaN      NaN      NaN 
+subbasin  30:    0.939    0.897    0.814    0.687    0.554 
+subbasin  31:      NaN      NaN      NaN      NaN      NaN 
+subbasin  32:    0.981    0.954    0.887    0.770    0.620 
+subbasin  33:      NaN      NaN      NaN      NaN      NaN 
+subbasin  34:    0.984    0.964    0.911    0.828    0.703 
+subbasin  35:    0.977    0.943    0.857    0.729    0.544 
+subbasin  36:      NaN      NaN      NaN      NaN      NaN 
+subbasin  37:      NaN      NaN      NaN      NaN      NaN 
+subbasin  38:    0.991    0.980    0.940    0.878    0.783 
+subbasin  39:      NaN      NaN      NaN      NaN      NaN 
+subbasin  40:      NaN      NaN      NaN      NaN      NaN 
+subbasin  41:    0.985    0.967    0.930    0.892    0.846 
+subbasin  42:      NaN      NaN      NaN      NaN      NaN 
+subbasin  43:    0.994    0.984    0.942    0.857    0.721 
+subbasin  44:      NaN      NaN      NaN      NaN      NaN 
+subbasin  45:      NaN      NaN      NaN      NaN      NaN 
+subbasin  46:    0.986    0.974    0.945    0.910    0.869 
+subbasin  47:    0.986    0.962    0.886    0.792    0.696 
+subbasin  48:      NaN      NaN      NaN      NaN      NaN 
+subbasin  49:    0.991    0.977    0.919    0.846    0.778 
+subbasin  50:    0.930    0.843    0.691    0.579    0.434 
+subbasin  51:    0.990    0.974    0.924    0.855    0.750 
+subbasin  52:    0.983    0.963    0.891    0.806    0.750 
+subbasin  53:    0.991    0.980    0.939    0.862    0.747 
+subbasin  54:      NaN      NaN      NaN      NaN      NaN 
+subbasin  55:      NaN      NaN      NaN      NaN      NaN 
+subbasin  56:      NaN      NaN      NaN      NaN      NaN 
+subbasin  57:      NaN      NaN      NaN      NaN      NaN 
+subbasin  58:      NaN      NaN      NaN      NaN      NaN 
+subbasin  59:      NaN      NaN      NaN      NaN      NaN 
+subbasin  60:    0.946    0.913    0.871    0.822    0.734 
+subbasin  61:      NaN      NaN      NaN      NaN      NaN 
+subbasin  62:      NaN      NaN      NaN      NaN      NaN 
+subbasin  63:    0.977    0.952    0.906    0.821    0.721 
+subbasin  64:      NaN      NaN      NaN      NaN      NaN 
+subbasin  65:      NaN      NaN      NaN      NaN      NaN 
+subbasin  66:      NaN      NaN      NaN      NaN      NaN 
+subbasin  67:    0.973    0.946    0.900    0.815    0.706 
+subbasin  68:      NaN      NaN      NaN      NaN      NaN 
+subbasin  69:      NaN      NaN      NaN      NaN      NaN 
+subbasin  70:      NaN      NaN      NaN      NaN      NaN 
+subbasin  71:      NaN      NaN      NaN      NaN      NaN 
+subbasin  72:      NaN      NaN      NaN      NaN      NaN 
+subbasin  73:      NaN      NaN      NaN      NaN      NaN 
+subbasin  74:    0.974    0.949    0.901    0.810    0.695 
+subbasin  75:    0.986    0.961    0.874    0.751    0.605 
+subbasin  76:      NaN      NaN      NaN      NaN      NaN 
+subbasin  77:      NaN      NaN      NaN      NaN      NaN 
+subbasin  78:      NaN      NaN      NaN      NaN      NaN 
+subbasin  79:      NaN      NaN      NaN      NaN      NaN 
+subbasin  80:      NaN      NaN      NaN      NaN      NaN 
+subbasin  81:      NaN      NaN      NaN      NaN      NaN 
+subbasin  82:      NaN      NaN      NaN      NaN      NaN 
+subbasin  83:      NaN      NaN      NaN      NaN      NaN 
+subbasin  84:    0.958    0.872    0.630    0.418    0.270 
+subbasin  85:    0.947    0.847    0.588    0.410    0.445 
+subbasin  86:      NaN      NaN      NaN      NaN      NaN 
+subbasin  87:      NaN      NaN      NaN      NaN      NaN 
+subbasin  88:      NaN      NaN      NaN      NaN      NaN 
+subbasin  89:      NaN      NaN      NaN      NaN      NaN 
+subbasin  90:    0.960    0.876    0.633    0.431    0.185 
+subbasin  91:      NaN      NaN      NaN      NaN      NaN 
+subbasin  92:      NaN      NaN      NaN      NaN      NaN 
+subbasin  93:    0.986    0.957    0.859    0.731    0.610 
+subbasin  94:    0.988    0.961    0.861    0.728    0.623 
+subbasin  95:    0.936    0.866    0.759    0.696    0.635 
+subbasin  96:    0.954    0.884    0.752    0.665    0.553 
+subbasin  97:    0.962    0.901    0.731    0.619    0.536 
+subbasin  98:    0.974    0.917    0.740    0.520    0.276 
+subbasin  99:    0.985    0.945    0.761    0.543    0.434 
+subbasin 100:    0.980    0.948    0.872    0.782    0.697 
+subbasin 101:    0.965    0.902    0.745    0.604    0.502 
+subbasin 102:    0.971    0.916    0.757    0.654    0.569 
+subbasin 103:    0.968    0.892    0.653    0.451    0.374 
+subbasin 104:      NaN      NaN      NaN      NaN      NaN 
+subbasin 105:    0.988    0.957    0.819    0.642    0.541 
+subbasin 106:      NaN      NaN      NaN      NaN      NaN 
+subbasin 107:      NaN      NaN      NaN      NaN      NaN 
+subbasin 108:      NaN      NaN      NaN      NaN      NaN 
+subbasin 109:    0.975    0.954    0.906    0.815    0.715 
+subbasin 110:    0.982    0.960    0.913    0.831    0.747 
+subbasin 111:      NaN      NaN      NaN      NaN      NaN 
+subbasin 112:      NaN      NaN      NaN      NaN      NaN 
+ 
+ number of sign changes (NSC):
+subbasin   1:     1883
+subbasin   2:     1641
+subbasin   3:      232
+subbasin   4:      147
+subbasin   5:      241
+subbasin   6:        0
+subbasin   7:        0
+subbasin   8:      352
+subbasin   9:      412
+subbasin  10:        0
+subbasin  11:        0
+subbasin  12:        0
+subbasin  13:        0
+subbasin  14:        0
+subbasin  15:        0
+subbasin  16:        0
+subbasin  17:        0
+subbasin  18:        0
+subbasin  19:        0
+subbasin  20:      465
+subbasin  21:        0
+subbasin  22:        0
+subbasin  23:        0
+subbasin  24:      559
+subbasin  25:        0
+subbasin  26:        0
+subbasin  27:      209
+subbasin  28:        0
+subbasin  29:        0
+subbasin  30:      381
+subbasin  31:        0
+subbasin  32:      449
+subbasin  33:        0
+subbasin  34:      639
+subbasin  35:      390
+subbasin  36:        0
+subbasin  37:        0
+subbasin  38:      396
+subbasin  39:        0
+subbasin  40:        0
+subbasin  41:      382
+subbasin  42:        0
+subbasin  43:      427
+subbasin  44:        0
+subbasin  45:        0
+subbasin  46:      492
+subbasin  47:      230
+subbasin  48:        0
+subbasin  49:      246
+subbasin  50:      301
+subbasin  51:      314
+subbasin  52:      306
+subbasin  53:      538
+subbasin  54:        0
+subbasin  55:        0
+subbasin  56:        0
+subbasin  57:        0
+subbasin  58:        0
+subbasin  59:        0
+subbasin  60:      180
+subbasin  61:        0
+subbasin  62:        0
+subbasin  63:     1158
+subbasin  64:        0
+subbasin  65:        0
+subbasin  66:        0
+subbasin  67:     1036
+subbasin  68:        0
+subbasin  69:        0
+subbasin  70:        0
+subbasin  71:        0
+subbasin  72:        0
+subbasin  73:        0
+subbasin  74:      896
+subbasin  75:      292
+subbasin  76:        0
+subbasin  77:        0
+subbasin  78:        0
+subbasin  79:        0
+subbasin  80:        0
+subbasin  81:        0
+subbasin  82:        0
+subbasin  83:        0
+subbasin  84:      273
+subbasin  85:     1528
+subbasin  86:        0
+subbasin  87:        0
+subbasin  88:        0
+subbasin  89:        0
+subbasin  90:      208
+subbasin  91:        0
+subbasin  92:        0
+subbasin  93:      212
+subbasin  94:      263
+subbasin  95:      445
+subbasin  96:      249
+subbasin  97:      313
+subbasin  98:      218
+subbasin  99:      213
+subbasin 100:      618
+subbasin 101:      623
+subbasin 102:      271
+subbasin 103:      197
+subbasin 104:        0
+subbasin 105:      163
+subbasin 106:        0
+subbasin 107:        0
+subbasin 108:        0
+subbasin 109:     1101
+subbasin 110:     1011
+subbasin 111:        0
+subbasin 112:        0
+ 
+ 
+length of period in the beginning where no obj.-function was computed: 5831 days
+lower threshold of observed runoff:    0.00 m3/s
+upper threshold of observed runoff:99999.00 m3/s
+number of days on which observed runoff was between lower and upper threshold:
+                                                                   subbasin   1:23401
+                                                                   subbasin   2:23401
+                                                                   subbasin   3:23401
+                                                                   subbasin   4:23401
+                                                                   subbasin   5:23401
+                                                                   subbasin   6:    0
+                                                                   subbasin   7:    0
+                                                                   subbasin   8:23401
+                                                                   subbasin   9:23401
+                                                                   subbasin  10:    0
+                                                                   subbasin  11:    0
+                                                                   subbasin  12:    0
+                                                                   subbasin  13:    0
+                                                                   subbasin  14:    0
+                                                                   subbasin  15:    0
+                                                                   subbasin  16:    0
+                                                                   subbasin  17:    0
+                                                                   subbasin  18:    0
+                                                                   subbasin  19:    0
+                                                                   subbasin  20:23401
+                                                                   subbasin  21:    0
+                                                                   subbasin  22:    0
+                                                                   subbasin  23:    0
+                                                                   subbasin  24:23401
+                                                                   subbasin  25:    0
+                                                                   subbasin  26:    0
+                                                                   subbasin  27:23401
+                                                                   subbasin  28:    0
+                                                                   subbasin  29:    0
+                                                                   subbasin  30:23401
+                                                                   subbasin  31:    0
+                                                                   subbasin  32:23401
+                                                                   subbasin  33:    0
+                                                                   subbasin  34:23401
+                                                                   subbasin  35:23401
+                                                                   subbasin  36:    0
+                                                                   subbasin  37:    0
+                                                                   subbasin  38:23401
+                                                                   subbasin  39:    0
+                                                                   subbasin  40:    0
+                                                                   subbasin  41:23401
+                                                                   subbasin  42:    0
+                                                                   subbasin  43:23401
+                                                                   subbasin  44:    0
+                                                                   subbasin  45:    0
+                                                                   subbasin  46:23401
+                                                                   subbasin  47:23401
+                                                                   subbasin  48:    0
+                                                                   subbasin  49:23401
+                                                                   subbasin  50:23401
+                                                                   subbasin  51:23401
+                                                                   subbasin  52:23401
+                                                                   subbasin  53:23401
+                                                                   subbasin  54:    0
+                                                                   subbasin  55:    0
+                                                                   subbasin  56:    0
+                                                                   subbasin  57:    0
+                                                                   subbasin  58:    0
+                                                                   subbasin  59:    0
+                                                                   subbasin  60:23401
+                                                                   subbasin  61:    0
+                                                                   subbasin  62:    0
+                                                                   subbasin  63:23401
+                                                                   subbasin  64:    0
+                                                                   subbasin  65:    0
+                                                                   subbasin  66:    0
+                                                                   subbasin  67:23401
+                                                                   subbasin  68:    0
+                                                                   subbasin  69:    0
+                                                                   subbasin  70:    0
+                                                                   subbasin  71:    0
+                                                                   subbasin  72:    0
+                                                                   subbasin  73:    0
+                                                                   subbasin  74:23401
+                                                                   subbasin  75:23401
+                                                                   subbasin  76:    0
+                                                                   subbasin  77:    0
+                                                                   subbasin  78:    0
+                                                                   subbasin  79:    0
+                                                                   subbasin  80:    0
+                                                                   subbasin  81:    0
+                                                                   subbasin  82:    0
+                                                                   subbasin  83:    0
+                                                                   subbasin  84:23401
+                                                                   subbasin  85:23401
+                                                                   subbasin  86:    0
+                                                                   subbasin  87:    0
+                                                                   subbasin  88:    0
+                                                                   subbasin  89:    0
+                                                                   subbasin  90:23401
+                                                                   subbasin  91:    0
+                                                                   subbasin  92:    0
+                                                                   subbasin  93:23401
+                                                                   subbasin  94:23401
+                                                                   subbasin  95:23401
+                                                                   subbasin  96:23401
+                                                                   subbasin  97:23401
+                                                                   subbasin  98:23401
+                                                                   subbasin  99:23401
+                                                                   subbasin 100:23401
+                                                                   subbasin 101:23401
+                                                                   subbasin 102:23401
+                                                                   subbasin 103:23401
+                                                                   subbasin 104:    0
+                                                                   subbasin 105:23401
+                                                                   subbasin 106:    0
+                                                                   subbasin 107:    0
+                                                                   subbasin 108:    0
+                                                                   subbasin 109:23401
+                                                                   subbasin 110:23401
+                                                                   subbasin 111:    0
+                                                                   subbasin 112:    0
