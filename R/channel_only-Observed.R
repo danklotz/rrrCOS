@@ -15,7 +15,7 @@ channel.only_observed <- function(runoff_data) {
   runoff_data[is.na(runoff_data)] <- -999 
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
   if ( any(colmax < 0.0) ){
-    # make shure that there are only qobs which have max -999
+    # make sure that there are only qobs which have max -999
     idx_temp <- which(colmax < 0.0) 
     OnlyQobsSelected <- names(idx_temp) %>% tolower %>% grepl("qobs.*",.) %>% any
     if (!OnlyQobsSelected){
@@ -23,6 +23,10 @@ channel.only_observed <- function(runoff_data) {
     }
     idx_slct <- c(idx_temp,idx_temp + 1) %>% sort() # we add +1 to the idx to get also the simulations
     d_onlyObserved <- runoff_data[-idx_slct]
+    # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
+    colmax <- lapply(X = d_onlyObserved, FUN = min)
+    idx_temp <- which(colmax < 0.0) 
+    d_onlyObserved[d_onlyObserved[idx_temp]<0, idx_temp] <- NA
     return(d_onlyObserved)
   } else {
     return(runoff_data)
