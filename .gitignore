@@ -1,5 +1,6 @@
 #individual files
 R/sstart.R
+.Rhistory
 
 # not needed files in www
 R/App/www/*.html
@@ -16,7 +17,6 @@ R/App/www/output.runoff
 Statistics.txt
 bfg.jar
 # History files
-.Rhistory
 .Rapp.history
 # Example code in package build process
 *-Ex.R

@@ -1,4 +1,4 @@
----
+w---
 title: "Example 1"
 author: "Daniel Klotz"
 output: 

@@ -7,7 +7,7 @@
 #' @export
 channel.runoff_as_xts <- function(runoff_data) {
   # pre
-  require("xts")
+  require(xts, quietly = TRUE)
   assert.dataframe(runoff_data)
   assert.Chunk(runoff_data)
   # calculations:

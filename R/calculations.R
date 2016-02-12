@@ -11,14 +11,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   source("R/f_rasterplot_functions.R")
   # data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
-  ctrl <- fetch.ctrl()
-  ctrl$pathDotRunoff  <- file.choose()
+   ctrl <- fetch.ctrl()
+   ctrl$pathDotRunoff  <- file.choose()
   # load runoff files
   
   #§ assumed to be done by the user!!!
-  #       require("data.table")
-  #       d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
-  #           as.data.frame(.)
+         require("data.table")
+        d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+             as.data.frame(.)
   #§
   # eliminate basins withouth observations:
   d_raw <- fetch.runoff_example()

@@ -22,12 +22,12 @@ channel.evalPeriods <- function(runoff_data, smonth, emonth) {
   for (i in 1:nrow(runoff_data)-1) {
     if (runoff_data$mm[i] < smonth & stag == 1) {
       temp_runoff <- temp_runoff[-1,]
-    } else (runoff_data$mm[i] >= smonth & stag == 1) {
+    } else if (runoff_data$mm[i] >= smonth & stag == 1) {
     stag == 2
     evaltag <- evaltag
     runoff_data$EvalPeriod <- evaltag
-    } else (runoff_data$mm[i] >= smonth & stag == 1) {
-      
+    } else if (runoff_data$mm[i] >= smonth & stag == 1) {
+      # corrected coding mistake : P
     }
   }
 
