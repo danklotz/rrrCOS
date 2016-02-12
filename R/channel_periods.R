@@ -29,6 +29,10 @@ channel.periods <- function(runoff_data, start_month, end_month) {
   end_sorter <- runoff_data$mm %in% c(end_month) %>% eval_dif %>% pmin(.,0)
   start_points <- which(start_sorter == 1) 
   end_points <- which(end_sorter == -1)
+  # :( 
+  if (length(end_points) > length(start_points)) {
+    end_points <- end_points[2:length(end_points)]
+  }
   #
   runoff_data$period <- 0
   for ( k in 1:length(end_points) ) {
