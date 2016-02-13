@@ -6,7 +6,7 @@
 fetch.number_of_basins <- function(runoff_data) {
   require(magrittr)
   assert.dataframe(runoff_data)
-  assert.Chunk(runoff_data)
+  assert.chunk(runoff_data)
   #
   d_names <- names(runoff_data)
   d_nums <- d_names  %>% gsub('\\D','',.) %>% unique

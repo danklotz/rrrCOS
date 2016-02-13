@@ -13,12 +13,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # SETUP #§ temporary !?
    ctrl <- fetch.ctrl()
    ctrl$pathDotRunoff  <- file.choose()
+
   # load runoff files
   
   #§ assumed to be done by the user!!!
          require("data.table")
         d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
              as.data.frame(.)
+        names(d_raw)[5] <- "min"
   #§
   # eliminate basins withouth observations:
   d_raw <- fetch.runoff_example()
@@ -41,22 +43,23 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # convert d_runoff to time series object (i.e. "xts")
   d_xts <- channel.runoff_as_xts(d_runoff)
   # calculate hydrological years:
-  d_runoff <- channel.hydyears(d_runoff)
+  d_runoff <- channel.periods(d_runoff, start_month = 9, end_month = 8)
   years_in_data <- fetch.years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
-  hydyears_in_d <- fetch.hydyears(d_runoff,years_in_data)
-  num_hydyears <- length(hydyears_in_d)
+    # hydyears_in_d <- fetch.hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
+  periods_in_data <- which(unique(d_runoff$period) > 0)
+  num_periods <- length(periods_in_data)
   
 
 # calculations ------------------------------------------------------------
-  bOF <- fetch.some_ofun_4_hydyears(d_runoff,hydyears_in_d)
+  bOF <- fetch.period_ofun(d_runoff)
   
   
   
 # plotting --------------------------------------------------------------
   ## NSE
   ### yearly
-    plt_ynse <- pour.yearly_NSE(from = bOF, given = hydyears_in_d)
+    plt_ynse <- pour.period_NSE(from = bOF, given = periods_in_data)
   ### total
     pour.totalNSE(from = bOF)
   ### expanded barplots & htmlfiles

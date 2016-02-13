@@ -10,7 +10,7 @@ channel.only_observed <- function(runoff_data) {
   # pre
   require(magrittr)
   assert.dataframe(runoff_data)
-  assert.Chunk(runoff_data)
+  assert.chunk(runoff_data)
   # calc
   runoff_data[is.na(runoff_data)] <- -999 
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column

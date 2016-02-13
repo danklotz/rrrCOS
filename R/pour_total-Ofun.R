@@ -45,6 +45,7 @@ pour.totalKGE <- function(from,...) {
 pour.totalOfun <- function(choice,bOF,plt_ctrl) {
   # def 
   assert.basicOF(bOF)
+  require(ggplot2, quietly = TRUE)
   #
   Ofun_total<- bOF[[choice]]
   eval_size <- length(Ofun_total)
