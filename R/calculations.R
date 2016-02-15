@@ -17,7 +17,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # load runoff files
   
   #§ assumed to be done by the user!!!
-         require("data.table")
+        require("data.table")
         d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
              as.data.frame(.)
         names(d_raw)[5] <- "min"
