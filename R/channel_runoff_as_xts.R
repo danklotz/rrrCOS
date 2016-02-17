@@ -8,9 +8,11 @@
 channel.runoff_as_xts <- function(runoff_data) {
   # pre
   require(xts, quietly = TRUE)
+  require(magrittr, quietly = TRUE)
   assert.dataframe(runoff_data)
   assert.chunk(runoff_data)
   # calculations:
-  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate)
+  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% channel.names
+  # 
   return(runoff_data_as_xts)
 }

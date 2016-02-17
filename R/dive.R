@@ -16,9 +16,9 @@ explore.runoff <- function(runoff_data,d_xts) {
   ##########################
   # calc
   d_names <- names(d_xts)
-  idx_names <- d_names %>% tolower %>% grepl("qobs.*|qsim.*" ,.)
+  idx_names <- d_names %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names[idx_names]
-  d_nums <<- d_xts %>% as.data.frame %>% fetch("number_of_basins",.) 
+  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique 
   #
   runApp("R/AppExplore") #$ how do I fix the path to the app?
 }

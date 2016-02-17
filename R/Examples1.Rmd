@@ -25,20 +25,32 @@ We can see that the file contains the dates in the form of the **COSdate** forma
 
 As a next step we might then want to remove unobserved basins. This can be done with `channel.onlyObserved`
 ```{r}
-  QobsNotObserved <- d_raw  # copy data frame from the example
-  QobsNotObserved$QOBS_0002 <- NA # overwrite a Qobs-Column with NA's
-  QobsNotObserved %>% channel.remove_chunk %>% channel.only_observed %>% head
+  d_runoff <- channel(this = remove_chunk, from_that = d_runoff)
+  head(d_runoff)
 ```
+
+Note that we can also pipe the operations, simplifying the last steps to: `QobsNotObserved %>% channel.remove_chunk %>% channel.only_observed %>% head`.
 
 **visCOS** makes use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  runoff_data data.frame (xxx) can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `channel.implode_cosdate` function. Noting that `channel.implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
 
 If the 
 ```{r}
   d_runoff$POSIXdate <- channel(this = implode_cosdate, from_that = d_runoff)
-  
 ```
 
+```{r}
+  num_basins <- fetch.number_of_basins(d_runoff)
+  d_xts <- channel.runoff_as_xts(d_runoff)
+  years_in_data <- fetch.years_in_data(d_runoff)
+```
 
+```{r}
+  d_runoff <- channel.periods(d_runoff, start_month = 9, end_month = 8)
+```
+
+```{r}
+  bOF <- fetch.period_ofun(d_runoff)
+```
 
 
 

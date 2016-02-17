@@ -40,6 +40,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   
   # add full date information to data
   d_runoff$POSIXdate <- channel.implode_cosdate(d_runoff)
+  # normalize data names: 
+  d_runoff %<>% channel.names
+  
   # convert d_runoff to time series object (i.e. "xts")
   d_xts <- channel.runoff_as_xts(d_runoff)
   # calculate hydrological years:
@@ -147,19 +150,30 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 
 
 
-  
-  # waterbilance
+# water bilance -----------------------------------------------------------
   # 1. total water bilance
-  d_run <- fetch.runoff()
+  reuire(magrittr, quietly = TRUE)
+  # d_run <- fetch.runoff_example() %>% channel.remove_chunk
+  ctrl <- fetch.ctrl()
+  ctrl$pathDotRunoff  <- file.choose()
+  require("data.table")
+  d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+    as.data.frame(.)
+  d_run <- d_raw %>% 
+    channel.remove_chunk %>% 
+    channel.only_observed  
+  names(d_raw)[5] <- "min"
   tmp_cum <- d_run %>%
     select(starts_with("qobs"), starts_with("qsim")) %>%
     apply(.,2,cumsum) %>%
     as.data.frame
-  RegExPattern <- names(tmp_cum) %>% paste(collapse = "|")
-  selectionQobsAndSim <- grepl(RegExPattern,names(d_run))
+  selectionQobsAndSim <-  grepl( "qobs.*|qsim.*",(names(d_run)%>%tolower) )
   d_cum <- d_run
   d_cum[selectionQobsAndSim] <- tmp_cum
   #2. (hydyearly water bilance)
+  d_run %<>% channel.periods(start_month = 9, end_month = 8)
+  g <- unique(d_run$period)
+
 
   
   }

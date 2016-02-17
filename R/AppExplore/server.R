@@ -1,12 +1,19 @@
-library(shiny)
+require(shiny, quietly = TRUE)
 require("xts")
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {# executes calculation file
   # select the basin from the data
   #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
-  select_OBS <- reactive({sprintf("QOBS_%02d", as.integer(input$basin_num))})
-  select_SIM <- reactive({sprintf("QSIM_%02d", as.integer(input$basin_num))})
+  
+  # get strings used in the naming of runoff_data 
+  just_words <- names(d_runoff) %>% gsub("\\d","",.) %>% unique
+  obs_string <- just_words[ just_words %>% tolower %>% grep("qobs",.) ]
+  sim_string <- just_words[ just_words %>% tolower %>% grep("qsim",.) ]
+  # 
+  '%&%' <- function(a,b) paste(a,b,sep = "")
+  select_OBS <- reactive({ obs_string %&% input$basin_num %&% "$" })
+  select_SIM <- reactive({ sim_string %&% input$basin_num %&% "$" })
   
   slctd_data <- reactive({
     select(d_runoff,
