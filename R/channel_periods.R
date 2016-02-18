@@ -5,7 +5,8 @@
 #' @export
 channel.periods <- function(runoff_data, start_month, end_month) {
   # pre 
-    require(dplyr)
+    require(dplyr, quietly = TRUE)
+    require(magrittr, quietly = TRUE)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
     if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
       stop("data.frame does neiter contain POSIXdate nor COSdate")
