@@ -150,15 +150,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 
 
 
-# water bilance -----------------------------------------------------------
+# water balance -----------------------------------------------------------
   # 1. total water bilance
-  reuire(magrittr, quietly = TRUE)
+  require(magrittr, quietly = TRUE)
   # d_run <- fetch.runoff_example() %>% channel.remove_chunk
   ctrl <- fetch.ctrl()
   ctrl$pathDotRunoff  <- file.choose()
   require("data.table")
   d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
+  names(d_raw)[5] <- "min"
   d_run <- d_raw %>% 
     channel.remove_chunk %>% 
     channel.only_observed  
@@ -171,9 +172,41 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_cum <- d_run
   d_cum[selectionQobsAndSim] <- tmp_cum
   #2. (hydyearly water bilance)
-  d_run %<>% channel.periods(start_month = 9, end_month = 8)
+  period_start <- 9
+  period_end <- 8
+  d_run %<>% channel.periods(start_month = period_start, end_month = period_end)
   g <- unique(d_run$period)
-
+  require(dplyr)
+  baptize <-  function(data,new_names) {
+    names(data) <- new_names
+    return(data)
+  }
+  only_q <- d_run %>% select(starts_with("q"))
+  p <- matrix( data = NA, nrow =  12, ncol = (dim(d_run)[2]-7) ) %>% as.data.frame %>% 
+        baptize( names(only_q) )
+  for (k in 1:12) {
+    p[k,] <- d_run %>% filter(mm == k) %>% select(starts_with("q")) %>% apply(.,2,sum)
+  }
+  # 3. test for areal accumulation 
+  nb <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+  to_nb <- c(2,3,4,9,6,9,9,9,12,12,12,0) 
+  area <- c(44.2,47.6,28.4,11.1,34.8,5.9,87.1,67.1,49.1,58.8,62.9,154.2)
+  test_case <- data.frame(nb,to_nb,area)
+  #
+  sum_a <- nb 
+  for (n in nb) {
+    if (n == 1) {
+      sum_a[n] <- area[n] 
+    } else {
+      tmp <- test_case %>% filter(to_nb == n) %>% as.numeric 
+      
+      if ( is.na(tmp) ) {
+        
+      } else 
+      sum_a[n] <- area[n] + tmp
+    }
+  }
+  
 
   
   }
