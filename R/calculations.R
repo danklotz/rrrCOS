@@ -163,7 +163,6 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_run <- d_raw %>% 
     channel.remove_chunk %>% 
     channel.only_observed  
-  names(d_raw)[5] <- "min"
   tmp_cum <- d_run %>%
     select(starts_with("qobs"), starts_with("qsim")) %>%
     apply(.,2,cumsum) %>%
@@ -177,6 +176,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_run %<>% channel.periods(start_month = period_start, end_month = period_end)
   g <- unique(d_run$period)
   require(dplyr)
+  require(ggplot2)
   baptize <-  function(data,new_names) {
     names(data) <- new_names
     return(data)
@@ -187,29 +187,77 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   for (k in 1:12) {
     p[k,] <- d_run %>% filter(mm == k) %>% select(starts_with("q")) %>% apply(.,2,sum)
   }
-  # 3. test for areal accumulation 
-  nb <- c(1,2,3,4,5,6,7,8,9,10,11,12)
-  to_nb <- c(2,3,4,9,6,9,9,9,12,12,12,0) 
-  area <- c(44.2,47.6,28.4,11.1,34.8,5.9,87.1,67.1,49.1,58.8,62.9,154.2)
-  test_case <- data.frame(nb,to_nb,area)
-  #
-  sum_a <- nb 
-  for (n in nb) {
-    if (n == 1) {
-      sum_a[n] <- area[n] 
-    } else {
-      tmp <- test_case %>% filter(to_nb == n) %>% as.numeric 
-      
-      if ( is.na(tmp) ) {
-        
-      } else 
-      sum_a[n] <- area[n] + tmp
-    }
-  }
+  # future function for plotting: 
+  require(broom, quietly = TRUE)
+  obs_name <- "QOBS_0085"
+  sim_name <- "QSIM_0085"
+  q_data <- p %>% select( contains(sim_name) , contains(obs_name) )
+  q_data <- rbind(  q_data,
+                    c(NA,NA),
+                    c( mean(q_data[[obs_name]]) ,mean(q_data[[sim_name]]) ) 
+                  )
+  month <- c(1:14) %>% as.factor(.)
+  levels(month)[13] <- ""
+  levels(month)[14] <- "mean"
+  q_data <- cbind(month,q_data) 
+
+  p1 <- ggplot(q_data) + 
+    geom_point(aes_string(x = "month", y = obs_name, group = 1), color = "steelblue") +
+    geom_line( aes_string(x = "month", y = obs_name, group = 1), color = "steelblue") 
+  p1 + geom_point( aes_string(x = "month", y = sim_name, group = 2), color = "palevioletred" ) +
+    geom_line( aes_string(x = "month", y = sim_name, group = 2), color = "palevioletred" ) +
+        theme_bw()
   
+  qq_data <- reshape2::melt(q_data)
+  
+  ggplot(qq_data) + geom_line(aes(x=month, y=value, group = ))
 
   
+  mean_obs <- mean(q_data[[obs_name]]) %>% as.data.frame
+  # 
+  
+  # for later, to rescale to mm 
+    cum_area <- function(areal_data) {
+      # def 
+        require(dplyr, quietly = TRUE)
+        # missing :((((
+      # calc:
+      names(areal_data) <- c("nb","to_nb","area")
+      areal_data %<>% mutate(cum_area = area)
+      # 
+      for (n in areal_data$nb) {
+        tmp <- areal_data %>% filter(to_nb == n) %>% select(cum_area) %>% apply(.,2,sum)
+        areal_data$cum_area[n] <- areal_data$area[n] + tmp
+      } 
+      return(areal_data)
+    }
+  
+    links <- read.csv("in/ezfl_links.txt", header = TRUE, sep = ";")
+    links  %<>% cum_area
+  
+# 3. test for areal accumulation  -----------------------------------------
+  ## test 1
+    nb <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+    to_nb <- c(2,3,4,9,6,9,9,9,12,12,12,0) 
+    area <- c(44.2,47.6,28.4,11.1,34.8,5.9,87.1,67.1,49.1,58.8,62.9,154.2)
+    sum_area.real <- c(44.2,91.9,120.3,131.3,34.8,40.7,87.1,67.1,375.3,58.8,62.9,651.3)
+    test_case <- data.frame(nb,to_nb,area)
+    #
+    test_case %<>% cum_area
+    #
+    test <- equals(sum_area.real,test_case$cum_area) # weak, because of rounding errors!
+    stopifnot(min(test) == 1)
+  ## test2 
+    test_case2 <- read.csv("in/ezfl_links.txt", header = TRUE, sep = ";")
+    test_case2  %<>% cum_area
+    # cannot be made properly because johannes-data is wrong :(
+  
+  
+  
   }
+
+
+
 
 
 
