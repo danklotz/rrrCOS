@@ -171,12 +171,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_cum <- d_run
   d_cum[selectionQobsAndSim] <- tmp_cum
   #2. (hydyearly water bilance)
+  require(dplyr, quietly = TRUE)
+  require(ggplot2, quietly = TRUE)
+  require(broom, quietly = TRUE)
+  require(GGally, quietly = TRUE)
+  require(grid, quietly = TRUE)
+  # 
   period_start <- 9
   period_end <- 8
   d_run %<>% channel.periods(start_month = period_start, end_month = period_end)
   g <- unique(d_run$period)
-  require(dplyr)
-  require(ggplot2)
   baptize <-  function(data,new_names) {
     names(data) <- new_names
     return(data)
@@ -188,32 +192,42 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     p[k,] <- d_run %>% filter(mm == k) %>% select(starts_with("q")) %>% apply(.,2,sum)
   }
   # future function for plotting: 
-  require(broom, quietly = TRUE)
   obs_name <- "QOBS_0085"
   sim_name <- "QSIM_0085"
-  q_data <- p %>% select( contains(sim_name) , contains(obs_name) )
-  q_data <- rbind(  q_data,
-                    c(NA,NA),
-                    c( mean(q_data[[obs_name]]) ,mean(q_data[[sim_name]]) ) 
-                  )
-  month <- c(1:14) %>% as.factor(.)
-  levels(month)[13] <- ""
-  levels(month)[14] <- "mean"
+  q_data <- p %>% select( contains(obs_name) , contains(sim_name) )
+  names(q_data) <- c("obs","sim") 
+  q_data %<>% mutate(rel_error = 100*(sim-obs)/obs) 
+  # include list of monts
+  mean_error <- mean(q_data$rel_error)
+  q_data <- rbind(  q_data,c(NA,NA,mean_error) )
+  month <- c(1:13) %>% as.factor(.)
   q_data <- cbind(month,q_data) 
+  levels(month)[13] <- "mean"
+  #
 
+  
+  plots <- list()
   p1 <- ggplot(q_data) + 
-    geom_point(aes_string(x = "month", y = obs_name, group = 1), color = "steelblue") +
-    geom_line( aes_string(x = "month", y = obs_name, group = 1), color = "steelblue") 
-  p1 + geom_point( aes_string(x = "month", y = sim_name, group = 2), color = "palevioletred" ) +
-    geom_line( aes_string(x = "month", y = sim_name, group = 2), color = "palevioletred" ) +
-        theme_bw()
-  
-  qq_data <- reshape2::melt(q_data)
-  
-  ggplot(qq_data) + geom_line(aes(x=month, y=value, group = ))
+    geom_line( aes_string(x = "month", y = "obs", group = 1), color = "steelblue", na.rm = TRUE)  + 
+    geom_line( aes_string(x = "month", y = "sim", group = 2), color = "palevioletred", na.rm = TRUE ) + 
+    theme_bw()
 
+  p2 <- ggplot(q_data, aes(x = month, y = rel_error )) + 
+    scale_y_continuous(limits = c(-100,100)) + 
+    geom_bar(fill = "orange", position = "identity", stat = 'identity') + 
+    theme_bw()
   
-  mean_obs <- mean(q_data[[obs_name]]) %>% as.data.frame
+  p11 <- ggplotGrob(p1)
+  p22 <- ggplotGrob(p2)
+  
+  p111 <- set_panel_size(g = p11, width = unit(0.8,"npc"),height=unit(0.5,"npc"))
+  p222 <- set_panel_size(g = p22, width = unit(0.8,"npc"),height=unit(0.25,"npc"))
+  
+  graphic1 <- rbind(p111, p222, size="first")
+  graphic1$widths <- unit.pmax(p111$widths, p222$widths)
+  
+  plot.new()
+  grid.draw(graphic1)
   # 
   
   # for later, to rescale to mm 

@@ -4,8 +4,9 @@
 #' @export
 pour.expandedbars.intoFile <- function(list_of_barplts, path = "",jpg_filenames = "bar_plot", hmtl_filename = "summary_file") {
   # pre
-  require(magrittr)
-  require(ggplot2)
+  require(magrittr, quietly = TRUE)
+  require(ggplot2, quietly = TRUE)
+  require(gridExtra, quietly = TRUE)
   '%&%' <- function(a,b) paste(a,b,sep = "") # helper for easiser string concatenation
   
   # calc
