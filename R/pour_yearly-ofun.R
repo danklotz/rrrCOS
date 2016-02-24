@@ -128,9 +128,9 @@ pour.period_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
                          midpoint = plt_ctrl$midpoint,
                          limits= plt_ctrl$limits,
                          na.value = plt_ctrl$clr4) +
-    theme_bw(base_size = 20) +
+    theme_bw(base_size = 15) +
     theme( legend.position="none" )  +
     geom_tile(color = "white", size = 0.25 ) +
-    geom_text(aes(period,numberBasins, label = as.character(OFvalue)), size = plt_ctrl$OFsize , color= "black")
+    geom_text(aes(period,numberBasins, label = as.character(OFvalue)), color= "black")
   return(plt_out)
 }

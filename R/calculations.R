@@ -69,7 +69,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   #### concatenate two 
     g1 <- ggplotGrob(plt_ynse)
     g2 <- ggplotGrob(plty_tnse)
-    grob_pltynse <- set_panel_size(g = g1, width = unit(0.5,"npc"),height=unit(0.8,"npc"))
+    grob_pltynse <- set_panel_size(g = g1, width = unit(0.6,"npc"),height=unit(0.8,"npc"))
     grob_pltytnse <- set_panel_size(g = g2, width = unit(0.1,"npc"),height=unit(0.8,"npc"))
     require(gtable)
     plot_both <- cbind(grob_pltynse,grob_pltytnse, size = "first")
