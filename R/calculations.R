@@ -22,9 +22,10 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
              as.data.frame(.)
         names(d_raw)[5] <- "min"
   #§
+        d_raw <- fetch.runoff_example()
+        #§
   # eliminate basins withouth observations:
-  d_raw <- fetch.runoff_example()
-  d_runoff <- d_raw %>% 
+   d_runoff <- d_raw %>% 
     channel.remove_chunk %>% 
     channel.only_observed
   # get num of used basins and their respective num
@@ -64,7 +65,20 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ### yearly
     plt_ynse <- pour.period_NSE(from = bOF, given = periods_in_data)
   ### total
-    pour.totalNSE(from = bOF)
+    plty_tnse <- pour.totalNSE(from = bOF)
+  #### concatenate two 
+    g1 <- ggplotGrob(plt_ynse)
+    g2 <- ggplotGrob(plty_tnse)
+    grob_pltynse <- set_panel_size(g = g1, width = unit(0.5,"npc"),height=unit(0.8,"npc"))
+    grob_pltytnse <- set_panel_size(g = g2, width = unit(0.1,"npc"),height=unit(0.8,"npc"))
+    require(gtable)
+    plot_both <- cbind(grob_pltynse,grob_pltytnse, size = "first")
+    grid.newpage()
+    grid.draw(plot_both)
+
+    
+    
+    
   ### expanded barplots & htmlfiles
   # fetch new list:
   plt_ctrl <- fetch.plt_ctrl()

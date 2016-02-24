@@ -13,6 +13,17 @@ Source: CRAN
 Version: 0.3.1
 Hash: 096699d1ac1cf530acfc646a0c90ee5d
 
+Package: FNN
+Source: CRAN
+Version: 1.1
+Hash: c057509dc46a5303c20514f256f79a5e
+
+Package: GGally
+Source: CRAN
+Version: 1.0.1
+Hash: 2fea556fc732a46c371a85089badca40
+Requires: ggplot2, gtable, plyr, reshape
+
 Package: R6
 Source: CRAN
 Version: 2.1.2
@@ -33,16 +44,33 @@ Source: CRAN
 Version: 0.1
 Hash: 0afb92b59b02593c70ff8046700ba9d3
 
+Package: automap
+Source: CRAN
+Version: 1.0-14
+Hash: e31a3b38f3190f8fb9badc76d70e2f6e
+Requires: gstat, reshape, sp
+
 Package: broom
 Source: CRAN
 Version: 0.4.0
 Hash: f234c9ab823ee862f4ed6188b8f4eef4
 Requires: dplyr, nlme, plyr, psych, reshape2, stringr, tidyr
 
+Package: chron
+Source: CRAN
+Version: 2.3-47
+Hash: d25d96d908cd21080f24c89eed4c80a0
+
 Package: colorspace
 Source: CRAN
 Version: 1.2-6
 Hash: 00bb12245cd975c450cc4a960884fa15
+
+Package: data.table
+Source: CRAN
+Version: 1.9.6
+Hash: f92ef1f73afa43bf6fd69a22f3794abd
+Requires: chron
 
 Package: dichromat
 Source: CRAN
@@ -60,6 +88,11 @@ Version: 0.4.3
 Hash: d7005d9f57021e610fa38635d7a0b8e0
 Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr
 
+Package: e1071
+Source: CRAN
+Version: 1.6-7
+Hash: a8b909c7e06f7bfcbdbbad439799e25d
+
 Package: ggplot2
 Source: CRAN
 Version: 2.0.0
@@ -72,10 +105,33 @@ Version: 2.0.0
 Hash: 9be37a2d3b6a427d8a3d2a42f2b0bc01
 Requires: gtable
 
+Package: gstat
+Source: CRAN
+Version: 1.1-2
+Hash: e5a96d64dff733660357a4220a829a2e
+Requires: FNN, sp, spacetime, zoo
+
 Package: gtable
 Source: CRAN
 Version: 0.1.2
 Hash: 38a0f066373a60824cd3ade2362af363
+
+Package: hydroGOF
+Source: CRAN
+Version: 0.3-8
+Hash: 36fa430b7a7187977512e3e9858f3284
+Requires: hydroTSM, xts, zoo
+
+Package: hydroTSM
+Source: CRAN
+Version: 0.4-2-1
+Hash: ce3acf468affef2338cd2391e5b6bbdd
+Requires: automap, e1071, gstat, sp, xts, zoo
+
+Package: intervals
+Source: CRAN
+Version: 0.15.1
+Hash: 26e23563c50548f8588a112a4baaa297
 
 Package: labeling
 Source: CRAN
@@ -125,6 +181,12 @@ Version: 1.5.8
 Hash: 68c4e1212b52e8bf12ef1bfa1e950409
 Requires: mnormt
 
+Package: reshape
+Source: CRAN
+Version: 0.8.5
+Hash: 08a3fc774cceaaec54edea9e9687a6c5
+Requires: plyr
+
 Package: reshape2
 Source: CRAN
 Version: 1.4.1
@@ -136,6 +198,17 @@ Source: CRAN
 Version: 0.3.0
 Hash: 9c140be1bda3cf690f8714cfc810aa45
 Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
+
+Package: sp
+Source: CRAN
+Version: 1.2-2
+Hash: c6844cf8ecf6db253601c7f6eceb9cc5
+
+Package: spacetime
+Source: CRAN
+Version: 1.1-5
+Hash: 8ba44b927cba166c0e3ba1bfaaa2aa8e
+Requires: intervals, sp, xts, zoo
 
 Package: stringi
 Source: CRAN
@@ -153,3 +226,14 @@ Source: CRAN
 Version: 0.4.1
 Hash: f7651db13e8cff93626958d4331a21e7
 Requires: Rcpp, dplyr, lazyeval, magrittr, stringi
+
+Package: xts
+Source: CRAN
+Version: 0.9-7
+Hash: fb3f81d7a2fa2323879b6b49722ddc5e
+Requires: zoo
+
+Package: zoo
+Source: CRAN
+Version: 1.7-12
+Hash: 8ce4a89536cba4fa6023190959de5658
