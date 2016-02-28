@@ -29,7 +29,7 @@ As a next step we might then want to remove unobserved basins. This can be done 
   head(d_runoff)
 ```
 
-Note that we can also pipe the operations, simplifying the last steps to: `QobsNotObserved %>% channel.remove_chunk %>% channel.only_observed %>% head`.
+Of course all this would be easier by using the pipes from the [magrittr](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) package. That would simplify the last two steps, such to: `QobsNotObserved %<>% channel.remove_chunk %>% channel.only_observed`.
 
 **visCOS** makes use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  runoff_data data.frame (xxx) can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `channel.implode_cosdate` function. Noting that `channel.implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
 
