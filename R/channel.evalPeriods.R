@@ -1,5 +1,6 @@
 #' calculate evaluation periods defined by user with start month and end month
 #' 
+#' depreciated!
 #' @param runoff_data The data.frame, which contains the runoff information
 #' @return The runoff data.frame, including a column indicating the evaluating period 
 #' \strong{Note:} The hydrological years are formatted as characters.
