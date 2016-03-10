@@ -1,4 +1,6 @@
-#' calculate periods defined by user 
+#' calculate periods
+#' 
+#' Mark the periods within runoff_data. The range of the period is defined monthly by the integers start_month and end_month.  
 #' @param runoff_data The data.frame, which contains the runoff information
 #' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
 #' \strong{Note:} The hydrological years are formatted as characters.
