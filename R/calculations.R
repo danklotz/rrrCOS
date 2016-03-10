@@ -11,7 +11,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   source("R/f_rasterplot_functions.R")
   # data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
-   ctrl <- fetch.ctrl()
+   ctrl <- fetch_ctrl()
    ctrl$pathDotRunoff  <- file.choose()
 
   # load runoff files
@@ -22,50 +22,50 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
              as.data.frame(.)
         names(d_raw)[5] <- "min"
   #§
-        d_raw <- fetch.runoff_example()
+        d_raw <- fetch_runoff_example()
         #§
   # eliminate basins withouth observations:
    d_runoff <- d_raw %>% 
-    channel.remove_chunk %>% 
-    channel.only_observed
+    channel_remove_chunk %>% 
+    channel_only_observed
   # get num of used basins and their respective num
   #§ shall I wrap this into a channel function??
-  num_basins <- fetch.number_of_basins(d_runoff)
+  num_basins <- fetch_number_of_basins(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
-  #  path_Spinup <- channel.path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
+  #  path_Spinup <- channel_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
   #  pattern_spinup <- "start time-step of evaluation"
-  #  spinup <- fetch.spinup(path_Spinup,pattern_spinup)
+  #  spinup <- fetch_spinup(path_Spinup,pattern_spinup)
   #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   #§
   
   # add full date information to data
-  d_runoff$POSIXdate <- channel.implode_cosdate(d_runoff)
+  d_runoff$POSIXdate <- channel_implode_cosdate(d_runoff)
   # normalize data names: 
-  d_runoff %<>% channel.names
+  d_runoff %<>% channel_names
   
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- channel.runoff_as_xts(d_runoff)
+  d_xts <- channel_runoff_as_xts(d_runoff)
   # calculate hydrological years:
-  d_runoff <- channel.periods(d_runoff, start_month = 9, end_month = 8)
+  d_runoff <- channel_periods(d_runoff, start_month = 9, end_month = 8)
   years_in_data <- fetch.years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
-    # hydyears_in_d <- fetch.hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
+    # hydyears_in_d <- fetch_hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
   periods_in_data <- which(unique(d_runoff$period) > 0)
   num_periods <- length(periods_in_data)
   
 
 # calculations ------------------------------------------------------------
-  bOF <- fetch.period_ofun(d_runoff)
+  bOF <- fetch_period_ofun(d_runoff)
   
   
   
 # plotting --------------------------------------------------------------
   ## NSE
   ### yearly
-    plt_ynse <- pour.period_NSE(from = bOF, given = periods_in_data)
+    plt_ynse <- pour_period_NSE(from = bOF, given = periods_in_data)
   ### total
-    plty_tnse <- pour.totalNSE(from = bOF)
+    plty_tnse <- pour_totalNSE(from = bOF)
   #### concatenate two 
     g1 <- ggplotGrob(plt_ynse)
     g2 <- ggplotGrob(plty_tnse)
@@ -81,20 +81,20 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
   ### expanded barplots & htmlfiles
   # fetch new list:
-  plt_ctrl <- fetch.plt_ctrl()
+  plt_ctrl <- fetch_plt_ctrl()
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- pour.expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
+  plt_exp_NSE <- pour_expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
-  pour.expandedbars.intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
+  pour_expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
 
   #§ here we go ... 
   
   # plots: %-bias -----------------------------------------------------------
   #
-  pour.hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
+  pour_hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total %-Bias"
   plt_ctrl$ltitle <- "%-Bias"
@@ -118,7 +118,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
   # plots: KGE
   # yearly
-  plt_ykge <- pour.hydyearly_KGE(from = bOF, given = hydyears_in_d)
+  plt_ykge <- pour_hydyearly_KGE(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total KGE   "
   plt_ctrl$ltitle <- "KGE"
@@ -139,7 +139,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
   # plots: Correlation
   # yearly
-  pour.hydyearly_Corr(from = bOF, given = hydyears_in_d)
+  pour_hydyearly_Corr(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total Corr  "
   plt_ctrl$ltitle <- "Corr"
@@ -167,16 +167,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # water balance -----------------------------------------------------------
   # 1. total water bilance
   require(magrittr, quietly = TRUE)
-  # d_run <- fetch.runoff_example() %>% channel.remove_chunk
-  ctrl <- fetch.ctrl()
+  # d_run <- fetch_runoff_example() %>% channel_remove_chunk
+  ctrl <- fetch_ctrl()
   ctrl$pathDotRunoff  <- file.choose()
   require("data.table")
   d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
   names(d_raw)[5] <- "min"
   d_run <- d_raw %>% 
-    channel.remove_chunk %>% 
-    channel.only_observed  
+    channel_remove_chunk %>% 
+    channel_only_observed  
   tmp_cum <- d_run %>%
     select(starts_with("qobs"), starts_with("qsim")) %>%
     apply(.,2,cumsum) %>%
@@ -193,7 +193,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # 
   period_start <- 9
   period_end <- 8
-  d_run %<>% channel.periods(start_month = period_start, end_month = period_end)
+  d_run %<>% channel_periods(start_month = period_start, end_month = period_end)
   g <- unique(d_run$period)
   baptize <-  function(data,new_names) {
     names(data) <- new_names

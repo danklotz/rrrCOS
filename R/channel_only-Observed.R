@@ -6,11 +6,11 @@
 #' \strong{Note:} It is assumed that all available basins are simulated!
 #' @return data.frame without the observation-free basins
 #' @export
-channel.only_observed <- function(runoff_data) {
+channel_only_observed <- function(runoff_data) {
   # pre
   require(magrittr)
-  assert.dataframe(runoff_data)
-  assert.chunk(runoff_data)
+  assert_dataframe(runoff_data)
+  assert_chunk(runoff_data)
   # calc
   runoff_data[is.na(runoff_data)] <- -999 
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column

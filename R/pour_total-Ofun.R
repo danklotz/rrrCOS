@@ -4,19 +4,19 @@
 #' 
 #' xxx description follows
 #' @export
-pour.totalNSE <- function(from,...) {
+pour_totalNSE <- function(from,...) {
   # def
-  assert.basicOF(from)
+  assert_basicOF(from)
   if (!exists("ctrl") ) {
-    ctrl <- fetch.ctrl()
+    ctrl <- fetch_ctrl()
   }
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl <- fetch_plt_ctrl()
     plt_ctrl$gtitle <- "Total NSE  "
     plt_ctrl$ltitle <- "NSE"
   }
   # calc
-  total <- pour.totalOfun("NSE",from,plt_ctrl) 
+  total <- pour_totalOfun("NSE",from,plt_ctrl) 
   return(total)
 }
 
@@ -25,26 +25,26 @@ pour.totalNSE <- function(from,...) {
 #' 
 #' xxx description follows
 #' @export
-pour.totalKGE <- function(from,...) {
+pour_totalKGE <- function(from,...) {
   # def
-  assert.basicOF(from)
+  assert_basicOF(from)
   if (!exists("ctrl") ) {
-    ctrl <- fetch.ctrl()
+    ctrl <- fetch_ctrl()
   }
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- fetch.plt_ctrl()
+    plt_ctrl <- fetch_plt_ctrl()
     plt_ctrl$gtitle <- "Total KGE   "
     plt_ctrl$ltitle <- "KGE"
   }
   # calc
-  total <- pour.totalOfun("KGE",from,plt_ctrl) 
+  total <- pour_totalOfun("KGE",from,plt_ctrl) 
   return(total)
 }
 
 #' define rasterplot functions for total OF
-pour.totalOfun <- function(choice,bOF,plt_ctrl) {
+pour_totalOfun <- function(choice,bOF,plt_ctrl) {
   # def 
-  assert.basicOF(bOF)
+  assert_basicOF(bOF)
   require(ggplot2, quietly = TRUE)
   #
   Ofun_total<- bOF[[choice]]

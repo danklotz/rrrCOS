@@ -1,13 +1,13 @@
 #' Get hydrological years of the runoff_data
 #' 
 #' @param runoff_data runoff data.frame as defined in xxx
-#' @param years_in_data list as returned by \code{\link[visCOS]{fetch.years_in_data}}
+#' @param years_in_data list as returned by \code{\link[visCOS]{fetch_years_in_data}}
 #' @return list with (short named) hydrological years
 #' @export
-fetch.hydyears <- function(runoff_data,years_in_data) {
+fetch_hydyears <- function(runoff_data,years_in_data) {
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
   if ( missing(years_in_data) ) {
-    years_in_data <- fetch.years_in_data(runoff_data)
+    years_in_data <- fetch_years_in_data(runoff_data)
   }
   #
   #§ bad code :(

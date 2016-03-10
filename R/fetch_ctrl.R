@@ -4,7 +4,7 @@
 #' 
 #' @return list with arbitrary settings of ctrl options
 #' @export
-fetch.ctrl <- function() {
+fetch_ctrl <- function() {
   ctrl <- list()
   # ******************
   # arbitrary presets:

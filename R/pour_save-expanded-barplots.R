@@ -1,8 +1,8 @@
 #' save the the list barplots
 #' 
-#' saves the list returned by pour.expanded_barplots xxx more description will follow TM
+#' saves the list returned by pour_expanded_barplots xxx more description will follow TM
 #' @export
-pour.expandedbars.intoFile <- function(list_of_barplts, path = "",jpg_filenames = "bar_plot", hmtl_filename = "summary_file") {
+pour_expandedbars_intoFile <- function(list_of_barplts, path = "",jpg_filenames = "bar_plot", hmtl_filename = "summary_file") {
   # pre
   require(magrittr, quietly = TRUE)
   require(ggplot2, quietly = TRUE)

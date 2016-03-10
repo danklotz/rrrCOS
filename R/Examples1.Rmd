@@ -17,40 +17,40 @@ As a first step let us get some exemplary runoff and take a look at it. Within *
   d_raw <- fetch(runoff_example) # get example runoff
   head(d_raw)
 ```
-The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `channel.removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (carefull here: the name testing is not case-sensitive)
+The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `channel_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (carefull here: the name testing is not case-sensitive)
 ```{r}
   d_runoff <- channel(this = remove_chunk, from_that = d_raw)
   head(d_runoff)
 ```      
 
-As a next step we might then want to remove unobserved basins. This can be done with `channel.onlyObserved`
+As a next step we might then want to remove unobserved basins. This can be done with `channel_onlyObserved`
 ```{r}
   d_runoff <- channel(this = remove_chunk, from_that = d_runoff)
   head(d_runoff)
 ```
 
-Of course all this would be easier by using the pipes from the [magrittr](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) package. That would simplify the last two steps, such to: `QobsNotObserved %<>% channel.remove_chunk %>% channel.only_observed`.
+Of course all this would be easier by using the pipes from the [magrittr](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) package. That would simplify the last two steps, such to: `QobsNotObserved %<>% channel_remove_chunk %>% channel_only_observed`.
 
-Some parts of **visCOS** make use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. (namely xxx) To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  runoff_data data.frame (xxx) can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `channel.implode_cosdate` function. Noting that `channel.implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
+Some parts of **visCOS** make use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. (namely xxx) To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  runoff_data data.frame (xxx) can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `channel_implode_cosdate` function. Noting that `channel_implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
 
-Since our data contains the **COSdate** date-columnswe can get the posix-date (needed for the dygraphs, by using the appropriate channel function `channel.implode_cosdate` and then transform it into the xts-data-structure with `channel.runoff_as_xts`
+Since our data contains the **COSdate** date-columnswe can get the posix-date (needed for the dygraphs, by using the appropriate channel function `channel_implode_cosdate` and then transform it into the xts-data-structure with `channel_runoff_as_xts`
 ```{r}
   d_runoff$POSIXdate <- channel(this = implode_cosdate, from_that = d_runoff)
-  d_xts <- channel.runoff_as_xts(d_runoff)
+  d_xts <- channel_runoff_as_xts(d_runoff)
 ```
 
 ```{r}
-  num_basins <- fetch.number_of_basins(d_runoff)
+  num_basins <- fetch_number_of_basins(d_runoff)
 
-  years_in_data <- fetch.years_in_data(d_runoff)
+  years_in_data <- fetch_years_in_data(d_runoff)
 ```
 
 ```{r}
-  d_runoff <- channel.periods(d_runoff, start_month = 9, end_month = 8)
+  d_runoff <- channel_periods(d_runoff, start_month = 9, end_month = 8)
 ```
 
 ```{r}
-  bOF <- fetch.period_ofun(d_runoff)
+  bOF <- fetch_period_ofun(d_runoff)
 ```
 
 

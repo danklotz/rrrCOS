@@ -2,10 +2,10 @@
 #'
 #' xxx
 #' @export
-channel.names <- function(runoff_data) {
+channel_names <- function(runoff_data) {
   # def: 
     require(magrittr, quietly = TRUE)
-    assert.chunk(runoff_data)
+    assert_chunk(runoff_data)
   # calc:
   runoff_names <- names(runoff_data) %>% gsub("\\d","",.) 
   # get numbers and remove leading zeros

@@ -6,10 +6,10 @@
 #' @param runoff_data runoff_data data.frame (see:xxx).
 #' @return list of baisc objective function evaluated for the different hydrological years and over the whole timespan.
 #' @export
-fetch.period_ofun <- function(runoff_data) {
+fetch_period_ofun <- function(runoff_data) {
   require(hydroGOF, quietly = TRUE)
   require(dplyr, quietly = TRUE)
-  assert.dataframe(runoff_data)
+  assert_dataframe(runoff_data)
   stopifnot( exists("period", where = runoff_data) )
   #
   periods_in_data <- which(unique(runoff_data$period) > 0)

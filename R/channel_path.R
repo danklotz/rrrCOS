@@ -4,7 +4,7 @@
 #' @param filepath path to a given file
 #' @return path to the file
 #' @export
-channel.path <- function(filepath) {
+channel_path <- function(filepath) {
   ##########################
   # pre
   ##########################
@@ -16,27 +16,27 @@ channel.path <- function(filepath) {
     # check for system depented path 
     sysIswindos <- grepl('\\\\',filepath)
     if (sysIswindos) {
-      channel.path <- filepath %>%
+      channel_path <- filepath %>%
         strsplit("\\\\") %>% .[[1]] %>% 
         .[1:(length(.)-1)] %>% 
         paste(.,collapse = "/") %>%
         paste(.,"/",sep="")
-      return(channel.path)
+      return(channel_path)
     } else { 
-      channel.path <- filepath %>%
+      channel_path <- filepath %>%
         strsplit("/") %>% .[[1]] %>% 
         .[1:(length(.)-1)] %>% 
         paste(.,collapse = "/") %>%
         paste(.,"/",sep="")
-      return(channel.path)
+      return(channel_path)
     }
   } else { 
     stop("no filepath provided!")
-    #       channel.path  <- file.choose() %>%
+    #       channel_path  <- file.choose() %>%
     #         strsplit("\\\\") %>% .[[1]] %>% 
     #         strsplit("/") %>% .[[1]] %>% 
     #         .[1:(length(.)-1)] %>% 
     #         paste(.,collapse = "/")
-    #       return(channel.path)
+    #       return(channel_path)
   }
 }

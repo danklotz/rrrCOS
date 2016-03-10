@@ -3,7 +3,7 @@
 #' Get some basic objective functions used in hydrology, i.e.: Root Mean Squared Error, Correlation, NSE, KGE, pbias
 #' @return data.frame contianing basic OF
 #' @export
-fetch.some_ofun <- function(obs,sim) {
+fetch_some_ofun <- function(obs,sim) {
   require(hydroGOF)
   require(magrittr)
   # calc

@@ -2,9 +2,9 @@
 #' 
 #' xxx description has to follow 
 #' @export
-fetch.plt_ctrl <- function(ctrl) {
+fetch_plt_ctrl <- function(ctrl) {
   # def
-  if ( missing(ctrl) ) {ctrl <- fetch.ctrl()}
+  if ( missing(ctrl) ) {ctrl <- fetch_ctrl()}
   # calc
   plt_ctrl <- list() # reset list
   plt_ctrl$gtitle <- "Title"

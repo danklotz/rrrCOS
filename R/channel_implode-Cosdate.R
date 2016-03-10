@@ -5,7 +5,7 @@
 #' @param data_frame A data.frame object containing a time series of the COSdate format
 #' @return dates in the format of the POSIXct-class
 #' @export
-channel.implode_cosdate <- function(data_frame) {
+channel_implode_cosdate <- function(data_frame) {
   # def
   name_string <-  data_frame %>% names %>% tolower
   if (any(name_string == "posixdate")) stop("data_frame dos allreay contain POSIXdate")
