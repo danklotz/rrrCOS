@@ -12,6 +12,7 @@
 #'  \item{ \code{channel(runoff_as_xts)} } { Wraps: \code{\link[visCOS]{channel_runoff_as_xts}} }
 #'  }
 #' @export
+# xxx examples mising
 channel <- function(this, from_that) {
   # def
   input <- substitute(this)
