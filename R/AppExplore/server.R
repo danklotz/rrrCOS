@@ -1,4 +1,3 @@
-require(shiny, quietly = TRUE)
 require("xts")
 
 # Define server logic required to draw a histogram
@@ -7,7 +6,7 @@ shinyServer(function(input, output, session) {# executes calculation file
   #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
   
   # get strings used in the naming of runoff_data 
-  just_words <- names(d_runoff) %>% gsub("\\d","",.) %>% unique
+  just_words <- names(runoff_data) %>% gsub("\\d","",.) %>% unique
   obs_string <- just_words[ just_words %>% tolower %>% grep("qobs",.) ]
   sim_string <- just_words[ just_words %>% tolower %>% grep("qsim",.) ]
   # 
@@ -16,7 +15,7 @@ shinyServer(function(input, output, session) {# executes calculation file
   select_SIM <- reactive({ sim_string %&% input$basin_num %&% "$" })
   
   slctd_data <- reactive({
-    select(d_runoff,
+    select(runoff_data,
            matches( select_OBS() ),
            matches( select_SIM() )
            ) %>%
@@ -25,14 +24,14 @@ shinyServer(function(input, output, session) {# executes calculation file
   })
   # create xts-formated table for use in dygraphs
   xts_slctd_data <- reactive ({
-    xts(slctd_data(),order.by = d_runoff$POSIXdate)
+    xts(slctd_data(),order.by = runoff_data$POSIXdate)
   })
   # get error of the basin
   xts_slctd_error <- reactive({
     slctd_data() %>% 
     mutate(error = Qsim-Qobs) %>% 
     select(error) %>%
-    xts(order.by = d_runoff$POSIXdate)
+    xts(order.by = runoff_data$POSIXdate)
   })
   # plots
   output$dygrph1 <- renderDygraph({

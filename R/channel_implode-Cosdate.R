@@ -8,7 +8,7 @@
 channel_implode_cosdate <- function(data_frame) {
   # def
   name_string <-  data_frame %>% names %>% tolower
-  if (any(name_string == "posixdate")) stop("data_frame dos allreay contain POSIXdate")
+  if (any(name_string == "posixdate")) stop("data_frame does allreay contain POSIXdate")
   # calc
   POSIXdate <- paste(data_frame$yyyy,
                      sprintf("%02d",data_frame$mm),

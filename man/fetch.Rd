@@ -9,8 +9,6 @@ fetch(what, ...)
 \description{
 The \code{fetch} function is a wrapper around the fetch_ functions. It works as following: 
 \itemize{
- \item{ \code{fetch(ctrl)} } { Wraps: \code{\link[visCOS]{fetch_ctrl}} }
- \item{ \code{fetch(control)} } {Alternvative formulation for fetch(ctrl), wraps: \code{\link[visCOS]{fetch_ctrl}} }
  \item{ \code{fetch(spinup,filepath, pattern)} } { Wraps: \code{\link[visCOS]{fetch_spinup}} }
  \item{ \code{fetch(number_of_basins,runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_number_of_basins}} }
  \item{ \code{fetch(hydears,runoff_data, years_in_data)} } { Wraps: \code{\link[visCOS]{fetch_hydyears}} }

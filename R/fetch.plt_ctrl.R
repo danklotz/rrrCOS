@@ -12,8 +12,7 @@ fetch_plt_ctrl <- function( plot_title = "Title",
                             color_midpoint = 0.5, 
                             limits = c(0,1),
                             lb_cut = 0.0,
-                            text_size = 0.5
-                             ) {
+                            text_size = 0.5) {
   # def
     #§ missing :(
     if (length(colors) < 4) {

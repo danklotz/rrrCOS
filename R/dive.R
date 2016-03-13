@@ -15,10 +15,16 @@ dive_runoff_with_ofun <- function(runoff_data) {
   require("shiny", quietly = TRUE)
   ##########################
   # calc
+  #$ this is all suboptimal, maybe exploit the global function or something
+  runoff_data %<>% channel_names
+  if ( !"POSIXdate" %in% names(runoff_data) ) {
+    runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
+  }
+  runoff_data <<- runoff_data
   d_xts <<- channel_runoff_as_xts(runoff_data)
-  d_names <- names(d_xts)
+  d_names_all<- names(d_xts)
   idx_names <- d_names %>% tolower %>% grepl("\\d" ,.)
-  d_names <<- d_names[idx_names]
+  d_names <<- d_names_all[idx_names]
   d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique 
   #
   runApp("R/AppExplore") #$ how do I fix the path to the app?

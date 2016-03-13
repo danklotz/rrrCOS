@@ -4,7 +4,10 @@
 \alias{fetch_plt_ctrl}
 \title{get basic config for the plot control}
 \usage{
-fetch_plt_ctrl(ctrl)
+fetch_plt_ctrl(plot_title = "Title", ltitle = "Legend",
+  year_name = "Year", colors = c("#FF3300", "#f6f3a1", "#005900",
+  "purple4"), color_midpoint = 0.5, limits = c(0, 1), lb_cut = 0,
+  text_size = 0.5)
 }
 \description{
 xxx description has to follow
