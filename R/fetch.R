@@ -9,13 +9,15 @@
 #'  }
 #' @export
 #' @examples 
-#' # get some example data
+#' # get some example data:
 #' runoff_data <- fetch(runoff_example) 
 #' head(runoff_data)
 #' # 
+#' # get number of basins: 
 #' runoff_data <- fetch(runoff_example) 
 #' fetch(number_of_basins,channel_removeChunk(runoff_data))
 #' #
+#' # get years in data 
 #' runoff_data <- fetch(runoff_example) 
 #' fetch(years_in_data,runoff_data)
 fetch <- function(what, ...) {
