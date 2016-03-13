@@ -8,11 +8,11 @@
 #' 
 #' @param d_xts runoff_data formatted as time series
 #' @export
-explore.runoff <- function(runoff_data,d_xts) {
+dive_runoff_x_ofun <- function(runoff_data,d_xts) {
   # pre
-  require("data.table") 
-  require("magrittr")
-  require("shiny")
+  require("data.table", quietly = TRUE) 
+  require("magrittr", quietly = TRUE)
+  require("shiny", quietly = TRUE)
   ##########################
   # calc
   d_names <- names(d_xts)
