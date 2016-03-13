@@ -1,6 +1,16 @@
-#' order different data 
+#' Wraps the channel functions 
 #' 
-#' more descriptiuon will follow xxx (analougosly to )
+#' channel_ functions can be used to re-order the data so that it is in the necessary format for plotting. 
+#' This function ('channel') is a wrapper around the channel_ functions. The usage is defined as following
+#' \itemize{
+#'  \item{ \code{channel(completeDate)} } { Wraps: \code{\link[visCOS]{channel_complete_date}} }
+#'  \item{ \code{channel(periods)} } {Alternvative formulation for fetch(ctrl), wraps: \code{\link[visCOS]{channel_periods}} }
+#'  \item{ \code{channel(implode_cosdate)} } { Wraps: \code{\link[visCOS]{channel_implode_cosdate}} }
+#'  \item{ \code{channel(only_observed)} } { Wraps: \code{\link[visCOS]{channel_only_observed}} }
+#'  \item{ \code{channel(path)} } { Wraps: \code{\link[visCOS]{channel_path}} }
+#'  \item{ \code{channel(remove_chunk})} } { Wraps: \code{\link[visCOS]{channel_remove_chunk}} }
+#'  \item{ \code{channel(runoff_as_xts)} } { Wraps: \code{\link[visCOS]{channel_runoff_as_xts}} }
+#'  }
 #' @export
 channel <- function(this, from_that) {
   # def
@@ -15,9 +25,9 @@ channel <- function(this, from_that) {
   # calc
   switch(choice, 
          completeDate = channel_complete_date(from_that), 
-         hydyears = channel_hydyears(from_that),
+         periods = channel_periods(from_that),
          implode_cosdate = channel_implode_cosdate(from_that),
-         onlyObserved = channel_only_observed(from_that),
+         only_observed = channel_only_observed(from_that),
          path = channel_path(from_that),
          remove_chunk = channel_remove_chunk(from_that),
          runoff_as_xts = channel_runoff_as_xts(from_that),
