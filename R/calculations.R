@@ -8,14 +8,13 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   require(magrittr, quietly = TRUE)
   # data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
-   ctrl <- fetch_ctrl()
-   ctrl$pathDotRunoff  <- file.choose()
+   pathDotRunoff  <- file.choose()
 
   # load runoff files
   
   #§ assumed to be done by the user!!!
         require("data.table")
-        d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+        d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
              as.data.frame(.)
         names(d_raw)[5] <- "min"
   #§
@@ -165,10 +164,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # 1. total water bilance
   require(magrittr, quietly = TRUE)
   # d_run <- fetch_runoff_example() %>% channel_remove_chunk
-  ctrl <- fetch_ctrl()
-  ctrl$pathDotRunoff  <- file.choose()
+  pathDotRunoff  <- file.choose()
   require("data.table")
-  d_raw <- fread(ctrl$pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
+  d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
   names(d_raw)[5] <- "min"
   d_run <- d_raw %>% 

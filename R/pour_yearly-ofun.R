@@ -5,12 +5,9 @@
 #' 
 #' @export
 pour_period_NSE <- function(from, given, ...) {
-    if (!exists("ctrl") ) {
-      ctrl <- fetch_ctrl()
-    }
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- fetch_plt_ctrl()
-      plt_ctrl$gtitle <- "Yearly NSE"
+      plt_ctrl$plot_title <- "Yearly NSE"
       plt_ctrl$ylab <- "basin number"
     }
   # calc
@@ -24,12 +21,9 @@ pour_period_NSE <- function(from, given, ...) {
 #' 
 #' @export
 pour_period_KGE<- function(from, given, ...) {
-    if (!exists("ctrl") ) {
-      ctrl <- fetch_ctrl()
-    }
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- fetch_plt_ctrl()
-      plt_ctrl$gtitle <- "Yearly KGE"
+      plt_ctrl$plot_title <- "Yearly KGE"
       plt_ctrl$ylab <- "basin number"
     }
   # calc
@@ -43,12 +37,9 @@ pour_period_KGE<- function(from, given, ...) {
 #' 
 #' @export
 pour_period_pBIAS <- function(from, given, ...) {
-  if (!exists("ctrl") ) {
-    ctrl <- fetch_ctrl()
-  }
   if ( !exists("plt_ctrl") ) {
     plt_ctrl <- fetch_plt_ctrl()
-    plt_ctrl$gtitle <- "Yearly %-Bias"
+    plt_ctrl$plot_title <- "Yearly %-Bias"
     plt_ctrl$ylab <- "basin number"
     plt_ctrl$midpoint <- 0.0
     plt_ctrl$limits <- c(-100,100)
@@ -65,12 +56,9 @@ pour_period_pBIAS <- function(from, given, ...) {
 #' 
 #' @export
 pour_period_Corr <- function(from, given, ...) {
-    if (!exists("ctrl") ) {
-      ctrl <- fetch_ctrl()
-    }
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- fetch_plt_ctrl()
-      plt_ctrl$gtitle <- "Yearly Correlation"
+      plt_ctrl$plot_title <- "Yearly Correlation"
       plt_ctrl$ylab <- "basin number"
       plt_ctrl$limits <- c(0,1)
       plt_ctrl$lb_cut <- -10.
@@ -118,7 +106,7 @@ pour_period_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
   number_of_basins <- names(bOF$NSE) %>% gsub("\\D","",.) %>% as.integer
   # plot with ggplot2
   plt_out <- ggplot(of_y, aes(period,numberBasins, fill = OFvalue),environmnet = environment()) +
-    ggtitle(plt_ctrl$gtitle) +
+    ggtitle(plt_ctrl$plot_title) +
     geom_raster(position = "identity") +
     ylab(plt_ctrl$ylab) +
     xlab(plt_ctrl$xlab) +

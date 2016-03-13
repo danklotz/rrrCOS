@@ -7,12 +7,9 @@
 pour_totalNSE <- function(from,...) {
   # def
   assert_basicOF(from)
-  if (!exists("ctrl") ) {
-    ctrl <- fetch_ctrl()
-  }
   if ( !exists("plt_ctrl") ) {
     plt_ctrl <- fetch_plt_ctrl()
-    plt_ctrl$gtitle <- "Total NSE  "
+    plt_ctrl$plot_title <- "Total NSE  "
     plt_ctrl$ltitle <- "NSE"
   }
   # calc
@@ -28,12 +25,9 @@ pour_totalNSE <- function(from,...) {
 pour_totalKGE <- function(from,...) {
   # def
   assert_basicOF(from)
-  if (!exists("ctrl") ) {
-    ctrl <- fetch_ctrl()
-  }
   if ( !exists("plt_ctrl") ) {
     plt_ctrl <- fetch_plt_ctrl()
-    plt_ctrl$gtitle <- "Total KGE   "
+    plt_ctrl$plot_title <- "Total KGE   "
     plt_ctrl$ltitle <- "KGE"
   }
   # calc
@@ -56,7 +50,7 @@ pour_totalOfun <- function(choice,bOF,plt_ctrl) {
   #
   plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue),environmnet = environment()) +
     geom_raster(position = "identity") +
-    ggtitle(plt_ctrl$gtitle) +
+    ggtitle(plt_ctrl$plot_title) +
     theme_bw(base_size = 15) +
     theme(axis.title.y = element_blank(),
           axis.title.x = element_blank(),

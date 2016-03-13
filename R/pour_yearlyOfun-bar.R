@@ -15,7 +15,7 @@ pour_expanded_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,pl
   d_ofun_yearly <- Ofun_hydyearly %>% 
                     cut.lowerbound(.,plt_ctrl$lb_cut) %>% 
                     as.data.frame %>%
-                    rename.withEndings(.,plt_ctrl$gtitle,num_basins)
+                    rename.withEndings(.,plt_ctrl$plot_title,num_basins)
   d_ofun_yearly$hydyear <- hydyears_in_data
   # make list of plots
   list_of_barplots <- list()

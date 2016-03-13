@@ -2,21 +2,35 @@
 #' 
 #' xxx description has to follow 
 #' @export
-fetch_plt_ctrl <- function(ctrl) {
+fetch_plt_ctrl <- function( plot_title = "Title",
+                            ltitle = "Legend", 
+                            year_name = "Year", 
+                            colors = c('#FF3300',
+                                      '#f6f3a1',
+                                      '#005900',
+                                      "purple4"),
+                            color_midpoint = 0.5, 
+                            limits = c(0,1),
+                            lb_cut = 0.0,
+                            text_size = 0.5
+                             ) {
   # def
-  if ( missing(ctrl) ) {ctrl <- fetch_ctrl()}
+    #§ missing :(
+    if (length(colors) < 4) {
+      stop("there must be 4 colors defined")
+    }
   # calc
   plt_ctrl <- list() # reset list
-  plt_ctrl$gtitle <- "Title"
-  plt_ctrl$ltitle <- "Legend"
-  plt_ctrl$xlab <- ctrl$year_name
-  plt_ctrl$clr1 <- ctrl$colors[1]
-  plt_ctrl$clr2 <- ctrl$colors[2]
-  plt_ctrl$clr3 <- ctrl$colors[3]
-  plt_ctrl$clr4 <- ctrl$colors[4]
-  plt_ctrl$midpoint <- ctrl$nse_midpoint
-  plt_ctrl$limits <- c(0,1)
-  plt_ctrl$lb_cut <- 0.0
-  plt_ctrl$OFsize <- 0.5
+  plt_ctrl$plot_title <- plot_title
+  plt_ctrl$ltitle <- ltitle
+  plt_ctrl$xlab <- year_name
+  plt_ctrl$clr1 <- colors[1]
+  plt_ctrl$clr2 <- colors[2]
+  plt_ctrl$clr3 <- colors[3]
+  plt_ctrl$clr4 <- colors[4]
+  plt_ctrl$midpoint <- color_midpoint
+  plt_ctrl$limits <- limits
+  plt_ctrl$lb_cut <- lb_cut
+  plt_ctrl$text_size <- text_size
   return(plt_ctrl)
 }
