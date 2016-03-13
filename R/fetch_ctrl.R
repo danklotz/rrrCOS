@@ -1,23 +1,29 @@
 #' Sets ctrl with arbitrary values
 #' 
-#' Some pre-sets for the ctrl list
+#' Retruns the ctrl list with some abitrary pre-sets, which can be changed later on. 
 #' 
 #' @return list with arbitrary settings of ctrl options
 #' @export
-fetch_ctrl <- function() {
+fetch_ctrl <- function( of_foldename = "test",
+                        ctrl_span = c(2009,2012),
+                        year_name = "year", 
+                        colors = c('#FF3300',
+                                   '#f6f3a1',
+                                   '#005900',
+                                   "purple4"), 
+                        nse_midpoint = 0.5) {
   ctrl <- list()
   # ******************
   # arbitrary presets:
-  ctrl$ofoldername <- "test"
+  ctrl$of_oldername <- of_foldename
   # Interactive Overview: 
-  ctrl$ctrl_span  	<- c(2009,2012) 
+  ctrl$ctrl_span  	<- ctrl_span
   # OF plot options:
   # naming:
-  ctrl$yearName   	<- "Jahr" 
+  ctrl$year_name <- "year"
   # color-settings:
-  ctrl$colors      		<- c('#FF3300','#f6f3a1','#005900',"purple4") 
-  ctrl$clr_NSEmid  	<- 0.5 
-  ctrl$OFsize       <- 5.5
+  ctrl$colors <- colors
+  ctrl$nse_midpoint <- nse_midpoint 
   #
   return(ctrl)
 }

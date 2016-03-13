@@ -2,11 +2,8 @@
 % Please edit documentation in R/channel.R
 \name{channel}
 \alias{channel}
-\title{order different data}
+\title{Wraps the channel functions}
 \usage{
 channel(this, from_that)
-}
-\description{
-more descriptiuon will follow xxx (analougosly to )
 }
 

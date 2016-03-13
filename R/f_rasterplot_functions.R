@@ -21,7 +21,7 @@ plt_yOF <- function(OF_hydyearly,hydyears_in_d,eval_size,plt_ctrl) {
     theme_bw(base_size = 20) +
     theme( legend.position="none" )  +
     geom_tile(color = "white", size = 0.25 ) +
-    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size = ctrl$OFsize , color= "black")
+    geom_text(aes(hydyears,numberBasins, label = as.character(OFvalue)), size =  plt_ctrl$OFsize , color= "black")
   return(plt_out)
 }
 
@@ -52,7 +52,7 @@ plt_tOF <- function(OF_total,eval_size,plt_ctrl) {
           panel.grid.minor = element_blank(),
           plot.margin = grid::unit(c(0.5,0.5,1.25,-0.7), "cm") ) + # von oben im urzeiger sinn
     geom_tile(color="white", size = 0.25) +
-    geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size = ctrl$OFsize ,color="black") +
+    geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ), size =  plt_ctrl$OFsize ,color="black") +
     scale_y_reverse() +
     scale_fill_gradient2(space = "Lab",
                          name = plt_ctrl$ltitle,

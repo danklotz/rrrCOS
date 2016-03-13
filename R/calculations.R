@@ -5,10 +5,7 @@
 #§
 
 visCOS.example <- function(runoff_path,spinup,ctrl) {
-  require(magrittr)
-  #
-  source("R/f_expanded_barplots.R")
-  source("R/f_rasterplot_functions.R")
+  require(magrittr, quietly = TRUE)
   # data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
    ctrl <- fetch_ctrl()
@@ -48,7 +45,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_xts <- channel_runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- channel_periods(d_runoff, start_month = 9, end_month = 8)
-  years_in_data <- fetch.years_in_data(d_runoff)
+  years_in_data <- fetch_years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
     # hydyears_in_d <- fetch_hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
   periods_in_data <- which(unique(d_runoff$period) > 0)
