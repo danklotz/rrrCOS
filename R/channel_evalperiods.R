@@ -6,19 +6,19 @@
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
 channel_evalPeriods <- function(runoff_data, smonth, emonth) {
-  # pre 
-  require(dplyr)
-  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
-    stop("data.frame does neiter contain POSIXdate nor COSdate")
-  } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
-    stop("transformation from POSIXdate to COSdate not yet available :(")
-  } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-    runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
-  }
-  temp_runoff <- runoff_data
-  stag <- 1
-  evaltag <- 1
+  # def
+    require(dplyr)
+    if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+    if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
+      stop("data.frame does neiter contain POSIXdate nor COSdate")
+    } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
+      stop("transformation from POSIXdate to COSdate not yet available :(")
+    } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
+      runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
+    }
+    temp_runoff <- runoff_data
+    stag <- 1
+    evaltag <- 1
   # calc
   for (i in 1:nrow(runoff_data)-1) {
     if (runoff_data$mm[i] < smonth & stag == 1) {
