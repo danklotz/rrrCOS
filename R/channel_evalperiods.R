@@ -16,10 +16,10 @@ channel_evalPeriods <- function(runoff_data, smonth, emonth) {
     } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
       runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
     }
-    temp_runoff <- runoff_data
-    stag <- 1
-    evaltag <- 1
   # calc
+  temp_runoff <- runoff_data
+  stag <- 1
+  evaltag <- 1
   for (i in 1:nrow(runoff_data)-1) {
     if (runoff_data$mm[i] < smonth & stag == 1) {
       temp_runoff <- temp_runoff[-1,]
