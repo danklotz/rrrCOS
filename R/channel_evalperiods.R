@@ -31,8 +31,7 @@ channel_evalPeriods <- function(runoff_data, smonth, emonth) {
       # corrected coding mistake : P
     }
   }
-
-  
+  #
   years <- fetch_years_in_data(runoff_data)
   num_years = length(years$in_data)
   hydyears_in_d <- fetch_hydyears(runoff_data,years)
