@@ -5,7 +5,7 @@
 #' @return The runoff data.frame, including a column indicating the evaluating period 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-channel_evalPeriods <- function(runoff_data, smonth, emonth) {
+channel_evalperiods <- function(runoff_data, smonth, emonth) {
   # pre 
   require(dplyr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
