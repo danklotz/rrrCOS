@@ -13,7 +13,19 @@ channel_implode_cosdate(data_frame)
 dates in the format of the POSIXct-class
 }
 \description{
-Takes a data.frame, which contains the COSdate format (see: xxxx) and transforms it into a POSIXct series.
+Takes a data.frame, which contains the COSdate format (see: xxx) and transforms it into a POSIXct series.
 Note that time is assumbed to be in UTC
+}
+\examples{
+Get runof example and implode cos_date to obtain the POSIXct date
+require(magrittr)
+runoff <- fetch_runoff_example()
+runoff \%<>\% channel_implode_cosdate 
+# not a fan of magrittr-piping? Just use: runoff <- channel_implode_cosdate(runoff)
+# 
+# note that if channel_implode_cosdate is not used on the runoff data istelf it will work like a fetch and just return the posix_dates 
+runoff <- fetch_runoff_example()
+posix_dates <- channel_implode_cosdate(runoff)
+head(posix_dates)
 }
 

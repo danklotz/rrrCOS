@@ -2,9 +2,7 @@
 % Please edit documentation in R/dive.R
 \name{dive_runoff_with_ofun}
 \alias{dive_runoff_with_ofun}
-\title{dive with ofun 
-Runs a Shiny App which can be used to get an overview of a runoff_data time series object. 
-Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App.}
+\title{dive with ofun}
 \usage{
 dive_runoff_with_ofun(runoff_data)
 }
@@ -12,8 +10,14 @@ dive_runoff_with_ofun(runoff_data)
 \item{d_xts}{runoff_data formatted as time series}
 }
 \description{
-dive with ofun 
 Runs a Shiny App which can be used to get an overview of a runoff_data time series object. 
 Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App.
+}
+\examples{
+# get example data, 
+# clean it and 
+# explore the model performance
+d_runoff <- channel_remove_chunk( fetch_runoff_example() )
+dive_runoff_with_ofun(d_runoff)
 }
 

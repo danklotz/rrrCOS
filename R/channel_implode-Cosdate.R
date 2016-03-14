@@ -5,7 +5,7 @@
 #' @param data_frame A data.frame object containing a time series of the COSdate format
 #' @return dates in the format of the POSIXct-class
 #' @export
-#' @example 
+#' @examples 
 #' Get runof example and implode cos_date to obtain the POSIXct date
 #' require(magrittr)
 #' runoff <- fetch_runoff_example()
