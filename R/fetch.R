@@ -6,6 +6,7 @@
 #'  \item{ \code{fetch(number_of_basins,runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_number_of_basins}} }
 #'  \item{ \code{fetch(hydears,runoff_data, years_in_data)} } { Wraps: \code{\link[visCOS]{fetch_hydyears}} }
 #'  \item{ \code{fetch(years_in_data, runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_years_in_data}} }
+#'  \item{ \code{fetch(runoff_as_xts, runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_runoff_as_xts}} }
 #'  }
 #' @export
 #' @examples 
@@ -39,6 +40,7 @@ fetch <- function(what, ...) {
          some_ofun_4_hydyears = fetch_some_ofun_4_hydyears(...),
          spinup = fetch-spinup(...),
          years_in_data = fetch_years_in_data(runoff_data = ...),
+         runoff_as_xts = fetch_runoff_as_xts(from_that),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for fetch", sep = " " ) )
          )
 }

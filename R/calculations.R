@@ -41,7 +41,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_runoff %<>% channel_names
   
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- channel_runoff_as_xts(d_runoff)
+  d_xts <- fetch_runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- channel_periods(d_runoff, start_month = 9, end_month = 8)
   years_in_data <- fetch_years_in_data(d_runoff)

@@ -5,7 +5,7 @@
 #' @param runoff_data data_frame of the runoff_data (see: xxx)
 #' @return xts object of the runoff_data data.frame
 #' @export
-channel_runoff_as_xts <- function(runoff_data) {
+fetch_runoff_as_xts <- function(runoff_data) {
   # pre
   require(xts, quietly = TRUE)
   require(magrittr, quietly = TRUE)

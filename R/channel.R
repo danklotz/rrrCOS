@@ -8,11 +8,17 @@
 #'  \item{ \code{channel(implode_cosdate)} } { Wraps: \code{\link[visCOS]{channel_implode_cosdate}} }
 #'  \item{ \code{channel(only_observed)} } { Wraps: \code{\link[visCOS]{channel_only_observed}} }
 #'  \item{ \code{channel(path)} } { Wraps: \code{\link[visCOS]{channel_path}} }
-#'  \item{ \code{channel(remove_chunk})} } { Wraps: \code{\link[visCOS]{channel_remove_chunk}} }
-#'  \item{ \code{channel(runoff_as_xts)} } { Wraps: \code{\link[visCOS]{channel_runoff_as_xts}} }
+#'  \item{ \code{channel(remove_chunk,runoff_data})} } { Wraps: \code{\link[visCOS]{channel_remove_chunk}} }
 #'  }
 #' @export
-# xxx examples mising
+#' 
+#' @examples 
+#' # get runoff example and clean data, remove chunk and clean names
+#' d_raw <- fetch_runoff_example()
+#' d_runoff <- channel(remove_chunk, runoff_data)
+#' names(d_raw)
+#' names(d_runoff)
+
 channel <- function(this, from_that) {
   # def
   input <- substitute(this)
@@ -31,7 +37,6 @@ channel <- function(this, from_that) {
          only_observed = channel_only_observed(from_that),
          path = channel_path(from_that),
          remove_chunk = channel_remove_chunk(from_that),
-         runoff_as_xts = channel_runoff_as_xts(from_that),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for channel", sep = " " ) )
   )
 }
