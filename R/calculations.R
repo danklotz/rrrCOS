@@ -59,9 +59,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # plotting --------------------------------------------------------------
   ## NSE
   ### yearly
-    plt_ynse <- dive_period_NSE(from = bOF, given = periods_in_data)
+    plt_ynse <- serve_period_NSE(from = bOF, given = periods_in_data)
   ### total
-    plty_tnse <- dive_totalNSE(from = bOF)
+    plty_tnse <- serve_totalNSE(from = bOF)
   #### concatenate two 
     g1 <- ggplotGrob(plt_ynse)
     g2 <- ggplotGrob(plty_tnse)
@@ -81,16 +81,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- dive_expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
+  plt_exp_NSE <- serve_expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
-  dive_expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
+  serve_expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
 
   #§ here we go ... 
   
   # plots: %-bias -----------------------------------------------------------
   #
-  dive_hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
+  serve_hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total %-Bias"
   plt_ctrl$ltitle <- "%-Bias"
@@ -114,7 +114,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
   # plots: KGE
   # yearly
-  plt_ykge <- dive_hydyearly_KGE(from = bOF, given = hydyears_in_d)
+  plt_ykge <- serve_hydyearly_KGE(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total KGE   "
   plt_ctrl$ltitle <- "KGE"
@@ -135,7 +135,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
   # plots: Correlation
   # yearly
-  dive_hydyearly_Corr(from = bOF, given = hydyears_in_d)
+  serve_hydyearly_Corr(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total Corr  "
   plt_ctrl$ltitle <- "Corr"

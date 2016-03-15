@@ -4,7 +4,7 @@
 #' creates a list of bar-plots for a the yearly objective functions (OF) xxx
 #' see: description-follows-soonTM xxx
 #' @export
-dive_expanded_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl) {
+serve_expanded_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl) {
   if (missing(plt_ctrl)) {plt_ctrl <- pour_plt_ctrl()}
   # calc:
   rename.withEndings <- function(dataframe,name,endings) {

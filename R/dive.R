@@ -1,8 +1,5 @@
-# dive function let you explore data via shiny
-###################################################################################################
-
 # Dive With OF ------------------------------------------------------------
-#' dive with ofun 
+#' serve with ofun 
 #' 
 #' Runs a Shiny App which can be used to get an overview of a runoff_data time series object. 
 #' Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App. 
@@ -14,8 +11,8 @@
 #' # clean it and 
 #' # explore the model performance
 #' d_runoff <- prepare_remove_chunk( pour_runoff_example() )
-#' dive_runoff_with_ofun(d_runoff)
-dive_runoff_with_ofun <- function(runoff_data) {
+#' serve_runoff_with_ofun(d_runoff)
+serve_runoff_with_ofun <- function(runoff_data) {
   # pre
   require("data.table", quietly = TRUE) 
   require("magrittr", quietly = TRUE)

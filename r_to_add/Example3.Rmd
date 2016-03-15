@@ -1,15 +1,15 @@
 ---
-title: "visCOS: Example 2"
+title: "visCOS: Calculate Objective Function"
 output: 
   html_document:
     highlight: pygments
 ---
+
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")
   require("magrittr")
 ```
 
-## Calculate Objective Function
 As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the *pour* command:
 ```{r}
   d_raw <- pour(runoff_example) # get example runoff
