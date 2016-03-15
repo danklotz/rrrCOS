@@ -5,7 +5,7 @@
 #' @return The runoff data.frame, including a column indicating the evaluating period 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-channel_evalPeriods <- function(runoff_data, smonth, emonth) {
+prepare_evalPeriods <- function(runoff_data, smonth, emonth) {
   # def
     require(dplyr)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
@@ -14,7 +14,7 @@ channel_evalPeriods <- function(runoff_data, smonth, emonth) {
     } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
       stop("transformation from POSIXdate to COSdate not yet available :(")
     } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-      runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
+      runoff_data$POSIXdate <- prepare_implode_cosdate(runoff_data)
     }
   # calc
   temp_runoff <- runoff_data

@@ -12,7 +12,7 @@ pour_runoff_as_xts <- function(runoff_data) {
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
   # calculations:
-  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% channel_names
+  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% prepare_names
   # 
   return(runoff_data_as_xts)
 }

@@ -2,7 +2,7 @@
 #'
 #' xxx
 #' @export
-channel_names <- function(runoff_data) {
+prepare_names <- function(runoff_data) {
   # def: 
     require(magrittr, quietly = TRUE)
     assert_chunk(runoff_data)

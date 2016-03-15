@@ -22,28 +22,28 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
         #§
   # eliminate basins withouth observations:
    d_runoff <- d_raw %>% 
-    channel_remove_chunk %>% 
-    channel_only_observed
+    prepare_remove_chunk %>% 
+     prepare_only_observed
   # get num of used basins and their respective num
-  #§ shall I wrap this into a channel function??
+  #§ shall I wrap this into a prepare function??
   num_basins <- pour_number_of_basins(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
-  #  path_Spinup <- channel_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
+  #  path_Spinup <- prepare_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
   #  pattern_spinup <- "start time-step of evaluation"
   #  spinup <- pour_spinup(path_Spinup,pattern_spinup)
   #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   #§
   
   # add full date information to data
-  d_runoff$POSIXdate <- channel_implode_cosdate(d_runoff)
+  d_runoff$POSIXdate <- prepare_implode_cosdate(d_runoff)
   # normalize data names: 
-  d_runoff %<>% channel_names
+  d_runoff %<>% prepare_names
   
   # convert d_runoff to time series object (i.e. "xts")
   d_xts <- pour_runoff_as_xts(d_runoff)
   # calculate hydrological years:
-  d_runoff <- channel_periods(d_runoff, start_month = 9, end_month = 8)
+  d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
   years_in_data <- pour_years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
     # hydyears_in_d <- pour_hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
@@ -163,15 +163,15 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # water balance -----------------------------------------------------------
   # 1. total water bilance
   require(magrittr, quietly = TRUE)
-  # d_run <- pour_runoff_example() %>% channel_remove_chunk
+  # d_run <- pour_runoff_example() %>% prepare_remove_chunk
   pathDotRunoff  <- file.choose()
   require("data.table")
   d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
   names(d_raw)[5] <- "min"
   d_run <- d_raw %>% 
-    channel_remove_chunk %>% 
-    channel_only_observed  
+    prepare_remove_chunk %>% 
+    prepare_only_observed  
   tmp_cum <- d_run %>%
     select(starts_with("qobs"), starts_with("qsim")) %>%
     apply(.,2,cumsum) %>%
@@ -188,7 +188,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # 
   period_start <- 9
   period_end <- 8
-  d_run %<>% channel_periods(start_month = period_start, end_month = period_end)
+  d_run %<>% prepare_periods(start_month = period_start, end_month = period_end)
   g <- unique(d_run$period)
   baptize <-  function(data,new_names) {
     names(data) <- new_names

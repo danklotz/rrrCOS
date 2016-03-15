@@ -17,7 +17,7 @@ Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App.
 # get example data, 
 # clean it and 
 # explore the model performance
-d_runoff <- channel_remove_chunk( fetch_runoff_example() )
+d_runoff <- prepare_remove_chunk( pour_runoff_example() )
 dive_runoff_with_ofun(d_runoff)
 }
 

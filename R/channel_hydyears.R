@@ -4,7 +4,7 @@
 #' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-channel_hydyears <- function(runoff_data) {
+prepare_hydyears <- function(runoff_data) {
   # pre 
   require(dplyr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
@@ -13,7 +13,7 @@ channel_hydyears <- function(runoff_data) {
   } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
     stop("transformation from POSIXdate to COSdate not yet available :(")
   } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-    runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
+    runoff_data$POSIXdate <- prepare_implode_cosdate(runoff_data)
   }
   # calc
   years <- pour_years_in_data(runoff_data)

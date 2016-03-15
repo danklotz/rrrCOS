@@ -9,14 +9,14 @@
 #' Get runof example and implode cos_date to obtain the POSIXct date
 #' require(magrittr)
 #' runoff <- pour_runoff_example()
-#' runoff %<>% channel_implode_cosdate 
-#' # not a fan of magrittr-piping? Just use: runoff <- channel_implode_cosdate(runoff)
+#' runoff %<>% prepare_implode_cosdate 
+#' # not a fan of magrittr-piping? Just use: runoff <- prepare_implode_cosdate(runoff)
 #' # 
-#' # note that if channel_implode_cosdate is not used on the runoff data istelf it will work like a pour and just return the posix_dates 
+#' # note that if prepare_implode_cosdate is not used on the runoff data istelf it will work like a pour and just return the posix_dates 
 #' runoff <- pour_runoff_example()
-#' posix_dates <- channel_implode_cosdate(runoff)
+#' posix_dates <- prepare_implode_cosdate(runoff)
 #' head(posix_dates)
-channel_implode_cosdate <- function(data_frame) {
+prepare_implode_cosdate <- function(data_frame) {
   # def
   require(magrittr, quietly = TRUE)
   name_string <-  data_frame %>% names %>% tolower

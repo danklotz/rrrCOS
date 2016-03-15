@@ -5,7 +5,7 @@
 #' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-channel_periods <- function(runoff_data, start_month, end_month) {
+prepare_periods <- function(runoff_data, start_month, end_month) {
   # pre 
     require(dplyr, quietly = TRUE)
     require(magrittr, quietly = TRUE)
@@ -15,7 +15,7 @@ channel_periods <- function(runoff_data, start_month, end_month) {
     } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
       stop("transformation from POSIXdate to COSdate not yet available :(")
     } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-      runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
+      runoff_data$POSIXdate <- prepare_implode_cosdate(runoff_data)
     }
   # calc:
   # get labels for the monts

@@ -16,7 +16,7 @@
 #' # 
 #' # get number of basins: 
 #' runoff_data <- pour(runoff_example) 
-#' pour(number_of_basins,channel_removeChunk(runoff_data))
+#' pour(number_of_basins,prepare_removeChunk(runoff_data))
 #' #
 #' # get years in data 
 #' runoff_data <- pour(runoff_example) 

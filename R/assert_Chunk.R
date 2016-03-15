@@ -6,5 +6,5 @@ assert_chunk <- function(runoff_data) {
   require(magrittr, quietly = TRUE)
   regEx <- pour_regex_for_runoff_data()
   assertChunk <- names(runoff_data) %>% tolower %>% grepl(regEx,.)
-  if (any(assertChunk == FALSE)) stop("there is still chunk in the data, try: channel_removeChunk")
+  if (any(assertChunk == FALSE)) stop("there is still chunk in the data, try: prepare_removeChunk")
 }
