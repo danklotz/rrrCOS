@@ -13,6 +13,7 @@ The \code{fetch} function is a wrapper around the fetch_ functions. It works as 
  \item{ \code{fetch(number_of_basins,runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_number_of_basins}} }
  \item{ \code{fetch(hydears,runoff_data, years_in_data)} } { Wraps: \code{\link[visCOS]{fetch_hydyears}} }
  \item{ \code{fetch(years_in_data, runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_years_in_data}} }
+ \item{ \code{fetch(runoff_as_xts, runoff_data)} } { Wraps: \code{\link[visCOS]{fetch_runoff_as_xts}} }
  }
 }
 \examples{

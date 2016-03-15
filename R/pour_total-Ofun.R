@@ -4,16 +4,16 @@
 #' 
 #' xxx description follows
 #' @export
-pour_totalNSE <- function(from,...) {
+dive_totalNSE <- function(from,...) {
   # def
   assert_basicOF(from)
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- fetch_plt_ctrl()
+    plt_ctrl <- pour_plt_ctrl()
     plt_ctrl$plot_title <- "Total NSE  "
     plt_ctrl$ltitle <- "NSE"
   }
   # calc
-  total <- pour_totalOfun("NSE",from,plt_ctrl) 
+  total <- dive_totalOfun("NSE",from,plt_ctrl) 
   return(total)
 }
 
@@ -22,21 +22,21 @@ pour_totalNSE <- function(from,...) {
 #' 
 #' xxx description follows
 #' @export
-pour_totalKGE <- function(from,...) {
+dive_totalKGE <- function(from,...) {
   # def
   assert_basicOF(from)
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- fetch_plt_ctrl()
+    plt_ctrl <- pour_plt_ctrl()
     plt_ctrl$plot_title <- "Total KGE   "
     plt_ctrl$ltitle <- "KGE"
   }
   # calc
-  total <- pour_totalOfun("KGE",from,plt_ctrl) 
+  total <- dive_totalOfun("KGE",from,plt_ctrl) 
   return(total)
 }
 
 #' define rasterplot functions for total OF
-pour_totalOfun <- function(choice,bOF,plt_ctrl) {
+dive_totalOfun <- function(choice,bOF,plt_ctrl) {
   # def 
   assert_basicOF(bOF)
   require(ggplot2, quietly = TRUE)

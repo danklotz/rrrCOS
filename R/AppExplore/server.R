@@ -73,6 +73,6 @@ shinyServer(function(input, output, session) {# executes calculation file
   })
   output$slctd_OF <- renderTable({
     if (!is.null(input$dygrph1_date_window))
-      fetch_some_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
+      pour_some_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
   })
 })

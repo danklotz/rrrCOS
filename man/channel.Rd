@@ -6,4 +6,11 @@
 \usage{
 channel(this, from_that)
 }
+\examples{
+# get runoff example and clean data, remove chunk and clean names
+d_raw <- fetch_runoff_example()
+d_runoff <- channel(remove_chunk, runoff_data)
+names(d_raw)
+names(d_runoff)
+}
 

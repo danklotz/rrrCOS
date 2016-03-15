@@ -2,7 +2,7 @@
 #' 
 #' xxx description has to follow 
 #' @export
-fetch_plt_ctrl <- function( plot_title = "Title",
+pour_plt_ctrl <- function( plot_title = "Title",
                             ltitle = "Legend", 
                             year_name = "Year", 
                             colors = c('#FF3300',

@@ -4,7 +4,7 @@
 #' This function ('channel') is a wrapper around the channel_ functions. The usage is defined as following
 #' \itemize{
 #'  \item{ \code{channel(completeDate)} } { Wraps: \code{\link[visCOS]{channel_complete_date}} }
-#'  \item{ \code{channel(periods)} } {Alternvative formulation for fetch(ctrl), wraps: \code{\link[visCOS]{channel_periods}} }
+#'  \item{ \code{channel(periods)} } { Wraps: \code{\link[visCOS]{channel_periods}} }
 #'  \item{ \code{channel(implode_cosdate)} } { Wraps: \code{\link[visCOS]{channel_implode_cosdate}} }
 #'  \item{ \code{channel(only_observed)} } { Wraps: \code{\link[visCOS]{channel_only_observed}} }
 #'  \item{ \code{channel(path)} } { Wraps: \code{\link[visCOS]{channel_path}} }
@@ -14,7 +14,7 @@
 #' 
 #' @examples 
 #' # get runoff example and clean data, remove chunk and clean names
-#' d_raw <- fetch_runoff_example()
+#' d_raw <- pour_runoff_example()
 #' d_runoff <- channel(remove_chunk, runoff_data)
 #' names(d_raw)
 #' names(d_runoff)
@@ -27,7 +27,7 @@ channel <- function(this, from_that) {
   } else if (is.name(input)) {
     choice <- deparse(input)
   } else {
-    stop( paste("Cannot fetch_ The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
+    stop( paste("Cannot pour_ The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
   }
   # calc
   switch(choice, 

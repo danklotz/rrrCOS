@@ -18,7 +18,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
              as.data.frame(.)
         names(d_raw)[5] <- "min"
   #§
-        d_raw <- fetch_runoff_example()
+        d_raw <- pour_runoff_example()
         #§
   # eliminate basins withouth observations:
    d_runoff <- d_raw %>% 
@@ -26,12 +26,12 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     channel_only_observed
   # get num of used basins and their respective num
   #§ shall I wrap this into a channel function??
-  num_basins <- fetch_number_of_basins(d_runoff)
+  num_basins <- pour_number_of_basins(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
   #  path_Spinup <- channel_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
   #  pattern_spinup <- "start time-step of evaluation"
-  #  spinup <- fetch_spinup(path_Spinup,pattern_spinup)
+  #  spinup <- pour_spinup(path_Spinup,pattern_spinup)
   #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   #§
   
@@ -41,27 +41,27 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_runoff %<>% channel_names
   
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- fetch_runoff_as_xts(d_runoff)
+  d_xts <- pour_runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- channel_periods(d_runoff, start_month = 9, end_month = 8)
-  years_in_data <- fetch_years_in_data(d_runoff)
+  years_in_data <- pour_years_in_data(d_runoff)
   #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
-    # hydyears_in_d <- fetch_hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
+    # hydyears_in_d <- pour_hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
   periods_in_data <- which(unique(d_runoff$period) > 0)
   num_periods <- length(periods_in_data)
   
 
 # calculations ------------------------------------------------------------
-  bOF <- fetch_period_ofun(d_runoff)
+  bOF <- pour_period_ofun(d_runoff)
   
   
   
 # plotting --------------------------------------------------------------
   ## NSE
   ### yearly
-    plt_ynse <- pour_period_NSE(from = bOF, given = periods_in_data)
+    plt_ynse <- dive_period_NSE(from = bOF, given = periods_in_data)
   ### total
-    plty_tnse <- pour_totalNSE(from = bOF)
+    plty_tnse <- dive_totalNSE(from = bOF)
   #### concatenate two 
     g1 <- ggplotGrob(plt_ynse)
     g2 <- ggplotGrob(plty_tnse)
@@ -76,21 +76,21 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
     
   ### expanded barplots & htmlfiles
-  # fetch new list:
-  plt_ctrl <- fetch_plt_ctrl()
+  # pour new list:
+  plt_ctrl <- pour_plt_ctrl()
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- pour_expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
+  plt_exp_NSE <- dive_expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
-  pour_expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
+  dive_expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
 
   #§ here we go ... 
   
   # plots: %-bias -----------------------------------------------------------
   #
-  pour_hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
+  dive_hydyearly_pBIAS(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total %-Bias"
   plt_ctrl$ltitle <- "%-Bias"
@@ -114,7 +114,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
   # plots: KGE
   # yearly
-  plt_ykge <- pour_hydyearly_KGE(from = bOF, given = hydyears_in_d)
+  plt_ykge <- dive_hydyearly_KGE(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total KGE   "
   plt_ctrl$ltitle <- "KGE"
@@ -135,7 +135,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   ######################################################################################
   # plots: Correlation
   # yearly
-  pour_hydyearly_Corr(from = bOF, given = hydyears_in_d)
+  dive_hydyearly_Corr(from = bOF, given = hydyears_in_d)
   # total
   plt_ctrl$gtitle <- "Total Corr  "
   plt_ctrl$ltitle <- "Corr"
@@ -163,7 +163,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # water balance -----------------------------------------------------------
   # 1. total water bilance
   require(magrittr, quietly = TRUE)
-  # d_run <- fetch_runoff_example() %>% channel_remove_chunk
+  # d_run <- pour_runoff_example() %>% channel_remove_chunk
   pathDotRunoff  <- file.choose()
   require("data.table")
   d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%

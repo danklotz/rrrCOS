@@ -3,7 +3,7 @@
 #' @return list with (short and long named) years. \strong{Note:} Short names years are just characters.
 #' Thus, they may only be usefull for plotting
 #' @export
-fetch_years_in_data <- function(runoff_data) {
+pour_years_in_data <- function(runoff_data) {
   require(magrittr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
   # calc

@@ -4,14 +4,14 @@
 #' xxx description to follow 
 #' 
 #' @export
-pour_period_NSE <- function(from, given, ...) {
+dive_period_NSE <- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- fetch_plt_ctrl()
+      plt_ctrl <- pour_plt_ctrl()
       plt_ctrl$plot_title <- "Yearly NSE"
       plt_ctrl$ylab <- "basin number"
     }
   # calc
-  plt_NSE <- pour_period_ofun("NSE",from, given, plt_ctrl)
+  plt_NSE <- dive_period_ofun("NSE",from, given, plt_ctrl)
   return(plt_NSE)
 }
 
@@ -20,14 +20,14 @@ pour_period_NSE <- function(from, given, ...) {
 #' xxx description to follow 
 #' 
 #' @export
-pour_period_KGE<- function(from, given, ...) {
+dive_period_KGE<- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- fetch_plt_ctrl()
+      plt_ctrl <- pour_plt_ctrl()
       plt_ctrl$plot_title <- "Yearly KGE"
       plt_ctrl$ylab <- "basin number"
     }
   # calc
-  plt_KGE <- pour_period_ofun("KGE",from, given, plt_ctrl)
+  plt_KGE <- dive_period_ofun("KGE",from, given, plt_ctrl)
   return(plt_KGE)
 }
 
@@ -36,9 +36,9 @@ pour_period_KGE<- function(from, given, ...) {
 #' xxx description to follow 
 #' 
 #' @export
-pour_period_pBIAS <- function(from, given, ...) {
+dive_period_pBIAS <- function(from, given, ...) {
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- fetch_plt_ctrl()
+    plt_ctrl <- pour_plt_ctrl()
     plt_ctrl$plot_title <- "Yearly %-Bias"
     plt_ctrl$ylab <- "basin number"
     plt_ctrl$midpoint <- 0.0
@@ -46,7 +46,7 @@ pour_period_pBIAS <- function(from, given, ...) {
     plt_ctrl$lb_cut <- -1000.0
   }
   # calc
-  plt_pBIAS <- pour_period_ofun("pBIAS",from, given, plt_ctrl)
+  plt_pBIAS <- dive_period_ofun("pBIAS",from, given, plt_ctrl)
   return(plt_pBIAS)
 }
 
@@ -55,9 +55,9 @@ pour_period_pBIAS <- function(from, given, ...) {
 #' xxx description to follow 
 #' 
 #' @export
-pour_period_Corr <- function(from, given, ...) {
+dive_period_Corr <- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- fetch_plt_ctrl()
+      plt_ctrl <- pour_plt_ctrl()
       plt_ctrl$plot_title <- "Yearly Correlation"
       plt_ctrl$ylab <- "basin number"
       plt_ctrl$limits <- c(0,1)
@@ -65,22 +65,22 @@ pour_period_Corr <- function(from, given, ...) {
   
     }
   # calc
-  plt_Corr <- pour_period_ofun("CORR",from, given, plt_ctrl)
+  plt_Corr <- dive_period_ofun("CORR",from, given, plt_ctrl)
   return(plt_Corr)
 }
 
-# pour yearly ofun ---------------------------------------------------------------
+# dive yearly ofun ---------------------------------------------------------------
 #' ggplot wrapper for the hydyearly objective functions
 #'
 #' plot table of the yearly basic objective function
 #'
-#' @param bOF list, as returned by \code{\link[visCOS]{fetch_basicOfun}}
+#' @param bOF list, as returned by \code{\link[visCOS]{pour_basicOfun}}
 #' @param string with the chosen baisc objective function.
-#' \code{\link[visCOS]{fetch_basicOfun}} provides "NSE", "KGE", "pBIAS" or "CORR"
-#' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{fetch_periods}}
+#' \code{\link[visCOS]{pour_basicOfun}} provides "NSE", "KGE", "pBIAS" or "CORR"
+#' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{pour_periods}}
 #' @param xxx yet to be defined control list
 #' @export
-pour_period_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
+dive_period_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
   # def
     require(ggplot2)
     require(magrittr)

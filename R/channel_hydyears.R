@@ -16,9 +16,9 @@ channel_hydyears <- function(runoff_data) {
     runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
   }
   # calc
-  years <- fetch_years_in_data(runoff_data)
+  years <- pour_years_in_data(runoff_data)
   num_years = length(years$in_data)
-  hydyears_in_d <- fetch_hydyears(runoff_data,years)
+  hydyears_in_d <- pour_hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)
   # cut away data outside of hydyears (#§ bad solution, below is an idea for a better one?)
   runoff_data %<>% filter(yyyy > years$in_data[1] | mm >= 9 ) %>% 

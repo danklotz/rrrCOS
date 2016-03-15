@@ -13,7 +13,7 @@
 #' # get example data, 
 #' # clean it and 
 #' # explore the model performance
-#' d_runoff <- channel_remove_chunk( fetch_runoff_example() )
+#' d_runoff <- channel_remove_chunk( pour_runoff_example() )
 #' dive_runoff_with_ofun(d_runoff)
 dive_runoff_with_ofun <- function(runoff_data) {
   # pre
@@ -28,7 +28,7 @@ dive_runoff_with_ofun <- function(runoff_data) {
     runoff_data$POSIXdate <- channel_implode_cosdate(runoff_data)
   }
   runoff_data <<- runoff_data
-  d_xts <<- fetch_runoff_as_xts(runoff_data)
+  d_xts <<- pour_runoff_as_xts(runoff_data)
   d_names_all<- names(d_xts)
   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names_all[idx_names]
