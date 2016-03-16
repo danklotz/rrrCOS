@@ -9,17 +9,12 @@ output:
   require("magrittr")
 ```
 
-## Calculate Objective Function
-As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the *pour* command:
+## Intro to the prepare_ functions
+xxx
 ```{r}
   d_raw <- pour(runoff_example) # get example runoff
-  head(d_raw)
-```
-
-The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (carefull here: the name testing is not case-sensitive)
-```{r}
   d_runoff <- prepare(this = remove_chunk, from_that = d_raw)
-  head(d_runoff)
+
 ```      
 
 As a next step we might then want to remove unobserved basins. This can be done with `prepare_onlyObserved`
@@ -38,17 +33,11 @@ Since our data contains the **COSdate** date-columnswe can get the posix-date (n
 ```
 
 ```{r}
-  num_basins <- pour_number_of_basins(d_runoff)
-
-  years_in_data <- pour_years_in_data(d_runoff)
-```
-
-```{r}
   d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
 ```
 
 ```{r}
-  bOF <- pour_period_ofun(d_runoff)
+  bOF <- serve_period_ofun(d_runoff)
   bOF
 ```
 

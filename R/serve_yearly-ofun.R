@@ -80,12 +80,15 @@ serve_period_Corr <- function(from, given, ...) {
 #' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{pour_periods}}
 #' @param xxx yet to be defined control list
 #' @export
-serve_period_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
+serve_yearly_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
   # def
     require(ggplot2)
     require(magrittr)
     require(reshape2)
     assert_basicOF(bOF)
+    if (missing(plt_ctrl)) {
+      plt_ctrl <- pour_plt_ctrl()
+    }
   # calc
   if (choice == "NSE") {
     Ofun_hydyearly = bOF$NSE_periods

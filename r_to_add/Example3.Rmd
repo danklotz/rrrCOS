@@ -1,46 +1,24 @@
 ---
-title: "visCOS: Example 3, Calculate Objective Function"
+title: "visCOS: Example 2"
 output: 
   html_document:
     highlight: pygments
 ---
-
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")
   require("magrittr")
 ```
 
-As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the *pour* command:
+## Calculate Objective Function
+xxx
 ```{r}
   d_raw <- pour(runoff_example) # get example runoff
-  head(d_raw)
-```
-
-The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (carefull here: the name testing is not case-sensitive)
-```{r}
-  d_runoff <- prepare(this = remove_chunk, from_that = d_raw)
-  head(d_runoff)
-```      
-
-As a next step we might then want to remove unobserved basins. This can be done with `prepare_onlyObserved`
-```{r}
-  d_runoff <- prepare(this = remove_chunk, from_that = d_runoff)
+  d_runoff <- d_raw %>% prepare_remove_chunk %>% prepare_only_observed
   head(d_runoff)
 ```
 
-Of course all this would be easier by using the pipes from the [magrittr](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) package. That would simplify the last two steps, such to: `QobsNotObserved %<>% prepare_remove_chunk %>% prepare_only_observed`.
-
-Some parts of **visCOS** make use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. (namely xxx) To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  `runoff_data data.frame (xxx)` can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `prepare_implode_cosdate` function. Noting that `prepare_implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
-
-Since our data contains the **COSdate** date-columnswe can get the posix-date (needed for the dygraphs, by using the appropriate prepare function `prepare_implode_cosdate` and then transform it into the xts-data-structure with `pour_runoff_as_xts`
 ```{r}
   d_runoff$POSIXdate <- prepare(this = implode_cosdate, from_that = d_runoff)
-```
-
-```{r}
-  num_basins <- pour_number_of_basins(d_runoff)
-
-  years_in_data <- pour_years_in_data(d_runoff)
 ```
 
 ```{r}
@@ -48,7 +26,7 @@ Since our data contains the **COSdate** date-columnswe can get the posix-date (n
 ```
 
 ```{r}
-  bOF <- pour_period_ofun(d_runoff)
+  bOF <- serve_period_ofun(d_runoff)
   bOF
 ```
 

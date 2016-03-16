@@ -36,20 +36,16 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   #§
   
   # add full date information to data
-  d_runoff$POSIXdate <- prepare_implode_cosdate(d_runoff)
+  d_runoff <- prepare_implode_cosdate(d_runoff)
   # normalize data names: 
   d_runoff %<>% prepare_names
   
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- pour_runoff_as_xts(d_runoff)
+  d_xts <- prepare_runoff_as_xts(d_runoff)
   # calculate hydrological years:
   d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
-  years_in_data <- pour_years_in_data(d_runoff)
-  #§ its not realy smart to handle it like this, whith two strange variables. Maybe better solution possible?
-    # hydyears_in_d <- pour_hydyears(d_runoff,years_in_data) #§ this is / was stupid, was it not?
   periods_in_data <- which(unique(d_runoff$period) > 0)
   num_periods <- length(periods_in_data)
-  
 
 # calculations ------------------------------------------------------------
   bOF <- pour_period_ofun(d_runoff)

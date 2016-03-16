@@ -1,10 +1,17 @@
 ---
-title: "visCOS: Example 1, Intro to the pour_ functions"
+title: "visCOS: Example 1"
 output: 
   html_document:
     highlight: pygments
 ---
 
+## Intro to the pour_ functions
+As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the *pour* command:
+```{r}
+  d_raw <- pour(runoff_example) # get example runoff
+```
+
+The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (carefull here: the name testing is not case-sensitive)
 ## 
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")

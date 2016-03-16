@@ -22,10 +22,10 @@ serve_runoff_with_ofun <- function(runoff_data) {
   #$ this is all suboptimal, maybe exploit the global function or something
   runoff_data %<>% prepare_names
   if ( !"POSIXdate" %in% names(runoff_data) ) {
-    runoff_data$POSIXdate <- prepare_implode_cosdate(runoff_data)
+    runoff_data <- prepare_implode_cosdate(runoff_data)
   }
   runoff_data <<- runoff_data
-  d_xts <<- pour_runoff_as_xts(runoff_data)
+  d_xts <<- prepare_runoff_as_xts(runoff_data)
   d_names_all<- names(d_xts)
   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names_all[idx_names]

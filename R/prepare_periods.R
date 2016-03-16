@@ -15,7 +15,7 @@ prepare_periods <- function(runoff_data, start_month, end_month) {
     } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
       stop("transformation from POSIXdate to COSdate not yet available :(")
     } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-      runoff_data$POSIXdate <- prepare_implode_cosdate(runoff_data)
+      runoff_data <- prepare_implode_cosdate(runoff_data)
     }
   # calc:
   # get labels for the monts
