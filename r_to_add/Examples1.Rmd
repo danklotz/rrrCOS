@@ -20,8 +20,8 @@ The first five rows of the example are used to encapsulate the date in the **COS
 xxx Explain that one can test and play with the runoff
 
 
-
-xxx a bit more tricky:
+The spinup defines a row which denotes the timestep at which our simulation can be used for further processing. Rows before the spinup need to be removed from the data set for the evalution. Many models save the information about the spinup in a separate file. The function 'pour_spinup' provdies a small wrapper to grap the spinup time dependend on some preciding pattern in a file.  
+To test the function we can use `filepath = "dummy"`, which can take 3 different patterns, i.e. *a* *b* and *c* and returns different spinups. 
 
 ```{r}
   spinup_a <- pour_spinup(filepath = "dummy",pattern = "a")
@@ -29,7 +29,6 @@ xxx a bit more tricky:
   spinup_c <- pour_spinup("dummy","c")
   # note: there is no "d"-pattern in the dummy variable
     c(spinup_a,spinup_b,spinup_c)
-  
 ```
 
 
