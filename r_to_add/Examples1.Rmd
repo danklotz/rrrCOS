@@ -1,8 +1,12 @@
 ---
-title: "visCOS: Example 1"
+title: "visCOS: Example 1, Intro to the pour_ functions"
 output: 
   html_document:
     highlight: pygments
 ---
 
-The aim of visCOS is to enable hydrological modelers (preferably those working at the IWHW, BOKU) to esablish workflows for checking and visualizing their working performance. R has some amazig packages for data-science work and hydrology in general. These packages provide great frameworks for most of the problems but need to be adapted to individual problems at hand. The aim here is to provide some solutions and applications for small special problems. Simplify the modell-calribartion process and allow for some simple visualization options needed reports. 
+## 
+```{r, echo = FALSE, message=FALSE}
+  require("visCOS")
+  require("magrittr")
+```

@@ -1,5 +1,5 @@
 ---
-title: "visCOS: Calculate Objective Function"
+title: "visCOS: Example 3, Calculate Objective Function"
 output: 
   html_document:
     highlight: pygments
