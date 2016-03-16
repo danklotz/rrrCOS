@@ -21,6 +21,7 @@ Get runof example and implode cos_date to obtain the POSIXct date
 require(magrittr)
 runoff <- pour_runoff_example()
 runoff \%<>\% prepare_implode_cosdate 
-# not a fan of magrittr-piping? Just use: runoff <- prepare_implode_cosdate(runoff)
+# not a fan of magrittr-piping? Just use: 
+runoff <- prepare_implode_cosdate(pour_runoff_example())
 }
 

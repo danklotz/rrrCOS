@@ -4,16 +4,40 @@ output:
   html_document:
     highlight: pygments
 ---
-
-## Intro to the pour_ functions
-As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the *pour* command:
-```{r}
-  d_raw <- pour(runoff_example) # get example runoff
-```
-
-The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (carefull here: the name testing is not case-sensitive)
-## 
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")
   require("magrittr")
 ```
+
+## Intro to the pour_ functions
+As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the `pour_runoff_example` command. 
+```{r}
+  head( pour_runoff_example() ) # get example runoff
+```
+
+The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive) xxx
+
+xxx Explain that one can test and play with the runoff
+
+
+
+xxx a bit more tricky:
+
+```{r}
+  spinup_a <- pour_spinup(filepath = "dummy",pattern = "a")
+  spinup_b <- pour_spinup("dummy","b")
+  spinup_c <- pour_spinup("dummy","c")
+  # note: there is no "d"-pattern in the dummy variable
+    c(spinup_a,spinup_b,spinup_c)
+  
+```
+
+
+xxx
+```{r}
+  pour_plt_ctrl()
+```
+
+
+
+

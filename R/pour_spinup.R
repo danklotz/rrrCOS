@@ -9,13 +9,30 @@
 #' @return Integer indicating the length of the spin-up time in hours
 #' @export
 pour_spinup <- function(filepath,pattern) {
-  # pre 
-  require(magrittr)
-  # 
-  tmp <- filepath %>% paste %>% readLines
-  spinup <- grep(pattern,tmp) %>%
-    tmp[.] %>% 
-    sub('.*:', '',.) %>% 
-    as.integer(.) + 1
-  return(spinup)
+  # def
+    #§ missing :(
+    require(magrittr)
+  # calc
+  if (filepath == "dummy") {
+    tmp <- c("a 100", "b 200", "c 300")
+    spinup <- grep(pattern,tmp) %>%
+      tmp[.] %>% 
+      sub('\\D', '',.) %>% 
+      as.integer(.) + 1
+    if ( length(spinup) == 0 ) {
+      stop("pattern or spinup-integer could not be found")
+    }
+    return(spinup)
+  } else {
+    tmp <- filepath %>% paste %>% readLines
+    spinup <- grep(pattern,tmp) %>%
+      tmp[.] %>% 
+      sub('\\D', '',.) %>% 
+      as.integer(.) + 1
+    if ( length(spinup) == 0 ) {
+      stop("pattern or spinup-integer could not be found")
+    }
+    return(spinup)
+  }
+
 }

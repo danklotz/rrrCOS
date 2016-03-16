@@ -75,10 +75,10 @@ img {
 </div>
 
 
-<p>The aim of visCOS is to enable hydrological modelers (preferably those working at the IWHW, BOKU) to esablish workflows for checking and visualizing their working performance. R has some amazig packages for data-science work and hydrology in general. These packages provide great frameworks for most of the problems but need to be adapted to individual problems at hand. The aim here is to provide some solutions and applications for small special problems. Simplify the modell-calribartion process and allow for some simple visualization options for reports.</p>
-<p>As a first step let us get some exemplary runoff and take a look at it. Within <strong>visCOS</strong> can be done via the <em>fetch</em> command:</p>
-<pre class="sourceCode r"><code class="sourceCode r">  d_raw &lt;-<span class="st"> </span><span class="kw">fetch</span>(runoff_example) <span class="co"># get example runoff</span>
-  <span class="kw">head</span>(d_raw)</code></pre>
+<div id="intro-to-the-pour_-functions" class="section level2">
+<h2>Intro to the pour_ functions</h2>
+<p>As a first step let us get some exemplary runoff and take a look at it. Within <strong>visCOS</strong> can be done via the <code>pour_runoff_example</code> command.</p>
+<pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">head</span>( <span class="kw">pour_runoff_example</span>() ) <span class="co"># get example runoff</span></code></pre>
 <pre><code>##   yyyy mm dd hh min QOBS_0001 QOSI_0001 QSIM_0001 QOBS_0002 QOSI_0002
 ## 1 2009  9  1  0   0      4.25      5.48      5.48      6.72      5.90
 ## 2 2009  9  1  1   0      7.16      5.46      5.46      5.77      6.47
@@ -93,70 +93,49 @@ img {
 ## 4      6.30
 ## 5      6.29
 ## 6      6.28</code></pre>
-<p>The first five rows of the example are used to encapsulate the date in the <strong>COSdate</strong> format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with <code>channel_removeChunk</code>, which will remove all rows except those, which names begin with <strong>qobs</strong>, <strong>qsim</strong>, are in the <strong>COSdate</strong> format, or are named <strong>posixdate</strong> and <strong>period</strong> (carefull here: the name testing is not case-sensitive)</p>
-<pre class="sourceCode r"><code class="sourceCode r">  d_runoff &lt;-<span class="st"> </span><span class="kw">channel</span>(<span class="dt">this =</span> remove_chunk, <span class="dt">from_that =</span> d_raw)
-  <span class="kw">head</span>(d_runoff)</code></pre>
-<pre><code>##   yyyy mm dd hh min QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002
-## 1 2009  9  1  0   0      4.25      5.48      6.72      6.35
-## 2 2009  9  1  1   0      7.16      5.46      5.77      6.33
-## 3 2009  9  1  2   0      5.24      5.45      5.50      6.32
-## 4 2009  9  1  3   0      4.40      5.44      6.28      6.30
-## 5 2009  9  1  4   0      4.31      5.43      7.18      6.29
-## 6 2009  9  1  5   0      4.23      5.41      6.32      6.28</code></pre>
-<p>As a next step we might then want to remove unobserved basins. This can be done with <code>channel_onlyObserved</code></p>
-<pre class="sourceCode r"><code class="sourceCode r">  d_runoff &lt;-<span class="st"> </span><span class="kw">channel</span>(<span class="dt">this =</span> remove_chunk, <span class="dt">from_that =</span> d_runoff)
-  <span class="kw">head</span>(d_runoff)</code></pre>
-<pre><code>##   yyyy mm dd hh min QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002
-## 1 2009  9  1  0   0      4.25      5.48      6.72      6.35
-## 2 2009  9  1  1   0      7.16      5.46      5.77      6.33
-## 3 2009  9  1  2   0      5.24      5.45      5.50      6.32
-## 4 2009  9  1  3   0      4.40      5.44      6.28      6.30
-## 5 2009  9  1  4   0      4.31      5.43      7.18      6.29
-## 6 2009  9  1  5   0      4.23      5.41      6.32      6.28</code></pre>
-<p>Of course all this would be easier by using the pipes from the <a href="https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html">magrittr</a> package. That would simplify the last two steps, such to: <code>QobsNotObserved %&lt;&gt;% channel_remove_chunk %&gt;% channel_only_observed</code>.</p>
-<p>Some parts of <strong>visCOS</strong> make use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. (namely xxx) To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the <code>runoff_data data.frame (xxx)</code> can contains a column named <em>posixdate</em>, which contains the xts formatted dates. If our data.frame contains dates in the <strong>COSdate</strong> format, we can easily add the column with the <code>channel_implode_cosdate</code> function. Noting that <code>channel_implode_cosdate</code> assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format).</p>
-<p>Since our data contains the <strong>COSdate</strong> date-columnswe can get the posix-date (needed for the dygraphs, by using the appropriate channel function <code>channel_implode_cosdate</code> and then transform it into the xts-data-structure with <code>fetch_runoff_as_xts</code></p>
-<pre class="sourceCode r"><code class="sourceCode r">  d_runoff$POSIXdate &lt;-<span class="st"> </span><span class="kw">channel</span>(<span class="dt">this =</span> implode_cosdate, <span class="dt">from_that =</span> d_runoff)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">  num_basins &lt;-<span class="st"> </span><span class="kw">fetch_number_of_basins</span>(d_runoff)
-
-  years_in_data &lt;-<span class="st"> </span><span class="kw">fetch_years_in_data</span>(d_runoff)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">  d_runoff &lt;-<span class="st"> </span><span class="kw">channel_periods</span>(d_runoff, <span class="dt">start_month =</span> <span class="dv">9</span>, <span class="dt">end_month =</span> <span class="dv">8</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">  bOF &lt;-<span class="st"> </span><span class="kw">fetch_period_ofun</span>(d_runoff)</code></pre>
-<pre><code>## 
-## Attaching package: 'zoo'</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
+<p>The first five rows of the example are used to encapsulate the date in the <strong>COSdate</strong> format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with <code>prepare_removeChunk</code>, which will remove all rows except those, which names begin with <strong>qobs</strong>, <strong>qsim</strong>, are in the <strong>COSdate</strong> format, or are named <strong>posixdate</strong> and <strong>period</strong> (the name testing is not case-sensitive) xxx</p>
+<p>xxx Explain that one can test and play with the runoff</p>
+<p>xxx a bit more tricky:</p>
+<pre class="sourceCode r"><code class="sourceCode r">  spinup_a &lt;-<span class="st"> </span><span class="kw">pour_spinup</span>(<span class="dt">filepath =</span> <span class="st">&quot;dummy&quot;</span>,<span class="dt">pattern =</span> <span class="st">&quot;a&quot;</span>)
+  spinup_b &lt;-<span class="st"> </span><span class="kw">pour_spinup</span>(<span class="st">&quot;dummy&quot;</span>,<span class="st">&quot;b&quot;</span>)
+  spinup_c &lt;-<span class="st"> </span><span class="kw">pour_spinup</span>(<span class="st">&quot;dummy&quot;</span>,<span class="st">&quot;c&quot;</span>)
+  <span class="kw">c</span>(spinup_a,spinup_b,spinup_c)</code></pre>
+<pre><code>## [1] 101 201 301</code></pre>
+<p>xxx</p>
+<pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">pour_plt_ctrl</span>()</code></pre>
+<pre><code>## $plot_title
+## [1] &quot;Title&quot;
 ## 
-##     as.Date, as.Date.numeric</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">  bOF</code></pre>
-<pre><code>## $NSE_periods
-##           [,1]      [,2]
-## [1,] 0.4491119 0.5046667
+## $ltitle
+## [1] &quot;Legend&quot;
 ## 
-## $KGE_periods
-##           [,1]      [,2]
-## [1,] 0.7134231 0.7381691
+## $xlab
+## [1] &quot;Year&quot;
 ## 
-## $pBIAS_periods
-##       [,1]  [,2]
-## [1,] -14.6 -16.1
+## $clr1
+## [1] &quot;#FF3300&quot;
 ## 
-## $CORR_periods
-##           [,1]      [,2]
-## [1,] 0.7534572 0.7931429
+## $clr2
+## [1] &quot;#f6f3a1&quot;
 ## 
-## $NSE
-## QOBS_0001 QOBS_0002 
-## 0.4491119 0.5046667 
+## $clr3
+## [1] &quot;#005900&quot;
 ## 
-## $KGE
-## QOBS_0001 QOBS_0002 
-## 0.7134231 0.7381691 
+## $clr4
+## [1] &quot;purple4&quot;
 ## 
-## $pBIAS
-## [1] -14.6 -16.1
+## $midpoint
+## [1] 0.5
 ## 
-## $CORR
-## [1] 0.7534572 0.7931429</code></pre>
+## $limits
+## [1] 0 1
+## 
+## $lb_cut
+## [1] 0
+## 
+## $text_size
+## [1] 0.5</code></pre>
+</div>
 
 
 </div>
