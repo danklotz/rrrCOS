@@ -1,7 +1,7 @@
-#' RegEx Pattern for runoff_data
-#'
-#' returns the regular expression needed to check if there is Chunk in the the runoff_data data.frame(see: xxx)
-pour_regex_for_runoff_data <- function() {
+# RegEx Pattern for runoff_data
+#
+# returns the regular expression needed to check if there is Chunk in the the runoff_data data.frame(see: xxx)
+get_regex_for_runoff_data <- function() {
   RegExPattern  <- "^yyyy$|^mm$|^dd$|^hh$|^min$|qobs.*|qsim.*|posixdate|period"
   return(RegExPattern)
 }

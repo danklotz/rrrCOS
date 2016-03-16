@@ -1,5 +1,5 @@
 ---
-title: "Example 1: Intro to the pour_ functions"
+title: "Example 1: Intro to the *pour_* functions"
 output: 
   html_document:
     highlight: pygments
@@ -46,9 +46,17 @@ To test the function we can use `filepath = "dummy"`, which can take 3 different
 
 ### Plot Options
 ```{r}
-  pour_plt_ctrl()
+  pour_plt_ctrl()[[1]]
 ```
 
+
+### Pour Out 
+xxx
+```{r}
+    pour(runoff_example) %>% head()
+    pour(plt_ctrl)[[1]]
+    pour(spinup,"dummy","c")
+```
 
 
 

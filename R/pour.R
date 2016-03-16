@@ -3,8 +3,8 @@
 #' The \code{pour} function is a wrapper around the pour_ functions. It works as following: 
 #' \itemize{
 #'  \item{ \code{pour(runoff_example)} } { Wraps: \code{\link[visCOS]{pour_runoff_example}} }
-#'  \item{ \code{pour(spinup,filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour_spinup}} }
-#'  #'  \item{ \code{pour(regex_runoffdata)} } { Wraps: \code{\link[visCOS]{pour_regex_for_runoff_data}} }
+#'  \item{ \code{pour(spinup, filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour_spinup}} }
+#'  \item{ \code{pour(plt_ctrl)} } { Wraps: \code{\link[visCOS]{pour_plt_ctrl}} }
 #'  }
 #' @export
 #' @examples 
@@ -26,8 +26,8 @@ pour <- function(what, ...) {
   # calc:
   switch(choice, 
          runoff_example = pour_runoff_example(),
+         plt_ctrl = pour_plt_ctrl(),
          spinup = pour_spinup(...),
-         regex_runoff_data = pour_regex_for_runoff_data(),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for pour", sep = " " ) )
          )
 }

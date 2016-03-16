@@ -1,5 +1,5 @@
 ---
-title: "Example 2: The prepare_ functions"
+title: "Example 2: Intro to the *prepare_* functions"
 output: 
   html_document:
     highlight: pygments
