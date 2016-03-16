@@ -1,10 +1,11 @@
 #' complete the date-formats with xts or COSdate
 #' 
-#' 
+#' xxx 
 #' 
 #' @param runoff_data The data.frame, which contains the runoff information
 #' @return The new runoff data.frame with the added data-format. 
 #' @export
+# examples are still missing !!
 prepare_complete_date <- function(runoff_data) {
   # pre 
   require(magrittr)
@@ -17,7 +18,7 @@ prepare_complete_date <- function(runoff_data) {
     if (!OK_Cosdates & !OK_POSIXdates) {
       stop("No COSdates and no POSIXct-dates in the data!")
     } else if (OK_Cosdates & !OK_POSIXdates) { 
-      runoff_data$POSIXdate <- implode.Cosdate(runoff_data)
+      runoff_data <- implode_cosdate(runoff_data)
     } else if (!OK_Cosdates & OK_POSIXdates) {
       stop("POSIXct to COSdates not yet supported :(")
     }

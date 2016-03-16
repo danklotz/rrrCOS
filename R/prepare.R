@@ -5,9 +5,8 @@
 #' \itemize{
 #'  \item{ \code{prepare(completeDate)} } { Wraps: \code{\link[visCOS]{prepare_complete_date}} }
 #'  \item{ \code{prepare(periods)} } { Wraps: \code{\link[visCOS]{prepare_periods}} }
-#'  \item{ \code{prepare(implode_cosdate)} } { Wraps: \code{\link[visCOS]{prepare_implode_cosdate}} }
+#'  \item{ \code{prepare(complete_date)} } { Wraps: \code{\link[visCOS]{prepare_complete_date}} }
 #'  \item{ \code{prepare(only_observed)} } { Wraps: \code{\link[visCOS]{prepare_only_observed}} }
-#'  \item{ \code{prepare(path)} } { Wraps: \code{\link[visCOS]{prepare_path}} }
 #'  \item{ \code{prepare(remove_chunk,runoff_data})} } { Wraps: \code{\link[visCOS]{prepare_remove_chunk}} }
 #'  \item{ \code{prepare(runoff_as_xts, runoff_data)} } { Wraps: \code{\link[visCOS]{prepare_runoff_as_xts}} }
 #'  }
@@ -34,9 +33,8 @@ prepare <- function(this, from_that) {
   switch(choice, 
          completeDate = prepare_complete_date(from_that), 
          periods = prepare_periods(from_that),
-         implode_cosdate = prepare_implode_cosdate(from_that),
+         complete_date = prepare_complete_date(from_that),
          only_observed = prepare_only_observed(from_that),
-         path = prepare_path(from_that),
          remove_chunk = prepare_remove_chunk(from_that),
          runoff_as_xts = prepare_runoff_as_xts(from_that),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for prepare", sep = " " ) )

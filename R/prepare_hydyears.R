@@ -1,9 +1,10 @@
-#' calculate hydrological years
-#' 
-#' @param runoff_data The data.frame, which contains the runoff information
-#' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
-#' \strong{Note:} The hydrological years are formatted as characters.
-#' @export
+#§ not used anymore! Will be removed soon
+# calculate hydrological years
+# 
+# @param runoff_data The data.frame, which contains the runoff information
+# @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
+# \strong{Note:} The hydrological years are formatted as characters.
+# @export
 prepare_hydyears <- function(runoff_data) {
   # pre 
   require(dplyr)
@@ -13,7 +14,7 @@ prepare_hydyears <- function(runoff_data) {
   } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
     stop("transformation from POSIXdate to COSdate not yet available :(")
   } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-    runoff_data <- prepare_implode_cosdate(runoff_data)
+    runoff_data <- implode_cosdate(runoff_data)
   }
   # calc
   years <- pour_years_in_data(runoff_data)

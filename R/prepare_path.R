@@ -1,10 +1,10 @@
-#' Removes the filename from a path 
-#' 
-#' Removes the filename from a given path 
-#' @param filepath path to a given file
-#' @return path to the file
-#' @export
-prepare_path <- function(filepath) {
+# Removes the filename from a path 
+# 
+# Removes the filename from a given path 
+# @param filepath path to a given file
+# @return path to the file
+# @export
+remove_filename_from_path <- function(filepath) {
   ##########################
   # pre
   ##########################

@@ -22,7 +22,7 @@ serve_runoff_with_ofun <- function(runoff_data) {
   #$ this is all suboptimal, maybe exploit the global function or something
   runoff_data %<>% prepare_names
   if ( !"POSIXdate" %in% names(runoff_data) ) {
-    runoff_data <- prepare_implode_cosdate(runoff_data)
+    runoff_data %<>% prepare_complete_date()
   }
   runoff_data <<- runoff_data
   d_xts <<- prepare_runoff_as_xts(runoff_data)

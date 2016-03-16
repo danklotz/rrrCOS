@@ -1,5 +1,5 @@
 ---
-title: "visCOS: Example 2"
+title: "Example 2: The prepare_ functions"
 output: 
   html_document:
     highlight: pygments
@@ -9,36 +9,36 @@ output:
   require("magrittr")
 ```
 
-## Intro to the prepare_ functions
 xxx
 ```{r}
-  d_raw <- pour(runoff_example) # get example runoff
-  d_runoff <- prepare(this = remove_chunk, from_that = d_raw)
-
+  raw_data <- pour(runoff_example) # get example runoff
+  head(raw_data)
 ```      
 
-As a next step we might then want to remove unobserved basins. This can be done with `prepare_onlyObserved`
+## Shake it
+xxx
 ```{r}
-  d_runoff <- prepare(this = remove_chunk, from_that = d_runoff)
+  d_runoff <- prepare_remove_chunk(raw_data)
   head(d_runoff)
 ```
 
-Of course all this would be easier by using the pipes from the [magrittr](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) package. That would simplify the last two steps, such to: `QobsNotObserved %<>% prepare_remove_chunk %>% prepare_only_observed`.
-
-Some parts of **visCOS** make use of the dygraphs-package (xxx source) to enable an interactive exploration of time series. (namely xxx) To plot time series dygraphs requires an xts object or an object which is convertible to xts. Thus, for easy conversiuon the  `runoff_data data.frame (xxx)` can contains a column named *posixdate*, which contains the xts formatted dates. If our data.frame contains dates in the **COSdate** format, we can easily add the column with the `prepare_implode_cosdate` function. Noting that `prepare_implode_cosdate` assumes that your dates are UTC, not allowing any timeshifts within the data (see xxx: toughts on COSdate format). 
-
-Since our data contains the **COSdate** date-columnswe can get the posix-date (needed for the dygraphs, by using the appropriate prepare function `prepare_implode_cosdate` and then transform it into the xts-data-structure with `pour_runoff_as_xts`
+As a next step we might then want to remove unobserved basins. This can be done with `prepare_only_observed` xxx
 ```{r}
-  d_runoff$POSIXdate <- prepare(this = implode_cosdate, from_that = d_runoff)
+  d_copy <- d_runoff
+  d_copy$QOBS_0001 <- NA
+  d_only_observed <- prepare_only_observed(d_copy)
+  head(d_only_observed)
 ```
 
+Some functions need POSIXdate format (xxx), thus our **visCOS** data_frame (xxx) allows for a seperate column named `posixdate` (not case sensitive). Our example data (`drunoff`) allready inherits date in the rudimentary **COSdate** (xxx) format. Thus, we can simply apply the `prepare_complete_date` function to augment the data_frame with the POSIX column. Let us take a look:
 ```{r}
-  d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
+  d_runoff %<>%  prepare_complete_date()
+  head(d_runoff) 
 ```
 
+xxx
 ```{r}
-  bOF <- serve_period_ofun(d_runoff)
-  bOF
+  d_xts <- prepare_runoff_as_xts(d_runoff)
+  head(d_xts)
 ```
-
 

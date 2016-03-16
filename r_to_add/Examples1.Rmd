@@ -1,5 +1,5 @@
 ---
-title: "visCOS: Example 1"
+title: "Example 1: Intro to the pour_ functions"
 output: 
   html_document:
     highlight: pygments
@@ -9,17 +9,30 @@ output:
   require("magrittr")
 ```
 
-## Intro to the pour_ functions
-As a first step let us get some exemplary runoff and take a look at it. Within **visCOS** can be done via the `pour_runoff_example` command. 
+The `pour_` functions provide the raw ingredients or the base liquours if you want so. They no input or very little and return examples or help with getting basic data. Right now there are 3 different functions available (`pour_runoff_example`, `pour_spinup` and `pour_plt_ctrl`) and a wrapper-function to access all of them in a more concice fascion. 
+
+### Get example runoff
+Let us start with the `pour_runoff_example` function. Upon invoking it will return some exemplary runoff data.  
 ```{r}
-  head( pour_runoff_example() ) # get example runoff
+  example <- pour_runoff_example()
+  head( example ) # get example runoff
 ```
 
-The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive) xxx
+The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). 
 
-xxx Explain that one can test and play with the runoff
+```{r}
+  plot(example$QOBS_0001,
+       type = "l",
+       col = "steelblue",
+       ylab = "runoff",
+       xlab = "time")
+  lines(example$QSIM_0001, 
+        col = "palevioletred")
+```
 
 
+
+### Get the spinup from a text file
 The spinup defines a row which denotes the timestep at which our simulation can be used for further processing. Rows before the spinup need to be removed from the data set for the evalution. Many models save the information about the spinup in a separate file. The function 'pour_spinup' provdies a small wrapper to grap the spinup time dependend on some preciding pattern in a file.  
 To test the function we can use `filepath = "dummy"`, which can take 3 different patterns, i.e. *a* *b* and *c* and returns different spinups. 
 
@@ -31,8 +44,7 @@ To test the function we can use `filepath = "dummy"`, which can take 3 different
     c(spinup_a,spinup_b,spinup_c)
 ```
 
-
-xxx
+### Plot Options
 ```{r}
   pour_plt_ctrl()
 ```

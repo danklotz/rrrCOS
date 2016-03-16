@@ -13,6 +13,6 @@ prepare_complete_date(runoff_data)
 The new runoff data.frame with the added data-format.
 }
 \description{
-complete the date-formats with xts or COSdate
+xxx
 }
 

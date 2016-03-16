@@ -7,15 +7,10 @@
 #' @export
 prepare_evalPeriods <- function(runoff_data, smonth, emonth) {
   # def
-    require(dplyr)
+    require(magrittr, quietly = TRUE)
+    require(dplyr, quietly = TRUE)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-    if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
-      stop("data.frame does neiter contain POSIXdate nor COSdate")
-    } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
-      stop("transformation from POSIXdate to COSdate not yet available :(")
-    } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-      runoff_data <- prepare_implode_cosdate(runoff_data)
-    }
+    runoff_data %<>% prepare_complete_date()
   # calc
   temp_runoff <- runoff_data
   stag <- 1

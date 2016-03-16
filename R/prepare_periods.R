@@ -10,13 +10,7 @@ prepare_periods <- function(runoff_data, start_month, end_month) {
     require(dplyr, quietly = TRUE)
     require(magrittr, quietly = TRUE)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-    if ( !exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
-      stop("data.frame does neiter contain POSIXdate nor COSdate")
-    } else if ( exists("POSIXdate", where = runoff_data) & !exists("yyyy", where = runoff_data) ) {
-      stop("transformation from POSIXdate to COSdate not yet available :(")
-    } else if ( !exists("POSIXdate", where = runoff_data) & exists("yyyy", where = runoff_data) ) {
-      runoff_data <- prepare_implode_cosdate(runoff_data)
-    }
+    runoff_data %<>% prepare_complete_date()
   # calc:
   # get labels for the monts
   if (start_month <= end_month ) {

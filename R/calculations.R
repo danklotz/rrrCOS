@@ -29,14 +29,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   num_basins <- pour_number_of_basins(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
-  #  path_Spinup <- prepare_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
+  #  path_Spinup <- remove_filename_from_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
   #  pattern_spinup <- "start time-step of evaluation"
   #  spinup <- pour_spinup(path_Spinup,pattern_spinup)
   #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   #§
   
   # add full date information to data
-  d_runoff <- prepare_implode_cosdate(d_runoff)
+  d_runoff <- implode_cosdate(d_runoff)
   # normalize data names: 
   d_runoff %<>% prepare_names
   
