@@ -21,7 +21,7 @@ serve_ofun <- function(obs,sim) {
   out$pbias <- pbias(sim,obs)
   out$KGE <- KGE(sim,obs) %>% as.numeric
   out$corr <- cor(obs,sim) 
-  out$beta <- tmp[1] %>% as.numeric
-  out$alpha <- tmp["KGE.elements.r"] %>% as.numeric
+  out$beta <- mean(sim)/mean(obs) 
+  out$alpha <- sd(sim)/sd(obs)
   return(out)
 }
