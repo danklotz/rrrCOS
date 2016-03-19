@@ -16,7 +16,7 @@ xxx
 ```      
 
 ## Examples
-xxx
+In the following examples for the different *prepare* functions are given.
 
 ### *prepare_*remove_chunk
 
@@ -52,6 +52,11 @@ Different models and modellers will often tend do name or number their data diff
   print(short_names)
 ```
 
+###*prepare_*periods
+xxx
+
+
+
 ### *prepare_*runoff_as_xts
 xxx
 
@@ -65,6 +70,7 @@ Transforming the data into the `xts` format allows us to plot the data easily wi
 
 *Sidenote:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve_runoff_with_ofun` 
 
-
+### preparing as such
+xxx
 
 

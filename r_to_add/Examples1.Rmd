@@ -55,8 +55,7 @@ To test the function we can use `filepath = "dummy"`, which can take 3 different
 ```
 
 
-### Pour 
-*puring as such*
+### puring as such
 xxx
 ```{r}
     pour(runoff_example) %>% head()
