@@ -7,7 +7,8 @@
 #' @export
 prepare_runoff_as_xts <- function(runoff_data) {
   # pre
-  require(xts, quietly = TRUE)
+  require(zoo, quietly = TRUE, warn.conflicts = FALSE)
+  require(xts, quietly = TRUE, warn.conflicts = FALSE)
   require(magrittr, quietly = TRUE)
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
