@@ -5,7 +5,7 @@
 #§
 
 visCOS.example <- function(runoff_path,spinup,ctrl) {
-  require(magrittr, quietly = TRUE)
+  require("magrittr", quietly = TRUE)
   # data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
    pathDotRunoff  <- file.choose()

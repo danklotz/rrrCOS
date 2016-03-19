@@ -4,20 +4,24 @@
 #' @return data.frame contianing basic OF
 #' @export
 serve_ofun <- function(obs,sim) {
-  require(hydroGOF)
-  require(magrittr)
+  require("hydroGOF", quietly = TRUE)
+  require("magrittr", quietly = TRUE)
   # calc
   out <- data.frame(
     RMSE = -999,
-    corr = -999,
+    pbias = -999,
     NSE = -999,
     KGE = -999,
-    pbias = -999
+    corr = -999,
+    beta =  -999,
+    alpha =  -999
   )
   out$RMSE <- rmse(sim,obs) %>% as.numeric
-  out$corr <- cor(sim,obs) %>% diag(.)
   out$NSE <- NSE(sim,obs) %>% as.numeric
-  out$KGE <- KGE(sim,obs) %>% as.numeric
   out$pbias <- pbias(sim,obs)
+  out$KGE <- KGE(sim,obs) %>% as.numeric
+  out$corr <- cor(obs,sim) 
+  out$beta <- mean(sim)/mean(obs) 
+  out$alpha <- sd(sim)/sd(obs)
   return(out)
 }
