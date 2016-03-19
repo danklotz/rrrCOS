@@ -11,14 +11,16 @@ output:
 
 The `pour_` functions provide the raw ingredients or the base liquours if you want so. They no input or very little and return examples or help with getting basic data. Right now there are 3 different functions available (`pour_runoff_example`, `pour_spinup` and `pour_plt_ctrl`) and a wrapper-function to access all of them in a more concice fascion. 
 
-### Get example runoff
-Let us start with the `pour_runoff_example` function. Upon invoking it will return some exemplary runoff data.  
+### *pour_*runoff_example
+We start with the `pour_runoff_example` function, which will provide us with a proto-typical example of runoff data. It is invoked withouth arguments and simple returns data:
 ```{r}
   example <- pour_runoff_example()
   head( example ) # get example runoff
 ```
 
-The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also not that there are ome unnessary colums named QOSI. We can easily remove the not needed columns with `prepare_removeChunk`, which will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). 
+The data is separated in different basins, where **qobs** marks an observation of a given basin and **qsim** a corresponding simulation given by a hydrological model of sorts. The first five columns are used to give information about the timesteps, i.e. dates, in a rather rudimentary way (see: xxx) and we do not know what **qosi** is ment to be.  
+
+We can plot the data of basin to get a better feeling of the data at hand
 
 ```{r}
   plot(example$QOBS_0001,
@@ -32,7 +34,9 @@ The first five rows of the example are used to encapsulate the date in the **COS
 
 
 
-### Get the spinup from a text file
+### *pour_*spinup
+*Get the spinup from a text file*
+
 The spinup defines a row which denotes the timestep at which our simulation can be used for further processing. Rows before the spinup need to be removed from the data set for the evalution. Many models save the information about the spinup in a separate file. The function 'pour_spinup' provdies a small wrapper to grap the spinup time dependend on some preciding pattern in a file.  
 To test the function we can use `filepath = "dummy"`, which can take 3 different patterns, i.e. *a* *b* and *c* and returns different spinups. 
 
@@ -44,13 +48,15 @@ To test the function we can use `filepath = "dummy"`, which can take 3 different
     c(spinup_a,spinup_b,spinup_c)
 ```
 
-### Plot Options
+### *pour_*plt_ctrl
+*set plot options*
 ```{r}
   pour_plt_ctrl()[[1]]
 ```
 
 
-### Pour Out 
+### Pour 
+*puring as such*
 xxx
 ```{r}
     pour(runoff_example) %>% head()
