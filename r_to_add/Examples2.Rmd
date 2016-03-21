@@ -1,6 +1,6 @@
 ---
 title: "Example 2: Intro to the *prepare_* functions"
-output: 
+output:
   html_document:
     highlight: pygments
 ---
@@ -20,7 +20,7 @@ In the following examples for the different *prepare* functions are given.
 
 ### *prepare_*remove_chunk
 
-Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some colums named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unecessary columns with the fucntion`prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data. 
+Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some colums named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unecessary columns with the fucntion`prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
 
 ```{r}
   d_runoff <- prepare_remove_chunk(raw_data)
@@ -28,7 +28,7 @@ Lets begin by taking a look at our raw data. The first five rows of the example 
 ```
 
 ### *prepare_*only_observed
-As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved baisns we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin. 
+As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved baisns we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin.
 ```{r}
   d_copy <- d_runoff
   d_copy$QOBS_0001 <- NA
@@ -40,7 +40,7 @@ As a next step we might then want to remove unobserved basins. Since our example
 Some functions need POSIXdate format (xxx), thus our **visCOS** data_frame (xxx) allows for a seperate column named `posixdate` (not case sensitive). Our example data (`drunoff`) allready inherits date in the rudimentary **COSdate** (xxx) format. Thus, we can simply apply the `prepare_complete_date` function to augment the data_frame with the POSIX column. Let us take a look:
 ```{r}
   d_runoff %<>%  prepare_complete_date()
-  head(d_runoff) 
+  head(d_runoff)
 ```
 
 ### *prepare_*names
@@ -60,7 +60,7 @@ xxx
 ### *prepare_*runoff_as_xts
 xxx
 
-Transforming the data into the `xts` format allows us to plot the data easily with the [dygraphs package](https://rstudio.github.io/dygraphs/). This then again allows us to get an interactive view our data. 
+Transforming the data into the `xts` format allows us to plot the data easily with the [dygraphs package](https://rstudio.github.io/dygraphs/). This then again allows us to get an interactive view our data.
 ```{r}
   d_xts <- prepare_runoff_as_xts(d_runoff)
   #
@@ -68,9 +68,7 @@ Transforming the data into the `xts` format allows us to plot the data easily wi
   dygraph(cbind(d_xts$QOBS_2,d_xts$QSIM_2)) %>% dyOptions( colors=c("steelblue","palevioletred") )
 ```
 
-*Sidenote:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve_runoff_with_ofun` 
+*Sidenote:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve_runoff_with_ofun`
 
 ### preparing as such
 xxx
-
-

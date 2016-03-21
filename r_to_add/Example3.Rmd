@@ -1,6 +1,6 @@
 ---
 title: "visCOS: Example 2"
-output: 
+output:
   html_document:
     highlight: pygments
 ---
@@ -29,5 +29,3 @@ xxx
   bOF <- serve_period_ofun(d_runoff)
   bOF
 ```
-
-
