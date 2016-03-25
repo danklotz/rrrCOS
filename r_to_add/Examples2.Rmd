@@ -11,7 +11,7 @@ output:
 
 xxx Intro sentence
 
-Before starting we need some example data. We can take a look at example1.rmd to see how the *pour_* funcitons work in more detail. For now let us just get the data, take a short look at it and move on.
+Before starting we need some example data. We can take a look at example1.rmd to see how the *pour_* functions work in more detail. For now, let us just get the data, take a short look at it and move on.
 ```{r}
   raw_data <- pour(runoff_example) # get example runoff
   head(raw_data)
@@ -22,7 +22,7 @@ In the following examples for the different *prepare* functions are given.
 
 ### *prepare_*remove_chunk
 
-Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some colums named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unecessary columns with the fucntion `prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
+Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some columns named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unnecessary columns with the function `prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
 
 ```{r}
   d_runoff <- prepare_remove_chunk(raw_data)
@@ -30,7 +30,7 @@ Lets begin by taking a look at our raw data. The first five rows of the example 
 ```
 
 ### *prepare_*only_observed
-As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved baisns we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin.
+As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved bains we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin.
 ```{r}
   d_copy <- d_runoff
   d_copy$QOBS_0001 <- NA
@@ -39,14 +39,14 @@ As a next step we might then want to remove unobserved basins. Since our example
 ```
 
 ### *prepare_*complete_date
-Some functions need POSIXdate format (xxx), thus our **visCOS** data_frame (xxx) allows for a seperate column named `posixdate` (not case sensitive). Our example data (`drunoff`) allready inherits date in the rudimentary **COSdate** (xxx) format. Thus, we can simply apply the `prepare_complete_date` function to augment the data_frame with the POSIX column. Let us take a look:
+Some functions need POSIXdate format (xxx), thus our **visCOS** data-frame (xxx) allows for a separate column named `posixdate` (not case sensitive). Our example data (`d_runoff`) already inherits date in the rudimentary **COSdate** (xxx) format. Thus, we can simply apply the `prepare_complete_date` function to augment the data-frame with the POSIX column. Let us take a look:
 ```{r}
   d_runoff %<>%  prepare_complete_date()
   head(d_runoff)
 ```
 
 ### *prepare_*names
-Different models and modellers will often tend do name or number their data differently, e.g. with different amounts leading zeros). To allow for an easy way to resolve this problem the `prepare_names` function exists. It will remove all leading zeros from the naming of the data, while pertaining the eventual punctuation and blanks. Many of the **visCOS** functions use the prepare names internally. Here is an example:
+Different models and modelers will often tend do name or number their data differently, e.g. with different amounts leading zeros). To allow for an easy way to resolve this problem the `prepare_names` function exists. It will remove all leading zeros from the naming of the data, while pertaining the eventual punctuation and blanks. Many of the **visCOS** functions use the prepare names internally. Here is an example:
 ```{r}
   long_names <- names(d_runoff)
   short_names <- prepare_names(d_runoff) %>% names
@@ -55,7 +55,7 @@ Different models and modellers will often tend do name or number their data diff
 ```
 
 ###*prepare_*periods
-The function `prepare_periods` is used to mark the periods of intered. In hydrologal application within Eruope one might be interested to mark the hydrological years (September to August) as such a period. One can do this by... 
+The function `prepare_periods` is used to mark the periods of interest. In hydrological application within Europe one might be interested to mark the hydrological years (September to August) as such a period. One can do this by... 
 ```{r}
 
 ```
@@ -71,8 +71,8 @@ Transforming the data into the `xts` format allows us to plot the data easily wi
   dygraph(cbind(d_xts$QOBS_2,d_xts$QSIM_2)) %>% dyOptions( colors=c("steelblue","palevioletred") )
 ```
 
-*Sidenote:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve_runoff_with_ofun`
+*Side-Note:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve_runoff_with_ofun`
 
 ### preparing as such
-At last dont forget that we also have a wrapping function, which can make things more concise and clearer. 
+At last do not forget that we also have a wrapping function, which can make things more concise and clearer. 
 xxx 
