@@ -55,7 +55,10 @@ Different models and modellers will often tend do name or number their data diff
 ```
 
 ###*prepare_*periods
-xxx
+The function `prepare_periods` is used to mark the periods of intered. In hydrologal application within Eruope one might be interested to mark the hydrological years (September to August) as such a period. One can do this by... 
+```{r}
+
+```
 
 
 
