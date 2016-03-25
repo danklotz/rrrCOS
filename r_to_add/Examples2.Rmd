@@ -22,7 +22,7 @@ In the following examples for the different *prepare* functions are given.
 
 ### *prepare_*remove_chunk
 
-Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some columns named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unnecessary columns with the function `prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
+Let us begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some columns named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unnecessary columns with the function `prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
 
 ```{r}
   d_runoff <- prepare_remove_chunk(raw_data)
@@ -30,7 +30,7 @@ Lets begin by taking a look at our raw data. The first five rows of the example 
 ```
 
 ### *prepare_*only_observed
-As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved bains we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin.
+As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved basins we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin.
 ```{r}
   d_copy <- d_runoff
   d_copy$QOBS_0001 <- NA
@@ -59,7 +59,6 @@ The function `prepare_periods` is used to mark the periods of interest. In hydro
 ```{r}
 
 ```
-
 
 
 ### *prepare_*runoff_as_xts
