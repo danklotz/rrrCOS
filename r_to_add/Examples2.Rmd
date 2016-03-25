@@ -22,7 +22,7 @@ In the following examples for the different *prepare* functions are given.
 
 ### *prepare_*remove_chunk
 
-Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some colums named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unecessary columns with the fucntion`prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
+Lets begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some colums named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unecessary columns with the fucntion `prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
 
 ```{r}
   d_runoff <- prepare_remove_chunk(raw_data)
