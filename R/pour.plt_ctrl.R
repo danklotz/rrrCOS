@@ -1,7 +1,9 @@
 #' get basic config for the plot control
 #' 
-#' xxx description has to follow 
+#' Many of the serve function of visCOS are controlled via a list containing the different plotting controls. 
 #' @export
+#' @examples 
+#' plt_ctrl <- pour_plt_ctrl
 pour_plt_ctrl <- function( plot_title = "Title",
                             ltitle = "Legend", 
                             year_name = "Year", 
