@@ -1,6 +1,6 @@
 #' get basic config for the plot control
 #' 
-#' Many of the serve function of visCOS are controlled via a list containing the different plotting controls. 
+#' Many of the serve function of visCOS are controlled via a list containing the different plotting controls. This function provides such a list with the basic settings added. 
 #' @export
 #' @examples 
 #' plt_ctrl <- pour_plt_ctrl
