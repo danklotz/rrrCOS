@@ -4,10 +4,10 @@
 # Thus, they may only be usefull for plotting
 # @export
 # @examples
-# example <- pour_runoff_data()
-# years_in_data <- pour_years_in_data(example)
+# example <- pour.runoff_data()
+# years_in_data <- pour.years_in_data(example)
 # years_in_data
-pour_years_in_data <- function(runoff_data) {
+pour.years_in_data <- function(runoff_data) {
   require(magrittr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
   # calc

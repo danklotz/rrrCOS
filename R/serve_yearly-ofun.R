@@ -6,7 +6,7 @@
 #' @export
 serve_period_NSE <- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- pour_plt_ctrl()
+      plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly NSE"
       plt_ctrl$ylab <- "basin number"
     }
@@ -22,7 +22,7 @@ serve_period_NSE <- function(from, given, ...) {
 #' @export
 serve_period_KGE<- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- pour_plt_ctrl()
+      plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly KGE"
       plt_ctrl$ylab <- "basin number"
     }
@@ -38,7 +38,7 @@ serve_period_KGE<- function(from, given, ...) {
 #' @export
 serve_period_pBIAS <- function(from, given, ...) {
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- pour_plt_ctrl()
+    plt_ctrl <- pour.plt_ctrl()
     plt_ctrl$plot_title <- "Yearly %-Bias"
     plt_ctrl$ylab <- "basin number"
     plt_ctrl$midpoint <- 0.0
@@ -57,7 +57,7 @@ serve_period_pBIAS <- function(from, given, ...) {
 #' @export
 serve_period_Corr <- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- pour_plt_ctrl()
+      plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly Correlation"
       plt_ctrl$ylab <- "basin number"
       plt_ctrl$limits <- c(0,1)
@@ -74,10 +74,10 @@ serve_period_Corr <- function(from, given, ...) {
 #'
 #' plot table of the yearly basic objective function
 #'
-#' @param bOF list, as returned by \code{\link[visCOS]{pour_basicOfun}}
+#' @param bOF list, as returned by \code{\link[visCOS]{pour.basicOfun}}
 #' @param string with the chosen baisc objective function.
-#' \code{\link[visCOS]{pour_basicOfun}} provides "NSE", "KGE", "pBIAS" or "CORR"
-#' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{pour_periods}}
+#' \code{\link[visCOS]{pour.basicOfun}} provides "NSE", "KGE", "pBIAS" or "CORR"
+#' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{pour.periods}}
 #' @param xxx yet to be defined control list
 #' @export
 serve_yearly_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
@@ -87,7 +87,7 @@ serve_yearly_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
     require(reshape2)
     assert_basicOF(bOF)
     if (missing(plt_ctrl)) {
-      plt_ctrl <- pour_plt_ctrl()
+      plt_ctrl <- pour.plt_ctrl()
     }
   # calc
   if (choice == "NSE") {

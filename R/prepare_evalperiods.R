@@ -27,9 +27,9 @@ prepare.evalPeriods <- function(runoff_data, smonth, emonth) {
     }
   }
   #
-  years <- pour_years_in_data(runoff_data)
+  years <- pour.years_in_data(runoff_data)
   num_years = length(years$in_data)
-  hydyears_in_d <- pour_hydyears(runoff_data,years)
+  hydyears_in_d <- pour.hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)
   # cut away data outside of hydyears (#§ bad solution, below is an idea for a better one?)
   runoff_data %<>% filter(yyyy > years$in_data[1] | mm >= 9 ) %>% 

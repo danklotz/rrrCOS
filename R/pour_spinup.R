@@ -7,7 +7,7 @@
 #' @param pattern string used to mark that the next integer is the spinup time
 #' @return Integer indicating the length of the spin-up time in hours
 #' @export
-pour_spinup <- function(filepath,pattern) {
+pour.spinup <- function(filepath,pattern) {
   # def
     #§ missing :(
     require(magrittr)

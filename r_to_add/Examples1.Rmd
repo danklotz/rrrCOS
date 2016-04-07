@@ -1,5 +1,5 @@
 ---
-title: "Example 1: Intro to the *pour_* functions"
+title: "Example 1: Intro to the *pour.* functions"
 output:
   html_document:
     highlight: pygments
@@ -9,12 +9,12 @@ output:
   require("magrittr")
 ```
 
-The `pour_` functions provide the raw ingredients or the base liqueurs  if you want so. They no input or very little and return examples or help with getting basic data. Right now there are 3 different functions available (`pour_runoff_example`, `pour_spinup` and `pour_plt_ctrl`) and a wrapper-function to access all of them in a more concise fashion.
+The `pour.` functions provide the raw ingredients or the base liqueurs  if you want so. They no input or very little and return examples or help with getting basic data. Right now there are 3 different functions available (`pour.runoff_example`, `pour.spinup` and `pour.plt_ctrl`) and a wrapper-function to access all of them in a more concise fashion.
 
-### *pour_*runoff_example
-We start with the `pour_runoff_example` function, which will provide us with a proto-typical example of runoff data. It is invoked without arguments and simple returns data:
+### *pour.*runoff_example
+We start with the `pour.runoff_example` function, which will provide us with a proto-typical example of runoff data. It is invoked without arguments and simple returns data:
 ```{r}
-  example <- pour_runoff_example()
+  example <- pour.runoff_example()
   head( example ) # get example runoff
 ```
 
@@ -34,24 +34,24 @@ We can plot the data of basin to get a better feeling of the data at hand
 
 
 
-### *pour_*spinup
+### *pour.*spinup
 *Get the spinup from a text file*
 
-The spinup defines a row which denotes the time-step at which our simulation can be used for further processing. Rows before the spinup need to be removed from the data set for the evaluation. Many models save the information about the spinup in a separate file. The function 'pour_spinup' provides a small wrapper to grab the spinup time dependent on some preceding pattern in a file.  
+The spinup defines a row which denotes the time-step at which our simulation can be used for further processing. Rows before the spinup need to be removed from the data set for the evaluation. Many models save the information about the spinup in a separate file. The function 'pour.spinup' provides a small wrapper to grab the spinup time dependent on some preceding pattern in a file.  
 To test the function we can use `filepath = "dummy"`, which can take 3 different patterns, i.e. *a* *b* and *c* and returns different spinups.
 
 ```{r}
-  spinup_a <- pour_spinup(filepath = "dummy",pattern = "a")
-  spinup_b <- pour_spinup("dummy","b")
-  spinup_c <- pour_spinup("dummy","c")
+  spinup_a <- pour.spinup(filepath = "dummy",pattern = "a")
+  spinup_b <- pour.spinup("dummy","b")
+  spinup_c <- pour.spinup("dummy","c")
   # note: there is no "d"-pattern in the dummy variable
     c(spinup_a,spinup_b,spinup_c)
 ```
 
-### *pour_*plt_ctrl
+### *pour.*plt_ctrl
 *set plot options*
 ```{r}
-  pour_plt_ctrl()[[1]]
+  pour.plt_ctrl()[[1]]
 ```
 
 ### puring as such

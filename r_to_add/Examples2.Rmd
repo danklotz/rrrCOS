@@ -11,7 +11,7 @@ output:
 
 xxx Intro sentence
 
-Before starting we need some example data. We can take a look at example1.rmd to see how the *pour_* functions work in more detail. For now, let us just get the data, take a short look at it and move on.
+Before starting we need some example data. We can take a look at example1.rmd to see how the *pour.* functions work in more detail. For now, let us just get the data, take a short look at it and move on.
 ```{r}
   raw_data <- pour(runoff_example) # get example runoff
   head(raw_data)

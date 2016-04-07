@@ -5,7 +5,7 @@
 #' see: description-follows-soonTM xxx
 #' @export
 serve_expanded_barplots <- function(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl) {
-  if (missing(plt_ctrl)) {plt_ctrl <- pour_plt_ctrl()}
+  if (missing(plt_ctrl)) {plt_ctrl <- pour.plt_ctrl()}
   # calc:
   rename.withEndings <- function(dataframe,name,endings) {
     newNames <- paste(name,endings,sep = "")

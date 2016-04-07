@@ -18,7 +18,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
              as.data.frame(.)
         names(d_raw)[5] <- "min"
   #§
-        d_raw <- pour_runoff_example()
+        d_raw <- pour.runoff_example()
         #§
   # eliminate basins withouth observations:
    d_runoff <- d_raw %>% 
@@ -26,12 +26,12 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
      prepare.only_observed
   # get num of used basins and their respective num
   #§ shall I wrap this into a prepare function??
-  num_basins <- pour_number_of_basins(d_runoff)
+  num_basins <- pour.number_of_basins(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
   #  path_Spinup <- remove_filename_from_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")
   #  pattern_spinup <- "start time-step of evaluation"
-  #  spinup <- pour_spinup(path_Spinup,pattern_spinup)
+  #  spinup <- pour.spinup(path_Spinup,pattern_spinup)
   #  d_runoff <- slice( d_runoff,spinup:dim(d_runoff)[1] )
   #§
   
@@ -48,7 +48,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   num_periods <- length(periods_in_data)
 
 # calculations ------------------------------------------------------------
-  bOF <- pour_period_ofun(d_runoff)
+  bOF <- pour.period_ofun(d_runoff)
   
   
   
@@ -73,7 +73,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
   ### expanded barplots & htmlfiles
   # pour new list:
-  plt_ctrl <- pour_plt_ctrl()
+  plt_ctrl <- pour.plt_ctrl()
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
@@ -159,7 +159,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # water balance -----------------------------------------------------------
   # 1. total water bilance
   require(magrittr, quietly = TRUE)
-  # d_run <- pour_runoff_example() %>% prepare.remove_chunk
+  # d_run <- pour.runoff_example() %>% prepare.remove_chunk
   pathDotRunoff  <- file.choose()
   require("data.table")
   d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%

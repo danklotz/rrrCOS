@@ -14,7 +14,7 @@
 #' 
 #' @examples 
 #' # get runoff example and clean data, remove chunk and clean names
-#' d_raw <- pour_runoff_example()
+#' d_raw <- pour.runoff_example()
 #' d_runoff <- prepare(remove_chunk, runoff_data)
 #' names(d_raw)
 #' names(d_runoff)
@@ -27,7 +27,7 @@ prepare <- function(this, from_that) {
   } else if (is.name(input)) {
     choice <- deparse(input)
   } else {
-    stop( paste("Cannot pour_ The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
+    stop( paste("Cannot pour. The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
   }
   # calc
   switch(choice, 

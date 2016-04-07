@@ -8,7 +8,7 @@ serve_totalNSE <- function(from,...) {
   # def
   assert_basicOF(from)
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- pour_plt_ctrl()
+    plt_ctrl <- pour.plt_ctrl()
     plt_ctrl$plot_title <- "Total NSE  "
     plt_ctrl$ltitle <- "NSE"
   }
@@ -26,7 +26,7 @@ serve_totalKGE <- function(from,...) {
   # def
   assert_basicOF(from)
   if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- pour_plt_ctrl()
+    plt_ctrl <- pour.plt_ctrl()
     plt_ctrl$plot_title <- "Total KGE   "
     plt_ctrl$ltitle <- "KGE"
   }

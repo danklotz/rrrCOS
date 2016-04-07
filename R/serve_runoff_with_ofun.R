@@ -10,7 +10,7 @@
 #' # get example data, 
 #' # clean it and 
 #' # explore the model performance
-#' d_runoff <- prepare.remove_chunk( pour_runoff_example() )
+#' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
 #' serve_runoff_with_ofun(d_runoff)
 serve_runoff_with_ofun <- function(runoff_data) {
     # pre
@@ -191,7 +191,7 @@ serve_runoff_with_ofun <- function(runoff_data) {
 #' #' # get example data, 
 #' #' # clean it and 
 #' #' # explore the model performance
-#' #' d_runoff <- prepare.remove_chunk( pour_runoff_example() )
+#' #' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
 #' #' serve_runoff_with_ofun(d_runoff)
 #' serve_runoff_with_ofun <- function(runoff_data) {
 #'   # pre
