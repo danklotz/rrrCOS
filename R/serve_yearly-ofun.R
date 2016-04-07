@@ -4,14 +4,14 @@
 #' xxx description to follow 
 #' 
 #' @export
-serve_period_NSE <- function(from, given, ...) {
+serve.period_NSE <- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly NSE"
       plt_ctrl$ylab <- "basin number"
     }
   # calc
-  plt_NSE <- serve_period_ofun("NSE",from, given, plt_ctrl)
+  plt_NSE <- serve.period_ofun("NSE",from, given, plt_ctrl)
   return(plt_NSE)
 }
 
@@ -20,14 +20,14 @@ serve_period_NSE <- function(from, given, ...) {
 #' xxx description to follow 
 #' 
 #' @export
-serve_period_KGE<- function(from, given, ...) {
+serve.period_KGE<- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly KGE"
       plt_ctrl$ylab <- "basin number"
     }
   # calc
-  plt_KGE <- serve_period_ofun("KGE",from, given, plt_ctrl)
+  plt_KGE <- serve.period_ofun("KGE",from, given, plt_ctrl)
   return(plt_KGE)
 }
 
@@ -36,7 +36,7 @@ serve_period_KGE<- function(from, given, ...) {
 #' xxx description to follow 
 #' 
 #' @export
-serve_period_pBIAS <- function(from, given, ...) {
+serve.period_pBIAS <- function(from, given, ...) {
   if ( !exists("plt_ctrl") ) {
     plt_ctrl <- pour.plt_ctrl()
     plt_ctrl$plot_title <- "Yearly %-Bias"
@@ -46,7 +46,7 @@ serve_period_pBIAS <- function(from, given, ...) {
     plt_ctrl$lb_cut <- -1000.0
   }
   # calc
-  plt_pBIAS <- serve_period_ofun("pBIAS",from, given, plt_ctrl)
+  plt_pBIAS <- serve.period_ofun("pBIAS",from, given, plt_ctrl)
   return(plt_pBIAS)
 }
 
@@ -55,7 +55,7 @@ serve_period_pBIAS <- function(from, given, ...) {
 #' xxx description to follow 
 #' 
 #' @export
-serve_period_Corr <- function(from, given, ...) {
+serve.period_Corr <- function(from, given, ...) {
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly Correlation"
@@ -65,7 +65,7 @@ serve_period_Corr <- function(from, given, ...) {
   
     }
   # calc
-  plt_Corr <- serve_period_ofun("CORR",from, given, plt_ctrl)
+  plt_Corr <- serve.period_ofun("CORR",from, given, plt_ctrl)
   return(plt_Corr)
 }
 
@@ -80,7 +80,7 @@ serve_period_Corr <- function(from, given, ...) {
 #' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{pour.periods}}
 #' @param xxx yet to be defined control list
 #' @export
-serve_yearly_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
+serve.yearly_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
   # def
     require(ggplot2)
     require(magrittr)

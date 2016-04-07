@@ -4,7 +4,7 @@
 #' 
 #' xxx description follows
 #' @export
-serve_totalNSE <- function(from,...) {
+serve.totalNSE <- function(from,...) {
   # def
   assert_basicOF(from)
   if ( !exists("plt_ctrl") ) {
@@ -13,7 +13,7 @@ serve_totalNSE <- function(from,...) {
     plt_ctrl$ltitle <- "NSE"
   }
   # calc
-  total <- serve_totalOfun("NSE",from,plt_ctrl) 
+  total <- serve.totalOfun("NSE",from,plt_ctrl) 
   return(total)
 }
 
@@ -22,7 +22,7 @@ serve_totalNSE <- function(from,...) {
 #' 
 #' xxx description follows
 #' @export
-serve_totalKGE <- function(from,...) {
+serve.totalKGE <- function(from,...) {
   # def
   assert_basicOF(from)
   if ( !exists("plt_ctrl") ) {
@@ -31,12 +31,12 @@ serve_totalKGE <- function(from,...) {
     plt_ctrl$ltitle <- "KGE"
   }
   # calc
-  total <- serve_totalOfun("KGE",from,plt_ctrl) 
+  total <- serve.totalOfun("KGE",from,plt_ctrl) 
   return(total)
 }
 
 #' define rasterplot functions for total OF
-serve_totalOfun <- function(choice,bOF,plt_ctrl) {
+serve.totalOfun <- function(choice,bOF,plt_ctrl) {
   # def 
   assert_basicOF(bOF)
   require(ggplot2, quietly = TRUE)

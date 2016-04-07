@@ -70,7 +70,7 @@ Transforming the data into the `xts` format allows us to plot the data easily wi
   dygraph(cbind(d_xts$QOBS_2,d_xts$QSIM_2)) %>% dyOptions( colors=c("steelblue","palevioletred") )
 ```
 
-*Side-Note:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve_runoff_with_ofun`
+*Side-Note:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve.runoff_with_ofun`
 
 ### preparing as such
 At last do not forget that we also have a wrapping function, which can make things more concise and clearer. 

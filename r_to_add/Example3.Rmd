@@ -26,6 +26,6 @@ xxx
 ```
 
 ```{r}
-  bOF <- serve_period_ofun(d_runoff)
+  bOF <- serve.period_ofun(d_runoff)
   bOF
 ```

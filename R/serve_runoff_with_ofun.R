@@ -11,8 +11,8 @@
 #' # clean it and 
 #' # explore the model performance
 #' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
-#' serve_runoff_with_ofun(d_runoff)
-serve_runoff_with_ofun <- function(runoff_data) {
+#' serve.runoff_with_ofun(d_runoff)
+serve.runoff_with_ofun <- function(runoff_data) {
     # pre
     require("data.table", quietly = TRUE) 
     require("magrittr", quietly = TRUE)
@@ -108,7 +108,7 @@ serve_runoff_with_ofun <- function(runoff_data) {
     
     output$slctd_OF <- renderTable({
       if (!is.null(input$dygrph1_date_window))
-        out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
+        out <- serve.ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
         out
     })
   }
@@ -192,8 +192,8 @@ serve_runoff_with_ofun <- function(runoff_data) {
 #' #' # clean it and 
 #' #' # explore the model performance
 #' #' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
-#' #' serve_runoff_with_ofun(d_runoff)
-#' serve_runoff_with_ofun <- function(runoff_data) {
+#' #' serve.runoff_with_ofun(d_runoff)
+#' serve.runoff_with_ofun <- function(runoff_data) {
 #'   # pre
 #'   require("data.table", quietly = TRUE) 
 #'   require("magrittr", quietly = TRUE)
