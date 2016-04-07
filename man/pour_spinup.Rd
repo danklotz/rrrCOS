@@ -15,7 +15,7 @@ pour_spinup(filepath, pattern)
 Integer indicating the length of the spin-up time in hours
 }
 \description{
-Spinup-time is an integer. It is the time in hours, which is not used for the model-evalution. 
-The pattern is the used marker within the file
+A little wrapper to get information about the spinup position from a file. The spinup-time is supposed to be an integer, which marks the position in the data which can be cut away for various reasons (e.g. model spin up time).
+The wrapper assumes that the infomration (integer) is stored in a file (filepath) and marked by pattern, e.g.: within the string "Pre-Amp-Time: 200" the frist part would be the `pattern`.
 }
 

@@ -7,6 +7,6 @@
 pour_runoff_example()
 }
 \description{
-Get an example runoff_data
+Gives a prototypcial example of runoff data
 }
 

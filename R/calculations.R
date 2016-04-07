@@ -22,8 +22,8 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
         #§
   # eliminate basins withouth observations:
    d_runoff <- d_raw %>% 
-    prepare_remove_chunk %>% 
-     prepare_only_observed
+    prepare.remove_chunk %>% 
+     prepare.only_observed
   # get num of used basins and their respective num
   #§ shall I wrap this into a prepare function??
   num_basins <- pour_number_of_basins(d_runoff)
@@ -38,12 +38,12 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # add full date information to data
   d_runoff <- implode_cosdate(d_runoff)
   # normalize data names: 
-  d_runoff %<>% prepare_names
+  d_runoff %<>% prepare.names
   
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- prepare_runoff_as_xts(d_runoff)
+  d_xts <- prepare.runoff_as_xts(d_runoff)
   # calculate hydrological years:
-  d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
+  d_runoff <- prepare.periods(d_runoff, start_month = 9, end_month = 8)
   periods_in_data <- which(unique(d_runoff$period) > 0)
   num_periods <- length(periods_in_data)
 
@@ -159,15 +159,15 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # water balance -----------------------------------------------------------
   # 1. total water bilance
   require(magrittr, quietly = TRUE)
-  # d_run <- pour_runoff_example() %>% prepare_remove_chunk
+  # d_run <- pour_runoff_example() %>% prepare.remove_chunk
   pathDotRunoff  <- file.choose()
   require("data.table")
   d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
   names(d_raw)[5] <- "min"
   d_run <- d_raw %>% 
-    prepare_remove_chunk %>% 
-    prepare_only_observed  
+    prepare.remove_chunk %>% 
+    prepare.only_observed  
   tmp_cum <- d_run %>%
     select(starts_with("qobs"), starts_with("qsim")) %>%
     apply(.,2,cumsum) %>%
@@ -184,25 +184,60 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # 
   period_start <- 9
   period_end <- 8
-  d_run %<>% prepare_periods(start_month = period_start, end_month = period_end)
-  g <- unique(d_run$period)
+  d_run %<>% prepare.periods(start_month = period_start, end_month = period_end)
+
+  # change to mm
+  # for later, to rescale to mm 
+  cum_area <- function(areal_data) {
+    # def 
+    require(dplyr, quietly = TRUE)
+    #§ more def?
+    # calc:
+    names(areal_data) <- c("nb","to_nb","area")
+    areal_data %<>% mutate(cum_area = area)
+    # 
+    for (n in areal_data$nb) {
+      tmp <- areal_data %>% filter(to_nb == n) %>% select(cum_area) %>% apply(.,2,sum)
+      areal_data$cum_area[n] <- areal_data$area[n] + tmp
+    } 
+    return(areal_data)
+  }
+  
+  links <- read.csv("in/ezfl_links.txt", header = TRUE, sep = ";")
+  links  %<>% cum_area
+  
+  names_drun <- d_run  %>% select(starts_with("Q")) %>% names(.)
+  d_run_mm <- d_run
+  for (my_var in names_drun) {
+    idx <- gsub("\\D","",my_var) %>% as.integer
+    to_mm <- function(x) { x*3.6/links$cum_area[i] }
+    call <- substitute(transmute(d_run, var = to_mm(var)), list(var = as.name(my_var)))
+    d_run_mm[my_var] <- eval(call)
+  }
+
+  
+  
+  # plotting
+  g <- unique(d_run_mm$period)
   baptize <-  function(data,new_names) {
     names(data) <- new_names
     return(data)
   }
-  only_q <- d_run %>% select(starts_with("q"))
-  p <- matrix( data = NA, nrow =  12, ncol = (dim(d_run)[2]-7) ) %>% as.data.frame %>% 
+  only_q <- d_run_mm %>% select(starts_with("q"))
+  p <- matrix( data = NA, nrow =  12, ncol = (dim(d_run_mm)[2]-7) ) %>% as.data.frame %>% 
         baptize( names(only_q) )
   for (k in 1:12) {
-    p[k,] <- d_run %>% filter(mm == k) %>% select(starts_with("q")) %>% apply(.,2,sum)
+    p[k,] <- d_run_mm %>% filter(mm == k) %>% select(starts_with("q")) %>% apply(.,2,sum)
   }
+
   # future function for plotting: 
-  obs_name <- "QOBS_0085"
-  sim_name <- "QSIM_0085"
+  obs_name <- "QOBS_0002"
+  sim_name <- "QSIM_0002"
   q_data <- p %>% select( contains(obs_name) , contains(sim_name) )
   names(q_data) <- c("obs","sim") 
   q_data %<>% mutate(rel_error = 100*(sim-obs)/obs) 
-  # include list of monts
+    # include list of months
+
   mean_error <- mean(q_data$rel_error)
   q_data <- rbind(  q_data,c(NA,NA,mean_error) )
   month <- c(1:13) %>% as.factor(.)
@@ -215,16 +250,18 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   p1 <- ggplot(q_data) + 
     geom_line( aes_string(x = "month", y = "obs", group = 1), color = "steelblue", na.rm = TRUE)  + 
     geom_line( aes_string(x = "month", y = "sim", group = 2), color = "palevioletred", na.rm = TRUE ) + 
-    theme_bw()
+    theme_light()
 
   p2 <- ggplot(q_data, aes(x = month, y = rel_error )) + 
     scale_y_continuous(limits = c(-100,100)) + 
     geom_bar(fill = "orange", position = "identity", stat = 'identity') + 
-    theme_bw()
+    theme_light()
   
   p11 <- ggplotGrob(p1)
   p22 <- ggplotGrob(p2)
   
+  # set panel size can be found in the helpers section!
+
   p111 <- set_panel_size(g = p11, width = unit(0.8,"npc"),height=unit(0.5,"npc"))
   p222 <- set_panel_size(g = p22, width = unit(0.8,"npc"),height=unit(0.25,"npc"))
   
@@ -235,25 +272,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   grid.draw(graphic1)
   # 
   
-  # for later, to rescale to mm 
-    cum_area <- function(areal_data) {
-      # def 
-        require(dplyr, quietly = TRUE)
-        # missing :((((
-      # calc:
-      names(areal_data) <- c("nb","to_nb","area")
-      areal_data %<>% mutate(cum_area = area)
-      # 
-      for (n in areal_data$nb) {
-        tmp <- areal_data %>% filter(to_nb == n) %>% select(cum_area) %>% apply(.,2,sum)
-        areal_data$cum_area[n] <- areal_data$area[n] + tmp
-      } 
-      return(areal_data)
-    }
-  
-    links <- read.csv("in/ezfl_links.txt", header = TRUE, sep = ";")
-    links  %<>% cum_area
-  
+
 # 3. test for areal accumulation  -----------------------------------------
   ## test 1
     nb <- c(1,2,3,4,5,6,7,8,9,10,11,12)
