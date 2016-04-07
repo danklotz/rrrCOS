@@ -6,7 +6,7 @@
 #' \strong{Note:} It is assumed that all available basins are simulated!
 #' @return data.frame without the observation-free basins
 #' @export
-prepare_only_observed <- function(runoff_data) {
+prepare.only_observed <- function(runoff_data) {
   # pre
   require(magrittr)
   assert_dataframe(runoff_data)

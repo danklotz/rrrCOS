@@ -5,12 +5,12 @@
 #' @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-prepare_periods <- function(runoff_data, start_month, end_month) {
+prepare.periods <- function(runoff_data, start_month, end_month) {
   # pre 
     require(dplyr, quietly = TRUE)
     require(magrittr, quietly = TRUE)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-    runoff_data %<>% prepare_complete_date()
+    runoff_data %<>% prepare.complete_date()
   # calc:
   # get labels for the monts
   if (start_month <= end_month ) {

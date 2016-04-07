@@ -5,7 +5,7 @@
 #' @param runoff_data data.frame object containing at lesast COSdate, Qsim and Qobs (see: xxx)
 #' @return data.frame object withouth the chunk
 #' @export
-prepare_remove_chunk <- function(runoff_data) {
+prepare.remove_chunk <- function(runoff_data) {
   # pre
   require(dplyr, quietly = TRUE, warn.conflicts = FALSE)
   # defences

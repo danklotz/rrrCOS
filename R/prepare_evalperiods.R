@@ -5,12 +5,12 @@
 #' @return The runoff data.frame, including a column indicating the evaluating period 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-prepare_evalPeriods <- function(runoff_data, smonth, emonth) {
+prepare.evalPeriods <- function(runoff_data, smonth, emonth) {
   # def
     require(magrittr, quietly = TRUE)
     require(dplyr, quietly = TRUE)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-    runoff_data %<>% prepare_complete_date()
+    runoff_data %<>% prepare.complete_date()
   # calc
   temp_runoff <- runoff_data
   stag <- 1

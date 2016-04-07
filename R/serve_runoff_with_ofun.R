@@ -10,7 +10,7 @@
 #' # get example data, 
 #' # clean it and 
 #' # explore the model performance
-#' d_runoff <- prepare_remove_chunk( pour_runoff_example() )
+#' d_runoff <- prepare.remove_chunk( pour_runoff_example() )
 #' serve_runoff_with_ofun(d_runoff)
 serve_runoff_with_ofun <- function(runoff_data) {
     # pre
@@ -22,12 +22,12 @@ serve_runoff_with_ofun <- function(runoff_data) {
   ##########################
   # calc
   #$ this is all suboptimal, maybe exploit the global function or something
-  runoff_data %<>% prepare_names
+  runoff_data %<>% prepare.names
   if ( !"POSIXdate" %in% names(runoff_data) ) {
-    runoff_data %<>% prepare_complete_date()
+    runoff_data %<>% prepare.complete_date()
   }
   runoff_data <<- runoff_data
-  d_xts <<- prepare_runoff_as_xts(runoff_data)
+  d_xts <<- prepare.runoff_as_xts(runoff_data)
   d_names_all<- names(d_xts)
   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names_all[idx_names]
@@ -191,7 +191,7 @@ serve_runoff_with_ofun <- function(runoff_data) {
 #' #' # get example data, 
 #' #' # clean it and 
 #' #' # explore the model performance
-#' #' d_runoff <- prepare_remove_chunk( pour_runoff_example() )
+#' #' d_runoff <- prepare.remove_chunk( pour_runoff_example() )
 #' #' serve_runoff_with_ofun(d_runoff)
 #' serve_runoff_with_ofun <- function(runoff_data) {
 #'   # pre
@@ -201,12 +201,12 @@ serve_runoff_with_ofun <- function(runoff_data) {
 #'   ##########################
 #'   # calc
 #'   #$ this is all suboptimal, maybe exploit the global function or something
-#'   runoff_data %<>% prepare_names
+#'   runoff_data %<>% prepare.names
 #'   if ( !"POSIXdate" %in% names(runoff_data) ) {
-#'     runoff_data %<>% prepare_complete_date()
+#'     runoff_data %<>% prepare.complete_date()
 #'   }
 #'   runoff_data <<- runoff_data
-#'   d_xts <<- prepare_runoff_as_xts(runoff_data)
+#'   d_xts <<- prepare.runoff_as_xts(runoff_data)
 #'   d_names_all<- names(d_xts)
 #'   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
 #'   d_names <<- d_names_all[idx_names]

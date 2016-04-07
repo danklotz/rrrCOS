@@ -13,7 +13,7 @@ output:
 xxx
 ```{r}
   d_raw <- pour(runoff_example) # get example runoff
-  d_runoff <- d_raw %>% prepare_remove_chunk %>% prepare_only_observed
+  d_runoff <- d_raw %>% prepare.remove_chunk %>% prepare.only_observed
   head(d_runoff)
 ```
 
@@ -22,7 +22,7 @@ xxx
 ```
 
 ```{r}
-  d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
+  d_runoff <- prepare.periods(d_runoff, start_month = 9, end_month = 8)
 ```
 
 ```{r}

@@ -5,7 +5,7 @@
 # @return The runoff data.frame reduced and ordered according to the hydrological years within the data. 
 # \strong{Note:} The hydrological years are formatted as characters.
 # @export
-prepare_hydyears <- function(runoff_data) {
+prepare.hydyears <- function(runoff_data) {
   # pre 
   require(dplyr)
   if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")

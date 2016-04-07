@@ -1,5 +1,5 @@
 ---
-title: "Example 2: Intro to the *prepare_* functions"
+title: "Example 2: Intro to the *prepare.* functions"
 output:
   html_document:
     highlight: pygments
@@ -20,51 +20,51 @@ Before starting we need some example data. We can take a look at example1.rmd to
 ## Examples
 In the following examples for the different *prepare* functions are given.
 
-### *prepare_*remove_chunk
+### *prepare.*remove_chunk
 
-Let us begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some columns named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unnecessary columns with the function `prepare_removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
+Let us begin by taking a look at our raw data. The first five rows of the example are used to encapsulate the date in the **COSdate** format (see: xxx). We can also note that there are some columns named *QOSI*. Those are not needed (or more accurately not wanted) for our purpose. We can easily remove all unnecessary columns with the function `prepare.removeChunk`. The function will remove all rows except those, which names begin with **qobs**, **qsim**, are in the **COSdate** format, or are named **posixdate** and **period** (the name testing is not case-sensitive). Here is an example, where we can see that *QOSI* was removed from the data.
 
 ```{r}
-  d_runoff <- prepare_remove_chunk(raw_data)
+  d_runoff <- prepare.remove_chunk(raw_data)
   head(d_runoff)
 ```
 
-### *prepare_*only_observed
-As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved basins we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare_only_observed` for removing unobserved basin.
+### *prepare.*only_observed
+As a next step we might then want to remove unobserved basins. Since our example data does not contain unobserved basins we will create some by replacing the values of `QOBS_0001` with `NA`s and then remove it from our data (temporarily). As we can see below, **visCOS** provides the function `prepare.only_observed` for removing unobserved basin.
 ```{r}
   d_copy <- d_runoff
   d_copy$QOBS_0001 <- NA
-  d_only_observed <- prepare_only_observed(d_copy)
+  d_only_observed <- prepare.only_observed(d_copy)
   head(d_only_observed)
 ```
 
-### *prepare_*complete_date
-Some functions need POSIXdate format (xxx), thus our **visCOS** data-frame (xxx) allows for a separate column named `posixdate` (not case sensitive). Our example data (`d_runoff`) already inherits date in the rudimentary **COSdate** (xxx) format. Thus, we can simply apply the `prepare_complete_date` function to augment the data-frame with the POSIX column. Let us take a look:
+### *prepare.*complete_date
+Some functions need POSIXdate format (xxx), thus our **visCOS** data-frame (xxx) allows for a separate column named `posixdate` (not case sensitive). Our example data (`d_runoff`) already inherits date in the rudimentary **COSdate** (xxx) format. Thus, we can simply apply the `prepare.complete_date` function to augment the data-frame with the POSIX column. Let us take a look:
 ```{r}
-  d_runoff %<>%  prepare_complete_date()
+  d_runoff %<>%  prepare.complete_date()
   head(d_runoff)
 ```
 
-### *prepare_*names
-Different models and modelers will often tend do name or number their data differently, e.g. with different amounts leading zeros). To allow for an easy way to resolve this problem the `prepare_names` function exists. It will remove all leading zeros from the naming of the data, while pertaining the eventual punctuation and blanks. Many of the **visCOS** functions use the prepare names internally. Here is an example:
+### *prepare.*names
+Different models and modelers will often tend do name or number their data differently, e.g. with different amounts leading zeros). To allow for an easy way to resolve this problem the `prepare.names` function exists. It will remove all leading zeros from the naming of the data, while pertaining the eventual punctuation and blanks. Many of the **visCOS** functions use the prepare names internally. Here is an example:
 ```{r}
   long_names <- names(d_runoff)
-  short_names <- prepare_names(d_runoff) %>% names
+  short_names <- prepare.names(d_runoff) %>% names
   print(long_names)
   print(short_names)
 ```
 
-###*prepare_*periods
-The function `prepare_periods` is used to mark the periods of interest. In hydrological application within Europe one might be interested to mark the hydrological years (September to August) as such a period. One can do this by... 
+###*prepare.*periods
+The function `prepare.periods` is used to mark the periods of interest. In hydrological application within Europe one might be interested to mark the hydrological years (September to August) as such a period. One can do this by... 
 ```{r}
 
 ```
 
 
-### *prepare_*runoff_as_xts
+### *prepare.*runoff_as_xts
 Transforming the data into the `xts` format allows us to plot the data easily with the [dygraphs package](https://rstudio.github.io/dygraphs/). This then again allows us to get an interactive view our data.
 ```{r}
-  d_xts <- prepare_runoff_as_xts(d_runoff)
+  d_xts <- prepare.runoff_as_xts(d_runoff)
   #
   require("dygraphs", quietly = TRUE)
   dygraph(cbind(d_xts$QOBS_2,d_xts$QSIM_2)) %>% dyOptions( colors=c("steelblue","palevioletred") )
