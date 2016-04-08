@@ -49,6 +49,12 @@ Source: CRAN
 Version: 0.1
 Hash: 0afb92b59b02593c70ff8046700ba9d3
 
+Package: automap
+Source: CRAN
+Version: 1.0-14
+Hash: e31a3b38f3190f8fb9badc76d70e2f6e
+Requires: gstat, reshape, sp
+
 Package: bitops
 Source: CRAN
 Version: 1.0-6
@@ -64,6 +70,12 @@ Source: CRAN
 Version: 0.4.0
 Hash: f234c9ab823ee862f4ed6188b8f4eef4
 Requires: dplyr, plyr, psych, reshape2, stringr, tidyr
+
+Package: caTools
+Source: CRAN
+Version: 1.17.1
+Hash: 97cb6f6293cd18d17df77a6383cc6763
+Requires: bitops
 
 Package: chron
 Source: CRAN
@@ -109,6 +121,12 @@ Version: 1.6-7
 Hash: a8b909c7e06f7bfcbdbbad439799e25d
 Requires: class
 
+Package: evaluate
+Source: CRAN
+Version: 0.8.3
+Hash: af30a08e081f5ba083cc8f0545391151
+Requires: stringr
+
 Package: formatR
 Source: CRAN
 Version: 1.3
@@ -120,6 +138,12 @@ Version: 2.1.0
 Hash: 50e297b0191179c39c7dcae0eff72b51
 Requires: MASS, digest, gtable, plyr, reshape2, scales
 
+Package: gstat
+Source: CRAN
+Version: 1.1-3
+Hash: 375e0cda1dbc1b3acf918eb3828a8e45
+Requires: FNN, sp, spacetime, zoo
+
 Package: gtable
 Source: CRAN
 Version: 0.1.2
@@ -130,6 +154,24 @@ Source: CRAN
 Version: 0.5.1
 Hash: 114ef5abcf58bebbf6ac083b9cacbbd8
 
+Package: htmltools
+Source: CRAN
+Version: 0.3.5
+Hash: 33ffa12740ca921fd387ccd043d76059
+Requires: Rcpp, digest
+
+Package: hydroGOF
+Source: CRAN
+Version: 0.3-8
+Hash: 36fa430b7a7187977512e3e9858f3284
+Requires: hydroTSM, xts, zoo
+
+Package: hydroTSM
+Source: CRAN
+Version: 0.4-2-1
+Hash: ce3acf468affef2338cd2391e5b6bbdd
+Requires: automap, e1071, gstat, sp, xts, zoo
+
 Package: intervals
 Source: CRAN
 Version: 0.15.1
@@ -139,6 +181,12 @@ Package: jsonlite
 Source: CRAN
 Version: 0.9.19
 Hash: 4a983f753b6e88ae0f5a6ac152d8cc32
+
+Package: knitr
+Source: CRAN
+Version: 1.12.3
+Hash: d537760d13021cf23fa2446381d9e0b2
+Requires: digest, evaluate, formatR, highr, markdown, stringr, yaml
 
 Package: labeling
 Source: CRAN
@@ -154,6 +202,12 @@ Package: magrittr
 Source: CRAN
 Version: 1.5
 Hash: bdc4d48c3135e8f3b399536ddf160df4
+
+Package: markdown
+Source: CRAN
+Version: 0.7.7
+Hash: fea2343a1119d61b0cc5c0a950d103a3
+Requires: mime
 
 Package: mime
 Source: CRAN
@@ -200,6 +254,12 @@ Version: 1.4.1
 Hash: 55963009094746c3aef64bfbf9eb4731
 Requires: Rcpp, plyr, stringr
 
+Package: rmarkdown
+Source: CRAN
+Version: 0.9.5
+Hash: c47e8fb40e81162783fe1335a13a0ca3
+Requires: caTools, htmltools, knitr, yaml
+
 Package: roxygen2
 Source: CRAN
 Version: 5.0.1
@@ -211,6 +271,17 @@ Source: CRAN
 Version: 0.4.0
 Hash: b74e3f81bab2d88325d8798d5e03e0cc
 Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
+
+Package: sp
+Source: CRAN
+Version: 1.1-1
+Hash: a6f7857b06c83649b8c6a4724b5b9233
+
+Package: spacetime
+Source: CRAN
+Version: 1.1-5
+Hash: 8ba44b927cba166c0e3ba1bfaaa2aa8e
+Requires: intervals, sp, xts, zoo
 
 Package: stringi
 Source: CRAN
@@ -228,3 +299,19 @@ Source: CRAN
 Version: 0.4.1
 Hash: f7651db13e8cff93626958d4331a21e7
 Requires: Rcpp, dplyr, lazyeval, magrittr, stringi
+
+Package: xts
+Source: CRAN
+Version: 0.9-7
+Hash: fb3f81d7a2fa2323879b6b49722ddc5e
+Requires: zoo
+
+Package: yaml
+Source: CRAN
+Version: 2.1.13
+Hash: 4854ccabebc225e8a7309fb4a74980de
+
+Package: zoo
+Source: CRAN
+Version: 1.7-12
+Hash: 8ce4a89536cba4fa6023190959de5658

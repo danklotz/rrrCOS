@@ -18,14 +18,16 @@ xxx
 ```
 
 ```{r}
-  d_runoff$POSIXdate <- prepare(this = implode_cosdate, from_that = d_runoff)
-```
-
-```{r}
+  d_runoff <- prepare(this = complete_date, from_that = d_runoff)
   d_runoff <- prepare.periods(d_runoff, start_month = 9, end_month = 8)
 ```
 
 ```{r}
   bOF <- serve.period_ofun(d_runoff)
-  bOF
+  unlist(bOF)
 ```
+
+```{r}
+  serve.period_Corr
+```
+
