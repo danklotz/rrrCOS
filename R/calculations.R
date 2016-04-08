@@ -158,10 +158,10 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 
 # water balance -----------------------------------------------------------
   # 1. total water bilance
-  require(magrittr, quietly = TRUE)
+  require("magrittr", quietly = TRUE)
   # d_run <- pour.runoff_example() %>% prepare.remove_chunk
   pathDotRunoff  <- file.choose()
-  require("data.table")
+  require("data.table", quietly = TRUE)
   d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
     as.data.frame(.)
   names(d_raw)[5] <- "min"
@@ -181,12 +181,15 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   require(broom, quietly = TRUE)
   require(GGally, quietly = TRUE)
   require(grid, quietly = TRUE)
-  # 
+  # remove spinup
+  spinup <- 5831
+  d_run <- slice( d_runoff,spinup:dim(d_runoff)[1] )
+  # set periods
   period_start <- 9
   period_end <- 8
   d_run %<>% prepare.periods(start_month = period_start, end_month = period_end)
 
-  # change to mm
+  #3. change to mm
   # for later, to rescale to mm 
   cum_area <- function(areal_data) {
     # def 
@@ -210,25 +213,31 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_run_mm <- d_run
   for (my_var in names_drun) {
     idx <- gsub("\\D","",my_var) %>% as.integer
-    to_mm <- function(x) { x*3.6/links$cum_area[i] }
+    to_mm <- function(x) { x*3.6/(links$cum_area[idx]) }
     call <- substitute(transmute(d_run, var = to_mm(var)), list(var = as.name(my_var)))
     d_run_mm[my_var] <- eval(call)
   }
 
   
   
-  # plotting
+  # 4. water bilance
   g <- unique(d_run_mm$period)
   baptize <-  function(data,new_names) {
     names(data) <- new_names
     return(data)
   }
   only_q <- d_run_mm %>% select(starts_with("q"))
-  p <- matrix( data = NA, nrow =  12, ncol = (dim(d_run_mm)[2]-7) ) %>% as.data.frame %>% 
+  years <- unique(d_run_mm$yyyy)
+  p <- matrix( data = 0, nrow =  12, ncol = (dim(d_run_mm)[2]-7) ) %>% as.data.frame %>% 
         baptize( names(only_q) )
-  for (k in 1:12) {
-    p[k,] <- d_run_mm %>% filter(mm == k) %>% select(starts_with("q")) %>% apply(.,2,sum)
+  for (idx in 1:length(years)) {
+    now <- years[idx]
+    for (mon in 1:12) {
+      p[mon, ] <- 1/idx* (  p[mon, ]*(idx-1) +
+        d_run_mm %>% filter(yyyy == now) %>% filter(mm == mon) %>% select(starts_with("q")) %>% apply(.,2,sum)  )
+    }
   }
+
 
   # future function for plotting: 
   obs_name <- "QOBS_0002"
@@ -273,22 +282,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # 
   
 
-# 3. test for areal accumulation  -----------------------------------------
-  ## test 1
-    nb <- c(1,2,3,4,5,6,7,8,9,10,11,12)
-    to_nb <- c(2,3,4,9,6,9,9,9,12,12,12,0) 
-    area <- c(44.2,47.6,28.4,11.1,34.8,5.9,87.1,67.1,49.1,58.8,62.9,154.2)
-    sum_area.real <- c(44.2,91.9,120.3,131.3,34.8,40.7,87.1,67.1,375.3,58.8,62.9,651.3)
-    test_case <- data.frame(nb,to_nb,area)
-    #
-    test_case %<>% cum_area
-    #
-    test <- equals(sum_area.real,test_case$cum_area) # weak, because of rounding errors!
-    stopifnot(min(test) == 1)
-  ## test2 
-    test_case2 <- read.csv("in/ezfl_links.txt", header = TRUE, sep = ";")
-    test_case2  %<>% cum_area
-    # cannot be made properly because johannes-data is wrong :(
+
   
   
   
