@@ -36,8 +36,9 @@ serve.plotlist_waterbilance <- function(runoff_data, cum_area_in_km = NULL, calc
 #' 
 #' pltos the water bilance of a chosen basin
 #' @export
-serve.plot_waterbilance <- function(runoff_data, obs_name, calculate_mm = TRUE, cum_area_in_km = NULL) {
-  plot(  serve.waterbilance(runoff_data, obs_name, calculate_mm, cum_area_in_km)  )
+serve.plot_waterbilance <- function(runoff_data, obs_name, cum_area_in_km = NULL, calculate_mm = TRUE) {
+  plot.new()
+  grid.draw(  serve.waterbilance(runoff_data, obs_name, calculate_mm, cum_area_in_km)  )
 }
 
 
@@ -87,23 +88,25 @@ serve.waterbilance <- function(runoff_data, obs_name, cum_area_in_km = NULL, cal
   # plotting:
   obs_name <- obs_name
   sim_name <- obs_name %>% tolower %>% gsub("qobs","qsim",.)
-    #"QSIM_0002"
-    q_data <- p %>% select( contains(obs_name) , contains(sim_name) )
-    names(q_data) <- c("obs","sim") 
-    q_data %<>% mutate(rel_error = 100*(sim-obs)/obs) 
-    # include list of months
-    mean_error <- mean(q_data$rel_error)
-    q_data <- rbind(  q_data,c(NA,NA,mean_error) )
-    month <- c(1:13) %>% as.factor(.)
-    q_data <- cbind(month,q_data) 
-    levels(month)[13] <- "mean"
-    
-    # arranging plots is still quite cumbersome, thus we need to trick a bit
-    plots <- list()
-    p1 <- ggplot(q_data) + 
-      geom_line( aes_string(x = "month", y = "obs", group = 1), color = "steelblue", na.rm = TRUE)  + 
-      geom_line( aes_string(x = "month", y = "sim", group = 2), color = "palevioletred", na.rm = TRUE ) + 
-      theme_light()
+    #§ code is a little bit shitty : (
+  q_data <- p %>% select( contains(obs_name) , contains(sim_name) )
+  names(q_data) <- c("obs","sim") 
+  q_data %<>% mutate(rel_error = 100*(sim-obs)/obs) 
+  # include list of months
+  mean_error <- mean(q_data$rel_error)
+  q_data <- rbind(  q_data,c(NA,NA,mean_error) )
+  month <- c(1:13) %>% as.factor(.)
+  q_data <- cbind(month,q_data) 
+  levels(month)[13] <- "mean"
+  
+  # arranging plots is still quite cumbersome, thus we need to trick a bit
+  plots <- list()
+  plot_name <- paste("basin",gsub("qobs_","",obs_name), sep ="") 
+  p1 <- ggplot(q_data) + 
+    geom_line( aes_string(x = "month", y = "obs", group = 1), color = "steelblue", na.rm = TRUE)  + 
+    geom_line( aes_string(x = "month", y = "sim", group = 2), color = "palevioletred", na.rm = TRUE ) + 
+    ggtitle(plot_name) + 
+    theme_light()
     
     p2 <- ggplot(q_data, aes(x = month, y = rel_error )) + 
       scale_y_continuous(limits = c(-100,100)) + 

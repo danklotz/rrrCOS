@@ -28,9 +28,17 @@ serve.save_plotlist <- function(plot_list,
     plt_hmtlInfos <- "<img src=\"" %&% plt_name %&% '" alt="nothing" style="width:800px;height:500px;">'
     #
     writeLines(text = plt_hmtlInfos,fileConn )
-    jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
-      plot( plot_list[[i]] )
-    dev.off()
+    if ( class(plot_list[[i]])[1] == "fixed") {
+      jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
+        plot.new()
+        grid.draw( plot_list[[i]] )
+      dev.off()
+    } else {
+      jpeg(file = plt_pathANDname, width = 800, height = 500, units = "px")
+        plot( plot_list[[i]] )
+      dev.off()
+    }
+
   }
   close(fileConn)
 }

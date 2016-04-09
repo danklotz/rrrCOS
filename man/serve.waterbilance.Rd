@@ -4,8 +4,8 @@
 \alias{serve.waterbilance}
 \title{makes plot for the water bilance}
 \usage{
-serve.waterbilance(runoff_data, obs_name, calculate_mm = TRUE,
-  cum_area_in_km = NULL)
+serve.waterbilance(runoff_data, obs_name, cum_area_in_km = NULL,
+  calculate_mm = TRUE)
 }
 \description{
 xxx
