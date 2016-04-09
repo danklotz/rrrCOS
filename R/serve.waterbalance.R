@@ -2,7 +2,7 @@
 #' 
 #' xxx
 #' @export
-serve.plotlist_waterbilance <- function(runoff_data, cum_area_in_km = NULL, calculate_mm = TRUE) {
+serve.plotlist_waterbalance <- function(runoff_data, cum_area_in_km = NULL, calculate_mm = TRUE) {
   #def
     require("dplyr", quietly = TRUE)
     #
@@ -25,7 +25,7 @@ serve.plotlist_waterbilance <- function(runoff_data, cum_area_in_km = NULL, calc
   obs_names <- names(runoff_data) %>% tolower %>% extract(grep("qobs.*",.))
   plot_list <- list()
   for (i in 1:length(obs_names)) {
-    plot_list[[i]] <- serve.waterbilance(runoff_data_mm, obs_name = obs_names[i], cum_area_in_km = NULL, calculate_mm = FALSE)
+    plot_list[[i]] <- serve.waterbalance(runoff_data_mm, obs_name = obs_names[i], cum_area_in_km = NULL, calculate_mm = FALSE)
   }
   return(plot_list)
 } 
@@ -36,9 +36,9 @@ serve.plotlist_waterbilance <- function(runoff_data, cum_area_in_km = NULL, calc
 #' 
 #' pltos the water bilance of a chosen basin
 #' @export
-serve.plot_waterbilance <- function(runoff_data, obs_name, cum_area_in_km = NULL, calculate_mm = TRUE) {
+serve.plot_waterbalance <- function(runoff_data, obs_name, cum_area_in_km = NULL, calculate_mm = TRUE) {
   plot.new()
-  grid.draw(  serve.waterbilance(runoff_data, obs_name, calculate_mm, cum_area_in_km)  )
+  grid.draw(  serve.waterbalance(runoff_data, obs_name, calculate_mm, cum_area_in_km)  )
 }
 
 
@@ -47,7 +47,7 @@ serve.plot_waterbilance <- function(runoff_data, obs_name, cum_area_in_km = NULL
 #' 
 #' xxx
 #' @export
-serve.waterbilance <- function(runoff_data, obs_name, cum_area_in_km = NULL, calculate_mm = TRUE) {
+serve.waterbalance <- function(runoff_data, obs_name, cum_area_in_km = NULL, calculate_mm = TRUE) {
   # def 
     require("dplyr", quietly = TRUE)
     require("ggplot2", quietly = TRUE)
