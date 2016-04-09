@@ -4,12 +4,12 @@
 #' creates a list of bar-plots for a the yearly objective functions (OF) xxx
 #' see: description-follows-soonTM xxx
 #' @export
-serve.plotlist_periodOF <- function(runoff_data,plt_ctrl) {
+serve.plotlist_periodOF <- function(runoff_data,plt_ctrl,bOF) {
   # ofun_hydyearly,periods,num_basins,plt_ctrl) {
-    require(ggplot2, quietly = TRUE)
+    require("ggplot2", quietly = TRUE)
     if (missing(plt_ctrl)) {plt_ctrl <- pour.plt_ctrl()}
-  # calc:
-  bOF <- serve.period_ofun(runoff_data)
+    if (missing(bOF)) {bOF <- serve.period_ofun(runoff_data)}
+  # calc: -------------------------------------------------------------------
   ofun_hydyearly <- bOF$NSE_periods
   periods <- unique(runoff_data$period) %>% extract(.>0)
   num_basins <- pour.number_of_basins(d_runoff)
@@ -19,7 +19,6 @@ serve.plotlist_periodOF <- function(runoff_data,plt_ctrl) {
     names(dataframe)  <- new_names
     return(dataframe)
   }
-
   d_ofun_yearly <- ofun_hydyearly %>% 
                     cut.lowerbound(.,plt_ctrl$lb_cut) %>%    # cut.lowerbound can be found in the helpers.R file
                     as.data.frame %>%

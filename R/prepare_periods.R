@@ -29,7 +29,6 @@ prepare.periods <- function(runoff_data, start_month, end_month) {
                                                period) 
                             )
     runoff_data$period[runoff_data$mm %in% out_of_period] <- 0
-    plot(runoff_data$period)
     return(runoff_data)
     
   # old (not working) solution, to brag to christoph :)

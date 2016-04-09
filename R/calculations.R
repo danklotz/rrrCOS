@@ -36,7 +36,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   #§
   
   # add full date information to data
-  d_runoff <- implode_cosdate(d_runoff)
+  d_runoff <- prepare.complete_date(d_runoff)
   # normalize data names: 
   d_runoff %<>% prepare.names
   
@@ -80,7 +80,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_exp_NSE <- serve.plotlist_periodOF(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
-  serve.expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
+  serve.save_list3x3(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
 
   #§ here we go ... 
   

@@ -4,7 +4,7 @@
 \alias{serve.plotlist_periodOF}
 \title{hydyearly list of expaned barpltos}
 \usage{
-serve.plotlist_periodOF(runoff_data, plt_ctrl)
+serve.plotlist_periodOF(runoff_data, plt_ctrl, bOF)
 }
 \description{
 creates a list of bar-plots for a the yearly objective functions (OF) xxx
