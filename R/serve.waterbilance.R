@@ -1,21 +1,64 @@
-
-
-#' makes plot for the water bilance
+#' create list of water-bilance plots 
 #' 
 #' xxx
 #' @export
-serve.waterbilance <- function(runoff_data, obs_name, calculate_mm = TRUE, cum_area_in_km = NULL) {
-  # def 
+serve.plotlist_waterbilance <- function(runoff_data, cum_area_in_km = NULL, calculate_mm = TRUE) {
+  #def
     require("dplyr", quietly = TRUE)
-    require("ggplot2", quietly = TRUE)
+    #
     assert_chunk(runoff_data)
-    #§ missing
   # calc
+  runoff_data_mm <- runoff_data
   if (calculate_mm == TRUE) {
     stopifnot(!is.null(cum_area_in_km)) # stop if no area is provided
     # calculate runoff in mm:
     names_drun <- runoff_data  %>% select(starts_with("Q")) %>% names(.)
-    runoff_data_mm <- runoff_data
+    for (my_var in names_drun) {
+      idx <- gsub("\\D","",my_var) %>% as.integer
+      to_mm <- function(x) { x*3.6/(cum_area_in_km[idx]) }
+      # strings cannot be evaluated directly in dplyr, thus a little trick is needed
+      call <- substitute(transmute(d_run, var = to_mm(var)), list(var = as.name(my_var)))
+      runoff_data_mm[my_var] <- eval(call)
+    }
+  }
+  #
+  obs_names <- names(runoff_data) %>% tolower %>% extract(grep("qobs.*",.))
+  plot_list <- list()
+  for (i in 1:length(obs_names)) {
+    plot_list[[i]] <- serve.waterbilance(runoff_data_mm, obs_name = obs_names[i], cum_area_in_km = NULL, calculate_mm = FALSE)
+  }
+  return(plot_list)
+} 
+
+
+# wrapper to plot water bilance graphic object ----------------------------
+#' water bilance plot
+#' 
+#' pltos the water bilance of a chosen basin
+#' @export
+serve.plot_waterbilance <- function(runoff_data, obs_name, calculate_mm = TRUE, cum_area_in_km = NULL) {
+  plot(  serve.waterbilance(runoff_data, obs_name, calculate_mm, cum_area_in_km)  )
+}
+
+
+# single water bilance graphic object -------------------------------------
+#' makes plot for the water bilance
+#' 
+#' xxx
+#' @export
+serve.waterbilance <- function(runoff_data, obs_name, cum_area_in_km = NULL, calculate_mm = TRUE) {
+  # def 
+    require("dplyr", quietly = TRUE)
+    require("ggplot2", quietly = TRUE)
+    require("grid", quietly = TRUE)
+    assert_chunk(runoff_data)
+    #§ missing
+  # calc
+  runoff_data_mm <- runoff_data
+  if (calculate_mm == TRUE) {
+    stopifnot(!is.null(cum_area_in_km)) # stop if no area is provided
+    # calculate runoff in mm:
+    names_drun <- runoff_data  %>% select(starts_with("Q")) %>% names(.)
     for (my_var in names_drun) {
       idx <- gsub("\\D","",my_var) %>% as.integer
       to_mm <- function(x) { x*3.6/(cum_area_in_km[idx]) }
