@@ -12,7 +12,7 @@ serve.period_ofun <- function(runoff_data) {
   assert_dataframe(runoff_data)
   stopifnot( exists("period", where = runoff_data) )
   #
-  periods_in_data <- which(unique(runoff_data$period) > 0)
+  periods_in_data <- unique(runoff_data$period) %>% extract(.>0)
   num_periods <- length(periods_in_data)
   runoff_data %<>% filter(period == periods_in_data)
   eval_size <- runoff_data %>% names %>% unique %>% tolower %>% grepl("qobs.*",.) %>% sum

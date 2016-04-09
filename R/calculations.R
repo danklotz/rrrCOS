@@ -77,7 +77,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #
-  plt_exp_NSE <- serve.expanded_barplots(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
+  plt_exp_NSE <- serve.plotlist_periodOF(Ofun_hydyearly,hydyears_in_data,num_basins,plt_ctrl)
   # save formated list into htmlFile  (cause shiny does not like multiple graphics)
   s_ctrl <- list() # reset save control (s_ctrl)
   serve.expandedbars_intoFile(plt_exp_NSE, path = "",jpg_filenames = "expnd_nse", hmtl_filename = "summary_expnd_nse")
@@ -188,7 +188,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   period_start <- 9
   period_end <- 8
   d_run %<>% prepare.periods(start_month = period_start, end_month = period_end)
-
+  plot(d_run$period, type = "l", col = "red")
   #3. change to mm
   # for later, to rescale to mm 
   cum_area <- function(areal_data) {
