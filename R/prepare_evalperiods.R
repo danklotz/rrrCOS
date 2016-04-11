@@ -5,12 +5,12 @@
 #' @return The runoff data.frame, including a column indicating the evaluating period 
 #' \strong{Note:} The hydrological years are formatted as characters.
 #' @export
-prepare_evalPeriods <- function(runoff_data, smonth, emonth) {
+prepare.evalPeriods <- function(runoff_data, smonth, emonth) {
   # def
     require(magrittr, quietly = TRUE)
     require(dplyr, quietly = TRUE)
     if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-    runoff_data %<>% prepare_complete_date()
+    runoff_data %<>% prepare.complete_date()
   # calc
   temp_runoff <- runoff_data
   stag <- 1
@@ -27,9 +27,9 @@ prepare_evalPeriods <- function(runoff_data, smonth, emonth) {
     }
   }
   #
-  years <- pour_years_in_data(runoff_data)
+  years <- pour.years_in_data(runoff_data)
   num_years = length(years$in_data)
-  hydyears_in_d <- pour_hydyears(runoff_data,years)
+  hydyears_in_d <- pour.hydyears(runoff_data,years)
   num_hydyears <- length(hydyears_in_d)
   # cut away data outside of hydyears (#§ bad solution, below is an idea for a better one?)
   runoff_data %<>% filter(yyyy > years$in_data[1] | mm >= 9 ) %>% 

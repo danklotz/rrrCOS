@@ -1,10 +1,10 @@
 #' get different data
 #' 
-#' The \code{pour} function is a wrapper around the pour_ functions. It works as following: 
+#' The \code{pour} function is a wrapper around the pour. functions. It works as following: 
 #' \itemize{
-#'  \item{ \code{pour(runoff_example)} } { Wraps: \code{\link[visCOS]{pour_runoff_example}} }
-#'  \item{ \code{pour(spinup, filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour_spinup}} }
-#'  \item{ \code{pour(plt_ctrl)} } { Wraps: \code{\link[visCOS]{pour_plt_ctrl}} }
+#'  \item{ \code{pour(runoff_example)} } { Wraps: \code{\link[visCOS]{pour.runoff_example}} }
+#'  \item{ \code{pour(spinup, filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour.spinup}} }
+#'  \item{ \code{pour(plt_ctrl)} } { Wraps: \code{\link[visCOS]{pour.plt_ctrl}} }
 #'  }
 #' @export
 #' @examples 
@@ -21,13 +21,13 @@ pour <- function(what, ...) {
     } else if (is.name(input)) {
       choice <- deparse(input)
     } else {
-      stop( paste("Cannot pour_ The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
+      stop( paste("Cannot pour. The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
     }
   # calc:
   switch(choice, 
-         runoff_example = pour_runoff_example(),
-         plt_ctrl = pour_plt_ctrl(),
-         spinup = pour_spinup(...),
+         runoff_example = pour.runoff_example(),
+         plt_ctrl = pour.plt_ctrl(),
+         spinup = pour.spinup(...),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for pour", sep = " " ) )
          )
 }

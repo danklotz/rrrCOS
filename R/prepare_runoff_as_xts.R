@@ -5,7 +5,7 @@
 #' @param runoff_data data_frame of the runoff_data (see: xxx)
 #' @return xts object of the runoff_data data.frame
 #' @export
-prepare_runoff_as_xts <- function(runoff_data) {
+prepare.runoff_as_xts <- function(runoff_data) {
   # pre
   require(zoo, quietly = TRUE, warn.conflicts = FALSE)
   require(xts, quietly = TRUE, warn.conflicts = FALSE)
@@ -13,7 +13,7 @@ prepare_runoff_as_xts <- function(runoff_data) {
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
   # calculations:
-  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% prepare_names
+  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% prepare.names
   # 
   return(runoff_data_as_xts)
 }

@@ -3,8 +3,8 @@
 #' Many of the serve function of visCOS are controlled via a list containing the different plotting controls. This function provides such a list with the basic settings added. 
 #' @export
 #' @examples 
-#' plt_ctrl <- pour_plt_ctrl
-pour_plt_ctrl <- function( plot_title = "Title",
+#' plt_ctrl <- pour.plt_ctrl
+pour.plt_ctrl <- function( plot_title = "Title",
                             ltitle = "Legend", 
                             year_name = "Year", 
                             colors = c('#FF3300',

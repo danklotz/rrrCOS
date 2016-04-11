@@ -6,16 +6,16 @@
 #' @param runoff_data runoff_data data.frame (see:xxx).
 #' @return list of baisc objective function evaluated for the different hydrological years and over the whole timespan.
 #' @export
-serve_period_ofun <- function(runoff_data) {
-  require(hydroGOF, quietly = TRUE)
-  require(dplyr, quietly = TRUE)
+serve.period_ofun <- function(runoff_data) {
+  require("hydroGOF", quietly = TRUE)
+  require("dplyr", quietly = TRUE)
   assert_dataframe(runoff_data)
   stopifnot( exists("period", where = runoff_data) )
   #
-  periods_in_data <- which(unique(runoff_data$period) > 0)
-  num_periods <- length(periods_in_data)
-  runoff_data %<>% filter(period == periods_in_data)
+  runoff_data %<>% filter(period > 0)
   eval_size <- runoff_data %>% names %>% unique %>% tolower %>% grepl("qobs.*",.) %>% sum
+  periods_in_data <- runoff_data$period %>% unique
+  num_periods <- periods_in_data %>% length
   Ofun  <- list()
   Ofun$NSE_periods <- matrix(nrow = num_periods, ncol = as.integer(eval_size), data = NA)
   Ofun$KGE_periods <- Ofun$NSE_periods

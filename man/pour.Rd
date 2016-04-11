@@ -7,11 +7,11 @@
 pour(what, ...)
 }
 \description{
-The \code{pour} function is a wrapper around the pour_ functions. It works as following: 
+The \code{pour} function is a wrapper around the pour. functions. It works as following: 
 \itemize{
- \item{ \code{pour(runoff_example)} } { Wraps: \code{\link[visCOS]{pour_runoff_example}} }
- \item{ \code{pour(spinup, filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour_spinup}} }
- \item{ \code{pour(plt_ctrl)} } { Wraps: \code{\link[visCOS]{pour_plt_ctrl}} }
+ \item{ \code{pour(runoff_example)} } { Wraps: \code{\link[visCOS]{pour.runoff_example}} }
+ \item{ \code{pour(spinup, filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour.spinup}} }
+ \item{ \code{pour(plt_ctrl)} } { Wraps: \code{\link[visCOS]{pour.plt_ctrl}} }
  }
 }
 \examples{

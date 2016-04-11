@@ -8,10 +8,10 @@
 # @examples 
 # Get runof example and implode cos_date to obtain the POSIXct date
 # require(magrittr)
-# runoff <- pour_runoff_example()
+# runoff <- pour.runoff_example()
 # runoff %<>% implode_cosdate 
 # # not a fan of magrittr-piping? Just use: 
-# runoff <- implode_cosdate(pour_runoff_example())
+# runoff <- implode_cosdate(pour.runoff_example())
 implode_cosdate <- function(runoff_data) {
   # def
     require(magrittr, quietly = TRUE)

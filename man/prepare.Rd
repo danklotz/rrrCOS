@@ -8,7 +8,7 @@ prepare(this, from_that)
 }
 \examples{
 # get runoff example and clean data, remove chunk and clean names
-d_raw <- pour_runoff_example()
+d_raw <- pour.runoff_example()
 d_runoff <- prepare(remove_chunk, runoff_data)
 names(d_raw)
 names(d_runoff)

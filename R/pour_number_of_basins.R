@@ -1,5 +1,5 @@
 # Get numbers of the different basins
-pour_number_of_basins <- function(runoff_data) {
+pour.number_of_basins <- function(runoff_data) {
   require(magrittr)
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)

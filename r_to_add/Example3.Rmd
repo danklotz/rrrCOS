@@ -13,19 +13,21 @@ output:
 xxx
 ```{r}
   d_raw <- pour(runoff_example) # get example runoff
-  d_runoff <- d_raw %>% prepare_remove_chunk %>% prepare_only_observed
+  d_runoff <- d_raw %>% prepare.remove_chunk %>% prepare.only_observed
   head(d_runoff)
 ```
 
 ```{r}
-  d_runoff$POSIXdate <- prepare(this = implode_cosdate, from_that = d_runoff)
+  d_runoff <- prepare(this = complete_date, from_that = d_runoff)
+  d_runoff <- prepare.periods(d_runoff, start_month = 9, end_month = 8)
 ```
 
 ```{r}
-  d_runoff <- prepare_periods(d_runoff, start_month = 9, end_month = 8)
+  bOF <- serve.period_ofun(d_runoff)
+  unlist(bOF)
 ```
 
 ```{r}
-  bOF <- serve_period_ofun(d_runoff)
-  bOF
+  serve.period_Corr
 ```
+
