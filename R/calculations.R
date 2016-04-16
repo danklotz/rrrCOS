@@ -5,7 +5,6 @@
 #§
 
 visCOS.example <- function(runoff_path,spinup,ctrl) {
-  require("magrittr", quietly = TRUE)
   # data wrangling --------------------------------------------------------------
   # SETUP #§ temporary !?
    pathDotRunoff  <- file.choose()
@@ -14,13 +13,14 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   
   #§ assumed to be done by the user!!!
         require("data.table")
+        require("magrittr", quietly = TRUE)
         d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
              as.data.frame(.)
         names(d_raw)[5] <- "min"
   #§
         d_raw <- pour.runoff_example()
         #§
-  # eliminate basins withouth observations:
+  # eliminate chunk and basins withouth observations:
    d_runoff <- d_raw %>% 
     prepare.remove_chunk %>% 
      prepare.only_observed

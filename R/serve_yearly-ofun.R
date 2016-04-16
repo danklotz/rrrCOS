@@ -109,6 +109,7 @@ serve.plot_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
   }
   #
   eval_size <- dim(Ofun_hydyearly)[2] 
+  periods_in_data <- periods_in_data[periods_in_data > 0]
   of_y <- expand.grid(period = periods_in_data, numberBasins = 1:eval_size)
   temp <- Ofun_hydyearly
   temp[Ofun_hydyearly < plt_ctrl$lb_cut] <- plt_ctrl$lb_cut
