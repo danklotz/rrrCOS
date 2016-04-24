@@ -44,20 +44,21 @@ test_gadget <- function(data) {
                                           p2 = data$p2, 
                                           p3 = as.numeric(input$in_p3),
                                           p4 = as.numeric(input$in_p4))})
+    z_data <-  reactive({  z_fun(updated_data()) })
     output$plot <- renderPlot({
-      z_data <-  z_fun(updated_data())
-      plot_fun(z_data)
+      plot_fun(z_data())
     })
     # Handle the Done button being pressed.
     observeEvent(input$done, {
       # Return the brushed points. See ?shiny::brushedPoints.
-      stopApp("yea, yea, yea")
+      stopApp(max(z_data()$z))
     })   
   }
   #
   runGadget(ui, server)
 }  
 test_gadget(test)
+
   
 
 
