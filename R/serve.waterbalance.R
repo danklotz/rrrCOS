@@ -86,10 +86,9 @@ serve.waterbalance <- function(runoff_data, obs_name, cum_area_in_km = NULL, cal
     }
   }
   # plotting:
-  obs_name <- obs_name
   sim_name <- obs_name %>% tolower %>% gsub("qobs","qsim",.)
     #§ code is a little bit shitty : (
-  q_data <- p %>% select( contains(obs_name) , contains(sim_name) )
+  q_data <- p %>% select( ends_with(obs_name) , ends_with(sim_name) )
   names(q_data) <- c("obs","sim") 
   q_data %<>% mutate(rel_error = 100*(sim-obs)/obs) 
   # include list of months

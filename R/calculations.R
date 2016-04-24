@@ -17,7 +17,8 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
         d_raw <- fread(pathDotRunoff, check.names = TRUE, header = TRUE, skip = 22) %>%
              as.data.frame(.)
         names(d_raw)[5] <- "min"
-  #§
+  #§    
+        require("magrittr", quietly = TRUE)
         d_raw <- pour.runoff_example()
         #§
   # eliminate chunk and basins withouth observations:
@@ -219,7 +220,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 
   
   
-  # 4. water bilance
+  # 4. water balance
   g <- unique(d_run_mm$period)
   baptize <-  function(data,new_names) {
     names(data) <- new_names
