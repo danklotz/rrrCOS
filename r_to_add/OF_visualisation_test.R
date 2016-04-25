@@ -93,7 +93,14 @@ test_gadget <- function(n) {
 # test_gadget with plotly -------------------------------------------------
 
 plot_fun2 <- function(data_frame) {
-  the_plot <- plot_ly(data_frame, x = par1, y = par2, z = z, color = z, type = "scatter3d", mode = "markers")
+  the_plot <- plot_ly(data_frame, 
+                      x = par1, 
+                      y = par2, 
+                      z = z,
+                      color = z,
+                      type = "scatter3d", 
+                      mode = "markers",
+                      aspectmode = "data")
   return(the_plot)
 }
 
@@ -106,7 +113,7 @@ test_gadget2 <- function(n) {
       fillCol( flex = c(2, 1),
                plotlyOutput("plot", height = "100%"),
                fillCol(
-                 sliderInput("z_axis", "z:", -2, 2, 0, step = 0.01, sep = "", animate = TRUE),
+                 sliderInput("z_axis", "par3:", -2, 2, 0, step = 0.01, sep = "", animate = TRUE),
                  fillRow(
                    sliderInput("mean1", "mean1:", -1, 1, 0, step = 0.01, sep = ""),
                    sliderInput("mean2", "mean2:", -1, 1, 0, step = 0.01, sep = ""),
@@ -165,6 +172,6 @@ test_gadget2 <- function(n) {
 
 # execution ---------------------------------------------------------------
 
-test_gadget2(n = 50)
+test_gadget2(n = 30)
 
 
