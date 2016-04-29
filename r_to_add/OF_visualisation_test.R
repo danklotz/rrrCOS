@@ -172,6 +172,6 @@ test_gadget2 <- function(n) {
 
 # execution ---------------------------------------------------------------
 
-test_gadget2(n = 30)
+test_gadget(n = 30)
 
 
