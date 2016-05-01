@@ -1,14 +1,14 @@
 #' Wraps the prepare functions 
 #' 
-#' prepare functions can be used to re-order the data so that it is in the necessary format for plotting. 
-#' This function ('prepare') is a wrapper around the prepare. functions. The usage is defined as following
+#' prepare can be used to format your data such that it is in the necessary format for the other visCOS functions. 
+#' This wrapper combines the single prepare functions. In total the folling functions are available: 
 #' \itemize{
-#'  \item{ \code{prepare(completeDate)} } { Wraps: \code{\link[visCOS]{prepare.complete_date}} }
-#'  \item{ \code{prepare(periods)} } { Wraps: \code{\link[visCOS]{prepare.periods}} }
-#'  \item{ \code{prepare(complete_date)} } { Wraps: \code{\link[visCOS]{prepare.complete_date}} }
-#'  \item{ \code{prepare(only_observed)} } { Wraps: \code{\link[visCOS]{prepare.only_observed}} }
-#'  \item{ \code{prepare(remove_chunk,runoff_data})} } { Wraps: \code{\link[visCOS]{prepare.remove_chunk}} }
-#'  \item{ \code{prepare(runoff_as_xts, runoff_data)} } { Wraps: \code{\link[visCOS]{prepare.runoff_as_xts}} }
+#'  \item{ 1 } { \code{\link[visCOS]{prepare.complete_date}} }
+#'  \item{ 2 } { \code{\link[visCOS]{prepare.periods}} }
+#'  \item{ 3 } { \code{\link[visCOS]{prepare.complete_date}} }
+#'  \item{ 4 } { \code{\link[visCOS]{prepare.only_observed}} }
+#'  \item{ 5 } { \code{\link[visCOS]{prepare.remove_chunk}} }
+#'  \item{ 6 } { \code{\link[visCOS]{prepare.runoff_as_xts}} }
 #'  }
 #' @export
 #' 
@@ -19,24 +19,19 @@
 #' names(d_raw)
 #' names(d_runoff)
 
-prepare <- function(this, from_that) {
+prepare <- function(runoff_data, period_start_month = 9, period_end_month = 8) {
   # def
-  input <- substitute(this)
-  if ( is.character(input) ) {
-    choice <- input 
-  } else if (is.name(input)) {
-    choice <- deparse(input)
-  } else {
-    stop( paste("Cannot pour. The option >>", what[1],"<< is neither a name nor a character!", sep = " ") )
-  }
+    require("magrittr", quietly = TRUE)
+    if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+    #§ missing
+    formated_runoff_data <- runoff_data %>% 
+      prepare.remove_chunk %>% 
+      prepare.only_observed %>% 
+      prepare.complete_date %>% 
+      prepare.periods(., 
+                      start_month = period_start_month, 
+                      end_month = period_end_month)
+    return(formated_runoff_data)
   # calc
-  switch(choice, 
-         completeDate = prepare.complete_date(from_that), 
-         periods = prepare.periods(from_that),
-         complete_date = prepare.complete_date(from_that),
-         only_observed = prepare.only_observed(from_that),
-         remove_chunk = prepare.remove_chunk(from_that),
-         runoff_as_xts = prepare.runoff_as_xts(from_that),
-         stop( paste("The option >>",what[1],"<< does not exist as a selection for prepare", sep = " " ) )
-  )
+
 }

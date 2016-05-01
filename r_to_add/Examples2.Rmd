@@ -54,13 +54,6 @@ Different models and modelers will often tend do name or number their data diffe
   print(short_names)
 ```
 
-###*prepare.*periods
-The function `prepare.periods` is used to mark the periods of interest. In hydrological application within Europe one might be interested to mark the hydrological years (September to August) as such a period. One can do this by... 
-```{r}
-
-```
-
-
 ### *prepare.*runoff_as_xts
 Transforming the data into the `xts` format allows us to plot the data easily with the [dygraphs package](https://rstudio.github.io/dygraphs/). This then again allows us to get an interactive view our data.
 ```{r}

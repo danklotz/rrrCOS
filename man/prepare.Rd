@@ -4,7 +4,19 @@
 \alias{prepare}
 \title{Wraps the prepare functions}
 \usage{
-prepare(this, from_that)
+prepare(runoff_data, period_start_month = 9, period_end_month = 8)
+}
+\description{
+prepare can be used to format your data such that it is in the necessary format for the other visCOS functions. 
+This wrapper combines the single prepare functions. In total the folling functions are available: 
+\itemize{
+ \item{ 1 } { \code{\link[visCOS]{prepare.complete_date}} }
+ \item{ 2 } { \code{\link[visCOS]{prepare.periods}} }
+ \item{ 3 } { \code{\link[visCOS]{prepare.complete_date}} }
+ \item{ 4 } { \code{\link[visCOS]{prepare.only_observed}} }
+ \item{ 5 } { \code{\link[visCOS]{prepare.remove_chunk}} }
+ \item{ 6 } { \code{\link[visCOS]{prepare.runoff_as_xts}} }
+ }
 }
 \examples{
 # get runoff example and clean data, remove chunk and clean names
