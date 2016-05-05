@@ -1,6 +1,7 @@
 #individual files
 R/sstart.R
 .Rhistory
+.Rproj
 
 # not needed files in www
 R/App/www/*.html
