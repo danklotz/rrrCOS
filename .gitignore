@@ -29,9 +29,5 @@ vignettes/*.pdf
 .Rproj.user
 packrat/lib*/
 packrat/src/
-
 packrat/packrat.lock
-
 packrat/src/stringr/stringr_1.0.0.tar.gz
-
-packrat/packrat.lock

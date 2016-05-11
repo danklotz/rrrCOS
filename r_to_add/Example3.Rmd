@@ -1,5 +1,5 @@
 ---
-title: "visCOS: Example 2"
+title: "visCOS: Example 3"
 output:
   html_document:
     highlight: pygments
