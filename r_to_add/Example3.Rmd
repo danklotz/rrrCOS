@@ -1,8 +1,8 @@
 ---
-title: "visCOS: Example 2"
+title: "visCOS: Example 3"
 output:
-  html_document:
-    highlight: pygments
+  tufte::tufte_html: default
+  tufte::tufte_handout: default
 ---
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")
@@ -18,7 +18,7 @@ xxx
 ```
 
 ```{r}
-  d_runoff <- prepare(this = complete_date, from_that = d_runoff)
+  d_runoff <- prepare.complete_date(d_runoff)
   d_runoff <- prepare.periods(d_runoff, start_month = 9, end_month = 8)
 ```
 
@@ -27,7 +27,4 @@ xxx
   unlist(bOF)
 ```
 
-```{r}
-  serve.period_Corr
-```
 
