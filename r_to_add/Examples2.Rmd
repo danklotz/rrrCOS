@@ -1,8 +1,8 @@
 ---
 title: "Example 2: Intro to the *prepare.* functions"
 output:
-  html_document:
-    highlight: pygments
+  tufte::tufte_html: default
+  tufte::tufte_handout: default
 ---
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")
@@ -63,7 +63,9 @@ Transforming the data into the `xts` format allows us to plot the data easily wi
   dygraph(cbind(d_xts$QOBS_2,d_xts$QSIM_2)) %>% dyOptions( colors=c("steelblue","palevioletred") )
 ```
 
+```{marginfigure}
 *Side-Note:* If we are interested in the basic objective function of a section of the hydrograph, we have a little shiny app at our disposal, wrapped into the function `serve.runoff_with_ofun`
+```
 
 ### preparing as such
 At last do not forget that we also have a wrapping function, which can make things more concise and clearer. 

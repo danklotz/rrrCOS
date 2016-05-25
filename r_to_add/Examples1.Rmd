@@ -1,8 +1,8 @@
 ---
 title: "Example 1: Intro to the *pour.* functions"
 output:
-  html_document:
-    highlight: pygments
+  tufte::tufte_html: default
+  tufte::tufte_handout: default
 ---
 ```{r, echo = FALSE, message=FALSE}
   require("visCOS")
