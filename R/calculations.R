@@ -56,9 +56,9 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
 # plotting --------------------------------------------------------------
   ## NSE
   ### yearly
-    plt_ynse <- serve.period_NSE(from = bOF, given = periods_in_data)
+    plt_ynse <- periodplot_NSE(d_runoff)
   ### total
-    plty_tnse <- serve.totalNSE(from = bOF)
+    plty_tnse <- totalplot_NSE(d_runoff)
   #### concatenate two 
     g1 <- ggplotGrob(plt_ynse)
     g2 <- ggplotGrob(plty_tnse)
@@ -74,7 +74,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     
   ### expanded barplots & htmlfiles
   # pour new list:
-  plt_ctrl <- pour.plt_ctrl()
+  plt_ctrl <- viscos_options()
   plt_ctrl$gtitle <- "Basin"
   plt_ctrl$ylab <- "NSE"
   #

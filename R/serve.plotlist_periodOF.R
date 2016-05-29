@@ -7,7 +7,6 @@
 serve.plotlist_periodOF <- function(runoff_data,plt_ctrl,bOF) {
   # ofun_hydyearly,periods,num_basins,plt_ctrl) {
     require("ggplot2", quietly = TRUE)
-    if (missing(plt_ctrl)) {plt_ctrl <- pour.plt_ctrl()}
     if (missing(bOF)) {bOF <- serve.period_ofun(runoff_data)}
   # calc: -------------------------------------------------------------------
   ofun_hydyearly <- bOF$NSE_periods

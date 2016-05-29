@@ -4,16 +4,14 @@
 #' xxx description to follow 
 #' 
 #' @export
-serve.plot_period_NSE <- function(runoff_data, plt_ctrl) {
-    if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- pour.plt_ctrl()
-      plt_ctrl$plot_title <- "Yearly NSE"
-      plt_ctrl$ylab <- "basin number"
-    }
+periodplot_NSE <- function(runoff_data, plot_title = "yearly NSE", y_label = "basin number") {
+  plt_ctrl <- viscos_options()
+  plt_ctrl$plot_title <- plot_title
+  plt_ctrl$ylab <- y_label
   # calc
   bOF = serve.period_ofun(runoff_data)
   periods_in_data <- unique(runoff_data$period)
-  plt <- serve.plot_ofun("NSE", bOF, periods_in_data, plt_ctrl)
+  plt <- periodplot_ofun("NSE", bOF, periods_in_data, plt_ctrl)
   return(plt)
 }
 
@@ -22,16 +20,14 @@ serve.plot_period_NSE <- function(runoff_data, plt_ctrl) {
 #' xxx description to follow 
 #' 
 #' @export
-serve.plot_period_KGE<- function(runoff_data, plt_ctrl) {
-    if ( !exists("plt_ctrl") ) {
-      plt_ctrl <- pour.plt_ctrl()
-      plt_ctrl$plot_title <- "Yearly KGE"
-      plt_ctrl$ylab <- "basin number"
-    }
+periodplot_KGE<- function(runoff_data, plot_title = "Yearly KGE", y_label = "basin number") {
+  plt_ctrl <- viscos_options()
+  plt_ctrl$plot_title <- plot_title
+  plt_ctrl$ylab <- y_label
   # calc
   bOF = serve.period_ofun(runoff_data)
   periods_in_data <- unique(runoff_data$period)
-  plt <- serve.plot_ofun("KGE", bOF, periods_in_data, plt_ctrl)
+  plt <- periodplot_ofun("KGE", bOF, periods_in_data, plt_ctrl)
   return(plt)
 }
 
@@ -40,19 +36,14 @@ serve.plot_period_KGE<- function(runoff_data, plt_ctrl) {
 #' xxx description to follow 
 #' 
 #' @export
-serve.plot_period_pBIAS <- function(runoff_data, plt_ctrl) {
-  if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- pour.plt_ctrl()
-    plt_ctrl$plot_title <- "Yearly %-Bias"
-    plt_ctrl$ylab <- "basin number"
-    plt_ctrl$midpoint <- 0.0
-    plt_ctrl$limits <- c(-100,100)
-    plt_ctrl$lb_cut <- -1000.0
-  }
+periodplot_pBIAS <- function(runoff_data, plt_ctrl) {
+  plt_ctrl <- viscos_options()
+  plt_ctrl$plot_title <- "Yearly %-Bias"
+  plt_ctrl$ylab <- "basin number"
   # calc
   bOF = serve.period_ofun(runoff_data)
   periods_in_data <- unique(runoff_data$period)
-  plt <- serve.plot_ofun("pBIAS", bOF, periods_in_data, plt_ctrl)
+  plt <- periodplot_ofun("pBIAS", bOF, periods_in_data, plt_ctrl)
   return(plt)
 }
 
@@ -61,7 +52,7 @@ serve.plot_period_pBIAS <- function(runoff_data, plt_ctrl) {
 #' xxx description to follow 
 #' 
 #' @export
-serve.plot_period_CORR <- function(runoff_data, plt_ctrl) {
+periodplot_CORR <- function(runoff_data, plt_ctrl) {
     if ( !exists("plt_ctrl") ) {
       plt_ctrl <- pour.plt_ctrl()
       plt_ctrl$plot_title <- "Yearly Correlation"
@@ -73,7 +64,7 @@ serve.plot_period_CORR <- function(runoff_data, plt_ctrl) {
   # calc
   bOF = serve.period_ofun(runoff_data)
   periods_in_data <- unique(runoff_data$period)
-  plt <- serve.plot_ofun("CORR", bOF, periods_in_data, plt_ctrl)
+  plt <- periodplot_ofun("CORR", bOF, periods_in_data, plt_ctrl)
   return(plt)
 }
 
@@ -87,12 +78,11 @@ serve.plot_period_CORR <- function(runoff_data, plt_ctrl) {
 #' \code{\link[visCOS]{pour.basicOfun}} provides "NSE", "KGE", "pBIAS" or "CORR"
 #' @param periods_in_data periods in data, as returned by \code{\link[visCOS]{pour.periods}}
 #' @param xxx yet to be defined control list
-#' @export
-serve.plot_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
+periodplot_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
   # def
-    require(ggplot2)
-    require(magrittr)
-    require(reshape2)
+    require(ggplot2, quietly = TRUE)
+    require(magrittr, quietly = TRUE)
+    require(reshape2, quietly = TRUE)
     assert_basicOF(bOF)
     if (missing(plt_ctrl)) {
       plt_ctrl <- pour.plt_ctrl()

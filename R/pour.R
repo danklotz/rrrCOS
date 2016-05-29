@@ -4,7 +4,6 @@
 #' \itemize{
 #'  \item{ \code{pour(runoff_example)} } { Wraps: \code{\link[visCOS]{pour.runoff_example}} }
 #'  \item{ \code{pour(spinup, filepath, pattern)} } { Wraps: \code{\link[visCOS]{pour.spinup}} }
-#'  \item{ \code{pour(plt_ctrl)} } { Wraps: \code{\link[visCOS]{pour.plt_ctrl}} }
 #'  }
 #' @export
 #' @examples 
@@ -26,7 +25,7 @@ pour <- function(what, ...) {
   # calc:
   switch(choice, 
          runoff_example = pour.runoff_example(),
-         plt_ctrl = pour.plt_ctrl(),
+         plt_ctrl = viscos_options(),
          spinup = pour.spinup(...),
          stop( paste("The option >>",what[1],"<< does not exist as a selection for pour", sep = " " ) )
          )

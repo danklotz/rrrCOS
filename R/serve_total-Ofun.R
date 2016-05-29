@@ -4,16 +4,14 @@
 #' 
 #' xxx description follows
 #' @export
-serve.totalNSE <- function(from,...) {
+totalplot_NSE <- function(runoff_data,plot_title = "Total NSE",legend_title = "NSE") {
   # def
-  assert_basicOF(from)
-  if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- pour.plt_ctrl()
-    plt_ctrl$plot_title <- "Total NSE  "
-    plt_ctrl$ltitle <- "NSE"
-  }
+  plt_ctrl <- viscos_options()
+  plt_ctrl$plot_title <- plot_title
+  plt_ctrl$legend_title <- legend_title
   # calc
-  total <- serve.totalOfun("NSE",from,plt_ctrl) 
+  bOF <- serve.period_ofun(runoff_data)
+  total <- totalplot_Ofun("NSE",bOF,plt_ctrl) 
   return(total)
 }
 
@@ -22,21 +20,20 @@ serve.totalNSE <- function(from,...) {
 #' 
 #' xxx description follows
 #' @export
-serve.totalKGE <- function(from,...) {
+totalplot_KGE <- function(runoff_data, plot_titel = "Total KGE",legend_title = "KGE") {
   # def
-  assert_basicOF(from)
-  if ( !exists("plt_ctrl") ) {
-    plt_ctrl <- pour.plt_ctrl()
-    plt_ctrl$plot_title <- "Total KGE   "
-    plt_ctrl$ltitle <- "KGE"
-  }
+  plt_ctrl <- viscos_options()
+  plt_ctrl$plot_title <- plot_title
+  plt_ctrl$legend_title <- legend_title
   # calc
-  total <- serve.totalOfun("KGE",from,plt_ctrl) 
+  bOF = serve.period_ofun(runoff_data)
+  total <- totalplot_Ofun("KGE",bOF,plt_ctrl) 
   return(total)
 }
 
-#' define rasterplot functions for total OF
-serve.totalOfun <- function(choice,bOF,plt_ctrl) {
+
+# define rasterplot functions for total OF
+totalplot_Ofun <- function(choice,bOF,plt_ctrl) {
   # def 
   assert_basicOF(bOF)
   require(ggplot2, quietly = TRUE)
@@ -68,7 +65,7 @@ serve.totalOfun <- function(choice,bOF,plt_ctrl) {
     geom_text(aes( total, numberBasins ,label = round(OFvalue,2) ) ,color="black") +
     scale_y_reverse() +
     scale_fill_gradient2(space = "Lab",
-                         name = plt_ctrl$ltitle,
+                         name = plt_ctrl$legend_title,
                          low = plt_ctrl$clr1,
                          mid= plt_ctrl$clr2,
                          high = plt_ctrl$clr3,
