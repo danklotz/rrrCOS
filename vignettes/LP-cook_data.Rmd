@@ -27,12 +27,13 @@ Altenratively the 'readr' can be used if the data is more structured and large.
 The function `get_runoff_example` can be used to get some exemplary data 
 from within **visCOS**:
 ```{r, eval = TRUE, purl = FALSE}
-  runoff_example <- visCOS::get_runoff_example()
+  library(visCOS)
+  runoff_example <- get_runoff_example()
   head(runoff_example)
 ```
 
 
-# Code Documentation
+# Code
 This chapter documents the code from the different visCOS functions
 
 ## `get_runoff_example`
@@ -53,10 +54,12 @@ within the package via `read.csv`
   }
 ```
 
-## remove_chunk 
+## `remove_chunk` 
 This function removes all columns not specified in the `viscos_options` string
-`data_regex`. This is done by identifying the names of the data_frame and 
+`data_regex`, aswell basins where no observations are available.
+The first part is done by identifying the names of the data_frame and 
 searching for the idx of the names defined in the regular expression string. 
+The second part is done via the function prepare.only_observed (see next subchapter).
 It is actually so pretty simple, but realy usefull. Since the solution is 
 quite specific the function tests if the input is a data.frame and returns an 
 error if not. 
@@ -64,8 +67,7 @@ error if not.
 **Note** that the routine is **not** case sensitive. It does not distinguish 
 inbetween small and capital letters!
 
-The function header is defined as following: 
-
+The function header is: 
 ```{r}
   #' removes chunk in runoff_data
   #' 
@@ -113,11 +115,92 @@ Finally, `idx`is then used to select the wanted columns.
   idx <- regex_columns %>% 
     grep(.,lowercase_names_in_data)
     no_chunk_runoff_data <- runoff_data[ , idx]
-    return(runoff_data)
+    return( only_observed_basins(no_chunk_runoff_data) )
   }
 ```
 
-## prepare.complete_date 
+### `only_observed_basins`
+This function removes basins for which no observations are available. No 
+observation are interpreted as columns in which the all entries are either -999
+or `NA's`. The function header looks like this: 
+```{r}
+# remove basins withouth observations
+#
+# Removes basins withouth observation (-999/NA values) from the provided dataframe
+#
+# @param runoff_data A raw runoff_data data.frame, which may containts basins 
+# withouth observations.
+# \strong{Note:} It is assumed that all available basins are simulated!
+# @return data.frame without the observation-free basins
+# @export
+only_observed_basins <- function(runoff_data) {
+```
+
+As so often it is first checked if `magrittr` is available. 
+Afterwards, it is asserted that `runoff_data` is indeed a data frame 
+(see the chapter about defensive code). With that the preperations are finished, 
+which should be fine as the function is supposedly only called from within 
+`remove_chunk`. 
+```{r}
+  require("magrittr", quietly = TRUE)
+  assert_dataframe(runoff_data)
+```
+
+In order to handle the `NA's` and -999 in the same way all `NA's` are replaced 
+with -999. Then the `lapply` function is used to find the max of each column. 
+```{r}
+  runoff_data[is.na(runoff_data)] <- -999 
+  colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
+```
+
+If any column has a max of -999 it is worth futher investigation.
+Unfortunately the -999 columns could also mean, that something went wrong 
+with the simulation, thus one has to make sure that only obsevation columns 
+are selected. To do so we first identify the idx of the max == -999 cols and 
+build a regular expression with the help of the `viscos_options`.
+We combine both infromation via `grepl` to check if only observed columns have
+been selected. If so everything is fine, but if `any` of the selected cols came
+from an observation col the function stops the execution and gives a warning 
+message. 
+The next step involves a little trick in which +1 is added to the `idx` to 
+obtain the indexes of the corresponding simulation. Here we assume that for each
+observation there is a corresponding simulation **in next the next colum**!
+This allows us then to select only the observed basins. But now all NA values 
+are actually -999! Thus, we replace them again back to NA, via `lapply(...,min)`
+assuming that all negative values are NAs. This is not a strong assumation, 
+because there should never be negative flows! In the end the resulting
+data.frame is returned.
+```{r}
+  if ( any(colmax < 0.0) ){
+    idx_temp <- which(colmax < 0.0) 
+    obs_regex <- paste(viscos_options()$name_COSobs,".*", sep ="")
+    OnlyQobsSelected <- idx_temp %>%
+      names %>% 
+      tolower %>%
+      grepl(obs_regex,.) %>%
+      any
+    if (!OnlyQobsSelected){
+      stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
+    }
+```
+
+```{r}
+    idx_slct <- c(idx_temp,idx_temp + 1) %>% sort() 
+    d_onlyObserved <- runoff_data[-idx_slct]
+    # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
+    colmin <- lapply(X = d_onlyObserved, FUN = min)
+    idx_temp <- which(colmin < 0.0) 
+    d_onlyObserved[d_onlyObserved[idx_temp]<0, idx_temp] <- NA
+    return(d_onlyObserved)
+  } else {
+    return(runoff_data)
+  }
+}
+
+
+```
+
+## `prepare.complete_date` 
 This function is a wrapper. It is however not finished yet! 
 The idea is the following. The idea is to provide a handy function to complete 
 the date-columns. Within the data.frame the user has to provide either 5 columns 
@@ -186,7 +269,7 @@ To function `implode_cosdate` is used to obtain the POSIXct date from the
 }
 ```
 
-### implode_cosdate
+### `implode_cosdate`
 This function is used to transform the old-school *COSdate* format into the 
 widely spread POSIXct format, used within R and in many packages. The function 
 is called by the function above and not provided to the user! It takes a 
@@ -225,5 +308,42 @@ of the data.frame are loaded
                      sep= "" ) %>%
     as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
   return(cbind(runoff_data,POSIXdate))
+}
+```
+
+## `remove_leading_zeros`
+This function removes leading zeros from column names of the data.frame 
+`runoff_data`.The function has no defensive codidng, appart from the execution 
+of `remove_chunk` (see corresponding chapter) to be sure that no non-needed 
+columns are within the data.frame. 
+```{r}
+
+remove_leading_zeros <- function(runoff_data) {
+  require("magrittr", quietly = TRUE)
+  runoff_data <- remove_chunk(runoff_data)
+```
+
+The body of the function works in the following way:
+The variables `runoff_names` ist computed by obtaining the names of the columns 
+of `runoff_data` are obtained with `names` and removing all teh digits with 
+`gsub("\\d",...)`. The basin digits, `runoff_nums` are computed by doing the 
+oposite, i.e.: removing all the non digits via `gsub("\\D",...)`. Afterwards, 
+the empty strings ("") are replaced with a small trick: The characters are 
+transformed into a numerics (induces `NA's`) and back again. 
+In the last step the variables `runoff_names` and `runoff_nums` are simply put
+togehter again via the paste command. The result has no leading zeros as in the 
+variable numeration. 
+```{r}
+  runoff_names <- runoff_data %>% names %>% gsub("\\d","",.) 
+  # get numbers and remove leading zeros
+  runoff_nums <- runoff_data %>% 
+    names %>% 
+    gsub("\\D","",.) %>% 
+    as.numeric %>%  
+    as.character
+  runoff_nums[is.na(runoff_nums)] = ""
+  # paste new nums as new data_names 
+  names(runoff_data) <- paste(runoff_names, runoff_nums, sep = "")
+  return(runoff_data)
 }
 ```

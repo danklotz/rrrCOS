@@ -22,7 +22,7 @@ serve.runoff_with_ofun <- function(runoff_data) {
   ##########################
   # calc
   #$ this is all suboptimal, maybe exploit the global function or something
-  runoff_data %<>% prepare.names
+  runoff_data %<>% remove_leading_zeros
   if ( !"POSIXdate" %in% names(runoff_data) ) {
     runoff_data %<>% prepare.complete_date()
   }
@@ -201,7 +201,7 @@ serve.runoff_with_ofun <- function(runoff_data) {
 #'   ##########################
 #'   # calc
 #'   #$ this is all suboptimal, maybe exploit the global function or something
-#'   runoff_data %<>% prepare.names
+#'   runoff_data %<>% condense_names
 #'   if ( !"POSIXdate" %in% names(runoff_data) ) {
 #'     runoff_data %<>% prepare.complete_date()
 #'   }

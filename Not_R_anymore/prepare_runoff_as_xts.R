@@ -13,7 +13,7 @@ prepare.runoff_as_xts <- function(runoff_data) {
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
   # calculations:
-  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% prepare.names
+  runoff_data_as_xts <- xts::xts(x = runoff_data, order.by = runoff_data$POSIXdate) %>% remove_leading_zeros
   # 
   return(runoff_data_as_xts)
 }

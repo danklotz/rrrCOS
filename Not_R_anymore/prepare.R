@@ -6,7 +6,7 @@
 #'  \item{ 1 } { \code{\link[visCOS]{prepare.complete_date}} }
 #'  \item{ 2 } { \code{\link[visCOS]{prepare.periods}} }
 #'  \item{ 3 } { \code{\link[visCOS]{prepare.complete_date}} }
-#'  \item{ 4 } { \code{\link[visCOS]{prepare.only_observed}} }
+#'  \item{ 4 } { \code{\link[visCOS]{only_observed_basins}} }
 #'  \item{ 5 } { \code{\link[visCOS]{prepare.remove_chunk}} }
 #'  \item{ 6 } { \code{\link[visCOS]{prepare.runoff_as_xts}} }
 #'  }
@@ -26,7 +26,7 @@ prepare <- function(runoff_data, period_start_month = 9, period_end_month = 8) {
     #§ missing
     formated_runoff_data <- runoff_data %>% 
       prepare.remove_chunk %>% 
-      prepare.only_observed %>% 
+      only_observed_basins %>% 
       prepare.complete_date %>% 
       prepare.periods(., 
                       start_month = period_start_month, 

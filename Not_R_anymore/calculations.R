@@ -23,8 +23,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
         #§
   # eliminate chunk and basins withouth observations:
    d_runoff <- d_raw %>% 
-    prepare.remove_chunk %>% 
-     prepare.only_observed
+    prepare.remove_chunk 
   # get num of used basins and their respective num
   #§ shall I wrap this into a prepare function??
   num_basins <- pour.number_of_basins(d_runoff)
@@ -39,7 +38,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   # add full date information to data
   d_runoff <- prepare.complete_date(d_runoff)
   # normalize data names: 
-  d_runoff %<>% prepare.names
+  d_runoff %<>% remove_leading_zeros
   
   # convert d_runoff to time series object (i.e. "xts")
   d_xts <- prepare.runoff_as_xts(d_runoff)
@@ -167,8 +166,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     as.data.frame(.)
   names(d_raw)[5] <- "min"
   d_run <- d_raw %>% 
-    prepare.remove_chunk %>% 
-    prepare.only_observed  
+    prepare.remove_chunk 
   tmp_cum <- d_run %>%
     select(starts_with("qobs"), starts_with("qsim")) %>%
     apply(.,2,cumsum) %>%
