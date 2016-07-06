@@ -1,0 +1,229 @@
+---
+title: "Cook Data"
+author: "Daniel Klotz"
+date: "6 Juli 2016"
+output: 
+  html_document:
+    number_sections: yes
+---
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+# Data Kitchen
+Here functions are collected that deal with the process of transforming 
+*rawdata* into usefull data for **visCOS**. 
+Processed data is then *cooked data* and can be used for figures etc. 
+
+## Obtaining raw data 
+From the point of view of **visCOS** raw-data are time-series of observations 
+and model output. Usually raw data is saved in some simple file format,
+e.g. *.txt* or *.csv*. `R` allready includes many option to read those files 
+with the `read.table` functionalities.
+For larger unstructured files the read options of the `data.table` package is 
+recommended. In our tests it was fastest and most flexible option. 
+Altenratively the 'readr' can be used if the data is more structured and large.
+
+The function `get_runoff_example` can be used to get some exemplary data 
+from within **visCOS**:
+```{r, eval = TRUE, purl = FALSE}
+  runoff_example <- visCOS::get_runoff_example()
+  head(runoff_example)
+```
+
+
+# Code Documentation
+This chapter documents the code from the different visCOS functions
+
+## `get_runoff_example`
+visCos porvides some exemplary data. All the available functions are tested 
+with those. `get_runoff_example` is a small wrapper function to get the data from 
+within the package via `read.csv`
+```{r}
+  #' Get runoff example
+  #' 
+  #' Get exemplary runoff data to test the different functions of visCOS
+  #' @export
+  get_runoff_example <- function() {
+    file_path <- system.file("extdata", 
+                             "runoff_example.csv", 
+                             package = "visCOS")
+    runoff_example <- read.csv(file_path)
+    return(runoff_example)
+  }
+```
+
+## remove_chunk 
+This function removes all columns not specified in the `viscos_options` string
+`data_regex`. This is done by identifying the names of the data_frame and 
+searching for the idx of the names defined in the regular expression string. 
+It is actually so pretty simple, but realy usefull. Since the solution is 
+quite specific the function tests if the input is a data.frame and returns an 
+error if not. 
+
+**Note** that the routine is **not** case sensitive. It does not distinguish 
+inbetween small and capital letters!
+
+The function header is defined as following: 
+
+```{r}
+  #' removes chunk in runoff_data
+  #' 
+  #' Remove all collumns which are not foreseen (see: viscos_options) from 
+  #' runoff data 
+  #' 
+  #' @param runoff_data data.frame object containing at lesast COSdate, 
+  #' Qsim and Qobs (see: xxx)
+  #' @return data.frame object withouth the chunk
+  #' @export
+  remove_chunk <- function(runoff_data) {
+```
+
+The first part of the code loads the dependencies and makes sure that the 
+runoff_data varibale is a data.frame: 
+```{r}
+  require("magrittr", quietly = TRUE)
+  # 
+  if ( !is.data.frame(runoff_data) ){
+    stop("Input Data must be a data.frame object")
+  } 
+```
+
+The operation works as following. First, the names of the names of the 
+runoff_data are determines via `names` and set to all lower letters with 
+`tolower`. This is the reason why the function is not case sensitive!
+Then `viscos_options` is called to get the names of the 8 allowed column names
+and pasted into a regex string (`regex_columns`). Then `grep` is used to get 
+the index `idx` of the columns with the given names (`lowercase_names_in_data`). 
+Finally, `idx`is then used to select the wanted columns.  
+```{r}
+  lowercase_names_in_data <- runoff_data %>% names %>% tolower 
+  # 
+  regex_columns <- paste("^",viscos_options()$name_COSyear,"$|", 
+                         "^",viscos_options()$name_COSmonth,"$|",
+                         "^",viscos_options()$name_COSday,"$|",
+                         "^",viscos_options()$name_COShour,"$|",
+                         "^",viscos_options()$name_COSmin,"$|",
+                         viscos_options()$name_COSobs,".*|",
+                         viscos_options()$name_COSsim,".*|",
+                         viscos_options()$name_COSposix,"|",
+                         viscos_options()$name_COSperiod,
+                         sep = "")
+
+  idx <- regex_columns %>% 
+    grep(.,lowercase_names_in_data)
+    no_chunk_runoff_data <- runoff_data[ , idx]
+    return(runoff_data)
+  }
+```
+
+## prepare.complete_date 
+This function is a wrapper. It is however not finished yet! 
+The idea is the following. The idea is to provide a handy function to complete 
+the date-columns. Within the data.frame the user has to provide either 5 columns 
+with the *COSdate* format: `yyyy-mm-dd-hh-min` i.e.: year-month-day-hour-minute or 
+an equivalent column in `POSIXct` format 
+(see: [link](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html)).
+
+*However*, it is currently only possible to convert *COSdate* into `POSIXct` dates
+via the `implode_cosdate` function. 
+
+The function itself is basically a switch which calls different functions, 
+if `name_cosyear` and/or `name_posix` is found and returns an error if none of 
+the two are found. If the user has not named his columnds according to COSERO 
+convention he can provide the names of the *COSdate* year via `name_cosyear` and
+the names of the POIXct column via `name_posix`. The function returns an error 
+if `runoff_data` is not a data frame and if `OK_COSdate` or `OK_POSIXdates` are
+not logical due to some problems with the dates/time-formats. 
+
+A *caveat* with this method is that only the `name_cosyear` is checked to infer 
+if the 5 *COSdate* columns are available. This can cause errors later if some 
+other columns are missing. Sadly it is not apparent how to avoid that problem,
+withouth defining the names of all columns. 
+
+Furthermore, please we need to be aware that a fixed that the time-zone is 
+assumed to be *UTC* to avoid problems with leaps in time (summer/winter time).
+```{r}
+#' Complete the date-formats with POSIXct or COSdate
+#' 
+#' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
+#' 
+#' @param runoff_data The data.frame, which contains the runoff information
+#' @param name_cosyear string with the name of the `COSdate` year column
+#' @param name_posi string with the name of the POSIXct column 
+#' @return The new runoff data.frame with the added data-format. 
+#' @export
+prepare.complete_date <- function(runoff_data = NULL, 
+                                  name_cosyear = "yyyy",
+                                  name_posix = "POSIXdate") {
+```
+
+```{r}
+  # 1. make sure that magrittr is loaded: 
+  require("magrittr", quietly = TRUE)
+  # 2. check if the runoff_data is a data.frame
+  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+  # 3. Check for COSdates and stop if non-logical expression are obtained
+  OK_COSdate <- any(names(name_cosyear)=="yyyy")
+  OK_POSIXdates <- any(names(name_posix)=="POSIXdate")
+  if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
+    stop("Something seems to be wrong with the date / time formats :(")
+  }
+```
+
+To function `implode_cosdate` is used to obtain the POSIXct date from the 
+*COSdate* columns. The following chapter will show how this is done. 
+```{r}
+  # choose function depending on which formats are available!
+  if (!OK_COSdate & !OK_POSIXdates) {
+    stop("No COSdates and no POSIXct-dates in the data!")
+  } else if (OK_COSdate & !OK_POSIXdates) { 
+    runoff_data <- implode_cosdate(runoff_data) # see following chapter
+  } else if (!OK_COSdate & OK_POSIXdates) {
+    stop("POSIXct to COSdates not yet supported :(")
+  }
+  return(runoff_data)
+}
+```
+
+### implode_cosdate
+This function is used to transform the old-school *COSdate* format into the 
+widely spread POSIXct format, used within R and in many packages. The function 
+is called by the function above and not provided to the user! It takes a 
+data frame (`runoff_data`) and uses `viscos_options` to transfrom the different
+*COSdate* columns into POSIXct dates via `paste`. 
+The function header is: 
+```{r}
+# transform COSdate into the nicer POSIXct-date format
+#
+# Takes a data.frame, which contains the COSdate format (see: xxx) and 
+# transforms it into a POSIXct series. Note that time is assumed to be in UTC
+implode_cosdate <- function(runoff_data) {
+```
+
+The following sanity checks are applied: 
+(I) A check is made if magrittr is loaded or can be loaded. 
+(II) A test is made to check if `runoff_data` is a `data.frame`. 
+(III) The column names are obtained and it is tested if the POSIXdate column, 
+defined by `viscos_options` is allready existend. If yes, the function stops.
+of the data.frame are loaded 
+```{r}
+  require("magrittr", quietly = TRUE)
+  # 
+  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+  #
+  name_string <-  runoff_data %>% names %>% tolower
+  if (any(name_string == viscos_options()$name_COSposix)) stop("runoff_data does allreay contain POSIXdate")
+```
+
+```{r}
+  POSIXdate <- paste(runoff_data[viscos_options()$name_COSyear],
+                     sprintf("%02d",runoff_data[viscos_options()$name_COSmonth]),
+                     sprintf("%02d",runoff_data[viscos_options()$name_COSday]),
+                     sprintf("%02d",runoff_data[viscos_options()$name_COShour]),
+                     sprintf("%02d",runoff_data[viscos_options()$name_COSmin]),
+                     sep= "" ) %>%
+    as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
+  return(cbind(runoff_data,POSIXdate))
+}
+```

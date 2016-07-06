@@ -1,0 +1,9 @@
+---
+title: "Introduction"
+author: "Daniel Klotz"
+date: "6 Juli 2016"
+output: html_document
+---
+
+Here an overview of the package will follow as time progresses.
+Think of it as a kind of read.me file or an hub to the documentation. 
