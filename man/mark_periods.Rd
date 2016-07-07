@@ -1,0 +1,19 @@
+% Please edit documentation in R/cook_data-GEN.R
+\name{mark_periods}
+\alias{mark_periods}
+\title{calculate periods}
+\usage{
+mark_periods(runoff_data, start_month, end_month)
+}
+\arguments{
+\item{runoff_data}{The data.frame, which contains the runoff information}
+}
+\value{
+The runoff data.frame reduced and ordered according to the 
+hydrological years within the data. 
+\strong{Note:} The periods columns are formatted as characters!
+}
+\description{
+Mark the periods within runoff_data. 
+`start_month` and `end_month`.
+}

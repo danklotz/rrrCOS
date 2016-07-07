@@ -1,0 +1,33 @@
+---
+title: "Examples for Cooking Data"
+author: "Daniel Klotz"
+date: "6 Juli 2016"
+output: 
+  html_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here examples for **visCOS**-functions are given that deal with the process of 
+transforming  *raw data* into prepared data for **visCOS**. 
+The data is then *cooked* and can be used for figures etc. 
+
+# Getting raw data 
+From the point of view of **visCOS** raw-data are time-series of observations 
+and model output. Usually raw data is saved in some simple file format,
+e.g. *.txt* or *.csv*. `R` allready includes many option to read those files 
+with the `read.table` functionalities.
+For larger unstructured files the read options of the `data.table` package is 
+recommended. In our tests it was fastest and most flexible option. 
+Altenratively the 'readr' can be used if the data is more structured and large.
+
+The function `get_runoff_example` can be used to get some exemplary data 
+from within **visCOS**:
+```{r, eval = TRUE, purl = FALSE}
+  library(visCOS)
+  runoff_example <- get_runoff_example()
+  head(runoff_example)
+```

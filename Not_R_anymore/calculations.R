@@ -41,7 +41,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   d_runoff %<>% remove_leading_zeros
   
   # convert d_runoff to time series object (i.e. "xts")
-  d_xts <- prepare.runoff_as_xts(d_runoff)
+  d_xts <- runoff_as_xts(d_runoff) ## CARe #§ should not be used anymore outside of functions
   # calculate hydrological years:
   d_runoff <- prepare.periods(d_runoff, start_month = 9, end_month = 8)
   periods_in_data <- which(unique(d_runoff$period) > 0)

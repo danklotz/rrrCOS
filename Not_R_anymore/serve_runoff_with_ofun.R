@@ -27,7 +27,7 @@ serve.runoff_with_ofun <- function(runoff_data) {
     runoff_data %<>% prepare.complete_date()
   }
   runoff_data <<- runoff_data
-  d_xts <<- prepare.runoff_as_xts(runoff_data)
+  d_xts <<- runoff_as_xts(runoff_data)
   d_names_all<- names(d_xts)
   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names_all[idx_names]
@@ -206,7 +206,7 @@ serve.runoff_with_ofun <- function(runoff_data) {
 #'     runoff_data %<>% prepare.complete_date()
 #'   }
 #'   runoff_data <<- runoff_data
-#'   d_xts <<- prepare.runoff_as_xts(runoff_data)
+#'   d_xts <<- runoff_as_xts(runoff_data)
 #'   d_names_all<- names(d_xts)
 #'   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
 #'   d_names <<- d_names_all[idx_names]

@@ -20,10 +20,7 @@
   #' @export
   remove_chunk <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
-  # 
-  if ( !is.data.frame(runoff_data) ){
-    stop("Input Data must be a data.frame object")
-  } 
+  assert_dataframe(runoff_data)
   lowercase_names_in_data <- runoff_data %>% names %>% tolower 
   # 
   regex_columns <- paste("^",viscos_options()$name_COSyear,"$|", 
@@ -92,13 +89,12 @@ only_observed_basins <- function(runoff_data) {
 prepare.complete_date <- function(runoff_data = NULL, 
                                   name_cosyear = "yyyy",
                                   name_posix = "POSIXdate") {
-  # 1. make sure that magrittr is loaded: 
+  # make sure that magrittr is loaded: 
   require("magrittr", quietly = TRUE)
-  # 2. check if the runoff_data is a data.frame
-  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  # 3. Check for COSdates and stop if non-logical expression are obtained
-  OK_COSdate <- any(names(name_cosyear)=="yyyy")
-  OK_POSIXdates <- any(names(name_posix)=="POSIXdate")
+  assert_dataframe(runoff_data)
+  # check for COSdates and stop if non-logical expression are obtained
+  OK_COSdate <- any(names(runoff_data)== viscos_options()$name_COSyear)
+  OK_POSIXdates <- any(names(runoff_data)== viscos_options()$name_COSposix)
   if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
     stop("Something seems to be wrong with the date / time formats :(")
   }
@@ -118,24 +114,24 @@ prepare.complete_date <- function(runoff_data = NULL,
 # transforms it into a POSIXct series. Note that time is assumed to be in UTC
 implode_cosdate <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
-  # 
-  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  #
+  assert_dataframe(runoff_data)
   name_string <-  runoff_data %>% names %>% tolower
-  if (any(name_string == viscos_options()$name_COSposix)) stop("runoff_data does allreay contain POSIXdate")
-  POSIXdate <- paste(runoff_data[viscos_options()$name_COSyear],
-                     sprintf("%02d",runoff_data[viscos_options()$name_COSmonth]),
-                     sprintf("%02d",runoff_data[viscos_options()$name_COSday]),
-                     sprintf("%02d",runoff_data[viscos_options()$name_COShour]),
-                     sprintf("%02d",runoff_data[viscos_options()$name_COSmin]),
+  if (any(name_string == viscos_options()$name_COSposix)) {
+        stop("runoff_data does allreay contain POSIXdate")
+  }
+  #
+  POSIXdate <- paste(runoff_data[[viscos_options()$name_COSyear]],
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COSmonth]]),
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COSday]]),
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COShour]]),
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COSmin]]),
                      sep= "" ) %>%
     as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
   return(cbind(runoff_data,POSIXdate))
 }
-
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
-  runoff_data <- remove_chunk(runoff_data)
+  runoff_data %<>% remove_chunk
   runoff_names <- runoff_data %>% names %>% gsub("\\d","",.) 
   # get numbers and remove leading zeros
   runoff_nums <- runoff_data %>% 
@@ -147,4 +143,75 @@ remove_leading_zeros <- function(runoff_data) {
   # paste new nums as new data_names 
   names(runoff_data) <- paste(runoff_names, runoff_nums, sep = "")
   return(runoff_data)
+}
+#' calculate periods
+#' 
+#' Mark the periods within runoff_data. 
+# The makring uses a monthly resolution, which are defined by the integers 
+#' `start_month` and `end_month`.  
+#'
+#' @param runoff_data The data.frame, which contains the runoff information
+#' @return The runoff data.frame reduced and ordered according to the 
+#' hydrological years within the data. 
+#' \strong{Note:} The periods columns are formatted as characters!
+#' @export
+mark_periods <- function(runoff_data, start_month, end_month) {
+  require("dplyr", quietly = TRUE, warn.conflicts = FALSE)
+  require("magrittr", quietly = TRUE)
+  assert_dataframe(runoff_data)
+  runoff_data %<>% remove_chunk %>% prepare.complete_date()
+  # (I) get labels for the monts
+  if (start_month <= end_month ) {
+    period_range <- seq(start_month,end_month)
+    out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+  } else if (start_month > end_month) {
+    range_1 <- seq(start_month,12)
+    range_2 <- seq(1,end_month)
+    period_range <- c(range_1,range_2)
+    out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+  }
+  # (II) mark periods:
+    eval_diff <- function(a) {c(a[1],diff(a))}
+    runoff_data$period  <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
+      eval_diff %>% 
+      pmax(.,0) %>% 
+      cumsum 
+    runoff_data$period[runoff_data[[viscos_options()$name_COSmonth]] %in% out_of_period] <- 0
+    # set last year-ending to 0 in case `start_month` > `end_month` 
+    max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
+    runoff_data %<>% dplyr::mutate(
+      period = ifelse(((viscos_options()$name_COSyear == max_year) &
+                       (viscos_options()$name_COSmonth > end_month)),
+                      0,
+                      period
+                      )
+      )
+    return(runoff_data)
+}
+# Convert runoff_data to xts-format
+#
+# Converts the runoff_data (class: data_frame) into an xts object
+#
+# @param runoff_data data_frame of the runoff_data (see: xxx)
+# @return xts object of the runoff_data data.frame
+# @export
+runoff_as_xts <- function(runoff_data) {
+  # pre
+  require("zoo", quietly = TRUE, warn.conflicts = FALSE)
+  require("xts", quietly = TRUE, warn.conflicts = FALSE)
+  require("magrittr", quietly = TRUE)
+  assert_dataframe(runoff_data)
+  assert_chunk(runoff_data)
+  assert_complete_date(runoff_data)
+  # calculations:
+  runoff_data %<>% remove_leading_zeros
+  names(runoff_data) <- runoff_data %>% 
+    remove_leading_zeros %>% 
+    names %>%
+    tolower
+  name_posix <- viscos_options()$name_COSposix %>% tolower
+  runoff_data_as_xts <- xts::xts(x = runoff_data,
+                                 order.by = runoff_data[[name_posix]]) 
+  # 
+  return(runoff_data_as_xts)
 }

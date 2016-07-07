@@ -1,5 +1,5 @@
 ---
-title: "Cook Data"
+title: "Code for Cooking Data"
 author: "Daniel Klotz"
 date: "6 Juli 2016"
 output: 
@@ -10,33 +10,26 @@ output:
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Data Kitchen
-Here functions are collected that deal with the process of transforming 
-*rawdata* into usefull data for **visCOS**. 
-Processed data is then *cooked data* and can be used for figures etc. 
+# Overview 
+This chapter defines code of the **visCOS** functions used for "cooking data".
+Within the scope of **visCOS** "cooking data" is defined as the process of 
+transforming *raw data* into *cooked*, which can be used for the internal
+visualisations.
 
-## Obtaining raw data 
-From the point of view of **visCOS** raw-data are time-series of observations 
-and model output. Usually raw data is saved in some simple file format,
-e.g. *.txt* or *.csv*. `R` allready includes many option to read those files 
-with the `read.table` functionalities.
-For larger unstructured files the read options of the `data.table` package is 
-recommended. In our tests it was fastest and most flexible option. 
-Altenratively the 'readr' can be used if the data is more structured and large.
+In this chapter the following functions are defined: 
 
-The function `get_runoff_example` can be used to get some exemplary data 
-from within **visCOS**:
-```{r, eval = TRUE, purl = FALSE}
-  library(visCOS)
-  runoff_example <- get_runoff_example()
-  head(runoff_example)
-```
+function | exported
+------------- | -------------
+`get_runoff_example` | yes
+`remove chunk` | yes
+`only_observed_basins` | no
+`prepare_complete_date` | yes
+`implode_cosdate` | no
+`remove_leading_zeros` | no
+`mark_periods` | yes
+`runoff_as_xts` | no
 
-
-# Code
-This chapter documents the code from the different visCOS functions
-
-## `get_runoff_example`
+# `get_runoff_example`
 visCos porvides some exemplary data. All the available functions are tested 
 with those. `get_runoff_example` is a small wrapper function to get the data from 
 within the package via `read.csv`
@@ -54,7 +47,8 @@ within the package via `read.csv`
   }
 ```
 
-## `remove_chunk` 
+
+# `remove_chunk` 
 This function removes all columns not specified in the `viscos_options` string
 `data_regex`, aswell basins where no observations are available.
 The first part is done by identifying the names of the data_frame and 
@@ -82,17 +76,14 @@ The function header is:
 ```
 
 The first part of the code loads the dependencies and makes sure that the 
-runoff_data varibale is a data.frame: 
+runoff_data varibale is a data.frame (see: chapter about *defensive coding*):
 ```{r}
   require("magrittr", quietly = TRUE)
-  # 
-  if ( !is.data.frame(runoff_data) ){
-    stop("Input Data must be a data.frame object")
-  } 
+  assert_dataframe(runoff_data)
 ```
 
-The operation works as following. First, the names of the names of the 
-runoff_data are determines via `names` and set to all lower letters with 
+The body of `remove_chunk` works as following: First, the names of the names of 
+the runoff_data are determines via `names` and set to all lower letters with 
 `tolower`. This is the reason why the function is not case sensitive!
 Then `viscos_options` is called to get the names of the 8 allowed column names
 and pasted into a regex string (`regex_columns`). Then `grep` is used to get 
@@ -119,7 +110,8 @@ Finally, `idx`is then used to select the wanted columns.
   }
 ```
 
-### `only_observed_basins`
+
+## `only_observed_basins`
 This function removes basins for which no observations are available. No 
 observation are interpreted as columns in which the all entries are either -999
 or `NA's`. The function header looks like this: 
@@ -200,7 +192,8 @@ data.frame is returned.
 
 ```
 
-## `prepare.complete_date` 
+
+# `prepare.complete_date` 
 This function is a wrapper. It is however not finished yet! 
 The idea is the following. The idea is to provide a handy function to complete 
 the date-columns. Within the data.frame the user has to provide either 5 columns 
@@ -226,6 +219,9 @@ withouth defining the names of all columns.
 
 Furthermore, please we need to be aware that a fixed that the time-zone is 
 assumed to be *UTC* to avoid problems with leaps in time (summer/winter time).
+
+To function `implode_cosdate` is used to obtain the POSIXct date from the 
+*COSdate* columns. The following chapter will show how this is done. 
 ```{r}
 #' Complete the date-formats with POSIXct or COSdate
 #' 
@@ -242,21 +238,15 @@ prepare.complete_date <- function(runoff_data = NULL,
 ```
 
 ```{r}
-  # 1. make sure that magrittr is loaded: 
+  # make sure that magrittr is loaded: 
   require("magrittr", quietly = TRUE)
-  # 2. check if the runoff_data is a data.frame
-  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  # 3. Check for COSdates and stop if non-logical expression are obtained
-  OK_COSdate <- any(names(name_cosyear)=="yyyy")
-  OK_POSIXdates <- any(names(name_posix)=="POSIXdate")
+  assert_dataframe(runoff_data)
+  # check for COSdates and stop if non-logical expression are obtained
+  OK_COSdate <- any(names(runoff_data)== viscos_options()$name_COSyear)
+  OK_POSIXdates <- any(names(runoff_data)== viscos_options()$name_COSposix)
   if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
     stop("Something seems to be wrong with the date / time formats :(")
   }
-```
-
-To function `implode_cosdate` is used to obtain the POSIXct date from the 
-*COSdate* columns. The following chapter will show how this is done. 
-```{r}
   # choose function depending on which formats are available!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")
@@ -269,7 +259,7 @@ To function `implode_cosdate` is used to obtain the POSIXct date from the
 }
 ```
 
-### `implode_cosdate`
+## `implode_cosdate`
 This function is used to transform the old-school *COSdate* format into the 
 widely spread POSIXct format, used within R and in many packages. The function 
 is called by the function above and not provided to the user! It takes a 
@@ -292,35 +282,34 @@ defined by `viscos_options` is allready existend. If yes, the function stops.
 of the data.frame are loaded 
 ```{r}
   require("magrittr", quietly = TRUE)
-  # 
-  if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
-  #
+  assert_dataframe(runoff_data)
   name_string <-  runoff_data %>% names %>% tolower
-  if (any(name_string == viscos_options()$name_COSposix)) stop("runoff_data does allreay contain POSIXdate")
-```
-
-```{r}
-  POSIXdate <- paste(runoff_data[viscos_options()$name_COSyear],
-                     sprintf("%02d",runoff_data[viscos_options()$name_COSmonth]),
-                     sprintf("%02d",runoff_data[viscos_options()$name_COSday]),
-                     sprintf("%02d",runoff_data[viscos_options()$name_COShour]),
-                     sprintf("%02d",runoff_data[viscos_options()$name_COSmin]),
+  if (any(name_string == viscos_options()$name_COSposix)) {
+        stop("runoff_data does allreay contain POSIXdate")
+  }
+  #
+  POSIXdate <- paste(runoff_data[[viscos_options()$name_COSyear]],
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COSmonth]]),
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COSday]]),
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COShour]]),
+                     sprintf("%02d",runoff_data[[viscos_options()$name_COSmin]]),
                      sep= "" ) %>%
     as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
   return(cbind(runoff_data,POSIXdate))
 }
 ```
 
-## `remove_leading_zeros`
+
+# `remove_leading_zeros`
 This function removes leading zeros from column names of the data.frame 
 `runoff_data`.The function has no defensive codidng, appart from the execution 
 of `remove_chunk` (see corresponding chapter) to be sure that no non-needed 
 columns are within the data.frame. 
-```{r}
 
+```{r}
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
-  runoff_data <- remove_chunk(runoff_data)
+  runoff_data %<>% remove_chunk
 ```
 
 The body of the function works in the following way:
@@ -345,5 +334,153 @@ variable numeration.
   # paste new nums as new data_names 
   names(runoff_data) <- paste(runoff_names, runoff_nums, sep = "")
   return(runoff_data)
+}
+```
+
+
+# `mark_periods`
+This function can be used to create a periods colum in your data.frame. The
+period colum is a integer vector, which is 1 if the row is within the period 
+and 0 if it ous of the period. 
+
+Building it was acutally quite tricky. The author himself (Klotz) is not 
+sure if it is realy a nice solution. But it is the best solution, in terms of 
+speed and clearness, that we could come up so far. 
+
+As shown below the function takes the `runoff_data` data.frame and the two 
+integers `start_month`and `end_month`. They allow the user to define the periods
+within the `runoff_data` on a monthly resolution. As the name suggests 
+`start_month` defines the beginning of the period and `end_month` the end of 
+the period. The function requires `dplyr` and `magrittr` and tests if 
+`runoff_data` is a data.frame. An error is returned if it is not. 
+Furthermore, if there is *chunk* in the data.frame it is removed by 
+`remove_chunk`(see above) and `prepare.complete_date` is used to ensure that 
+the full time-information, i.e. both date formats, is available.
+```{r}
+#' calculate periods
+#' 
+#' Mark the periods within runoff_data. 
+# The makring uses a monthly resolution, which are defined by the integers 
+#' `start_month` and `end_month`.  
+#'
+#' @param runoff_data The data.frame, which contains the runoff information
+#' @return The runoff data.frame reduced and ordered according to the 
+#' hydrological years within the data. 
+#' \strong{Note:} The periods columns are formatted as characters!
+#' @export
+mark_periods <- function(runoff_data, start_month, end_month) {
+  require("dplyr", quietly = TRUE, warn.conflicts = FALSE)
+  require("magrittr", quietly = TRUE)
+  assert_dataframe(runoff_data)
+  runoff_data %<>% remove_chunk %>% prepare.complete_date()
+```
+
+The body of the function is splitted in two parts. 
+In the *first part* the variable `period_range` is defined as a integer sequence 
+from the `start_month` to the `end_month`. 
+The solution distinguishes between two different cases: 
+`start_month` <= `end_month` and `start_month` > `end_month`. The solution 
+for the former is trivial, as `seq` can be used. The solution for the latter is 
+in priciple also simple as two ranges (`range_1` and `range_2`) can be 
+constructed and concatenated. 
+Note that both solution addinitally construct the integer-vector 
+`out_of_period`. The vector contains inforamtion about the moths which are not 
+within the the period_range. It would not be necessary for the first case. But, 
+since the current solution still seems to be suboptimal, it is needed for the 
+second case, in order to mark the months which are out of the period later. 
+```{r}
+  # (I) get labels for the monts
+  if (start_month <= end_month ) {
+    period_range <- seq(start_month,end_month)
+    out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+  } else if (start_month > end_month) {
+    range_1 <- seq(start_month,12)
+    range_2 <- seq(1,end_month)
+    period_range <- c(range_1,range_2)
+    out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+  }
+```
+
+The *second part* is a bit  trickier. 
+
+First, the function `eval_diff` is defined. It takes a vector `a` at calculates 
+the differences for it, where the first entry of `a` is kept, 
+e.g. `eval_diff( c(3,2,5,7,8) )` is `3 -1  3  2  1`.
+Then, `eval_diff` is used to to mark all the starms month of the runoff data and 
+save them into an `period` column. The ` pmax(.,0)` operation guaratness that 
+negative diferrencing (as above in 3 -> 2) is not included and the cumulative 
+sum is used to count the periods are within the data.frame.  
+
+Secondly, the `out_of_period` of all years set back to zero again, by simply 
+checking which months of our data.frame are equal to the `out_of_period` entries.
+There is one problem with that solution, namely if `start_month` > `end_month`, 
+then the last year cannot be extracted with that simply method. Thus, 
+`dplyr::mutate` is used to set the out-of-period-dates from the last year to 
+zero. 
+```{r}
+  # (II) mark periods:
+    eval_diff <- function(a) {c(a[1],diff(a))}
+    runoff_data$period  <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
+      eval_diff %>% 
+      pmax(.,0) %>% 
+      cumsum 
+    runoff_data$period[runoff_data[[viscos_options()$name_COSmonth]] %in% out_of_period] <- 0
+    # set last year-ending to 0 in case `start_month` > `end_month` 
+    max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
+    runoff_data %<>% dplyr::mutate(
+      period = ifelse(((viscos_options()$name_COSyear == max_year) &
+                       (viscos_options()$name_COSmonth > end_month)),
+                      0,
+                      period
+                      )
+      )
+    return(runoff_data)
+}
+```
+
+# `runoff_as_xts`
+This function is a actually just a wrapper around the `xts::xts` function for 
+the purposes of **visCOS**. `runoff_as_xts` depends on `magrittr`, `xts` and 
+`zoo` (where the last one is acutally a dependency of `xts`). 
+The function takes the runoff_data as input and makes sure that the data is a 
+data.frame (check: `assert_dataframe` in the **defensive code** chapter), 
+has no "junk" inside (`assert_chunk`, see also: `remove_chunk`) and 
+has all the needed date/time columns (`assert_complete_date`, see also: 
+`prepare.complete_date`). 
+
+A notable quirk of the function is that the names of the header are put to lower
+cases via the `tolower` funciton and possible leading zeros in the enumeration
+of the basins are removed.
+
+Currently it is not exported as users can use `xts` themselves perfectly well, 
+and it is felt that the function does not provide enough added value for the 
+user.
+```{r}
+# Convert runoff_data to xts-format
+#
+# Converts the runoff_data (class: data_frame) into an xts object
+#
+# @param runoff_data data_frame of the runoff_data (see: xxx)
+# @return xts object of the runoff_data data.frame
+# @export
+runoff_as_xts <- function(runoff_data) {
+  # pre
+  require("zoo", quietly = TRUE, warn.conflicts = FALSE)
+  require("xts", quietly = TRUE, warn.conflicts = FALSE)
+  require("magrittr", quietly = TRUE)
+  assert_dataframe(runoff_data)
+  assert_chunk(runoff_data)
+  assert_complete_date(runoff_data)
+  # calculations:
+  runoff_data %<>% remove_leading_zeros
+  names(runoff_data) <- runoff_data %>% 
+    remove_leading_zeros %>% 
+    names %>%
+    tolower
+  name_posix <- viscos_options()$name_COSposix %>% tolower
+  runoff_data_as_xts <- xts::xts(x = runoff_data,
+                                 order.by = runoff_data[[name_posix]]) 
+  # 
+  return(runoff_data_as_xts)
 }
 ```

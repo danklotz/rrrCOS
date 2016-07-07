@@ -1,3 +1,4 @@
 export(get_runoff_example)
+export(mark_periods)
 export(prepare.complete_date)
 export(remove_chunk)
