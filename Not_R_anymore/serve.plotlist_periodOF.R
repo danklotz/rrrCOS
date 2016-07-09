@@ -11,7 +11,7 @@ serve.plotlist_periodOF <- function(runoff_data,plt_ctrl,bOF) {
   # calc: -------------------------------------------------------------------
   ofun_hydyearly <- bOF$NSE_periods
   periods <- unique(runoff_data$period) %>% extract(.>0)
-  num_basins <- pour.number_of_basins(d_runoff)
+  num_basins <- get_basin_numbers(d_runoff)
   # 
   rename.withEndings <- function(dataframe,name,endings) {
     new_names <- paste(name,endings,sep = "")
@@ -19,7 +19,7 @@ serve.plotlist_periodOF <- function(runoff_data,plt_ctrl,bOF) {
     return(dataframe)
   }
   d_ofun_yearly <- ofun_hydyearly %>% 
-                    cut.lowerbound(.,plt_ctrl$lb_cut) %>%    # cut.lowerbound can be found in the helpers.R file
+                    pmax(.,plt_ctrl$lb_cut) %>%
                     as.data.frame %>%
                     rename.withEndings(.,plt_ctrl$plot_title,num_basins)
   new_names <- names(d_ofun_yearly)

@@ -26,7 +26,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
     prepare.remove_chunk 
   # get num of used basins and their respective num
   #§ shall I wrap this into a prepare function??
-  num_basins <- pour.number_of_basins(d_runoff)
+  num_basins <- get_basin_numbers(d_runoff)
   # remove spinup-time
   #§ use this later in the examples:
   #  path_Spinup <- remove_filename_from_path(ctrl$pathDotRunoff) %>% paste("Statistics.txt", sep="")

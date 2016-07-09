@@ -44,6 +44,25 @@ prepare.evalPeriods <- function(runoff_data, smonth, emonth) {
       hydyear)  ) 
   }
   return(runoff_data)
+  
+
+# pour.years_in_data ------------------------------------------------------
+  # Get years of the runoff_data 
+  # 
+  # Depreciated! Not used anymore, but might be useful for matthew 
+  #
+  pour.years_in_data <- function(runoff_data) {
+    require(magrittr)
+    if ( !is.data.frame(runoff_data) ) stop("runoff_data is no data_frame!")
+    # calc
+    years <- list()
+    years$in_data <- unique(runoff_data$yyyy)
+    years$in_data_shrt <- years$in_data %>%
+      unique %>%
+      as.character %>%
+      substring(.,3,4)
+    return(years)
+  }
 }
 
 #§ solution so far is kinda bad, cause we throw data away. some maybe something like the style proposed in the following can be usefull?

@@ -42,7 +42,10 @@ totalplot_Ofun <- function(choice,bOF,plt_ctrl) {
   eval_size <- length(Ofun_total)
   of_t <- expand.grid(total = 1, numberBasins = 1:eval_size)
   # replace values under lower boundary & prepare dataframe for ggplot
-  temp <- Ofun_total %>% as.data.frame %>% cut.lowerbound(.,plt_ctrl$lb_cut) %>% melt(id.vars = 1)
+  temp <- Ofun_total %>% 
+    as.data.frame %>%
+    pmax(.,plt_ctrl$lb_cut) %>%
+    melt(id.vars = 1)
   of_t$OFvalue = temp$.
   #
   plt_t <- ggplot(of_t , aes(total,numberBasins, fill = OFvalue),environmnet = environment()) +
