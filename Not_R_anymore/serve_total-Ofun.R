@@ -35,7 +35,7 @@ totalplot_KGE <- function(runoff_data, plot_titel = "Total KGE",legend_title = "
 # define rasterplot functions for total OF
 totalplot_Ofun <- function(choice,bOF,plt_ctrl) {
   # def 
-  assert_basicOF(bOF)
+  assert_of(bOF)
   require(ggplot2, quietly = TRUE)
   #
   Ofun_total<- bOF[[choice]]

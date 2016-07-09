@@ -23,16 +23,7 @@
   assert_dataframe(runoff_data)
   lowercase_names_in_data <- runoff_data %>% names %>% tolower 
   # 
-  regex_columns <- paste("^",viscos_options()$name_COSyear,"$|", 
-                         "^",viscos_options()$name_COSmonth,"$|",
-                         "^",viscos_options()$name_COSday,"$|",
-                         "^",viscos_options()$name_COShour,"$|",
-                         "^",viscos_options()$name_COSmin,"$|",
-                         viscos_options()$name_COSobs,".*|",
-                         viscos_options()$name_COSsim,".*|",
-                         viscos_options()$name_COSposix,"|",
-                         viscos_options()$name_COSperiod,
-                         sep = "")
+  regex_columns <- get_regex_for_runoff_data() # see: helpers
 
   idx <- regex_columns %>% 
     grep(.,lowercase_names_in_data)

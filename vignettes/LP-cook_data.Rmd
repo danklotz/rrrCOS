@@ -6,17 +6,19 @@ output:
   html_document:
     number_sections: yes
 ---
+
 ```{r setup, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Overview 
-This chapter defines code of the **visCOS** functions used for "cooking data".
+# Introduction 
+This section defines code of the **visCOS** functions used for "cooking data".
 Within the scope of **visCOS** "cooking data" is defined as the process of 
 transforming *raw data* into *cooked*, which can be used for the internal
 visualisations.
 
-In this chapter the following functions are defined: 
+# Code
+The following functions are defined below 
 
 function | exported
 ------------- | -------------
@@ -29,7 +31,7 @@ function | exported
 `mark_periods` | yes
 `runoff_as_xts` | no
 
-# `get_runoff_example`
+## `get_runoff_example`
 visCos porvides some exemplary data. All the available functions are tested 
 with those. `get_runoff_example` is a small wrapper function to get the data from 
 within the package via `read.csv`
@@ -48,7 +50,7 @@ within the package via `read.csv`
 ```
 
 
-# `remove_chunk` 
+## `remove_chunk` 
 This function removes all columns not specified in the `viscos_options` string
 `data_regex`, aswell basins where no observations are available.
 The first part is done by identifying the names of the data_frame and 
@@ -85,23 +87,14 @@ runoff_data varibale is a data.frame (see: chapter about *defensive coding*):
 The body of `remove_chunk` works as following: First, the names of the names of 
 the runoff_data are determines via `names` and set to all lower letters with 
 `tolower`. This is the reason why the function is not case sensitive!
-Then `viscos_options` is called to get the names of the 8 allowed column names
-and pasted into a regex string (`regex_columns`). Then `grep` is used to get 
+Then helper function `get_regex_for_runoff_data` is called to get regular 
+expressions that identify the wanted columns. Later, `grep` is used to get 
 the index `idx` of the columns with the given names (`lowercase_names_in_data`). 
-Finally, `idx`is then used to select the wanted columns.  
+Finally, `idx`is then used to select the wanted columns.
 ```{r}
   lowercase_names_in_data <- runoff_data %>% names %>% tolower 
   # 
-  regex_columns <- paste("^",viscos_options()$name_COSyear,"$|", 
-                         "^",viscos_options()$name_COSmonth,"$|",
-                         "^",viscos_options()$name_COSday,"$|",
-                         "^",viscos_options()$name_COShour,"$|",
-                         "^",viscos_options()$name_COSmin,"$|",
-                         viscos_options()$name_COSobs,".*|",
-                         viscos_options()$name_COSsim,".*|",
-                         viscos_options()$name_COSposix,"|",
-                         viscos_options()$name_COSperiod,
-                         sep = "")
+  regex_columns <- get_regex_for_runoff_data() # see: helpers
 
   idx <- regex_columns %>% 
     grep(.,lowercase_names_in_data)
@@ -110,8 +103,7 @@ Finally, `idx`is then used to select the wanted columns.
   }
 ```
 
-
-## `only_observed_basins`
+### `only_observed_basins`
 This function removes basins for which no observations are available. No 
 observation are interpreted as columns in which the all entries are either -999
 or `NA's`. The function header looks like this: 
@@ -193,7 +185,7 @@ data.frame is returned.
 ```
 
 
-# `prepare.complete_date` 
+## `prepare.complete_date` 
 This function is a wrapper. It is however not finished yet! 
 The idea is the following. The idea is to provide a handy function to complete 
 the date-columns. Within the data.frame the user has to provide either 5 columns 
@@ -259,7 +251,7 @@ prepare.complete_date <- function(runoff_data = NULL,
 }
 ```
 
-## `implode_cosdate`
+### `implode_cosdate`
 This function is used to transform the old-school *COSdate* format into the 
 widely spread POSIXct format, used within R and in many packages. The function 
 is called by the function above and not provided to the user! It takes a 
@@ -300,7 +292,7 @@ of the data.frame are loaded
 ```
 
 
-# `remove_leading_zeros`
+## `remove_leading_zeros`
 This function removes leading zeros from column names of the data.frame 
 `runoff_data`.The function has no defensive codidng, appart from the execution 
 of `remove_chunk` (see corresponding chapter) to be sure that no non-needed 
@@ -338,7 +330,7 @@ variable numeration.
 ```
 
 
-# `mark_periods`
+## `mark_periods`
 This function can be used to create a periods colum in your data.frame. The
 period colum is a integer vector, which is 1 if the row is within the period 
 and 0 if it ous of the period. 
@@ -438,7 +430,7 @@ zero.
 }
 ```
 
-# `runoff_as_xts`
+## `runoff_as_xts`
 This function is a actually just a wrapper around the `xts::xts` function for 
 the purposes of **visCOS**. `runoff_as_xts` depends on `magrittr`, `xts` and 
 `zoo` (where the last one is acutally a dependency of `xts`). 

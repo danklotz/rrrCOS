@@ -83,7 +83,7 @@ periodplot_ofun <- function(choice,bOF,periods_in_data,plt_ctrl) {
     require(ggplot2, quietly = TRUE)
     require(magrittr, quietly = TRUE)
     require(reshape2, quietly = TRUE)
-    assert_basicOF(bOF)
+    assert_of(bOF)
     if (missing(plt_ctrl)) {
       plt_ctrl <- pour.plt_ctrl()
     }

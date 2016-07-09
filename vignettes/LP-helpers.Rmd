@@ -1,0 +1,45 @@
+---
+title: "helpers"
+author: "Daniel Klotz"
+date: "8 Juli 2016"
+output: 
+  html_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+# Introduction 
+This section collects small and helpfull functions/scripts that are used 
+throughout **visCOS**.
+
+None of the functions is exported!
+
+# Code 
+The subsequent functions are defined below 
+
+function | exported
+------------- | -------------
+`get_regex_for_runoff_data` | yes
+
+## `get_regex_for_runoff_data`
+This function can be called to get the names of the 8 allowed column-names 
+within **visCOS**. `get_regex_for_runoff_data` takes no input, as it gets the 
+information directly from the global options (see: *viscos_options section*). 
+```{r}
+get_regex_for_runoff_data <- function() {
+  regex_pattern <- paste("^",viscos_options()$name_COSyear,"$|", 
+                         "^",viscos_options()$name_COSmonth,"$|",
+                         "^",viscos_options()$name_COSday,"$|",
+                         "^",viscos_options()$name_COShour,"$|",
+                         "^",viscos_options()$name_COSmin,"$|",
+                         viscos_options()$name_COSobs,".*|",
+                         viscos_options()$name_COSsim,".*|",
+                         viscos_options()$name_COSposix,"|",
+                         viscos_options()$name_COSperiod,
+                         sep = "")
+  return(regex_pattern)
+}
+```
