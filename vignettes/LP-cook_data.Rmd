@@ -185,7 +185,7 @@ data.frame is returned.
 ```
 
 
-## `prepare.complete_date` 
+## `prepare_complete_date` 
 This function is a wrapper. It is however not finished yet! 
 The idea is the following. The idea is to provide a handy function to complete 
 the date-columns. Within the data.frame the user has to provide either 5 columns 
@@ -224,7 +224,7 @@ To function `implode_cosdate` is used to obtain the POSIXct date from the
 #' @param name_posi string with the name of the POSIXct column 
 #' @return The new runoff data.frame with the added data-format. 
 #' @export
-prepare.complete_date <- function(runoff_data = NULL, 
+prepare_complete_date <- function(runoff_data = NULL, 
                                   name_cosyear = "yyyy",
                                   name_posix = "POSIXdate") {
 ```
@@ -269,16 +269,15 @@ implode_cosdate <- function(runoff_data) {
 The following sanity checks are applied: 
 (I) A check is made if magrittr is loaded or can be loaded. 
 (II) A test is made to check if `runoff_data` is a `data.frame`. 
-(III) The column names are obtained and it is tested if the POSIXdate column, 
-defined by `viscos_options` is allready existend. If yes, the function stops.
-of the data.frame are loaded 
+Afterwards the paste function is used to concatenate the different *COSdate* 
+columns (i.e. year, month, day, hour and minute) to a POSIXct date format.
+The obtaine series of strings is saved into the variable `POSIXdate` and 
+added as the column `viscos_options()$name_COSposix` (see section about 
+`viscos_options`) to the `runoff_data.
 ```{r}
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   name_string <-  runoff_data %>% names %>% tolower
-  if (any(name_string == viscos_options()$name_COSposix)) {
-        stop("runoff_data does allreay contain POSIXdate")
-  }
   #
   POSIXdate <- paste(runoff_data[[viscos_options()$name_COSyear]],
                      sprintf("%02d",runoff_data[[viscos_options()$name_COSmonth]]),
@@ -287,7 +286,8 @@ of the data.frame are loaded
                      sprintf("%02d",runoff_data[[viscos_options()$name_COSmin]]),
                      sep= "" ) %>%
     as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
-  return(cbind(runoff_data,POSIXdate))
+  runoff_data[[viscos_options()$name_COSposix]] <- POSIXdate
+  return(runoff_data)
 }
 ```
 
@@ -346,7 +346,7 @@ within the `runoff_data` on a monthly resolution. As the name suggests
 the period. The function requires `dplyr` and `magrittr` and tests if 
 `runoff_data` is a data.frame. An error is returned if it is not. 
 Furthermore, if there is *chunk* in the data.frame it is removed by 
-`remove_chunk`(see above) and `prepare.complete_date` is used to ensure that 
+`remove_chunk`(see above) and `prepare_complete_date` is used to ensure that 
 the full time-information, i.e. both date formats, is available.
 ```{r}
 #' calculate periods
@@ -360,11 +360,11 @@ the full time-information, i.e. both date formats, is available.
 #' hydrological years within the data. 
 #' \strong{Note:} The periods columns are formatted as characters!
 #' @export
-mark_periods <- function(runoff_data, start_month, end_month) {
+mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   require("dplyr", quietly = TRUE, warn.conflicts = FALSE)
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
-  runoff_data %<>% remove_chunk %>% prepare.complete_date()
+  runoff_data %<>% remove_chunk %>% prepare_complete_date()
 ```
 
 The body of the function is splitted in two parts. 
@@ -405,10 +405,13 @@ sum is used to count the periods are within the data.frame.
 
 Secondly, the `out_of_period` of all years set back to zero again, by simply 
 checking which months of our data.frame are equal to the `out_of_period` entries.
-There is one problem with that solution if `start_month` > `end_month`. Then, 
-the last year cannot be extracted with that simply method. Thus, 
-`dplyr::mutate` is used to set the out-of-period-dates from the last year to 
-zero. 
+There are two problem with that solution. One is that the last year is not
+extracted proberly if `start_month` > `end_month`. For this case `dplyr::mutate` 
+is used to set the out-of-period-dates from the last year to 0,
+if they are bigger then `end_month`.
+The second problem is that the first and last period are also included in the 
+solution even if they are **not** complete! *Thus, if an user does not want that 
+these solutions to be "marked" he has to remove it himself!*
 ```{r}
   # (II) mark periods:
     eval_diff <- function(a) {c(a[1],diff(a))}
@@ -417,17 +420,16 @@ zero.
       pmax(.,0) %>% 
       cumsum 
     runoff_data$period[runoff_data[[viscos_options()$name_COSmonth]] %in% out_of_period] <- 0
-    # set last year-ending to 0 in case `start_month` > `end_month` 
-    if (start_month > end_month) {
-      max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
-      runoff_data %<>% dplyr::mutate(
-        period = ifelse(((viscos_options()$name_COSyear == max_year) &
-                         (viscos_options()$name_COSmonth > end_month)),
-                        0,
-                        period
-                        )
+    # corrections for last year 
+    max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
+    runoff_data %<>% dplyr::mutate(
+      period = ifelse(
+        (  (.[[viscos_options()$name_COSyear]] == max_year) &
+           (.[[viscos_options()$name_COSmonth]] > end_month)  ),
+                      0,
+                      period
+        )
       )
-    }
     return(runoff_data)
 }
 ```
@@ -440,7 +442,7 @@ The function takes the runoff_data as input and makes sure that the data is a
 data.frame (check: `assert_dataframe` in the **defensive code** chapter), 
 has no "junk" inside (`assert_chunk`, see also: `remove_chunk`) and 
 has all the needed date/time columns (`assert_complete_date`, see also: 
-`prepare.complete_date`). 
+`prepare_complete_date`). 
 
 A notable quirk of the function is that the names of the header are put to lower
 cases via the `tolower` funciton and possible leading zeros in the enumeration
@@ -482,7 +484,7 @@ runoff_as_xts <- function(runoff_data) {
 ## `extract_objective_functions`
 The purpose of this function is to extract a set of objective functions from
 the `runoff_data` data.frame. The objective functions are extracted for each 
-basin, for the entire time series and for each period sepearately. 
+basin, for the all the periods as a summary and for each period sepearately. 
 The extracted objective fucntions are: 
 - Nash-Sutcliffe Criterion `NSE`
 - Kling-Gupta Efficiency `KGE`
@@ -490,7 +492,7 @@ The extracted objective fucntions are:
 - Correlation `CORR_periods`
 
 The`hydroGOF` package is used to calculate the objective functions 
-(listed within 'Ofun') and the `dplyr` is used to seperate the different 
+(listed within 'obj_fun') and the `dplyr` is used to seperate the different 
 periods (see also `mark_periods`) and get access to the pipe operator `%>%`.
 As shown below the function checks if `runoff_data` is a data.frame and if the 
 periods are marked before the real comptuation starts. 
@@ -512,38 +514,51 @@ extract_objective_functions <- function(runoff_data) {
   stopifnot( exists(viscos_options()$name_COSperiod, where = runoff_data) )
 ```
 
-
+The body of the funciton is lengthly but not to difficult. As a first step, 
+the values, which are not within the periods are excluded from the calculation. 
+with the 
 ```{r}
-  runoff_data %<>%dplyr::filter(period > 0)
-  eval_size <- runoff_data %>% 
+  runoff_data <- runoff_data[runoff_data[[viscos_options()$name_COSperiod]] > 0] 
+  dplyr::filter(period > 0)
+  number_of_basins <- runoff_data %>% 
     names %>%
     unique %>% 
     tolower %>%
-    grepl("qobs.*",.) %>% sum
-  periods_in_data <- runoff_data$period %>% unique
-  num_periods <- periods_in_data %>% length
-  Ofun  <- list()
-  Ofun$NSE_periods <- matrix(nrow = num_periods, ncol = as.integer(eval_size), data = NA)
-  Ofun$KGE_periods <- Ofun$NSE_periods
-  Ofun$pBIAS_periods <- Ofun$NSE_periods
-  Ofun$CORR_periods <- Ofun$NSE_periods
-  for (k in 1:num_periods)
+    grepl(viscos_options()$name_data1 , .) %>% 
+    sum
+  periods_in_data <- runoff_data[[viscos_options()$name_COSperiod]] %>% unique
+  number_of_periods <- periods_in_data %>% length
+  # 
+  obj_fun  <- list()
+  tempOBS <- dplyr::select(runoff_data,starts_with(viscos_options()$name_data1)) %>% 
+    unname
+  tempSIM <- dplyr::select(runoff_data,starts_with(viscos_options()$name_data2)) %>% 
+    unname
+  obj_fun$NSE <- hydroGOF::NSE(tempSIM,tempOBS)
+  obj_fun$KGE <- hydroGOF::KGE(tempSIM,tempOBS)
+  obj_fun$pBIAS <- hydroGOF::pbias(tempSIM,tempOBS)
+  obj_fun$CORR <- cor(tempSIM,tempOBS) %>% diag(.)
+  # pre allocation of periodic variables:
+  obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
+  obj_fun$KGE_period <- obj_fun$NSE_period
+  obj_fun$pBIAS_periods <- obj_fun$NSE_period
+  obj_fun$CORR_period <- obj_fun$NSE_period
+  # calculation loop 
+  for (k in 1:number_of_periods)
   {
-    tempOBS <- filter(runoff_data,period == periods_in_data[k]) %>% select(.,starts_with("qobs"))
-    tempSIM <- filter(runoff_data,period == periods_in_data[k]) %>% select(.,starts_with("qsim"))
-    Ofun$NSE_periods[k,1:eval_size] <- hydroGOF::NSE(tempSIM,tempOBS)
-    Ofun$KGE_periods[k,1:eval_size] <- hydroGOF::KGE(tempSIM,tempOBS)
-    Ofun$pBIAS_periods[k,1:eval_size] <- hydroGOF::pbias(tempSIM,tempOBS)
-    Ofun$CORR_periods[k,1:eval_size] <- cor(tempSIM,tempOBS) %>% diag(.)
+    tempOBS <- filter(runoff_data,period == periods_in_data[k]) %>%
+      select(.,starts_with(viscos_options()$name_data1)) %>% 
+      unname
+    tempSIM <- filter(runoff_data,period == periods_in_data[k]) %>% 
+      select(.,starts_with(viscos_options()$name_data2)) %>% 
+      unname
+    obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(tempSIM,tempOBS)
+    obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(tempSIM,tempOBS)
+    obj_fun$pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(tempSIM,tempOBS)
+    obj_fun$CORR_period[k,1:number_of_basins] <- cor(tempSIM,tempOBS) %>% diag(.)
   }
-  tempOBS <- select(runoff_data,starts_with("qobs"))
-  tempSIM <- select(runoff_data,starts_with("qsim"))
-  Ofun$NSE <- hydroGOF::NSE(tempSIM,tempOBS)
-  Ofun$KGE <- hydroGOF::KGE(tempSIM,tempOBS)
-  Ofun$pBIAS <- hydroGOF::pbias(tempSIM,tempOBS)
-  Ofun$CORR <- cor(tempSIM,tempOBS) %>% diag(.)
   #
-  return(Ofun)
+  return(obj_fun)
 }
 ```
 
