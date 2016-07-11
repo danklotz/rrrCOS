@@ -22,7 +22,7 @@ e.g. *.txt* or *.csv*. `R` allready includes many option to read those files
 with the `read.table` functionalities.
 For larger unstructured files the read options of the `data.table` package is 
 recommended. In our tests it was fastest and most flexible option. 
-Altenratively the 'readr' can be used if the data is more structured and large.
+Altenratively the `readr` can be used if the data is more structured and large.
 
 The function `get_runoff_example` can be used to get some exemplary data 
 from within **visCOS**:

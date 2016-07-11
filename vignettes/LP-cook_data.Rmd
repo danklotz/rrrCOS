@@ -23,7 +23,7 @@ The following functions are defined below
 function | exported
 ------------- | -------------
 `get_runoff_example` | yes
-`remove chunk` | yes
+`remove_chunk` | yes
 `only_observed_basins` | no
 `prepare_complete_date` | yes
 `implode_cosdate` | no
@@ -393,7 +393,7 @@ second case, in order to mark the months which are out of the period later.
   }
 ```
 
-The *second part* is a bit  trickier. 
+The *second part* is a bit trickier. 
 
 First, the function `eval_diff` is defined. It takes a vector `a` at calculates 
 the differences for it, where the first entry of `a` is kept, 
@@ -412,7 +412,7 @@ zero.
 ```{r}
   # (II) mark periods:
     eval_diff <- function(a) {c(a[1],diff(a))}
-    runoff_data$period  <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
+    runoff_data$period <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
       eval_diff %>% 
       pmax(.,0) %>% 
       cumsum 
