@@ -30,6 +30,7 @@ function | exported
 `remove_leading_zeros` | no
 `mark_periods` | yes
 `runoff_as_xts` | no
+`extract_objective_functions` | yes
 
 ## `get_runoff_example`
 visCos porvides some exemplary data. All the available functions are tested 
@@ -485,11 +486,24 @@ runoff_as_xts <- function(runoff_data) {
 The purpose of this function is to extract a set of objective functions from
 the `runoff_data` data.frame. The objective functions are extracted for each 
 basin, for the all the periods as a summary and for each period sepearately. 
-The extracted objective fucntions are: 
-- Nash-Sutcliffe Criterion `NSE`
-- Kling-Gupta Efficiency `KGE`
-- Percentage Bias `pBIAS`
-- Correlation `CORR_periods`
+Assuming that `data1` is the observation $q_{obs}$ and `data2`is the simulation 
+$q_{sim}$, the extracted objective fucntions are:
+
+**(a1) Nash-Sutcliffe Criterion** `NSE`:
+
+$$\sum_{t=1}^T \frac{(q_{obs}(t)-q_{sim}(t))}{q_{obs}(t)-\bar{q}_{obs}}$$
+
+**(a2) Kling-Gupta Efficiency** `KGE`:
+
+Will follow 
+
+**(a3) Percentage Bias** `pBIAS`:
+$$\frac{\bar{q}_{obs}}{\bar{q}_{sim}}$$ 
+make sure that this is true1
+
+**(a4) Correlation `CORR_periods`**
+$$corr({q}_{obs},{q}_{sim})$$ 
+
 
 The`hydroGOF` package is used to calculate the objective functions 
 (listed within 'obj_fun') and the `dplyr` is used to seperate the different 
@@ -514,49 +528,77 @@ extract_objective_functions <- function(runoff_data) {
   stopifnot( exists(viscos_options()$name_COSperiod, where = runoff_data) )
 ```
 
-The body of the funciton is lengthly but not to difficult. As a first step, 
-the values, which are not within the periods are excluded from the calculation. 
-with the 
+The computational part of the function works as follows. In step (I) the 
+non-marked periods of `runoff_data` (i.e. columns of 
+`viscos_options()$name_COSperiod` which are smaller then > 0) are excluded from 
+further calculations. The thereby obtained data.frame is named 
+`evaluation_data`. Then, step (II) extracts imporant information for the 
+calculations: 
+
+- The number of basins (`number_of_basins`) is obtained by getting the names 
+of the data.frame, setting them tolower to make them independed of upper and 
+lower cases and summing up all the name_data1 column,  
+- the indeces of the marked periods (`periods_in_data`) are obtained by getting
+the unique values of the `viscos_options()$name_COSperiod` column, and 
+- number of periods (`number_of_periods`) are obtained by measuring the length 
+of `periods_in_data`
+
+Step (III) computes the overall objective functions. This is done by copying all
+`viscos_options()$name_data1` columns into the `tempOBS` variable and all 
+`viscos_options()$name_data1` into the `tempSIM` variable. The former is then 
+handed as observation and the latter as simulation to the `hydroGOF` functions. 
+The correlation `obj_fun$CORR` is calcualted with base `R`. As `cor` returns
+a whole cross-correlation matrix only the diagional is extracted with `diag`. 
+Step (IV) is a periodwise a repetiation of step (III). Thus,  at each each 
+iteration `k` the given period is filtered from `evaluation_data` 
+with `dpylr::filtr` before `tempOBS` and `tempSIM` is calculated. 
+The so obtained period-wise objective function values are marked by `_period`
+
 ```{r}
-  runoff_data <- runoff_data[runoff_data[[viscos_options()$name_COSperiod]] > 0] 
-  dplyr::filter(period > 0)
-  number_of_basins <- runoff_data %>% 
+  # (I) reduce necessary computaiton 
+  evaluation_data <- runoff_data[
+      runoff_data[[viscos_options()$name_COSperiod]] > 0,
+    ]
+  # (II) get information 
+  number_of_basins <- evaluation_data %>% 
     names %>%
     unique %>% 
     tolower %>%
     grepl(viscos_options()$name_data1 , .) %>% 
     sum
-  periods_in_data <- runoff_data[[viscos_options()$name_COSperiod]] %>% unique
+  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>% 
+    unique
   number_of_periods <- periods_in_data %>% length
-  # 
+  # (III) calculate overall objective functions 
   obj_fun  <- list()
-  tempOBS <- dplyr::select(runoff_data,starts_with(viscos_options()$name_data1)) %>% 
+  tempOBS <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>% 
     unname
-  tempSIM <- dplyr::select(runoff_data,starts_with(viscos_options()$name_data2)) %>% 
+  tempSIM <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>% 
     unname
   obj_fun$NSE <- hydroGOF::NSE(tempSIM,tempOBS)
   obj_fun$KGE <- hydroGOF::KGE(tempSIM,tempOBS)
   obj_fun$pBIAS <- hydroGOF::pbias(tempSIM,tempOBS)
   obj_fun$CORR <- cor(tempSIM,tempOBS) %>% diag(.)
-  # pre allocation of periodic variables:
-  obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
-  obj_fun$KGE_period <- obj_fun$NSE_period
-  obj_fun$pBIAS_periods <- obj_fun$NSE_period
-  obj_fun$CORR_period <- obj_fun$NSE_period
-  # calculation loop 
-  for (k in 1:number_of_periods)
-  {
-    tempOBS <- filter(runoff_data,period == periods_in_data[k]) %>%
-      select(.,starts_with(viscos_options()$name_data1)) %>% 
-      unname
-    tempSIM <- filter(runoff_data,period == periods_in_data[k]) %>% 
-      select(.,starts_with(viscos_options()$name_data2)) %>% 
-      unname
-    obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(tempSIM,tempOBS)
-    obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(tempSIM,tempOBS)
-    obj_fun$pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(tempSIM,tempOBS)
-    obj_fun$CORR_period[k,1:number_of_basins] <- cor(tempSIM,tempOBS) %>% diag(.)
-  }
+  # (IV) calulcated period-vise objective functions
+    # pre allocation of periodic variables:
+    obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
+    obj_fun$KGE_period <- obj_fun$NSE_period
+    obj_fun$pBIAS_periods <- obj_fun$NSE_period
+    obj_fun$CORR_period <- obj_fun$NSE_period
+    # calculation loop 
+    for (k in 1:number_of_periods)
+    {
+      tempOBS <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>% 
+        unname
+      tempSIM <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>% 
+        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>% 
+        unname
+      obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(tempSIM,tempOBS)
+      obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(tempSIM,tempOBS)
+      obj_fun$pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(tempSIM,tempOBS)
+      obj_fun$CORR_period[k,1:number_of_basins] <- cor(tempSIM,tempOBS) %>% diag(.)
+    }
   #
   return(obj_fun)
 }

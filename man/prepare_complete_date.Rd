@@ -1,9 +1,9 @@
 % Please edit documentation in R/cook_data-GEN.R
-\name{prepare.complete_date}
-\alias{prepare.complete_date}
+\name{prepare_complete_date}
+\alias{prepare_complete_date}
 \title{Complete the date-formats with POSIXct or COSdate}
 \usage{
-prepare.complete_date(runoff_data = NULL, name_cosyear = "yyyy", 
+prepare_complete_date(runoff_data = NULL, name_cosyear = "yyyy", 
     name_posix = "POSIXdate")
 }
 \arguments{

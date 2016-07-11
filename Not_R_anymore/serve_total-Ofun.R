@@ -10,7 +10,7 @@ totalplot_NSE <- function(runoff_data,plot_title = "Total NSE",legend_title = "N
   plt_ctrl$plot_title <- plot_title
   plt_ctrl$legend_title <- legend_title
   # calc
-  bOF <- serve.period_ofun(runoff_data)
+  bOF <- extract_of(runoff_data)
   total <- totalplot_Ofun("NSE",bOF,plt_ctrl) 
   return(total)
 }
@@ -26,7 +26,7 @@ totalplot_KGE <- function(runoff_data, plot_titel = "Total KGE",legend_title = "
   plt_ctrl$plot_title <- plot_title
   plt_ctrl$legend_title <- legend_title
   # calc
-  bOF = serve.period_ofun(runoff_data)
+  bOF <- extract_of(runoff_data)
   total <- totalplot_Ofun("KGE",bOF,plt_ctrl) 
   return(total)
 }

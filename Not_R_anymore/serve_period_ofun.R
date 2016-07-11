@@ -6,7 +6,7 @@
 #' @param runoff_data runoff_data data.frame (see:xxx).
 #' @return list of baisc objective function evaluated for the different hydrological years and over the whole timespan.
 #' @export
-serve.period_ofun <- function(runoff_data) {
+extract_of <- function(runoff_data) {
   require("hydroGOF", quietly = TRUE)
   require("dplyr", quietly = TRUE)
   assert_dataframe(runoff_data)

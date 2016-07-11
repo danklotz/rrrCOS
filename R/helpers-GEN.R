@@ -4,8 +4,8 @@ get_regex_for_runoff_data <- function() {
                          "^",viscos_options()$name_COSday,"$|",
                          "^",viscos_options()$name_COShour,"$|",
                          "^",viscos_options()$name_COSmin,"$|",
-                         viscos_options()$name_COSobs,".*|",
-                         viscos_options()$name_COSsim,".*|",
+                         viscos_options()$name_data1,".*|",
+                         viscos_options()$name_data2,".*|",
                          viscos_options()$name_COSposix,"|",
                          viscos_options()$name_COSperiod,
                          sep = "")

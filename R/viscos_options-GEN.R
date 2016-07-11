@@ -1,7 +1,6 @@
-#' visCOS options
+#' visCOS global options
 #' 
-#' Get and modify visCOS global options
-#' This function provides such a list with the basic settings added. 
+#' get and set the global options of visCOS
 #' @export
 viscos_options <- GlobalOptions::setGlobalOptions( 
   name_data1 = "qobs", 
@@ -26,3 +25,4 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   lb_cut = 0.0,
   text_size = 0.5
 )
+

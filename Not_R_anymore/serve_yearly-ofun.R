@@ -9,7 +9,7 @@ periodplot_NSE <- function(runoff_data, plot_title = "yearly NSE", y_label = "ba
   plt_ctrl$plot_title <- plot_title
   plt_ctrl$ylab <- y_label
   # calc
-  bOF = serve.period_ofun(runoff_data)
+  bOF <- extract_of(runoff_data)
   periods_in_data <- unique(runoff_data$period)
   plt <- periodplot_ofun("NSE", bOF, periods_in_data, plt_ctrl)
   return(plt)
@@ -25,7 +25,7 @@ periodplot_KGE<- function(runoff_data, plot_title = "Yearly KGE", y_label = "bas
   plt_ctrl$plot_title <- plot_title
   plt_ctrl$ylab <- y_label
   # calc
-  bOF = serve.period_ofun(runoff_data)
+  bOF <- extract_of(runoff_data)
   periods_in_data <- unique(runoff_data$period)
   plt <- periodplot_ofun("KGE", bOF, periods_in_data, plt_ctrl)
   return(plt)
@@ -41,7 +41,7 @@ periodplot_pBIAS <- function(runoff_data, plt_ctrl) {
   plt_ctrl$plot_title <- "Yearly %-Bias"
   plt_ctrl$ylab <- "basin number"
   # calc
-  bOF = serve.period_ofun(runoff_data)
+  bOF <- extract_of(runoff_data)
   periods_in_data <- unique(runoff_data$period)
   plt <- periodplot_ofun("pBIAS", bOF, periods_in_data, plt_ctrl)
   return(plt)
@@ -62,7 +62,7 @@ periodplot_CORR <- function(runoff_data, plt_ctrl) {
   
     }
   # calc
-  bOF = serve.period_ofun(runoff_data)
+  bOF <- extract_of(runoff_data)
   periods_in_data <- unique(runoff_data$period)
   plt <- periodplot_ofun("CORR", bOF, periods_in_data, plt_ctrl)
   return(plt)

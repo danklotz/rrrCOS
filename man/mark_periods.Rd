@@ -3,7 +3,7 @@
 \alias{mark_periods}
 \title{calculate periods}
 \usage{
-mark_periods(runoff_data, start_month, end_month)
+mark_periods(runoff_data, start_month = 10, end_month = 9)
 }
 \arguments{
 \item{runoff_data}{The data.frame, which contains the runoff information}

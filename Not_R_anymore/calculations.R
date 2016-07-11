@@ -48,7 +48,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
   num_periods <- length(periods_in_data)
 
 # calculations ------------------------------------------------------------
-  bOF <- serve.period_ofun(d_runoff)
+  bOF <- extract_of(d_runoff)
   
   
   

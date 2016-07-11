@@ -46,7 +46,7 @@ only_observed_basins <- function(runoff_data) {
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0) 
-    obs_regex <- paste(viscos_options()$name_COSobs,".*", sep ="")
+    obs_regex <- paste(viscos_options()$name_data1,".*", sep ="")
     OnlyQobsSelected <- idx_temp %>%
       names %>% 
       tolower %>%
@@ -77,7 +77,7 @@ only_observed_basins <- function(runoff_data) {
 #' @param name_posi string with the name of the POSIXct column 
 #' @return The new runoff data.frame with the added data-format. 
 #' @export
-prepare.complete_date <- function(runoff_data = NULL, 
+prepare_complete_date <- function(runoff_data = NULL, 
                                   name_cosyear = "yyyy",
                                   name_posix = "POSIXdate") {
   # make sure that magrittr is loaded: 
@@ -107,9 +107,6 @@ implode_cosdate <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   name_string <-  runoff_data %>% names %>% tolower
-  if (any(name_string == viscos_options()$name_COSposix)) {
-        stop("runoff_data does allreay contain POSIXdate")
-  }
   #
   POSIXdate <- paste(runoff_data[[viscos_options()$name_COSyear]],
                      sprintf("%02d",runoff_data[[viscos_options()$name_COSmonth]]),
@@ -118,7 +115,8 @@ implode_cosdate <- function(runoff_data) {
                      sprintf("%02d",runoff_data[[viscos_options()$name_COSmin]]),
                      sep= "" ) %>%
     as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
-  return(cbind(runoff_data,POSIXdate))
+  runoff_data[[viscos_options()$name_COSposix]] <- POSIXdate
+  return(runoff_data)
 }
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
@@ -146,11 +144,11 @@ remove_leading_zeros <- function(runoff_data) {
 #' hydrological years within the data. 
 #' \strong{Note:} The periods columns are formatted as characters!
 #' @export
-mark_periods <- function(runoff_data, start_month, end_month) {
+mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   require("dplyr", quietly = TRUE, warn.conflicts = FALSE)
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
-  runoff_data %<>% remove_chunk %>% prepare.complete_date()
+  runoff_data %<>% remove_chunk %>% prepare_complete_date()
   # (I) get labels for the monts
   if (start_month <= end_month ) {
     period_range <- seq(start_month,end_month)
@@ -163,19 +161,20 @@ mark_periods <- function(runoff_data, start_month, end_month) {
   }
   # (II) mark periods:
     eval_diff <- function(a) {c(a[1],diff(a))}
-    runoff_data$period  <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
+    runoff_data[[viscos_options()$name_COSperiod]] <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
       eval_diff %>% 
       pmax(.,0) %>% 
       cumsum 
     runoff_data$period[runoff_data[[viscos_options()$name_COSmonth]] %in% out_of_period] <- 0
-    # set last year-ending to 0 in case `start_month` > `end_month` 
+    # corrections for last year 
     max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
     runoff_data %<>% dplyr::mutate(
-      period = ifelse(((viscos_options()$name_COSyear == max_year) &
-                       (viscos_options()$name_COSmonth > end_month)),
+      period = ifelse(
+        (  (.[[viscos_options()$name_COSyear]] == max_year) &
+           (.[[viscos_options()$name_COSmonth]] > end_month)  ),
                       0,
                       period
-                      )
+        )
       )
     return(runoff_data)
 }
@@ -205,4 +204,63 @@ runoff_as_xts <- function(runoff_data) {
                                  order.by = runoff_data[[name_posix]]) 
   # 
   return(runoff_data_as_xts)
+}
+#' Get basic objective function for runoff_data
+#'
+#' Calculate basic objective functions 
+#'(NSE, KGE, percentage BIAS, Correlation (see: xxx)) for
+#' every basin and the chosen periods 
+#'
+#' @param runoff_data runoff_data data.frame (see:xxx).
+#' @return list of baisc objective function evaluated for the different 
+#' hydrological years and over the whole timespan.
+#' @export
+extract_objective_functions <- function(runoff_data) {
+  require("hydroGOF", quietly = TRUE)
+  require("dplyr", quietly = TRUE)
+  assert_dataframe(runoff_data)
+  stopifnot( exists(viscos_options()$name_COSperiod, where = runoff_data) )
+  evaluation_data <- runoff_data[
+      runoff_data[[viscos_options()$name_COSperiod]] > 0,
+    ]
+  number_of_basins <- evaluation_data %>% 
+    names %>%
+    unique %>% 
+    tolower %>%
+    grepl(viscos_options()$name_data1 , .) %>% 
+    sum
+  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>% 
+    unique
+  number_of_periods <- periods_in_data %>% length
+  # 
+  obj_fun  <- list()
+  tempOBS <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>% 
+    unname
+  tempSIM <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>% 
+    unname
+  obj_fun$NSE <- hydroGOF::NSE(tempSIM,tempOBS)
+  obj_fun$KGE <- hydroGOF::KGE(tempSIM,tempOBS)
+  obj_fun$pBIAS <- hydroGOF::pbias(tempSIM,tempOBS)
+  obj_fun$CORR <- cor(tempSIM,tempOBS) %>% diag(.)
+  # pre allocation of periodic variables:
+  obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
+  obj_fun$KGE_period <- obj_fun$NSE_period
+  obj_fun$pBIAS_periods <- obj_fun$NSE_period
+  obj_fun$CORR_period <- obj_fun$NSE_period
+  # calculation loop 
+  for (k in 1:number_of_periods)
+  {
+    tempOBS <- filter(evaluation_data,period == periods_in_data[k]) %>%
+      select(.,starts_with(viscos_options()$name_data1)) %>% 
+      unname
+    tempSIM <- filter(evaluation_data,period == periods_in_data[k]) %>% 
+      select(.,starts_with(viscos_options()$name_data2)) %>% 
+      unname
+    obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(tempSIM,tempOBS)
+    obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(tempSIM,tempOBS)
+    obj_fun$pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(tempSIM,tempOBS)
+    obj_fun$CORR_period[k,1:number_of_basins] <- cor(tempSIM,tempOBS) %>% diag(.)
+  }
+  #
+  return(obj_fun)
 }
