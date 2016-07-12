@@ -1,4 +1,4 @@
-% Please edit documentation in R/cook_data-GEN.R
+% Please edit documentation in R/exploring_of-GEN.R
 \name{extract_objective_functions}
 \alias{extract_objective_functions}
 \title{Get basic objective function for runoff_data}

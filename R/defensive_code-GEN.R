@@ -5,9 +5,8 @@ assert_chunk <- function(runoff_data) {
   if (any(assertChunk == FALSE)) {
     stop("there is still unwanted columns in the data. Try: remove_chunk")
   }
-
 }
-assert_comple_date <- function(runoff_data) {
+assert_complete_date <- function(runoff_data) {
   OK_COSdate <- any(names(runoff_data)== viscos_options()$name_COSyear)
   OK_POSIXdates <- any(names(runoff_data)== viscos_options()$name_COSposix)
   # choose error messag depending on which columns are missing!
