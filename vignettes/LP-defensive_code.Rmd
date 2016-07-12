@@ -2,30 +2,30 @@
 title: "Defensive Code"
 author: "Daniel Klotz"
 date: "8 Juli 2016"
-output: 
+output:
   html_document:
     number_sections: yes
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction 
-This section defines the defensive programming part of **visCOS**. 
-In this context, *defensive programing code* are all functions and scripts 
-dedicated to ensure that **visCOS** is working nicely even in unforeseen 
-circumstances. Often this means that the function has to return an error 
-if certain criteria are not met! 
+# Introduction
+This section defines the defensive programming part of **visCOS**.
+In this context, *defensive programing code* are all functions and scripts
+dedicated to ensure that **visCOS** is working nicely even in unforeseen
+circumstances. Often this means that the function has to return an error
+if certain criteria are not met!
 
-A usefull example for such techniques is the `R` package 
+A useful example for such techniques is the `R` package
 [`assertthat`](https://cran.r-project.org/web/packages/assertthat/index.html)
 
 None of the functions are exported!
 
-# Code 
+# Code
 
-The subsequent functions are defined below 
+The subsequent functions are defined below
 
 function | exported
 ------------- | -------------
@@ -35,10 +35,10 @@ function | exported
 `assert_of` | no
 
 ## `assert_chunk`
-This function tests if there are any columns in the data.frame `runoff_data`, 
-which are not named after one of the 8 allowed column-names of **visCOS**. 
-**Note** however that the check is not case sensitive as all names in 
-`runoff_data` are set to lower cases with `tolower`. 
+This function tests if there are any columns in the data.frame `runoff_data`,
+which are not named after one of the 8 allowed column-names of **visCOS**.
+**Note** however that the check is not case sensitive as all names in
+`runoff_data` are set to lower cases with `tolower`.
 ```{r}
 assert_chunk <- function(runoff_data) {
   require(magrittr, quietly = TRUE)
@@ -51,9 +51,9 @@ assert_chunk <- function(runoff_data) {
 ```
 
 ## `assert_complete_date`
-Checks if all the date-/time- columns as defined within `viscos_options` are 
-existent in `runoff_data`. This is done by checking if the names of the 
-*COSdate* year column (as defined in `viscos_options`) and if the 
+Checks if all the date-/time- columns as defined within `viscos_options` are
+existent in `runoff_data`. This is done by checking if the names of the
+*COSdate* year column (as defined in `viscos_options`) and if the
 *POSIXct* column (as defined in `viscos_options`) are there.
 ```{r}
 assert_complete_date <- function(runoff_data) {
@@ -62,7 +62,7 @@ assert_complete_date <- function(runoff_data) {
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")
-  } else if (OK_COSdate & !OK_POSIXdates) { 
+  } else if (OK_COSdate & !OK_POSIXdates) {
     stop("NO POSIXct fomrated column within the runoff_data!")
   } else if (!OK_COSdate & OK_POSIXdates) {
     stop("NO COSdate year within the runoff_data!")
@@ -71,9 +71,9 @@ assert_complete_date <- function(runoff_data) {
 ```
 
 ## `assert_dataframe`
-Tests if `data` is a data.frame and returns an error if not. 
+Tests if `data` is a data.frame and returns an error if not.
 ```{r}
-# uses stop if the input: "data" is not of class "data.frame" 
+# uses stop if the input: "data" is not of class "data.frame"
 assert_dataframe <- function(data) {
   if ( !is.data.frame(data) ) stop("runoff_data is no data_frame!")
 }
@@ -81,21 +81,21 @@ assert_dataframe <- function(data) {
 
 
 ## `assert_of`
-This function returns checks if the basic objective functions `of` require the 
-minimal requirements for **visCOS**: 
+This function returns checks if the basic objective functions `of` require the
+minimal requirements for **visCOS**:
 - An error message is returned if `of` is not a list and
-- an errror message is returned if `of` does not contain the named-entires 
-`NSE`, `KGE`, `pBIAS` and `CORR`. 
-Thus the list `list(NSE = NA, KGE = NA, pBIAS = NA, CORR = NA)` would pass the 
-test. 
+- an error message is returned if `of` does not contain the named-entires
+`NSE`, `KGE`, `pBIAS` and `CORR`.
+Thus the list `list(NSE = NA, KGE = NA, pBIAS = NA, CORR = NA)` would pass the
+test.
 ```{r}
 assert_of<- function(of) {
   if ( !is.list(of) ) {
-    stop("The basic objective funcitons are not stored in a list!")
+    stop("The basic objective functions are not stored in a list!")
   }
   assert_right_of <- any( grepl("NSE.*|KGE.*|pBIAS.*|CORR.*",names(of)) == TRUE)
   if ( !assert_right_of ) {
-    stop("The objective functions do not contain the right named entries, i.e. NSE,KGE,pBIAS,CORR") 
+    stop("The objective functions do not contain the right named entries, i.e. NSE,KGE,pBIAS,CORR")
   }
 }
 ```
