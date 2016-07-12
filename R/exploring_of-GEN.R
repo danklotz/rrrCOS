@@ -122,13 +122,6 @@ serve.runoff_with_ofun <- function(runoff_data) {
     xts_slctd_data <- reactive ({
       xts(slctd_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
     })
-    # get error of the basin
-    xts_slctd_error <- reactive({
-      slctd_data() %>% 
-        mutate(error = Qsim-Qobs) %>% 
-        select(error) %>%
-        xts(order.by = runoff_data[[viscos_options()$name_COSposix]])
-    })
     # plots
     output$dygrph1 <- renderDygraph({
       dygraph(xts_slctd_data(), group="A") %>%
@@ -136,12 +129,6 @@ serve.runoff_with_ofun <- function(runoff_data) {
         dySeries("Qsim", label="Qsim",color= "palevioletred" ) %>%
         dyOptions(includeZero = TRUE) %>%
         dyRangeSelector(height = 20, strokeColor = "")
-    })
-    output$dygrph2 <- renderDygraph({
-      dygraph(xts_slctd_error(),group="A") %>%
-        dySeries(label="Error",color="orange") %>%
-        dyOptions(includeZero = TRUE) %>%
-        dyLegend(show = "never", hideOnMouseOut = FALSE)
     })
     # stats
     slctd_from <- reactive({
@@ -171,23 +158,23 @@ serve.runoff_with_ofun <- function(runoff_data) {
     output$slctd_OF <- renderTable({
       if (!is.null(input$dygrph1_date_window))
         out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
-        out
     })
   }
   #
   ui <- fluidPage(
-      # runoff 
-      h3("runoff:"),
       selectInput("basin_num",
                   "# basins:",
                   choices = d_nums, 
                   selected = 1, 
                   width = "100px"),
       dygraphOutput("dygrph1", width = "100%", height = "400px"),
-      dygraphOutput("dygrph2", width = "100%", height = "100px"),
-      h3("stats"),
-      textOutput("slctd_info"),
-      tableOutput("slctd_OF")
+      hr(),
+      fluidRow(
+        column(12, align = "center",
+          textOutput("slctd_info"),
+          tableOutput("slctd_OF")
+        )
+      )
     )
   shinyApp(ui,server)
 }
