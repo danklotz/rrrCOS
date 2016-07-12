@@ -2,7 +2,7 @@
 title: "helpers"
 author: "Daniel Klotz"
 date: "8 Juli 2016"
-output: 
+output:
   html_document:
     number_sections: yes
 ---
@@ -11,14 +11,14 @@ output:
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction 
-This section collects small and helpfull functions/scripts that are used 
+# Introduction
+This section collects small and helpful functions/scripts that are used
 throughout **visCOS**.
 
 None of the functions is exported!
 
-# Code 
-The subsequent functions are defined below 
+# Code
+The subsequent functions are defined below
 
 function | exported
 ------------- | -------------
@@ -26,12 +26,12 @@ function | exported
 `get_basin_numbers` | no
 
 ## `get_regex_for_runoff_data`
-This function can be called to get the names of the 8 allowed column-names 
-within **visCOS**. `get_regex_for_runoff_data` takes no input, as it gets the 
-information directly from the global options (see: *viscos_options section*). 
+This function can be called to get the names of the 8 allowed column-names
+within **visCOS**. `get_regex_for_runoff_data` takes no input, as it gets the
+information directly from the global options (see: *viscos_options section*).
 ```{r}
 get_regex_for_runoff_data <- function() {
-  regex_pattern <- paste("^",viscos_options()$name_COSyear,"$|", 
+  regex_pattern <- paste("^",viscos_options()$name_COSyear,"$|",
                          "^",viscos_options()$name_COSmonth,"$|",
                          "^",viscos_options()$name_COSday,"$|",
                          "^",viscos_options()$name_COShour,"$|",
@@ -47,8 +47,8 @@ get_regex_for_runoff_data <- function() {
 
 
 ## `get_basin_numbers`
-This function fetches the number of basins from the provided data.frame 
-(`runoff_data`) by removing all the non-digits characters from the column names. 
+This function fetches the number of basins from the provided data.frame
+(`runoff_data`) by removing all the non-digits characters from the column names.
 ```{r}
 get_basin_numbers <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
@@ -66,16 +66,16 @@ get_basin_numbers <- function(runoff_data) {
 
 
 ## `set_panel_size`
-Klotz: I honestly forgot what this function does! #§ 
-I need to look it up, but am not ready yet! I roughly remember that setting 
-grapfical options with ggplot is a mess, and this is a function, which 
-migh toslve a lot. However, I am not sure! 
+Klotz: I honestly forgot what this function does! #§
+I need to look it up, but am not ready yet! I roughly remember that setting
+graphical options with ggplot is a mess, and this is a function, which
+might solves a lot. However, I am not sure! 
 ```{r}
 
-set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL, 
+set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
                            margin = unit(1,"mm"),
                            width=unit(3, "cm"), height=unit(2, "cm")){
-  
+
   panels <- g$layout$name=="panel"
   panel_index_w<- g$layout$l[panels]
   panel_index_h<- g$layout$t[panels]
@@ -84,13 +84,12 @@ set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
   g$widths[panel_index_w] <- rep(list(width), nw)
   g$heights[panel_index_h] <- rep(list(height), nh)
   class(g) <- c("fixed", class(g), "ggplot")
-  if(!is.null(file)) 
-    ggsave(file, g, 
-           width = convertWidth(sum(g$widths) + margin, 
+  if(!is.null(file))
+    ggsave(file, g,
+           width = convertWidth(sum(g$widths) + margin,
                                 unitTo = "in", valueOnly = TRUE),
-           height = convertHeight(sum(g$heights) + margin, 
+           height = convertHeight(sum(g$heights) + margin,
                                   unitTo = "in", valueOnly = TRUE))
   g
 }
 ```
-
