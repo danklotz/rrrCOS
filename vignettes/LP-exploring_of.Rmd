@@ -2,14 +2,16 @@
 title: "Code for Exploring Objective Functions"
 author: "Daniel Klotz"
 date: "12 Juli 2016"
-output: 
+output:
   html_document:
+    number_sections: yes
+  pdf_document:
     number_sections: yes
 ---
 
 
 ```{r setup, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
 ```{r, eval = TRUE, echo = FALSE, message=FALSE, purl=FALSE}
@@ -122,8 +124,8 @@ with
 
 $$ ED = \sqrt{ (corr-1)^2 + (\alpha-1)^2 + (\beta-1)^2) }. $$
 
-Where $\alpha = σ_y/σ_x$, i.e.: standard deviation $σ$ of the $y$ dividedby
-the $σ$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean. 
+Where $\alpha = \frac{\sigma_y}{ \sigma_x }$ , i.e.: standard deviation $\sigma$ of the $y$ dividedby
+the $\sigma$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean. 
 The following figure exemplifies its usage for the same data as above. 
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
 # examples: 
@@ -175,9 +177,9 @@ as above.
 The correlation coefficient $corr$ is a measure of the linear relationship 
 between $x$ and $y$. It is defined as: 
 
-$$corr = \frac{cov(x,y)}{σ^2_y*σ^2_x},$$
+$$corr = \frac{cov(x,y)}{\sigma^2_y*\sigma^2_x},$$
 
-where $cov(...)$ denotes the covariance and $σ^2$ the variance. The correlation 
+where $cov(...)$ denotes the covariance and $\sigma^2$ the variance. The correlation 
 coefficent can take on values between -1 and 1. The former corresponds to a 
 inverse and the latter to a direct relationship and the closer the values 
 is to zero the weaker the implied corelation. The following figure taken 
