@@ -19,13 +19,13 @@ output:
   require("hydroGOF")
 ```
 
-# Introduction 
+# Introduction
 This chapter defines the function necessary to calculate the objective functions
-and visualise or explore them in different ways. 
+and visualise or explore them in different ways.
 Currently 4 objective functions are used in **visCOS**. They are calculated from
-the data columns of a data.frame defined by `viscos_options$name_data1` and 
-`viscos_options$name_data2`.Assuming that `name_data1` is $x$ and `name_data1` 
-is $y$ they are: 
+the data columns of a data.frame defined by `viscos_options$name_data1` and
+`viscos_options$name_data2`.Assuming that `name_data1` is $x$ and `name_data1`
+is $y$ they are:
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}
   # here we define some data for the demonstrational plots
@@ -35,7 +35,7 @@ is $y$ they are:
   x <- rnorm(number_of_data,mean,sd)
   noise <- rnorm(number_of_data,mean,sd)
   demo_data <- data.frame(
-    x = x, 
+    x = x,
     # y:
     y_0 = noise,
     y_m1 = -x,
@@ -46,9 +46,9 @@ is $y$ they are:
   )  
   demo_names <- names(demo_data)
   demo_length <- length(demo_names)
-  
-  # since I do not want to many dependencies and need to plot more funcitons into 
-  # one plot I am gonna use the multiplot function by Winson Chang 
+
+  # since I do not want to many dependencies and need to plot more functions into
+  # one plot I am gonna use the `multiplot` function by Winson Chang
 # see: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 multiplot <- function(..., plotlist=NULL, cols) {
     require(grid, quietly = TRUE)
@@ -78,29 +78,29 @@ multiplot <- function(..., plotlist=NULL, cols) {
 ```
 
 ## Nash-Sutcliffe Efficiency
-The Nash-Sutcliffe Criterion $NSE$ is by far the most used efficency criterion 
-in hydrology. In the hydrolgoical context $x$ usually represents a set of
-runoff-observation and $y$ a set of simluations. The $NSE$ is defined in the 
-same way as the general definition of the coefficent of determination $R^2$:
+The Nash-Sutcliffe Criterion $NSE$ is by far the most used efficiency criterion
+in hydrology. In the hydrological context $x$ usually represents a set of
+runoff-observation and $y$ a set of simulations. The $NSE$ is defined in the
+same way as the general definition of the coefficient of determination $R^2$:
 
 $$NSE = \sum_{t=1}^T \frac{x(t)-y(t)}{x(t)-\bar{x}}.$$
 
-In this case the variable $\bar{x}$ represents the average of $x$. The $NSE$ 
-can therefore be seen as the relational the estimator $y$ and the estimator 
-resulting form the average of hte data. The following figure illustrates 
-different $NSE$ values for naive examples. 
+In this case the variable $\bar{x}$ represents the average of $x$. The $NSE$
+can therefore be seen as the relational the estimator $y$ and the estimator
+resulting form the average of the data. The following figure illustrates
+different $NSE$ values for naive examples.
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples: 
+# examples:
   plot_list <- list()
   for (i in 2:demo_length) {
-    name_i <- demo_names[i] 
+    name_i <- demo_names[i]
     obj_i <- NSE( sim = demo_data[name_i],obs = demo_data["x"])
     title_i <- paste("NSE = ", round(obj_i,2), sep = "")
     plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) + 
-      xlab( title_i ) + 
-      ylab("") + 
-      theme_minimal() + 
+      geom_point(aes_string(x = "x", y = name_i)) +
+      xlab( title_i ) +
+      ylab("") +
+      theme_minimal() +
       theme(axis.text.x = element_blank(),
             axis.text.y = element_blank())
   }
@@ -110,13 +110,13 @@ different $NSE$ values for naive examples.
 
 
 ## Kling-Gupta Efficiency
-The Kling-Gupta Efficiency $KGE$ was introduced by Gupta etl al (2009) to 
-alleviate some of the shortcommings of the $NSE$. In their paper they argue 
-why the $NSE$ tends to overate simuations with small variance 
-(note: in the context of the paper $\textrm{simulations} = y$) and 
-propose the their efficicency criterion instead. 
+The Kling-Gupta Efficiency $KGE$ was introduced by Gupta et al. (2009) to
+alleviate some of the shortcomings of the $NSE$. In their paper they argue
+why the $NSE$ tends to overate simulations with small variance
+(note: in the context of the paper $\textrm{simulations} = y$) and
+propose the their efficiency criterion instead.
 
-The $KGE$ is defined as: 
+The $KGE$ is defined as:
 
 $$ KGE = 1 - ED, $$
 
@@ -124,21 +124,21 @@ with
 
 $$ ED = \sqrt{ (corr-1)^2 + (\alpha-1)^2 + (\beta-1)^2) }. $$
 
-Where $\alpha = \frac{\sigma_y}{ \sigma_x }$ , i.e.: standard deviation $\sigma$ of the $y$ dividedby
-the $\sigma$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean. 
-The following figure exemplifies its usage for the same data as above. 
+Where $\alpha = \frac{\sigma_y}{ \sigma_x }$ , i.e.: standard deviation $\sigma$ of the $y$ divided by
+the $\sigma$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean.
+The following figure exemplifies its usage for the same data as above.
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples: 
+# examples:
   plot_list <- list()
   for (i in 2:demo_length) {
-    name_i <- demo_names[i] 
+    name_i <- demo_names[i]
     obj_i <- KGE( sim = demo_data[name_i],obs = demo_data["x"])
     title_i <- paste("KGE = ", round(obj_i,2), sep = "")
     plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) + 
-      xlab( title_i ) + 
-      ylab("") + 
-      theme_minimal() + 
+      geom_point(aes_string(x = "x", y = name_i)) +
+      xlab( title_i ) +
+      ylab("") +
+      theme_minimal() +
       theme(axis.text.x = element_blank(),
             axis.text.y = element_blank())
   }
@@ -146,26 +146,26 @@ The following figure exemplifies its usage for the same data as above.
 ```
 
 ## Percentage Bias
-The percentage of bias $pBIAS$ is defined as the sum of the differences 
-between $x$ and $y$ devided by the sum of $x$: 
+The percentage of bias $pBIAS$ is defined as the sum of the differences
+between $x$ and $y$ divided by the sum of $x$:
 
-$$pBIAS = 100*\frac{\sum_{} [ x(t)-y(t) ] }{\sum_{} x(t)}.$$ 
+$$pBIAS = 100*\frac{\sum_{} [ x(t)-y(t) ] }{\sum_{} x(t)}.$$
 
-The $100*$ is just a scaling factor applied to express $pBIAS$ as a percentage. 
-The following figure illustrates different $pBIAS$ values for the same data 
-as above. 
+The $100*$ is just a scaling factor applied to express $pBIAS$ as a percentage.
+The following figure illustrates different $pBIAS$ values for the same data
+as above.
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples: 
+# examples:
   plot_list <- list()
   for (i in 2:demo_length) {
-    name_i <- demo_names[i] 
+    name_i <- demo_names[i]
     obj_i <- pbias( sim = demo_data[name_i],obs = demo_data["x"])
     title_i <- paste("pBIAS = ", round(obj_i,2), sep = "")
     plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) + 
-      xlab( title_i ) + 
-      ylab("") + 
-      theme_minimal() + 
+      geom_point(aes_string(x = "x", y = name_i)) +
+      xlab( title_i ) +
+      ylab("") +
+      theme_minimal() +
       theme(axis.text.x = element_blank(),
             axis.text.y = element_blank())
   }
@@ -174,29 +174,29 @@ as above.
 
 
 ## Pearson's correlation coefficient
-The correlation coefficient $corr$ is a measure of the linear relationship 
-between $x$ and $y$. It is defined as: 
+The correlation coefficient $corr$ is a measure of the linear relationship
+between $x$ and $y$. It is defined as:
 
 $$corr = \frac{cov(x,y)}{\sigma^2_y*\sigma^2_x},$$
 
-where $cov(...)$ denotes the covariance and $\sigma^2$ the variance. The correlation 
-coefficent can take on values between -1 and 1. The former corresponds to a 
-inverse and the latter to a direct relationship and the closer the values 
-is to zero the weaker the implied corelation. The following figure taken 
-from the illustartes some examples of $corr$ to give a feeling for its usage: 
+where $cov(...)$ denotes the covariance and $\sigma^2$ the variance. The correlation
+coefficient can take on values between -1 and 1. The former corresponds to a
+inverse and the latter to a direct relationship and the closer the values
+is to zero the weaker the implied correlation. The following figure taken
+from the illustrates some examples of $corr$ to give a feeling for its usage:
 
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples: 
+# examples:
   plot_list <- list()
   for (i in 2:demo_length) {
-    name_i <- demo_names[i] 
+    name_i <- demo_names[i]
     obj_i <- cor( x = demo_data[name_i], y = demo_data["x"])
     title_i <- paste("corr = ", round(obj_i,2), sep = "")
     plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) + 
-      xlab( title_i ) + 
-      ylab("") + 
-      theme_minimal() + 
+      geom_point(aes_string(x = "x", y = name_i)) +
+      xlab( title_i ) +
+      ylab("") +
+      theme_minimal() +
       theme(axis.text.x = element_blank(),
             axis.text.y = element_blank())
   }
@@ -204,25 +204,25 @@ from the illustartes some examples of $corr$ to give a feeling for its usage:
 ```
 
 
-# Code 
+# Code
 ## `extract_objective_functions`
 The purpose of this function is to extract a set of objective functions from
-the `runoff_data` data.frame. The objective functions are extracted for each 
-basin, for the all the periods as a summary and for each period sepearately. 
+the `runoff_data` data.frame. The objective functions are extracted for each
+basin, for the all the periods as a summary and for each period separately.
 
-After the calculation of the `dplyr` is used to seperate the different 
+After the calculation of the `dplyr` is used to separate the different
 periods (see also `mark_periods`) and get access to the pipe operator `%>%`.
-As shown below the function checks if `runoff_data` is a data.frame and if the 
-periods are marked before the real comptuation starts. 
+As shown below the function checks if `runoff_data` is a data.frame and if the
+periods are marked before the real computation starts.
 ```{r}
 #' Get basic objective function for runoff_data
 #'
-#' Calculate basic objective functions 
+#' Calculate basic objective functions
 #'(NSE, KGE, percentage BIAS, Correlation (see: xxx)) for
-#' every basin and the chosen periods 
+#' every basin and the chosen periods
 #'
 #' @param runoff_data runoff_data data.frame (see:xxx).
-#' @return list of baisc objective function evaluated for the different 
+#' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
 #' @export
 extract_objective_functions <- function(runoff_data) {
@@ -232,52 +232,52 @@ extract_objective_functions <- function(runoff_data) {
   stopifnot( exists(viscos_options()$name_COSperiod, where = runoff_data) )
 ```
 
-The computational part of the function works as follows. In step (I) the 
-non-marked periods of `runoff_data` (i.e. columns of 
-`viscos_options()$name_COSperiod` which are smaller then > 0) are excluded from 
-further calculations. The thereby obtained data.frame is named 
-`evaluation_data`. Then, step (II) extracts imporant information for the 
-calculations: 
+The computational part of the function works as follows. In step (I) the
+non-marked periods of `runoff_data` (i.e. columns of
+`viscos_options()$name_COSperiod` which are smaller then > 0) are excluded from
+further calculations. The thereby obtained data.frame is named
+`evaluation_data`. Then, step (II) extracts important information for the
+calculations:
 
-- The number of basins (`number_of_basins`) is obtained by getting the names 
-of the data.frame, setting them tolower to make them independed of upper and 
+- The number of basins (`number_of_basins`) is obtained by getting the names
+of the data.frame, applying `tolower` to make them independent of upper and
 lower cases and summing up all the name_data1 column,  
-- the indeces of the marked periods (`periods_in_data`) are obtained by getting
-the unique values of the `viscos_options()$name_COSperiod` column, and 
-- number of periods (`number_of_periods`) are obtained by measuring the length 
+- the indices of the marked periods (`periods_in_data`) are obtained by getting
+the unique values of the `viscos_options()$name_COSperiod` column, and
+- number of periods (`number_of_periods`) are obtained by measuring the length
 of `periods_in_data`
 
 Step (III) computes the overall objective functions. This is done by copying all
-`viscos_options()$name_data1` columns into the `temp_x` variable and all 
-`viscos_options()$name_data1` into the `temp_y` variable. The former is then 
-handed as observation and the latter as simulation to the `hydroGOF` functions. 
-The correlation `obj_fun$CORR` is calcualted with base `R`. As `cor` returns
-a whole cross-correlation matrix only the diagional is extracted with `diag`. 
-Step (IV) is a periodwise a repetiation of step (III). Thus,  at each each 
-iteration `k` the given period is filtered from `evaluation_data` 
-with `dpylr::filtr` before `temp_x` and `temp_y` is calculated. 
+`viscos_options()$name_data1` columns into the `temp_x` variable and all
+`viscos_options()$name_data1` into the `temp_y` variable. The former is then
+handed as observation and the latter as simulation to the `hydroGOF` functions.
+The correlation `obj_fun$CORR` is calculated with base `R`. As `cor` returns
+a whole cross-correlation matrix only the diagonal is extracted with `diag`.
+Step (IV) is a period-wise a repetition of step (III). Thus,  at each each
+iteration `k` the given period is filtered from `evaluation_data`
+with `dpylr::filtr` before `temp_x` and `temp_y` is calculated.
 The so obtained period-wise objective function values are marked by `_period`
 
 ```{r}
-  # (I) reduce necessary computaiton 
+  # (I) reduce necessary computation
   evaluation_data <- runoff_data[
       runoff_data[[viscos_options()$name_COSperiod]] > 0,
     ]
-  # (II) get information 
-  number_of_basins <- evaluation_data %>% 
+  # (II) get information
+  number_of_basins <- evaluation_data %>%
     names %>%
-    unique %>% 
+    unique %>%
     tolower %>%
-    grepl(viscos_options()$name_data1 , .) %>% 
+    grepl(viscos_options()$name_data1 , .) %>%
     sum
-  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>% 
+  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>%
     unique
   number_of_periods <- periods_in_data %>% length
-  # (III) calculate overall objective functions 
+  # (III) calculate overall objective functions
   obj_fun  <- list()
-  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>% 
+  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>%
     unname
-  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>% 
+  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>%
     unname
   obj_fun$NSE <- hydroGOF::NSE(temp_y,temp_x)
   obj_fun$KGE <- hydroGOF::KGE(temp_y,temp_x)
@@ -289,14 +289,14 @@ The so obtained period-wise objective function values are marked by `_period`
     obj_fun$KGE_period <- obj_fun$NSE_period
     obj_fun$pBIAS_periods <- obj_fun$NSE_period
     obj_fun$CORR_period <- obj_fun$NSE_period
-    # calculation loop 
+    # calculation loop
     for (k in 1:number_of_periods)
     {
       temp_x <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>% 
+        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>%
         unname
-      temp_y <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>% 
-        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>% 
+      temp_y <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>%
         unname
       obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
@@ -312,22 +312,22 @@ The so obtained period-wise objective function values are marked by `_period`
 Oh yeah. We gonna explore soon TM
 ```{r}
 # Dive With OF ------------------------------------------------------------
-#' serve with ofun 
-#' 
-#' Runs a Shiny App which can be used to get an overview of a runoff_data time series object. 
-#' Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App. 
-#' 
+#' serve with ofun
+#'
+#' Runs a Shiny App which can be used to get an overview of a runoff_data time series object.
+#' Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App.
+#'
 #' @param d_xts runoff_data formatted as time series
 #' @export
-#' @examples 
-#' # get example data, 
-#' # clean it and 
+#' @examples
+#' # get example data,
+#' # clean it and
 #' # explore the model performance
 #' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
 #' serve.runoff_with_ofun(d_runoff)
 serve.runoff_with_ofun <- function(runoff_data) {
     # pre
-    require("data.table", quietly = TRUE) 
+    require("data.table", quietly = TRUE)
     require("dplyr", quietly = TRUE)
     require("shiny", quietly = TRUE)
     require("xts", quietly = TRUE)
@@ -344,30 +344,30 @@ serve.runoff_with_ofun <- function(runoff_data) {
   d_names_all<- names(d_xts)
   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names_all[idx_names]
-  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique 
-  
-  
-  
+  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique
+
+
+
   server <- function(input, output, session) {# executes calculation file
     # select the basin from the data
     #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
-    
-    # get strings used in the naming of runoff_data 
+
+    # get strings used in the naming of runoff_data
     just_words <- names(runoff_data) %>% gsub("\\d","",.) %>% unique
     obs_string <- just_words[ just_words %>% tolower %>% grep("qobs",.) ]
     sim_string <- just_words[ just_words %>% tolower %>% grep("qsim",.) ]
-    # 
+    #
     '%&%' <- function(a,b) paste(a,b,sep = "")
     select_OBS <- reactive({ obs_string %&% input$basin_num %&% "$" })
     select_SIM <- reactive({ sim_string %&% input$basin_num %&% "$" })
-    
+
     slctd_data <- reactive({
       select(runoff_data,
              matches( select_OBS() ),
              matches( select_SIM() )
       ) %>%
         select(Qobs = matches( select_OBS() ),
-               Qsim = matches( select_SIM() )) 
+               Qsim = matches( select_SIM() ))
     })
     # create xts-formated table for use in dygraphs
     xts_slctd_data <- reactive ({
@@ -383,11 +383,11 @@ serve.runoff_with_ofun <- function(runoff_data) {
     })
     # stats
     slctd_from <- reactive({
-      if (!is.null(input$dygrph1_date_window)) 
+      if (!is.null(input$dygrph1_date_window))
         input$dygrph1_date_window[[1]]
     })
     slctd_to <- reactive({
-      if (!is.null(input$dygrph1_date_window)) 
+      if (!is.null(input$dygrph1_date_window))
         input$dygrph1_date_window[[2]]
     })
     # stats header
@@ -398,14 +398,14 @@ serve.runoff_with_ofun <- function(runoff_data) {
               strftime(slctd_to(), format = "%d %b %Y"),
               sep = " ")
     })
-    # stats calc 
+    # stats calc
     sub_slctd <- reactive({
       if (!is.null(input$dygrph1_date_window))
         xts_slctd_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
                                strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
-    
+
     output$slctd_OF <- renderTable({
       if (!is.null(input$dygrph1_date_window))
         out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
@@ -415,8 +415,8 @@ serve.runoff_with_ofun <- function(runoff_data) {
   ui <- fluidPage(
       selectInput("basin_num",
                   "# basins:",
-                  choices = d_nums, 
-                  selected = 1, 
+                  choices = d_nums,
+                  selected = 1,
                   width = "100px"),
       dygraphOutput("dygrph1", width = "100%", height = "400px"),
       hr(),
@@ -433,18 +433,18 @@ serve.runoff_with_ofun <- function(runoff_data) {
 
 
 ### `explore_ofun`
-This function is a subfunction of `explore_basins_with_of` and basically simpler
+This function is a sub-function of `explore_basins_with_of` and basically simpler
 version of `extract_objective_functions`. `explore_ofun` is not exported and
-envisioned to be used within the shiny app. 
+envisioned to be used within the shiny app.
 It takes the two variables $x$ and $y$ (as used within this section)
-and calculates the root mean squared error $RMSE = \sqrt{\sum(x(t)-y(t))^2}$ 
-and the objective functions used within **visCOS** (see: introduction). 
-It also returns the $\alpha$ and $\beta$ of the $KGE$. 
-The former is the realtion of the strandard devations and therefore a measure 
-of the of relative variability in the $y$ and $x$ values. The latter represents 
+and calculates the root mean squared error $RMSE = \sqrt{\sum(x(t)-y(t))^2}$
+and the objective functions used within **visCOS** (see: introduction).
+It also returns the $\alpha$ and $\beta$ of the $KGE$.
+The former is the relation of the standard deviations and therefore a measure
+of the of relative variability in the $y$ and $x$ values. The latter represents
 the bias as a ratio of the two mean values of $x$ and $y$.
 
-Including $\alpha$ and $\beta$ is supposed to enable users to get a bit more 
+Including $\alpha$ and $\beta$ is supposed to enable users to get a bit more
 intuition about the how the $KGE$ works. Personal experience suggests however
 that the $KGE$ is difficult to grasp!
 ```{r}
@@ -474,10 +474,10 @@ serve_ofun <- function(x,y) {
 
 
 
-# References 
+# References
 - Gupta, Hoshin V.; Kling, Harald; Yilmaz, Koray K. & Martinez, Guillermo F.
-(2009): *Decomposition of ht emean squared error and NSE performance criteria:* 
+(2009): *Decomposition of the mean squared error and NSE performance criteria:*
 *Implications for improving hydrological modelling* (Journal of Hydrology)
-- Anthony Damico at 
-http://stackoverflow.com/questions/7631799/what-does-correlation-coefficient-actually-represent 
-(retrived at the 12.07.2016)
+- Anthony Damico at
+http://stackoverflow.com/questions/7631799/what-does-correlation-coefficient-actually-represent
+(retrieved at the 12.07.2016)
