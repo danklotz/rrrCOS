@@ -40,7 +40,7 @@ serve.plotlist_periodOF <- function(runoff_data,plt_ctrl,bOF) {
     scale_y_continuous(limits = plt_ctrl$limits ) +
     theme(legend.position= "none",
           axis.text.x = element_text(angle = 50, hjust = 1),
-          plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) + # von obem im urzeiger sinn
+          plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) + # clockwise form above
     scale_fill_gradient2(space = "Lab",
                          low = plt_ctrl$clr1,
                          mid = plt_ctrl$clr2,
