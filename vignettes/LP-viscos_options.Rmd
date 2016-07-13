@@ -1,6 +1,8 @@
 ---
 title: "visCOS - Options"
-author: "Daniel Klotz"
+author: 
+- "Daniel Klotz"
+- "Johannes Wesemann"
 date: "11 Juli 2016"
 output: 
   html_document:
@@ -13,7 +15,7 @@ knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 
 # Introduction 
 
-```{r}
+```{r, echo=FALSE}
 #' visCOS global options
 #' 
 #' Get and set the global options of visCOS
@@ -24,7 +26,7 @@ knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 #'   viscos_options(
 #'    # data.frame column names
 #'       name_data1 = "qobs",
-#'       name_data2 = "qsim"
+#'       name_data2 = "qsim",
 #'       name_COSyear = "yyyy",
 #'       name_COSmonth = "mm",
 #'       name_COSday = "dd",
@@ -52,11 +54,12 @@ knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 #' viscos_options(name_data1 = "OtherData")
 #' viscos_options("name_data1")
 #' @export
+```
 
-
-
+```{r}
 
 viscos_options <- GlobalOptions::setGlobalOptions( 
+ # data.frame column names
   name_data1 = "qobs", 
   name_data2 = "qsim", 
   name_COSyear = "yyyy",
@@ -66,7 +69,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSmin = "min",
   name_COSposix = "posixdate",
   name_COSperiod = "period",
-  # plot stuff
+ # plot options
   color_data1 = "steelblue", 
   color_data2 = "palevioletred",
   plot_title = "title",
@@ -83,3 +86,4 @@ viscos_options <- GlobalOptions::setGlobalOptions(
 )
 
 ```
+
