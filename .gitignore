@@ -24,7 +24,8 @@ bfg.jar
 # RStudio files
 .Rproj.user/
 # produced vignettes
-vignettes/*.html
+#  For now we want to have hmtl vignettes to, thus: 
+# /*.html
 vignettes/*.pdf
 .Rproj.user
 packrat/lib*/
