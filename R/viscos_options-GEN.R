@@ -8,7 +8,7 @@
 #'   viscos_options(
 #'    # data.frame column names
 #'       name_data1 = "qobs",
-#'       name_data2 = "qsim"
+#'       name_data2 = "qsim",
 #'       name_COSyear = "yyyy",
 #'       name_COSmonth = "mm",
 #'       name_COSday = "dd",
@@ -37,10 +37,8 @@
 #' viscos_options("name_data1")
 #' @export
 
-
-
-
 viscos_options <- GlobalOptions::setGlobalOptions( 
+ # data.frame column names
   name_data1 = "qobs", 
   name_data2 = "qsim", 
   name_COSyear = "yyyy",
@@ -50,7 +48,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSmin = "min",
   name_COSposix = "posixdate",
   name_COSperiod = "period",
-  # plot stuff
+ # plot options
   color_data1 = "steelblue", 
   color_data2 = "palevioletred",
   plot_title = "title",

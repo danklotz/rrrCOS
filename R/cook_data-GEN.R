@@ -2,6 +2,7 @@
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
+  
   get_runoff_example <- function() {
     file_path <- system.file("extdata",
                              "runoff_example.csv",
@@ -11,16 +12,17 @@
   }
   #' removes chunk in runoff_data
   #'
-  #' Remove all columns which are not foreseen (see: viscos_options) from
+  #' Removes all columns which are not foreseen (see: viscos_options) from
   #' runoff data
   #'
   #' @param runoff_data data.frame object containing at least COSdate,
-  #' Qsim and Qobs (see: xxx)
+  #' and two data rows defined in viscos_options (see: xxx)
   #' @return data.frame object without the chunk
   #' @export
+
   remove_chunk <- function(runoff_data) {
-  require("magrittr", quietly = TRUE)
-  assert_dataframe(runoff_data)
+    require("magrittr", quietly = TRUE)
+    assert_dataframe(runoff_data)
   lowercase_names_in_data <- runoff_data %>% names %>% tolower
   #
   regex_columns <- get_regex_for_runoff_data() # see: helpers

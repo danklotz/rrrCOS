@@ -17,7 +17,7 @@ These are the options you can adapt by executing the function
   viscos_options(
    # data.frame column names
       name_data1 = "qobs",
-      name_data2 = "qsim"
+      name_data2 = "qsim",
       name_COSyear = "yyyy",
       name_COSmonth = "mm",
       name_COSday = "dd",

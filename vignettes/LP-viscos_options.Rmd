@@ -1,8 +1,7 @@
 ---
 title: "visCOS - Options"
 author: 
-- "Daniel Klotz"
-- "Johannes Wesemann"
+- "Daniel Klotz, Johannes Wesemann"
 date: "11 Juli 2016"
 output: 
   html_document:
@@ -53,12 +52,12 @@ knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 #' @export
 ```
 # Introduction 
-his section defines code of the visCOS functions used to set and adapt your 
+This section defines code of the visCOS functions used to set and adapt the 
 visCOS options. There are options for the (raw) data and for the settings for 
-your plots
+ plots.
 
 # Code
-The `viscos_options` function is build using the GlobalOptions package
+The `viscos_options` function is build using the GlobalOptions package.
 
 ```{r}
 

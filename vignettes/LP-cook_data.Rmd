@@ -1,6 +1,7 @@
 ---
 title: "Code for Cooking Data"
-author: "Daniel Klotz"
+author: 
+- "Daniel Klotz, Johannes Wesemann"
 date: "6 Juli 2016"
 output:
   html_document:
@@ -17,9 +18,11 @@ Within the scope of **visCOS** "cooking data" is defined as the process of
 transforming *raw data* into *cooked*, which can be used for the internal
 visualisations.
 
+
+
 # Code
 The following functions are defined below. Exported functions can be seen by the
-user
+user.
 
 function | exported
 ------------- | -------------
@@ -34,14 +37,18 @@ function | exported
 `extract_objective_functions` | yes
 
 ## `get_runoff_example`
-visCOS porvides some exemplary data. All the available functions are tested
-with them. `get_runoff_example` is a small wrapper function to get the data from
+visCOS porvides some exemplary data. All the available functions can be tested
+with it. `get_runoff_example` is a small wrapper function to get the data from
 within the package via `read.csv`
-```{r}
+```{r, echo=FALSE}
   #' Get runoff example
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
+  
+```
+
+```{r}
   get_runoff_example <- function() {
     file_path <- system.file("extdata",
                              "runoff_example.csv",
@@ -53,37 +60,37 @@ within the package via `read.csv`
 
 
 ## `remove_chunk`
-This function removes all columns not specified in the `viscos_options` string
-`data_regex`, as well basins where no observations are available.
+This function removes all columns not specified in the `viscos_options`,
+as well basins where no observations are available.
 The first part is done by identifying the names of the data_frame and
-searching for the idx of the names defined in the regular expression string.
-The second part is done via the function `prepare.only_observed` (see next subchapter).
-It is actually so pretty simple, but really useful. Since the solution is
-quite specific the function tests if the input is a data.frame and returns an
-error if not.
+searching for the idx of the names defined in the `viscos_options`.
+The second part is done via the function `prepare.only_observed` (see next 
+subchapter).It is actually so pretty simple, but really useful. Since the 
+solution is quite specific the function tests if the input is a data.frame and 
+returns an error if not.
 
 **Note** that the routine is **not** case sensitive. It does not distinguish
-inbetween small and capital letters!
+between small and capital letters!
 
-The function header is:
-```{r}
+```{r echo=FALSE}
   #' removes chunk in runoff_data
   #'
-  #' Remove all columns which are not foreseen (see: viscos_options) from
+  #' Removes all columns which are not foreseen (see: viscos_options) from
   #' runoff data
   #'
   #' @param runoff_data data.frame object containing at least COSdate,
-  #' Qsim and Qobs (see: xxx)
+  #' and two data rows defined in viscos_options (see: xxx)
   #' @return data.frame object without the chunk
   #' @export
-  remove_chunk <- function(runoff_data) {
+
 ```
 
 The first part of the code loads the dependencies and makes sure that the
 runoff_data variable is a data.frame (see: chapter about *defensive coding*):
 ```{r}
-  require("magrittr", quietly = TRUE)
-  assert_dataframe(runoff_data)
+  remove_chunk <- function(runoff_data) {
+    require("magrittr", quietly = TRUE)
+    assert_dataframe(runoff_data)
 ```
 
 The body of `remove_chunk` works as following: First, the names of the names of
