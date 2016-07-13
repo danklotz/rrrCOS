@@ -60,11 +60,11 @@ extract_objective_functions <- function(runoff_data) {
   #
   return(obj_fun)
 }
-# Dive With OF ------------------------------------------------------------
-#' serve with ofun
+
+#' explore runoff_data with Objective Functions
 #'
-#' Runs a Shiny App which can be used to get an overview of a runoff_data time series object.
-#' Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App.
+#' Runs a Shiny App which can be used to get an overview of a runoff_data time
+#' series object. 
 #'
 #' @param d_xts runoff_data formatted as time series
 #' @export
@@ -72,20 +72,18 @@ extract_objective_functions <- function(runoff_data) {
 #' # get example data,
 #' # clean it and
 #' # explore the model performance
-#' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
-#' serve.runoff_with_ofun(d_runoff)
-serve.runoff_with_ofun <- function(runoff_data) {
-    # pre
-    require("data.table", quietly = TRUE)
-    require("dplyr", quietly = TRUE)
-    require("shiny", quietly = TRUE)
-    require("xts", quietly = TRUE)
-    require("dygraphs", quietly = TRUE)
+#' d_runoff <- get_runoff_example()
+#' explore_runoff_with_ofun(d_runoff)
+explore_runoff_with_ofun <- function(runoff_data) {
+  require("shiny", quietly = TRUE)
+  require("dplyr", quietly = TRUE)
+  require("magrittr", quietly = TRUE)
+  require("xts", quietly = TRUE)
+  require("dygraphs", quietly = TRUE)
   ##########################
-  # calc
-  #$ this is all suboptimal, maybe exploit the global function or something
+  #$ this is all suboptimal! Maybe exploit the global function or something
   runoff_data %<>% remove_leading_zeros
-  if ( !"POSIXdate" %in% names(runoff_data) ) {
+  if ( !viscos_options( )$name_COSposix %in% names(runoff_data) ) {
     runoff_data %<>% prepare_complete_date()
   }
   runoff_data <<- runoff_data
@@ -95,38 +93,41 @@ serve.runoff_with_ofun <- function(runoff_data) {
   d_names <<- d_names_all[idx_names]
   d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique
 
-
-
   server <- function(input, output, session) {# executes calculation file
     # select the basin from the data
     #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
 
     # get strings used in the naming of runoff_data
-    just_words <- names(runoff_data) %>% gsub("\\d","",.) %>% unique
-    obs_string <- just_words[ just_words %>% tolower %>% grep("qobs",.) ]
-    sim_string <- just_words[ just_words %>% tolower %>% grep("qsim",.) ]
+
+    unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
+    x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
+    y_string <- unique_data_names[ unique_data_names  %>% grep(viscos_options( )$name_data2,.) ]
     #
     '%&%' <- function(a,b) paste(a,b,sep = "")
-    select_OBS <- reactive({ obs_string %&% input$basin_num %&% "$" })
-    select_SIM <- reactive({ sim_string %&% input$basin_num %&% "$" })
-
-    slctd_data <- reactive({
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
+    selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
+    selected_data <- reactive({
       select(runoff_data,
-             matches( select_OBS() ),
-             matches( select_SIM() )
+             matches( selector_x() ),
+             matches( selector_y() )
       ) %>%
-        select(Qobs = matches( select_OBS() ),
-               Qsim = matches( select_SIM() ))
+
+        select(Qobs = matches( selector_x() ),
+               Qsim = matches( selector_y() ))
     })
     # create xts-formated table for use in dygraphs
-    xts_slctd_data <- reactive ({
-      xts(slctd_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
+    xts_selected_data <- reactive ({
+      xts(selected_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
     })
     # plots
     output$dygrph1 <- renderDygraph({
-      dygraph(xts_slctd_data(), group="A") %>%
-        dySeries("Qobs", label="Qobs",color= "steelblue" ) %>%
-        dySeries("Qsim", label="Qsim",color= "palevioletred" ) %>%
+      dygraph(xts_selected_data(), group="A") %>%
+        dySeries("Qobs", 
+                 label = visCOS::viscos_options()$name_data1,
+                 color = viscos_options()$color_data1 ) %>%
+        dySeries("Qsim", 
+                 label = visCOS::viscos_options()$name_data2,
+                 color = viscos_options()$color_data2 ) %>%
         dyOptions(includeZero = TRUE) %>%
         dyRangeSelector(height = 20, strokeColor = "")
     })
@@ -150,7 +151,7 @@ serve.runoff_with_ofun <- function(runoff_data) {
     # stats calc
     sub_slctd <- reactive({
       if (!is.null(input$dygrph1_date_window))
-        xts_slctd_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
+        xts_selected_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
                                strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
@@ -160,7 +161,6 @@ serve.runoff_with_ofun <- function(runoff_data) {
         out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
     })
   }
-  #
   ui <- fluidPage(
       selectInput("basin_num",
                   "# basins:",

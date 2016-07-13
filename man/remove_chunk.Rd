@@ -6,13 +6,13 @@
 remove_chunk(runoff_data)
 }
 \arguments{
-\item{runoff_data}{data.frame object containing at lesast COSdate, 
+\item{runoff_data}{data.frame object containing at least COSdate,
 Qsim and Qobs (see: xxx)}
 }
 \value{
-data.frame object withouth the chunk
+data.frame object without the chunk
 }
 \description{
-Remove all collumns which are not foreseen (see: viscos_options) from 
+Remove all columns which are not foreseen (see: viscos_options) from
 runoff data
 }

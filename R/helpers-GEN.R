@@ -1,5 +1,5 @@
 get_regex_for_runoff_data <- function() {
-  regex_pattern <- paste("^",viscos_options()$name_COSyear,"$|", 
+  regex_pattern <- paste("^",viscos_options()$name_COSyear,"$|",
                          "^",viscos_options()$name_COSmonth,"$|",
                          "^",viscos_options()$name_COSday,"$|",
                          "^",viscos_options()$name_COShour,"$|",
@@ -24,10 +24,10 @@ get_basin_numbers <- function(runoff_data) {
 
 
 
-set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL, 
+set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
                            margin = unit(1,"mm"),
                            width=unit(3, "cm"), height=unit(2, "cm")){
-  
+
   panels <- g$layout$name=="panel"
   panel_index_w<- g$layout$l[panels]
   panel_index_h<- g$layout$t[panels]
@@ -36,11 +36,11 @@ set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
   g$widths[panel_index_w] <- rep(list(width), nw)
   g$heights[panel_index_h] <- rep(list(height), nh)
   class(g) <- c("fixed", class(g), "ggplot")
-  if(!is.null(file)) 
-    ggsave(file, g, 
-           width = convertWidth(sum(g$widths) + margin, 
+  if(!is.null(file))
+    ggsave(file, g,
+           width = convertWidth(sum(g$widths) + margin,
                                 unitTo = "in", valueOnly = TRUE),
-           height = convertHeight(sum(g$heights) + margin, 
+           height = convertHeight(sum(g$heights) + margin,
                                   unitTo = "in", valueOnly = TRUE))
   g
 }
