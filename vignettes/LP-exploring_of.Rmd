@@ -316,6 +316,16 @@ little bit crude, as severall variables are pushed to the global enviroment
 for it to work. This is suboptimal and will hopefully be improved upon in the 
 future.
 
+The computations of the app are defined in the `server` part and the 
+apperearence in the `ui`. The app itself is depicted in the following figure:
+
+![](figures/eg-explore_runoff_with_ofun.jpg)
+
+User can select different basins via the selection box (*# basins:*) on the 
+top-left and interactively zoom and move the graph in the center by clicking 
+on it or moving the date switches below the graph. While doing so the 
+objective functions (presented in the table below) are re-calculated on time. 
+
 The app requires quite a lot of dependencies. Right now these are: 
  - `shiny`,to execute the whole app and make interactivity possible
 ```{r}
@@ -358,9 +368,6 @@ explore_runoff_with_ofun <- function(runoff_data) {
 
 ```{r}
   server <- function(input, output, session) {# executes calculation file
-    # select the basin from the data
-    #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
-
     # get strings used in the naming of runoff_data
     unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
     x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
@@ -382,7 +389,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
       xts(selected_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
     })
     # plots
-    output$dygrph1 <- renderDygraph({
+    output$hydrographs <- renderDygraph({
       dygraph(xts_selected_data(), group="A") %>%
         dySeries("Qobs", 
                  label = visCOS::viscos_options()$name_data1,
@@ -395,16 +402,16 @@ explore_runoff_with_ofun <- function(runoff_data) {
     })
     # stats
     slctd_from <- reactive({
-      if (!is.null(input$dygrph1_date_window))
-        input$dygrph1_date_window[[1]]
+      if (!is.null(input$hydrographs_date_window))
+        input$hydrographs_date_window[[1]]
     })
     slctd_to <- reactive({
-      if (!is.null(input$dygrph1_date_window))
-        input$dygrph1_date_window[[2]]
+      if (!is.null(input$hydrographs_date_window))
+        input$hydrographs_date_window[[2]]
     })
     # stats header
     output$slctd_info <- renderText({
-      if (!is.null(input$dygrph1_date_window))
+      if (!is.null(input$hydrographs_date_window))
         paste(strftime(slctd_from(), format = "%d %b %Y"),
               "-",
               strftime(slctd_to(), format = "%d %b %Y"),
@@ -412,19 +419,25 @@ explore_runoff_with_ofun <- function(runoff_data) {
     })
     # stats calc
     sub_slctd <- reactive({
-      if (!is.null(input$dygrph1_date_window))
+      if (!is.null(input$hydrographs_date_window))
         xts_selected_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
                                strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
 
     output$slctd_OF <- renderTable({
-      if (!is.null(input$dygrph1_date_window))
+      if (!is.null(input$hydrographs_date_window))
         out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
     })
   }
 ```
 
+The `ui` is quite spartan. It consists a input selection (`selectInput`), 
+which allows user to select different basins, the `dygraph` output `hydrographs`
+for the interactive exploration of the $x$ and $y$ data and a formatted table
+output (`slctd_OF`), which displays the different objective functions (defined 
+in `explore_ofun`). The `hr` command block seperates this table from the 
+`dygraph` output via a small-grey line. 
 ```{r}
   ui <- fluidPage(
       selectInput("basin_num",
@@ -432,7 +445,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
                   choices = d_nums,
                   selected = 1,
                   width = "100px"),
-      dygraphOutput("dygrph1", width = "100%", height = "400px"),
+      dygraphOutput("hydrographs", width = "100%", height = "400px"),
       hr(),
       fluidRow(
         column(12, align = "center",

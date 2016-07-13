@@ -93,9 +93,6 @@ explore_runoff_with_ofun <- function(runoff_data) {
   d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique
 
   server <- function(input, output, session) {# executes calculation file
-    # select the basin from the data
-    #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
-
     # get strings used in the naming of runoff_data
     unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
     x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
@@ -117,7 +114,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
       xts(selected_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
     })
     # plots
-    output$dygrph1 <- renderDygraph({
+    output$hydrographs <- renderDygraph({
       dygraph(xts_selected_data(), group="A") %>%
         dySeries("Qobs", 
                  label = visCOS::viscos_options()$name_data1,
@@ -130,16 +127,16 @@ explore_runoff_with_ofun <- function(runoff_data) {
     })
     # stats
     slctd_from <- reactive({
-      if (!is.null(input$dygrph1_date_window))
-        input$dygrph1_date_window[[1]]
+      if (!is.null(input$hydrographs_date_window))
+        input$hydrographs_date_window[[1]]
     })
     slctd_to <- reactive({
-      if (!is.null(input$dygrph1_date_window))
-        input$dygrph1_date_window[[2]]
+      if (!is.null(input$hydrographs_date_window))
+        input$hydrographs_date_window[[2]]
     })
     # stats header
     output$slctd_info <- renderText({
-      if (!is.null(input$dygrph1_date_window))
+      if (!is.null(input$hydrographs_date_window))
         paste(strftime(slctd_from(), format = "%d %b %Y"),
               "-",
               strftime(slctd_to(), format = "%d %b %Y"),
@@ -147,14 +144,14 @@ explore_runoff_with_ofun <- function(runoff_data) {
     })
     # stats calc
     sub_slctd <- reactive({
-      if (!is.null(input$dygrph1_date_window))
+      if (!is.null(input$hydrographs_date_window))
         xts_selected_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
                                strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
 
     output$slctd_OF <- renderTable({
-      if (!is.null(input$dygrph1_date_window))
+      if (!is.null(input$hydrographs_date_window))
         out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
     })
   }
@@ -164,7 +161,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
                   choices = d_nums,
                   selected = 1,
                   width = "100px"),
-      dygraphOutput("dygrph1", width = "100%", height = "400px"),
+      dygraphOutput("hydrographs", width = "100%", height = "400px"),
       hr(),
       fluidRow(
         column(12, align = "center",
