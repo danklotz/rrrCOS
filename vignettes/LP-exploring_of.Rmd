@@ -311,10 +311,7 @@ The so obtained period-wise objective function values are marked by `_period`
 ## `explore_basins_with_of`
 This function is a [shiny App](http://shiny.rstudio.com/) which makes it
 possible to explore the (hydro-) raphs for the different basins in conjunction 
-with objective functions for the given time-window. The code is (still) a 
-little bit crude, as severall variables are pushed to the global enviroment 
-for it to work. This is suboptimal and will hopefully be improved upon in the 
-future.
+with objective functions for the given time-window. 
 
 The computations of the app are defined in the `server` part and the 
 apperearence in the `ui`. The app itself is depicted in the following figure:
@@ -324,10 +321,19 @@ apperearence in the `ui`. The app itself is depicted in the following figure:
 User can select different basins via the selection box (*# basins:*) on the 
 top-left and interactively zoom and move the graph in the center by clicking 
 on it or moving the date switches below the graph. While doing so the 
-objective functions (presented in the table below) are re-calculated on time. 
+objective functions (presented in the table below) are re-calculated for the
+chosen time window.
 
-The app requires quite a lot of dependencies. Right now these are: 
- - `shiny`,to execute the whole app and make interactivity possible
+The app has actually quite a lot of dependencies. Right now these are: 
+ - `shiny`, to execute the whole app and make interactivity possible. 
+ - `dplyr`, for the `selection` of columns and the `filtering` of rows. 
+ - `magrittr`, to make the code more easily readible
+ - `xts`, because the `dygraphs` package only works correctly if the data is 
+ in `xts` format. 
+ - `dygraphs` for the interactive visualisation of the time series
+ 
+To make sure that everything is available at runtime all of the dependencies are
+called in the head of the function: 
 ```{r}
 #' explore runoff_data with Objective Funcitons
 #'
@@ -351,83 +357,123 @@ explore_runoff_with_ofun <- function(runoff_data) {
   ##########################
 ```
 
-```{r}
-  #$ this is all suboptimal! Maybe exploit the global function or something
-  runoff_data %<>% remove_leading_zeros
-  if ( !viscos_options( )$name_COSposix %in% names(runoff_data) ) {
-    runoff_data %<>% prepare_complete_date()
-  }
-  runoff_data <<- runoff_data
-  d_xts <<- runoff_as_xts(runoff_data)
-  d_names_all<- names(d_xts)
-  idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
-  d_names <<- d_names_all[idx_names]
-  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique
+Currently the shiny app needs some pre-calculation, which are send with `<<-` 
+to the global environment. This is acutally bad, since the fucntion changes the 
+varibales of the global environment. But until now, no better solution could be 
+found. The first part (I) of the pre-calculations includes the defensive 
+function `remove_leading_zeros`, that removes the leading zeros from the 
+data.frame `runoff_data`. 
+For example: If a column would be named `QOBS_00001` it would be transformed to
+`QOBS_1`. Afterwards, it is checked if the "cleansed" data (`clean_runoff_data`)
+does the needed `viscos_options( )$name_COSposix` column. If it does not, then 
+the column is created with `prepare_complete_date`. In the second part (II) 
+the actual pre-calculation takes place. The data is transformed into an `xts` 
+object (`d_xts`).
 
+Then columns with $x$ and $y$ data are marked and the internal numeration is 
+saved within the variable `d_nums`. The former operation is achieved by 
+searching for all the columns with digits in `d_xts`. The latter by removing 
+all the non-digits from the column-names and searching for the unique integer. 
+
+Note that this appraoch forces users to enumerate their basins with integers, as 
+floating-numbers would be transformed to!
+```{r}
+  #$ this is all suboptimal! 
+  # (I)
+  clean_runoff_data <- runoff_data %>% remove_leading_zeros
+  if ( !viscos_options( )$name_COSposix %in% names(clean_runoff_data) ) {
+    clean_runoff_data %<>% prepare_complete_date
+  }
+  # (II)
+    d_xts <- runoff_as_xts(clean_runoff_data)
+    idx_names <- names(d_xts) %>% 
+      grepl("\\d" ,.)
+    d_nums <- d_xts %>% 
+      names() %>%
+      .[idx_names] %>% 
+      gsub("\\D","",.) %>% 
+      as.integer %>% 
+      unique
 ```
 
+
+The server-side of the shiny app is rather lengthy but not to difficult. 
+The major readability problems accour because of the unusual formatting enforced
+by shiny. The `reactive({})` marks all the interactive parts of the server. 
+The calculations are saved in the output-stucutures, which is handed over to the 
+`ui`. The graphs are saved/plotted to `output$hydrographs` and the objective 
+functions to `output$slctd_OF`. The start and end of the current time window is 
+haned  as string to the variable `output$selected_timewindow`. This requires
+some transformation from the obtained `xts` values. This is done with 
+`strftime(., format = "%d %b %Y)`, which convertes between character 
+representations and objects of `POSIXlt` and `POSIXct`.
 ```{r}
   server <- function(input, output, session) {# executes calculation file
-    # get strings used in the naming of runoff_data
-    unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
-    x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
-    y_string <- unique_data_names[ unique_data_names  %>% grep(viscos_options( )$name_data2,.) ]
-    #
+    # get strings used in the naming of clean_runoff_data
+    unique_data_names <- names(clean_runoff_data) %>%
+      gsub("\\d","",.) %>% 
+      tolower %>%
+      unique
+    x_string <- unique_data_names[ unique_data_names %>% 
+                                     grep(viscos_options( )$name_data1,.) ]
+    y_string <- unique_data_names[ unique_data_names  %>% 
+                                     grep(viscos_options( )$name_data2,.) ]
+    # (II) select data
     '%&%' <- function(a,b) paste(a,b,sep = "")
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
-      select(runoff_data,
+      select(clean_runoff_data,
              matches( selector_x() ),
              matches( selector_y() )
       ) %>%
-        select(Qobs = matches( selector_x() ),
-               Qsim = matches( selector_y() ))
+        select(x = matches( selector_x() ),
+               y = matches( selector_y() ))
     })
     # create xts-formated table for use in dygraphs
     xts_selected_data <- reactive ({
-      xts(selected_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
+      xts(selected_data(),
+          order.by = clean_runoff_data[[viscos_options()$name_COSposix]])
     })
     # plots
     output$hydrographs <- renderDygraph({
       dygraph(xts_selected_data(), group="A") %>%
-        dySeries("Qobs", 
+        dySeries("x", 
                  label = visCOS::viscos_options()$name_data1,
                  color = viscos_options()$color_data1 ) %>%
-        dySeries("Qsim", 
+        dySeries("y", 
                  label = visCOS::viscos_options()$name_data2,
                  color = viscos_options()$color_data2 ) %>%
         dyOptions(includeZero = TRUE) %>%
         dyRangeSelector(height = 20, strokeColor = "")
     })
-    # stats
-    slctd_from <- reactive({
+    # beginnning and end of time window
+    selcted_from <- reactive({
       if (!is.null(input$hydrographs_date_window))
         input$hydrographs_date_window[[1]]
     })
-    slctd_to <- reactive({
+    selcted_to <- reactive({
       if (!is.null(input$hydrographs_date_window))
         input$hydrographs_date_window[[2]]
     })
     # stats header
-    output$slctd_info <- renderText({
+    output$selected_timewindow <- renderText({
       if (!is.null(input$hydrographs_date_window))
-        paste(strftime(slctd_from(), format = "%d %b %Y"),
+        paste(strftime(selcted_from(), format = "%d %b %Y"),
               "-",
-              strftime(slctd_to(), format = "%d %b %Y"),
+              strftime(selcted_to(), format = "%d %b %Y"),
               sep = " ")
     })
     # stats calc
     sub_slctd <- reactive({
       if (!is.null(input$hydrographs_date_window))
-        xts_selected_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
-                               strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
+        xts_selected_data()[paste(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),
+                               strftime(selcted_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
-
     output$slctd_OF <- renderTable({
       if (!is.null(input$hydrographs_date_window))
-        out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
+        out <- serve_ofun( sub_slctd()$x,sub_slctd()$y )
     })
   }
 ```
@@ -449,7 +495,7 @@ in `explore_ofun`). The `hr` command block seperates this table from the
       hr(),
       fluidRow(
         column(12, align = "center",
-          textOutput("slctd_info"),
+          textOutput("selected_timewindow"),
           tableOutput("slctd_OF")
         )
       )
@@ -460,7 +506,6 @@ in `explore_ofun`). The `hr` command block seperates this table from the
   shinyApp(ui,server)
 }
 ```
-
 
 ### `explore_ofun`
 This function is a sub-function of `explore_basins_with_of` and basically simpler

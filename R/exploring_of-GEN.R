@@ -80,46 +80,55 @@ explore_runoff_with_ofun <- function(runoff_data) {
   require("xts", quietly = TRUE)
   require("dygraphs", quietly = TRUE)
   ##########################
-  #$ this is all suboptimal! Maybe exploit the global function or something
-  runoff_data %<>% remove_leading_zeros
-  if ( !viscos_options( )$name_COSposix %in% names(runoff_data) ) {
-    runoff_data %<>% prepare_complete_date()
+  #$ this is all suboptimal! 
+  # (I)
+  clean_runoff_data <- runoff_data %>% remove_leading_zeros
+  if ( !viscos_options( )$name_COSposix %in% names(clean_runoff_data) ) {
+    clean_runoff_data %<>% prepare_complete_date
   }
-  runoff_data <<- runoff_data
-  d_xts <<- runoff_as_xts(runoff_data)
-  d_names_all<- names(d_xts)
-  idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
-  d_names <<- d_names_all[idx_names]
-  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique
-
+  # (II)
+    d_xts <- runoff_as_xts(clean_runoff_data)
+    idx_names <- names(d_xts) %>% 
+      grepl("\\d" ,.)
+    d_nums <- d_xts %>% 
+      names() %>%
+      .[idx_names] %>% 
+      gsub("\\D","",.) %>% 
+      as.integer %>% 
+      unique
   server <- function(input, output, session) {# executes calculation file
-    # get strings used in the naming of runoff_data
-    unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
-    x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
-    y_string <- unique_data_names[ unique_data_names  %>% grep(viscos_options( )$name_data2,.) ]
-    #
+    # get strings used in the naming of clean_runoff_data
+    unique_data_names <- names(clean_runoff_data) %>%
+      gsub("\\d","",.) %>% 
+      tolower %>%
+      unique
+    x_string <- unique_data_names[ unique_data_names %>% 
+                                     grep(viscos_options( )$name_data1,.) ]
+    y_string <- unique_data_names[ unique_data_names  %>% 
+                                     grep(viscos_options( )$name_data2,.) ]
+    # (II) select data
     '%&%' <- function(a,b) paste(a,b,sep = "")
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
-      select(runoff_data,
+      select(clean_runoff_data,
              matches( selector_x() ),
              matches( selector_y() )
       ) %>%
-        select(Qobs = matches( selector_x() ),
-               Qsim = matches( selector_y() ))
+        select(x = matches( selector_x() ),
+               y = matches( selector_y() ))
     })
     # create xts-formated table for use in dygraphs
     xts_selected_data <- reactive ({
-      xts(selected_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
+      xts(selected_data(),order.by = clean_runoff_data[[viscos_options()$name_COSposix]])
     })
     # plots
     output$hydrographs <- renderDygraph({
       dygraph(xts_selected_data(), group="A") %>%
-        dySeries("Qobs", 
+        dySeries("x", 
                  label = visCOS::viscos_options()$name_data1,
                  color = viscos_options()$color_data1 ) %>%
-        dySeries("Qsim", 
+        dySeries("y", 
                  label = visCOS::viscos_options()$name_data2,
                  color = viscos_options()$color_data2 ) %>%
         dyOptions(includeZero = TRUE) %>%
@@ -152,7 +161,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
 
     output$slctd_OF <- renderTable({
       if (!is.null(input$hydrographs_date_window))
-        out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
+        out <- serve_ofun( sub_slctd()$x,sub_slctd()$y )
     })
   }
   ui <- fluidPage(
