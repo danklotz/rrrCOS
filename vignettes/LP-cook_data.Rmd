@@ -57,7 +57,7 @@ This function removes all columns not specified in the `viscos_options` string
 `data_regex`, as well basins where no observations are available.
 The first part is done by identifying the names of the data_frame and
 searching for the idx of the names defined in the regular expression string.
-The second part is done via the function prepare.only_observed (see next subchapter).
+The second part is done via the function `prepare.only_observed` (see next subchapter).
 It is actually so pretty simple, but really useful. Since the solution is
 quite specific the function tests if the input is a data.frame and returns an
 error if not.

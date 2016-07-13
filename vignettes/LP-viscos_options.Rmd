@@ -12,9 +12,6 @@ output:
 ```{r setup, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
-
-# Introduction 
-
 ```{r, echo=FALSE}
 #' visCOS global options
 #' 
@@ -55,6 +52,13 @@ knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 #' viscos_options("name_data1")
 #' @export
 ```
+# Introduction 
+his section defines code of the visCOS functions used to set and adapt your 
+visCOS options. There are options for the (raw) data and for the settings for 
+your plots
+
+# Code
+The `viscos_options` function is build using the GlobalOptions package
 
 ```{r}
 
