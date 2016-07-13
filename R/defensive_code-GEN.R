@@ -12,22 +12,22 @@ assert_complete_date <- function(runoff_data) {
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")
-  } else if (OK_COSdate & !OK_POSIXdates) { 
+  } else if (OK_COSdate & !OK_POSIXdates) {
     stop("NO POSIXct fomrated column within the runoff_data!")
   } else if (!OK_COSdate & OK_POSIXdates) {
     stop("NO COSdate year within the runoff_data!")
   }
 }
-# uses stop if the input: "data" is not of class "data.frame" 
+# uses stop if the input: "data" is not of class "data.frame"
 assert_dataframe <- function(data) {
   if ( !is.data.frame(data) ) stop("runoff_data is no data_frame!")
 }
 assert_of<- function(of) {
   if ( !is.list(of) ) {
-    stop("The basic objective funcitons are not stored in a list!")
+    stop("The basic objective functions are not stored in a list!")
   }
   assert_right_of <- any( grepl("NSE.*|KGE.*|pBIAS.*|CORR.*",names(of)) == TRUE)
   if ( !assert_right_of ) {
-    stop("The objective functions do not contain the right named entries, i.e. NSE,KGE,pBIAS,CORR") 
+    stop("The objective functions do not contain the right named entries, i.e. NSE,KGE,pBIAS,CORR")
   }
 }

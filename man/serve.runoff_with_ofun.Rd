@@ -9,7 +9,7 @@ serve.runoff_with_ofun(runoff_data)
 \item{d_xts}{runoff_data formatted as time series}
 }
 \description{
-Runs a Shiny App which can be used to get an overview of a runoff_data time series object. 
+Runs a Shiny App which can be used to get an overview of a runoff_data time series object.
 Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App.
 }
 \examples{

@@ -26,7 +26,7 @@ Alternatively the `readr` can be used if the data is more structured and large.
 
 The function `get_runoff_example` can be used to get some exemplary data
 from within **visCOS**:
-```{r, eval = TRUE, purl = FALSE}
+```{r}
   library(visCOS)
   runoff_example <- get_runoff_example()
   head(runoff_example)
