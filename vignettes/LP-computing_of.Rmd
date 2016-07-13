@@ -21,38 +21,38 @@ output:
 
 # Introduction
 This chapter defines the function necessary to calculate the objective functions
-$of$. The code for exploring and visualising objective function is defined in 
-seperate sections: 
+$of$. The code for exploring and visualising objective function is defined in
+seperate sections:
 
 - [Explore Basin-Graphs with objective functions](LP-explore_basins_with_of.html)
 
 Currently 4 objective functions are used in **visCOS**. They are calculated from
 the data columns of a data.frame defined by `viscos_options$name_data1` and
 `viscos_options$name_data2`. Assuming that `name_data1` is $x$ and `name_data1`
-is $y$ they are defined as shown in the following. 
+is $y$ they are defined as shown in the following.
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}
   # here we define some data for the demonstrational plots
-  number_of_data <- 200
+  number_of_data <- 50
   mean <- 0
   sd <- 1
   x <- rnorm(number_of_data,mean,sd)
   noise <- rnorm(number_of_data,mean,sd)
   demo_data <- data.frame(
     x = x,
+    t = 1:length(x),
     # y:
     y_0 = noise,
     y_m1 = -x,
     y_1 = x,
     y_2 = x^2,
-    y_mh = -x + noise,
-    y_h = x + noise
+    y_mh = -x + 0.7*noise,
+    y_h = x + 0.7*noise
   )  
   demo_names <- names(demo_data)
   demo_length <- length(demo_names)
-
-  # since I do not want to many dependencies and need to plot more functions into
-  # one plot I am gonna use the `multiplot` function by Winson Chang
+# since I do not want to many dependencies and need to plot more functions into
+# one plot I am gonna use the `multiplot` function by Winson Chang
 # see: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 multiplot <- function(..., plotlist=NULL, cols) {
     require(grid, quietly = TRUE)
@@ -89,26 +89,27 @@ same way as the general definition of the coefficient of determination $R^2$:
 
 $$NSE = \sum_{t=1}^T \frac{x(t)-y(t)}{x(t)-\bar{x}}.$$
 
-In this case the variable $\bar{x}$ represents the average of $x$. The $NSE$
+The variable $\bar{x}$ represents the average of $x$. The $NSE$
 can therefore be seen as the relational the estimator $y$ and the estimator
 resulting form the average of the data. The following figure illustrates
 different $NSE$ values for naive examples.
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples:
+  # examples:
   plot_list <- list()
-  for (i in 2:demo_length) {
+  for (i in 3:demo_length) {
     name_i <- demo_names[i]
-    obj_i <- NSE( sim = demo_data[name_i],obs = demo_data["x"])
+    obj_i <- NSE( obs = demo_data["x"] , sim = demo_data[name_i])
     title_i <- paste("NSE = ", round(obj_i,2), sep = "")
-    plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) +
+    plot_list[[i-2]] <- ggplot(demo_data) +
+      geom_line(aes_string(x = "t", y = x), color = "steelblue") +
+      geom_line(aes_string(x = "t", y = name_i), color = "palevioletred") +
       xlab( title_i ) +
       ylab("") +
       theme_minimal() +
       theme(axis.text.x = element_blank(),
             axis.text.y = element_blank())
   }
- multiplot(plotlist = plot_list, cols = 3 )
+  multiplot(plotlist = plot_list, cols = 3 )
 ```
 
 
@@ -126,20 +127,21 @@ $$ KGE = 1 - ED, $$
 
 with
 
-$$ ED = \sqrt{ (corr-1)^2 + (\alpha-1)^2 + (\beta-1)^2) }. $$
+$$ ED = \sqrt{ (corr-1)^2 + (\alpha-1)^2 + (\beta-1)^2) }; $$
 
 Where $\alpha = \frac{\sigma_y}{ \sigma_x }$ , i.e.: standard deviation $\sigma$ of the $y$ divided by
 the $\sigma$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean.
 The following figure exemplifies its usage for the same data as above.
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples:
+  # examples:
   plot_list <- list()
-  for (i in 2:demo_length) {
+  for (i in 3:demo_length) {
     name_i <- demo_names[i]
-    obj_i <- KGE( sim = demo_data[name_i],obs = demo_data["x"])
+    obj_i <- KGE( obs = demo_data["x"] , sim = demo_data[name_i])
     title_i <- paste("KGE = ", round(obj_i,2), sep = "")
-    plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) +
+    plot_list[[i-2]] <- ggplot(demo_data) +
+      geom_line(aes_string(x = "t", y = x), color = "steelblue") +
+      geom_line(aes_string(x = "t", y = name_i), color = "palevioletred") +
       xlab( title_i ) +
       ylab("") +
       theme_minimal() +
@@ -160,20 +162,21 @@ The following figure illustrates different $pBIAS$ values for the same data
 as above.
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
 # examples:
-  plot_list <- list()
-  for (i in 2:demo_length) {
-    name_i <- demo_names[i]
-    obj_i <- pbias( sim = demo_data[name_i],obs = demo_data["x"])
-    title_i <- paste("pBIAS = ", round(obj_i,2), sep = "")
-    plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) +
-      xlab( title_i ) +
-      ylab("") +
-      theme_minimal() +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_blank())
-  }
-  multiplot(plotlist = plot_list, cols = 3 )
+plot_list <- list()
+for (i in 3:demo_length) {
+  name_i <- demo_names[i]
+  obj_i <- pbias( obs = demo_data["x"] , sim = demo_data[name_i])
+  title_i <- paste("pBIAS = ", round(obj_i,2), sep = "")
+  plot_list[[i-2]] <- ggplot(demo_data) +
+    geom_line(aes_string(x = "t", y = x), color = "steelblue") +
+    geom_line(aes_string(x = "t", y = name_i), color = "palevioletred") +
+    xlab( title_i ) +
+    ylab("") +
+    theme_minimal() +
+    theme(axis.text.x = element_blank(),
+          axis.text.y = element_blank())
+}
+multiplot(plotlist = plot_list, cols = 3 )
 ```
 
 
@@ -191,20 +194,20 @@ from the illustrates some examples of $corr$ to give a feeling for its usage:
 
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
 # examples:
-  plot_list <- list()
-  for (i in 2:demo_length) {
-    name_i <- demo_names[i]
-    obj_i <- cor( x = demo_data[name_i], y = demo_data["x"])
-    title_i <- paste("corr = ", round(obj_i,2), sep = "")
-    plot_list[[i-1]] <- ggplot(demo_data) +
-      geom_point(aes_string(x = "x", y = name_i)) +
-      xlab( title_i ) +
-      ylab("") +
-      theme_minimal() +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_blank())
-  }
- multiplot(plotlist = plot_list, cols = 3 )
+plot_list <- list()
+for (i in 3:demo_length) {
+  name_i <- demo_names[i]
+  obj_i <- cor( x = demo_data["x"] , y = demo_data[name_i])
+  title_i <- paste("corr = ", round(obj_i,2), sep = "")
+  plot_list[[i-2]] <- ggplot(demo_data) +
+    geom_point(aes_string(x = "x", y = name_i)) +
+    xlab( title_i ) +
+    ylab("") +
+    theme_minimal() +
+    theme(axis.text.x = element_blank(),
+          axis.text.y = element_blank())
+}
+multiplot(plotlist = plot_list, cols = 3 )
 ```
 
 
