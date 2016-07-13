@@ -29,6 +29,8 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSposix = "posixdate",
   name_COSperiod = "period",
   # plot stuff
+  color_data1 = "steelblue", 
+  color_data2 = "palevioletred",
   plot_title = "title",
   legend_title = "legend",
   xlab = "year",

@@ -1,11 +1,11 @@
 #' Get basic objective function for runoff_data
 #'
-#' Calculate basic objective functions 
+#' Calculate basic objective functions
 #'(NSE, KGE, percentage BIAS, Correlation (see: xxx)) for
-#' every basin and the chosen periods 
+#' every basin and the chosen periods
 #'
 #' @param runoff_data runoff_data data.frame (see:xxx).
-#' @return list of baisc objective function evaluated for the different 
+#' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
 #' @export
 extract_objective_functions <- function(runoff_data) {
@@ -13,25 +13,25 @@ extract_objective_functions <- function(runoff_data) {
   require("dplyr", quietly = TRUE)
   assert_dataframe(runoff_data)
   stopifnot( exists(viscos_options()$name_COSperiod, where = runoff_data) )
-  # (I) reduce necessary computaiton 
+  # (I) reduce necessary computation
   evaluation_data <- runoff_data[
       runoff_data[[viscos_options()$name_COSperiod]] > 0,
     ]
-  # (II) get information 
-  number_of_basins <- evaluation_data %>% 
+  # (II) get information
+  number_of_basins <- evaluation_data %>%
     names %>%
-    unique %>% 
+    unique %>%
     tolower %>%
-    grepl(viscos_options()$name_data1 , .) %>% 
+    grepl(viscos_options()$name_data1 , .) %>%
     sum
-  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>% 
+  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>%
     unique
   number_of_periods <- periods_in_data %>% length
-  # (III) calculate overall objective functions 
+  # (III) calculate overall objective functions
   obj_fun  <- list()
-  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>% 
+  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>%
     unname
-  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>% 
+  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>%
     unname
   obj_fun$NSE <- hydroGOF::NSE(temp_y,temp_x)
   obj_fun$KGE <- hydroGOF::KGE(temp_y,temp_x)
@@ -43,14 +43,14 @@ extract_objective_functions <- function(runoff_data) {
     obj_fun$KGE_period <- obj_fun$NSE_period
     obj_fun$pBIAS_periods <- obj_fun$NSE_period
     obj_fun$CORR_period <- obj_fun$NSE_period
-    # calculation loop 
+    # calculation loop
     for (k in 1:number_of_periods)
     {
       temp_x <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>% 
+        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>%
         unname
-      temp_y <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>% 
-        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>% 
+      temp_y <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>%
         unname
       obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
@@ -60,32 +60,29 @@ extract_objective_functions <- function(runoff_data) {
   #
   return(obj_fun)
 }
-# Dive With OF ------------------------------------------------------------
-#' serve with ofun 
-#' 
-#' Runs a Shiny App which can be used to get an overview of a runoff_data time series object. 
-#' Explore the runoff_data with a little [shiny](http://shiny.rstudio.com/) App. 
-#' 
+#' explore runoff_data with Objective Funcitons
+#'
+#' Runs a Shiny App which can be used to get an overview of a runoff_data time
+#' series object. 
+#'
 #' @param d_xts runoff_data formatted as time series
 #' @export
-#' @examples 
-#' # get example data, 
-#' # clean it and 
+#' @examples
+#' # get example data,
+#' # clean it and
 #' # explore the model performance
-#' d_runoff <- prepare.remove_chunk( pour.runoff_example() )
-#' serve.runoff_with_ofun(d_runoff)
-serve.runoff_with_ofun <- function(runoff_data) {
-    # pre
-    require("data.table", quietly = TRUE) 
-    require("dplyr", quietly = TRUE)
-    require("shiny", quietly = TRUE)
-    require("xts", quietly = TRUE)
-    require("dygraphs", quietly = TRUE)
+#' d_runoff <- get_runoff_example()
+#' explore_runoff_with_ofun(d_runoff)
+explore_runoff_with_ofun <- function(runoff_data) {
+  require("shiny", quietly = TRUE)
+  require("dplyr", quietly = TRUE)
+  require("magrittr", quietly = TRUE)
+  require("xts", quietly = TRUE)
+  require("dygraphs", quietly = TRUE)
   ##########################
-  # calc
-  #$ this is all suboptimal, maybe exploit the global function or something
+  #$ this is all suboptimal! Maybe exploit the global function or something
   runoff_data %<>% remove_leading_zeros
-  if ( !"POSIXdate" %in% names(runoff_data) ) {
+  if ( !viscos_options( )$name_COSposix %in% names(runoff_data) ) {
     runoff_data %<>% prepare_complete_date()
   }
   runoff_data <<- runoff_data
@@ -93,50 +90,51 @@ serve.runoff_with_ofun <- function(runoff_data) {
   d_names_all<- names(d_xts)
   idx_names <- d_names_all %>% tolower %>% grepl("\\d" ,.)
   d_names <<- d_names_all[idx_names]
-  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique 
-  
-  
-  
+  d_nums <<- d_names %>% gsub("\\D","",.) %>% as.integer %>% unique
+
   server <- function(input, output, session) {# executes calculation file
     # select the basin from the data
     #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
-    
-    # get strings used in the naming of runoff_data 
-    just_words <- names(runoff_data) %>% gsub("\\d","",.) %>% unique
-    obs_string <- just_words[ just_words %>% tolower %>% grep("qobs",.) ]
-    sim_string <- just_words[ just_words %>% tolower %>% grep("qsim",.) ]
-    # 
+
+    # get strings used in the naming of runoff_data
+    unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
+    x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
+    y_string <- unique_data_names[ unique_data_names  %>% grep(viscos_options( )$name_data2,.) ]
+    #
     '%&%' <- function(a,b) paste(a,b,sep = "")
-    select_OBS <- reactive({ obs_string %&% input$basin_num %&% "$" })
-    select_SIM <- reactive({ sim_string %&% input$basin_num %&% "$" })
-    
-    slctd_data <- reactive({
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
+    selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
+    selected_data <- reactive({
       select(runoff_data,
-             matches( select_OBS() ),
-             matches( select_SIM() )
+             matches( selector_x() ),
+             matches( selector_y() )
       ) %>%
-        select(Qobs = matches( select_OBS() ),
-               Qsim = matches( select_SIM() )) 
+        select(Qobs = matches( selector_x() ),
+               Qsim = matches( selector_y() ))
     })
     # create xts-formated table for use in dygraphs
-    xts_slctd_data <- reactive ({
-      xts(slctd_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
+    xts_selected_data <- reactive ({
+      xts(selected_data(),order.by = runoff_data[[viscos_options()$name_COSposix]])
     })
     # plots
     output$dygrph1 <- renderDygraph({
-      dygraph(xts_slctd_data(), group="A") %>%
-        dySeries("Qobs", label="Qobs",color= "steelblue" ) %>%
-        dySeries("Qsim", label="Qsim",color= "palevioletred" ) %>%
+      dygraph(xts_selected_data(), group="A") %>%
+        dySeries("Qobs", 
+                 label = visCOS::viscos_options()$name_data1,
+                 color = viscos_options()$color_data1 ) %>%
+        dySeries("Qsim", 
+                 label = visCOS::viscos_options()$name_data2,
+                 color = viscos_options()$color_data2 ) %>%
         dyOptions(includeZero = TRUE) %>%
         dyRangeSelector(height = 20, strokeColor = "")
     })
     # stats
     slctd_from <- reactive({
-      if (!is.null(input$dygrph1_date_window)) 
+      if (!is.null(input$dygrph1_date_window))
         input$dygrph1_date_window[[1]]
     })
     slctd_to <- reactive({
-      if (!is.null(input$dygrph1_date_window)) 
+      if (!is.null(input$dygrph1_date_window))
         input$dygrph1_date_window[[2]]
     })
     # stats header
@@ -147,25 +145,24 @@ serve.runoff_with_ofun <- function(runoff_data) {
               strftime(slctd_to(), format = "%d %b %Y"),
               sep = " ")
     })
-    # stats calc 
+    # stats calc
     sub_slctd <- reactive({
       if (!is.null(input$dygrph1_date_window))
-        xts_slctd_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
+        xts_selected_data()[paste(strftime(slctd_from(), format = "%Y-%m-%d-%H-%M"),
                                strftime(slctd_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
-    
+
     output$slctd_OF <- renderTable({
       if (!is.null(input$dygrph1_date_window))
         out <- serve_ofun( sub_slctd()$Qobs,sub_slctd()$Qsim )
     })
   }
-  #
   ui <- fluidPage(
       selectInput("basin_num",
                   "# basins:",
-                  choices = d_nums, 
-                  selected = 1, 
+                  choices = d_nums,
+                  selected = 1,
                   width = "100px"),
       dygraphOutput("dygrph1", width = "100%", height = "400px"),
       hr(),

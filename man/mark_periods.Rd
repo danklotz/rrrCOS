@@ -9,11 +9,11 @@ mark_periods(runoff_data, start_month = 10, end_month = 9)
 \item{runoff_data}{The data.frame, which contains the runoff information}
 }
 \value{
-The runoff data.frame reduced and ordered according to the 
-hydrological years within the data. 
+The runoff data.frame reduced and ordered according to the
+hydrological years within the data.
 \strong{Note:} The periods columns are formatted as characters!
 }
 \description{
-Mark the periods within runoff_data. 
+Mark the periods within runoff_data.
 `start_month` and `end_month`.
 }

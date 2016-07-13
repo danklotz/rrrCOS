@@ -9,11 +9,11 @@ extract_objective_functions(runoff_data)
 \item{runoff_data}{runoff_data data.frame (see:xxx).}
 }
 \value{
-list of baisc objective function evaluated for the different 
+list of basic objective function evaluated for the different
 hydrological years and over the whole timespan.
 }
 \description{
-Calculate basic objective functions 
+Calculate basic objective functions
 (NSE, KGE, percentage BIAS, Correlation (see: xxx)) for
 every basin and the chosen periods
 }

@@ -11,7 +11,7 @@ prepare_complete_date(runoff_data = NULL, name_cosyear = "yyyy",
 
 \item{name_cosyear}{string with the name of the `COSdate` year column}
 
-\item{name_posi}{string with the name of the POSIXct column}
+\item{name_posix}{string with the name of the POSIXct column}
 }
 \value{
 The new runoff data.frame with the added data-format.

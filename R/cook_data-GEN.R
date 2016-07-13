@@ -1,65 +1,65 @@
   #' Get runoff example
-  #' 
+  #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
   get_runoff_example <- function() {
-    file_path <- system.file("extdata", 
-                             "runoff_example.csv", 
+    file_path <- system.file("extdata",
+                             "runoff_example.csv",
                              package = "visCOS")
     runoff_example <- read.csv(file_path)
     return(runoff_example)
   }
   #' removes chunk in runoff_data
-  #' 
-  #' Remove all collumns which are not foreseen (see: viscos_options) from 
-  #' runoff data 
-  #' 
-  #' @param runoff_data data.frame object containing at lesast COSdate, 
+  #'
+  #' Remove all columns which are not foreseen (see: viscos_options) from
+  #' runoff data
+  #'
+  #' @param runoff_data data.frame object containing at least COSdate,
   #' Qsim and Qobs (see: xxx)
-  #' @return data.frame object withouth the chunk
+  #' @return data.frame object without the chunk
   #' @export
   remove_chunk <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
-  lowercase_names_in_data <- runoff_data %>% names %>% tolower 
-  # 
+  lowercase_names_in_data <- runoff_data %>% names %>% tolower
+  #
   regex_columns <- get_regex_for_runoff_data() # see: helpers
 
-  idx <- regex_columns %>% 
+  idx <- regex_columns %>%
     grep(.,lowercase_names_in_data)
     no_chunk_runoff_data <- runoff_data[ , idx]
     return( only_observed_basins(no_chunk_runoff_data) )
   }
-# remove basins withouth observations
+# remove basins without observations
 #
-# Removes basins withouth observation (-999/NA values) from the provided dataframe
+# Removes basins without observation (-999/NA values) from the provided data.frame
 #
-# @param runoff_data A raw runoff_data data.frame, which may containts basins 
-# withouth observations.
+# @param runoff_data A raw runoff_data data.frame, which may contains basins
+# without observations.
 # \strong{Note:} It is assumed that all available basins are simulated!
 # @return data.frame without the observation-free basins
 # @export
 only_observed_basins <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
-  runoff_data[is.na(runoff_data)] <- -999 
+  runoff_data[is.na(runoff_data)] <- -999
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
   if ( any(colmax < 0.0) ){
-    idx_temp <- which(colmax < 0.0) 
+    idx_temp <- which(colmax < 0.0)
     obs_regex <- paste(viscos_options()$name_data1,".*", sep ="")
     OnlyQobsSelected <- idx_temp %>%
-      names %>% 
+      names %>%
       tolower %>%
       grepl(obs_regex,.) %>%
       any
     if (!OnlyQobsSelected){
       stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
     }
-    idx_slct <- c(idx_temp,idx_temp + 1) %>% sort() 
+    idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
     d_onlyObserved <- runoff_data[-idx_slct]
     # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
     colmin <- lapply(X = d_onlyObserved, FUN = min)
-    idx_temp <- which(colmin < 0.0) 
+    idx_temp <- which(colmin < 0.0)
     d_onlyObserved[d_onlyObserved[idx_temp]<0, idx_temp] <- NA
     return(d_onlyObserved)
   } else {
@@ -69,18 +69,18 @@ only_observed_basins <- function(runoff_data) {
 
 
 #' Complete the date-formats with POSIXct or COSdate
-#' 
+#'
 #' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
-#' 
+#'
 #' @param runoff_data The data.frame, which contains the runoff information
 #' @param name_cosyear string with the name of the `COSdate` year column
-#' @param name_posi string with the name of the POSIXct column 
-#' @return The new runoff data.frame with the added data-format. 
+#' @param name_posix string with the name of the POSIXct column
+#' @return The new runoff data.frame with the added data-format.
 #' @export
-prepare_complete_date <- function(runoff_data = NULL, 
+prepare_complete_date <- function(runoff_data = NULL,
                                   name_cosyear = "yyyy",
                                   name_posix = "POSIXdate") {
-  # make sure that magrittr is loaded: 
+  # make sure that magrittr is loaded:
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   # check for COSdates and stop if non-logical expression are obtained
@@ -92,7 +92,7 @@ prepare_complete_date <- function(runoff_data = NULL,
   # choose function depending on which formats are available!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")
-  } else if (OK_COSdate & !OK_POSIXdates) { 
+  } else if (OK_COSdate & !OK_POSIXdates) {
     runoff_data <- implode_cosdate(runoff_data) # see following chapter
   } else if (!OK_COSdate & OK_POSIXdates) {
     stop("POSIXct to COSdates not yet supported :(")
@@ -101,7 +101,7 @@ prepare_complete_date <- function(runoff_data = NULL,
 }
 # transform COSdate into the nicer POSIXct-date format
 #
-# Takes a data.frame, which contains the COSdate format (see: xxx) and 
+# Takes a data.frame, which contains the COSdate format (see: xxx) and
 # transforms it into a POSIXct series. Note that time is assumed to be in UTC
 implode_cosdate <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
@@ -121,27 +121,27 @@ implode_cosdate <- function(runoff_data) {
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   runoff_data %<>% remove_chunk
-  runoff_names <- runoff_data %>% names %>% gsub("\\d","",.) 
+  runoff_names <- runoff_data %>% names %>% gsub("\\d","",.)
   # get numbers and remove leading zeros
-  runoff_nums <- runoff_data %>% 
-    names %>% 
-    gsub("\\D","",.) %>% 
+  runoff_nums <- runoff_data %>%
+    names %>%
+    gsub("\\D","",.) %>%
     as.numeric %>%  
     as.character
   runoff_nums[is.na(runoff_nums)] = ""
-  # paste new nums as new data_names 
+  # paste new nums as new data_names
   names(runoff_data) <- paste(runoff_names, runoff_nums, sep = "")
   return(runoff_data)
 }
 #' calculate periods
-#' 
-#' Mark the periods within runoff_data. 
-# The makring uses a monthly resolution, which are defined by the integers 
+#'
+#' Mark the periods within runoff_data.
+# The marking uses a monthly resolution, which are defined by the integers
 #' `start_month` and `end_month`.  
 #'
 #' @param runoff_data The data.frame, which contains the runoff information
-#' @return The runoff data.frame reduced and ordered according to the 
-#' hydrological years within the data. 
+#' @return The runoff data.frame reduced and ordered according to the
+#' hydrological years within the data.
 #' \strong{Note:} The periods columns are formatted as characters!
 #' @export
 mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
@@ -149,7 +149,7 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   runoff_data %<>% remove_chunk %>% prepare_complete_date()
-  # (I) get labels for the monts
+  # (I) get labels for the months
   if (start_month <= end_month ) {
     period_range <- seq(start_month,end_month)
     out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
@@ -161,12 +161,12 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   }
   # (II) mark periods:
     eval_diff <- function(a) {c(a[1],diff(a))}
-    runoff_data[[viscos_options()$name_COSperiod]] <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>% 
-      eval_diff %>% 
-      pmax(.,0) %>% 
-      cumsum 
+    runoff_data[[viscos_options()$name_COSperiod]] <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>%
+      eval_diff %>%
+      pmax(.,0) %>%
+      cumsum
     runoff_data$period[runoff_data[[viscos_options()$name_COSmonth]] %in% out_of_period] <- 0
-    # corrections for last year 
+    # corrections for last year
     max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
     runoff_data %<>% dplyr::mutate(
       period = ifelse(
@@ -195,13 +195,13 @@ runoff_as_xts <- function(runoff_data) {
   assert_complete_date(runoff_data)
   # calculations:
   runoff_data %<>% remove_leading_zeros
-  names(runoff_data) <- runoff_data %>% 
-    remove_leading_zeros %>% 
+  names(runoff_data) <- runoff_data %>%
+    remove_leading_zeros %>%
     names %>%
     tolower
   name_posix <- viscos_options()$name_COSposix %>% tolower
   runoff_data_as_xts <- xts::xts(x = runoff_data,
-                                 order.by = runoff_data[[name_posix]]) 
-  # 
+                                 order.by = runoff_data[[name_posix]])
+  #
   return(runoff_data_as_xts)
 }
