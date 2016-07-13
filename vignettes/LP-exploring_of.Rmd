@@ -255,7 +255,7 @@ The correlation `obj_fun$CORR` is calculated with base `R`. As `cor` returns
 a whole cross-correlation matrix only the diagonal is extracted with `diag`.
 Step (IV) is a period-wise a repetition of step (III). Thus,  at each each
 iteration `k` the given period is filtered from `evaluation_data`
-with `dpylr::filtr` before `temp_x` and `temp_y` is calculated.
+with `dplyr::filtr` before `temp_x` and `temp_y` is calculated.
 The so obtained period-wise objective function values are marked by `_period`
 
 ```{r}
@@ -292,11 +292,11 @@ The so obtained period-wise objective function values are marked by `_period`
     # calculation loop
     for (k in 1:number_of_periods)
     {
-      temp_x <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>%
+      temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dplyr::select(.,starts_with(viscos_options()$name_data1)) %>%
         unname
-      temp_y <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>%
+      temp_y <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dplyr::select(.,starts_with(viscos_options()$name_data2)) %>%
         unname
       obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)

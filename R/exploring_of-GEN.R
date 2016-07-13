@@ -46,11 +46,11 @@ extract_objective_functions <- function(runoff_data) {
     # calculation loop
     for (k in 1:number_of_periods)
     {
-      temp_x <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dpylr::select(.,starts_with(viscos_options()$name_data1)) %>%
+      temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dplyr::select(.,starts_with(viscos_options()$name_data1)) %>%
         unname
-      temp_y <- dpylr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dpylr::select(.,starts_with(viscos_options()$name_data2)) %>%
+      temp_y <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
+        dplyr::select(.,starts_with(viscos_options()$name_data2)) %>%
         unname
       obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
@@ -60,8 +60,7 @@ extract_objective_functions <- function(runoff_data) {
   #
   return(obj_fun)
 }
-
-#' explore runoff_data with Objective Functions
+#' explore runoff_data with Objective Funcitons
 #'
 #' Runs a Shiny App which can be used to get an overview of a runoff_data time
 #' series object. 
@@ -98,7 +97,6 @@ explore_runoff_with_ofun <- function(runoff_data) {
     #§ Problem: QOBS%_02 assumes a formatted integer format ! This should not be, Maybe try "stringr"
 
     # get strings used in the naming of runoff_data
-
     unique_data_names <- names(runoff_data) %>% gsub("\\d","",.) %>% tolower %>% unique
     x_string <- unique_data_names[ unique_data_names %>% grep(viscos_options( )$name_data1,.) ]
     y_string <- unique_data_names[ unique_data_names  %>% grep(viscos_options( )$name_data2,.) ]
@@ -111,7 +109,6 @@ explore_runoff_with_ofun <- function(runoff_data) {
              matches( selector_x() ),
              matches( selector_y() )
       ) %>%
-
         select(Qobs = matches( selector_x() ),
                Qsim = matches( selector_y() ))
     })
