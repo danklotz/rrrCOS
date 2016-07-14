@@ -7,7 +7,7 @@ remove_chunk(runoff_data)
 }
 \arguments{
 \item{runoff_data}{data.frame object containing at least COSdate,
-and two data rows defined in viscos_options (see: xxx)}
+and two data rows defined in viscos_options}
 }
 \value{
 data.frame object without the chunk

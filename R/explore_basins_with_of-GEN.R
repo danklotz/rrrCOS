@@ -1,50 +1,50 @@
-#' explore runoff_data with Objective Funcitons
-#'
-#' Runs a Shiny App which can be used to get an overview of a runoff_data time
-#' series object. 
-#'
-#' @param d_xts runoff_data formatted as time series
-#' @export
-#' @examples
-#' # get example data,
-#' # clean it and
-#' # explore the model performance
-#' d_runoff <- get_runoff_example()
-#' explore_runoff_with_ofun(d_runoff)
+  #' explore runoff_data with Objective Functions
+  #'
+  #' Runs a Shiny App which can be used to get an overview of a runoff_data time
+  #' series object.
+  #'
+  #' @param d_xts runoff_data formatted as time series
+  #' @export
+  #' @examples
+  #' # get example data,
+  #' # clean it and
+  #' # explore the model performance
+  #' d_runoff <- get_runoff_example()
+  #' explore_runoff_with_ofun(d_runoff)
 explore_runoff_with_ofun <- function(runoff_data) {
   require("shiny", quietly = TRUE)
-  require("dplyr", quietly = TRUE)
-  require("magrittr", quietly = TRUE)
-  require("xts", quietly = TRUE)
-  require("dygraphs", quietly = TRUE)
+  require("dplyr", quietly = TRUE) # supreme `selection` and the `filtering`
+  require("magrittr", quietly = TRUE) # pipe operator
+  require("xts", quietly = TRUE) # required for dygraphs
+  require("dygraphs", quietly = TRUE) # interactive plotting
   ##########################
-  #$ this is all suboptimal! 
+  #$ this is all suboptimal!
   # (I)
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
-  if ( !viscos_options( )$name_COSposix %in% names(clean_runoff_data) ) {
+  if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
     clean_runoff_data %<>% prepare_complete_date
   }
   # (II)
     d_xts <- runoff_as_xts(clean_runoff_data)
-    idx_names <- names(d_xts) %>% 
+    idx_names <- names(d_xts) %>%
       grepl("\\d" ,.)
-    d_nums <- d_xts %>% 
+    d_nums <- d_xts %>%
       names() %>%
-      .[idx_names] %>% 
-      gsub("\\D","",.) %>% 
-      as.integer %>% 
+      .[idx_names] %>%
+      gsub("\\D","",.) %>%
+      as.integer %>%
       unique
-  server <- function(input, output, session) {# executes calculation file
-    # get strings used in the naming of clean_runoff_data
+  server <- function(input, output, session) {
+    # (I) get strings used in the naming of clean_runoff_data:
     unique_data_names <- names(clean_runoff_data) %>%
-      gsub("\\d","",.) %>% 
+      gsub("\\d","",.) %>%
       tolower %>%
       unique
-    x_string <- unique_data_names[ unique_data_names %>% 
-                                     grep(viscos_options( )$name_data1,.) ]
-    y_string <- unique_data_names[ unique_data_names  %>% 
-                                     grep(viscos_options( )$name_data2,.) ]
-    # (II) select data
+    x_string <- unique_data_names[ unique_data_names %>%
+                                     grep(viscos_options("name_data1"),.) ]
+    y_string <- unique_data_names[ unique_data_names  %>%
+                                     grep(viscos_options("name_data2"),.) ]
+    # (II) select data:
     '%&%' <- function(a,b) paste(a,b,sep = "")
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
@@ -52,28 +52,28 @@ explore_runoff_with_ofun <- function(runoff_data) {
       select(clean_runoff_data,
              matches( selector_x() ),
              matches( selector_y() )
-      ) %>%
+             ) %>%
         select(x = matches( selector_x() ),
                y = matches( selector_y() ))
     })
-    # create xts-formated table for use in dygraphs
+    # (III) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
-          order.by = clean_runoff_data[[viscos_options()$name_COSposix]])
+          order.by = clean_runoff_data[[viscos_options("name_COSposix")]])
     })
-    # plots
+    # (IV) create plots:
     output$hydrographs <- renderDygraph({
       dygraph(xts_selected_data(), group="A") %>%
-        dySeries("x", 
-                 label = visCOS::viscos_options()$name_data1,
-                 color = viscos_options()$color_data1 ) %>%
-        dySeries("y", 
-                 label = visCOS::viscos_options()$name_data2,
-                 color = viscos_options()$color_data2 ) %>%
+        dySeries("x",
+                 label = visCOS::viscos_options("name_data1"),
+                 color = viscos_options("color_data1") ) %>%
+        dySeries("y",
+                 label = visCOS::viscos_options("name_data2"),
+                 color = viscos_options("color_data2") ) %>%
         dyOptions(includeZero = TRUE) %>%
         dyRangeSelector(height = 20, strokeColor = "")
     })
-    # beginnning and end of time window
+    # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
       if (!is.null(input$hydrographs_date_window))
         input$hydrographs_date_window[[1]]
@@ -82,7 +82,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
       if (!is.null(input$hydrographs_date_window))
         input$hydrographs_date_window[[2]]
     })
-    # stats header
+    # (V) extract time_window for the stats header:
     output$selected_timewindow <- renderText({
       if (!is.null(input$hydrographs_date_window))
         paste(strftime(selcted_from(), format = "%d %b %Y"),
@@ -90,7 +90,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
               strftime(selcted_to(), format = "%d %b %Y"),
               sep = " ")
     })
-    # stats calc
+    # (VI) calculate stats:
     sub_slctd <- reactive({
       if (!is.null(input$hydrographs_date_window))
         xts_selected_data()[paste(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),
@@ -119,16 +119,10 @@ explore_runoff_with_ofun <- function(runoff_data) {
     )
   shinyApp(ui,server)
 }
-
-# Get some objective functions (OF)
-#
-# Get some basic objective functions used in hydrology:
-# Root Mean Squared Error, Correlation, NSE, KGE, pbias
-# @return data.frame contianing basic OF
 serve_ofun <- function(x,y) {
   require("hydroGOF", quietly = TRUE)
   require("magrittr", quietly = TRUE)
-  # calc
+  # compute objective functions
   out <- data.frame(
     RMSE = rmse(y,x) %>% as.numeric,
     pbias = pbias(y,x) %>% as.numeric,
@@ -140,4 +134,3 @@ serve_ofun <- function(x,y) {
   )
   return(out)
 }
-

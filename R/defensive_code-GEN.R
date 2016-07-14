@@ -7,8 +7,8 @@ assert_chunk <- function(runoff_data) {
   }
 }
 assert_complete_date <- function(runoff_data) {
-  OK_COSdate <- any(names(runoff_data)== viscos_options()$name_COSyear)
-  OK_POSIXdates <- any(names(runoff_data)== viscos_options()$name_COSposix)
+  OK_COSdate <- any(names(runoff_data)== viscos_options("name_COSyear"))
+  OK_POSIXdates <- any(names(runoff_data)== viscos_options("name_COSposix"))
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")

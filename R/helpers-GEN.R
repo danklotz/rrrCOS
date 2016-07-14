@@ -1,13 +1,13 @@
 get_regex_for_runoff_data <- function() {
-  regex_pattern <- paste("^",viscos_options()$name_COSyear,"$|",
-                         "^",viscos_options()$name_COSmonth,"$|",
-                         "^",viscos_options()$name_COSday,"$|",
-                         "^",viscos_options()$name_COShour,"$|",
-                         "^",viscos_options()$name_COSmin,"$|",
-                         viscos_options()$name_data1,".*|",
-                         viscos_options()$name_data2,".*|",
-                         viscos_options()$name_COSposix,"|",
-                         viscos_options()$name_COSperiod,
+  regex_pattern <- paste("^",viscos_options("name_COSyear"),"$|",
+                         "^",viscos_options("name_COSmonth"),"$|",
+                         "^",viscos_options("name_COSday"),"$|",
+                         "^",viscos_options("name_COShour"),"$|",
+                         "^",viscos_options("name_COSmin"),"$|",
+                         viscos_options("name_data1"),".*|",
+                         viscos_options("name_data2"),".*|",
+                         viscos_options("name_COSposix"),"|",
+                         viscos_options("name_COSperiod"),
                          sep = "")
   return(regex_pattern)
 }
@@ -23,10 +23,10 @@ get_basin_numbers <- function(runoff_data) {
 }
 
 
-
 set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
                            margin = unit(1,"mm"),
-                           width=unit(3, "cm"), height=unit(2, "cm")){
+                           width=unit(3, "cm"),
+                           height=unit(2, "cm")){
 
   panels <- g$layout$name=="panel"
   panel_index_w<- g$layout$l[panels]
@@ -37,7 +37,8 @@ set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
   g$heights[panel_index_h] <- rep(list(height), nh)
   class(g) <- c("fixed", class(g), "ggplot")
   if(!is.null(file))
-    ggsave(file, g,
+    ggsave(file, 
+           g,
            width = convertWidth(sum(g$widths) + margin,
                                 unitTo = "in", valueOnly = TRUE),
            height = convertHeight(sum(g$heights) + margin,

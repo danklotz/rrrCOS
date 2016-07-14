@@ -16,7 +16,7 @@
   #' runoff data
   #'
   #' @param runoff_data data.frame object containing at least COSdate,
-  #' and two data rows defined in viscos_options (see: xxx)
+  #' and two data rows defined in viscos_options
   #' @return data.frame object without the chunk
   #' @export
 
@@ -48,7 +48,7 @@ only_observed_basins <- function(runoff_data) {
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0)
-    obs_regex <- paste(viscos_options()$name_data1,".*", sep ="")
+    obs_regex <- paste(viscos_options("name_data1"),".*", sep ="")
     OnlyQobsSelected <- idx_temp %>%
       names %>%
       tolower %>%
@@ -86,8 +86,8 @@ prepare_complete_date <- function(runoff_data = NULL,
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   # check for COSdates and stop if non-logical expression are obtained
-  OK_COSdate <- any(names(runoff_data)== viscos_options()$name_COSyear)
-  OK_POSIXdates <- any(names(runoff_data)== viscos_options()$name_COSposix)
+  OK_COSdate <- any(names(runoff_data)== viscos_options("name_COSyear"))
+  OK_POSIXdates <- any(names(runoff_data)== viscos_options("name_COSposix"))
   if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
     stop("Something seems to be wrong with the date / time formats :(")
   }
@@ -110,14 +110,14 @@ implode_cosdate <- function(runoff_data) {
   assert_dataframe(runoff_data)
   name_string <-  runoff_data %>% names %>% tolower
   #
-  POSIXdate <- paste(runoff_data[[viscos_options()$name_COSyear]],
-                     sprintf("%02d",runoff_data[[viscos_options()$name_COSmonth]]),
-                     sprintf("%02d",runoff_data[[viscos_options()$name_COSday]]),
-                     sprintf("%02d",runoff_data[[viscos_options()$name_COShour]]),
-                     sprintf("%02d",runoff_data[[viscos_options()$name_COSmin]]),
+  POSIXdate <- paste(runoff_data[[viscos_options("name_COSyear")]],
+                     sprintf("%02d",runoff_data[[viscos_options("name_COSmonth")]]),
+                     sprintf("%02d",runoff_data[[viscos_options("name_COSday")]]),
+                     sprintf("%02d",runoff_data[[viscos_options("name_COShour")]]),
+                     sprintf("%02d",runoff_data[[viscos_options("name_COSmin")]]),
                      sep= "" ) %>%
     as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
-  runoff_data[[viscos_options()$name_COSposix]] <- POSIXdate
+  runoff_data[[viscos_options("name_COSposix")]] <- POSIXdate
   return(runoff_data)
 }
 remove_leading_zeros <- function(runoff_data) {
@@ -163,17 +163,18 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   }
   # (II) mark periods:
     eval_diff <- function(a) {c(a[1],diff(a))}
-    runoff_data[[viscos_options()$name_COSperiod]] <- runoff_data[[viscos_options()$name_COSmonth]] %in% c(start_month) %>%
+    runoff_data[[viscos_options("name_COSperiod")]] <- 
+      runoff_data[[viscos_options("name_COSmonth")]] %in% c(start_month) %>%
       eval_diff %>%
       pmax(.,0) %>%
       cumsum
-    runoff_data$period[runoff_data[[viscos_options()$name_COSmonth]] %in% out_of_period] <- 0
+    runoff_data$period[runoff_data[[viscos_options("name_COSmonth")]] %in% out_of_period] <- 0
     # corrections for last year
-    max_year <- max(runoff_data[[viscos_options()$name_COSyear]])
+    max_year <- max(runoff_data[[viscos_options("name_COSyear")]])
     runoff_data %<>% dplyr::mutate(
       period = ifelse(
-        (  (.[[viscos_options()$name_COSyear]] == max_year) &
-           (.[[viscos_options()$name_COSmonth]] > end_month)  ),
+        (  (.[[viscos_options("name_COSyear")]] == max_year) &
+           (.[[viscos_options("name_COSmonth")]] > end_month)  ),
                       0,
                       period
         )
@@ -201,7 +202,7 @@ runoff_as_xts <- function(runoff_data) {
     remove_leading_zeros %>%
     names %>%
     tolower
-  name_posix <- viscos_options()$name_COSposix %>% tolower
+  name_posix <- viscos_options("name_COSposix") %>% tolower
   runoff_data_as_xts <- xts::xts(x = runoff_data,
                                  order.by = runoff_data[[name_posix]])
   #
