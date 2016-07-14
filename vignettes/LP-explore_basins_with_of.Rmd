@@ -111,8 +111,8 @@ some transformation from the obtained `xts` values. This is done with
 `strftime(., format = "%d %b %Y)`, which converts between character
 representations and objects of `POSIXlt` and `POSIXct`.
 ```{r}
-  server <- function(input, output, session) {# executes calculation file
-    # get strings used in the naming of clean_runoff_data
+  server <- function(input, output, session) {
+    # (I) get strings used in the naming of clean_runoff_data:
     unique_data_names <- names(clean_runoff_data) %>%
       gsub("\\d","",.) %>%
       tolower %>%
@@ -121,7 +121,7 @@ representations and objects of `POSIXlt` and `POSIXct`.
                                      grep(viscos_options("name_data1"),.) ]
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_data2"),.) ]
-    # (II) select data
+    # (II) select data:
     '%&%' <- function(a,b) paste(a,b,sep = "")
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
@@ -129,28 +129,28 @@ representations and objects of `POSIXlt` and `POSIXct`.
       select(clean_runoff_data,
              matches( selector_x() ),
              matches( selector_y() )
-      ) %>%
+             ) %>%
         select(x = matches( selector_x() ),
                y = matches( selector_y() ))
     })
-    # create xts-formated table for use in dygraphs
+    # (III) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
-          order.by = clean_runoff_data[[viscos_options()$name_COSposix]])
+          order.by = clean_runoff_data[[viscos_options("name_COSposix")]])
     })
-    # plots
+    # (IV) create plots:
     output$hydrographs <- renderDygraph({
       dygraph(xts_selected_data(), group="A") %>%
         dySeries("x",
-                 label = visCOS::viscos_options()$name_data1,
-                 color = viscos_options()$color_data1 ) %>%
+                 label = visCOS::viscos_options("name_data1"),
+                 color = viscos_options("color_data1") ) %>%
         dySeries("y",
-                 label = visCOS::viscos_options()$name_data2,
-                 color = viscos_options()$color_data2 ) %>%
+                 label = visCOS::viscos_options("name_data2"),
+                 color = viscos_options("color_data2") ) %>%
         dyOptions(includeZero = TRUE) %>%
         dyRangeSelector(height = 20, strokeColor = "")
     })
-    # beginnning and end of time window
+    # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
       if (!is.null(input$hydrographs_date_window))
         input$hydrographs_date_window[[1]]
@@ -159,7 +159,7 @@ representations and objects of `POSIXlt` and `POSIXct`.
       if (!is.null(input$hydrographs_date_window))
         input$hydrographs_date_window[[2]]
     })
-    # stats header
+    # (V) extract time_window for the stats header:
     output$selected_timewindow <- renderText({
       if (!is.null(input$hydrographs_date_window))
         paste(strftime(selcted_from(), format = "%d %b %Y"),
@@ -167,7 +167,7 @@ representations and objects of `POSIXlt` and `POSIXct`.
               strftime(selcted_to(), format = "%d %b %Y"),
               sep = " ")
     })
-    # stats calc
+    # (VI) calculate stats:
     sub_slctd <- reactive({
       if (!is.null(input$hydrographs_date_window))
         xts_selected_data()[paste(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),
