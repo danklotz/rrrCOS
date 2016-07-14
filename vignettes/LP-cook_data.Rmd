@@ -93,13 +93,15 @@ runoff_data variable is a data.frame (see: chapter about *defensive coding*):
     assert_dataframe(runoff_data)
 ```
 
-The body of `remove_chunk` works as following: First, the names of the names of
-the runoff_data are determines via `names` and set to all lower letters with
+The body of `remove_chunk` works as following: First, the names of the columns of
+the runoff_data are determined via `names` and all set to lower letters with
 `tolower`. This is the reason why the function is not case sensitive!
 Then helper function `get_regex_for_runoff_data` is called to get regular
 expressions that identify the wanted columns. Later, `grep` is used to get
 the index `idx` of the columns with the given names (`lowercase_names_in_data`).
 Finally, `idx`is then used to select the wanted columns.
+
+DJ! only_obs
 ```{r}
   lowercase_names_in_data <- runoff_data %>% names %>% tolower
   #
@@ -115,9 +117,9 @@ Finally, `idx`is then used to select the wanted columns.
 
 ### `only_observed_basins`
 This function removes basins for which no observations are available. No
-observation are interpreted as columns in which the all entries are either -999
-or `NA's`. The function header looks like this:
-```{r}
+observation are interpreted as columns in which all the entries are either -999
+or `NA's`. 
+```{r, echo=FALSE}
 # remove basins without observations
 #
 # Removes basins without observation (-999/NA values) from the provided data.frame
@@ -127,15 +129,11 @@ or `NA's`. The function header looks like this:
 # \strong{Note:} It is assumed that all available basins are simulated!
 # @return data.frame without the observation-free basins
 # @export
-only_observed_basins <- function(runoff_data) {
 ```
 
-As so often it is first checked if `magrittr` is available.
-Afterwards, it is asserted that `runoff_data` is indeed a data frame
-(see the chapter about defensive code). With that the preparations are finished,
-which should be fine as the function is supposedly only called from within
-`remove_chunk`.
+Initiation of function: 
 ```{r}
+only_observed_basins <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
 ```
@@ -154,16 +152,8 @@ are selected. To do so we first identify the idx of the max == -999 cols and
 build a regular expression with the help of the `viscos_options`.
 We combine both information via `grepl` to check if only observed columns have
 been selected. If so everything is fine, but if `any` of the selected cols came
-from an observation col the function stops the execution and gives a warning
+from an simulation col the function stops the execution and gives a warning
 message.
-The next step involves a little trick in which +1 is added to the `idx` to
-obtain the indexes of the corresponding simulation. Here we assume that for each
-observation there is a corresponding simulation **in next the next colum**!
-This allows us then to select only the observed basins. But now all NA values
-are actually -999! Thus, we replace them again back to NA, via `lapply(...,min)`
-assuming that all negative values are NAs. This is not a strong assumption,
-because there should never be negative flows! In the end the resulting
-data.frame is returned.
 ```{r}
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0)
@@ -177,6 +167,14 @@ data.frame is returned.
       stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
     }
 ```
+The next step involves a little trick in which +1 is added to the `idx` to
+obtain the indexes of the corresponding simulation. Here we assume that for each
+observation there is a corresponding simulation **in next the next colum**!
+This allows us then to select only the observed basins. But now all NA values
+are actually -999! Thus, we replace them again back to NA, via `lapply(...,min)`
+assuming that all negative values are NAs. This is not a strong assumption,
+because there should never be negative flows! In the end the resulting
+data.frame is returned.
 
 ```{r}
     idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
@@ -206,11 +204,11 @@ an equivalent column in `POSIXct` format
 *However*, it is currently only possible to convert *COSdate* into `POSIXct` dates
 via the `implode_cosdate` function.
 
-The function itself is basically a switch which calls different functions,
+The function itself is basically a switch which calls different functions
 if `name_cosyear` and/or `name_posix` is found and returns an error if none of
-the two are found. If the user has not named his columnds according to COSERO
+the two are found. If the user has not named his columns according to COSERO
 convention he can provide the names of the *COSdate* year via `name_cosyear` and
-the names of the POIXct column via `name_posix`. The function returns an error
+the names of the POIXct column via `name_posix` within the `viscos_options`. The function returns an error
 if `runoff_data` is not a data frame and if `OK_COSdate` or `OK_POSIXdates` are
 not logical due to some problems with the dates/time-formats.
 
@@ -219,12 +217,12 @@ if the 5 *COSdate* columns are available. This can cause errors later if some
 other columns are missing. Sadly it is not apparent how to avoid that problem,
 without defining the names of all columns.
 
-Furthermore, please we need to be aware that a fixed that the time-zone is
-assumed to be *UTC* to avoid problems with leaps in time (summer/winter time).
+Furthermore, we need to be aware that with *UTC* a fixed time-zone is
+assumed to avoid problems with leaps in time (summer/winter time).
 
-To function `implode_cosdate` is used to obtain the POSIXct date from the
+The function `implode_cosdate` is used to obtain the POSIXct date from the
 *COSdate* columns. The following chapter will show how this is done.
-```{r}
+```{r, echo=FALSE}
 #' Complete the date-formats with POSIXct or COSdate
 #'
 #' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
@@ -234,12 +232,12 @@ To function `implode_cosdate` is used to obtain the POSIXct date from the
 #' @param name_posix string with the name of the POSIXct column
 #' @return The new runoff data.frame with the added data-format.
 #' @export
-prepare_complete_date <- function(runoff_data = NULL,
-                                  name_cosyear = "yyyy",
-                                  name_posix = "POSIXdate") {
 ```
 
 ```{r}
+prepare_complete_date <- function(runoff_data = NULL,
+                                  name_cosyear = "yyyy",
+                                  name_posix = "POSIXdate") {
   # make sure that magrittr is loaded:
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
@@ -267,24 +265,19 @@ widely spread POSIXct format, used within R and in many packages. The function
 is called by the function above and not provided to the user! It takes a
 data frame (`runoff_data`) and uses `viscos_options` to transform the different
 *COSdate* columns into POSIXct dates via `paste`.
-The function header is:
-```{r}
+```{r, echo=FALSE}
 # transform COSdate into the nicer POSIXct-date format
 #
 # Takes a data.frame, which contains the COSdate format (see: xxx) and
 # transforms it into a POSIXct series. Note that time is assumed to be in UTC
-implode_cosdate <- function(runoff_data) {
 ```
-
-The following sanity checks are applied:
-(I) A check is made if `magrittr` is loaded or can be loaded.
-(II) A test is made to check if `runoff_data` is a `data.frame`.
-Afterwards the paste function is used to concatenate the different *COSdate*
+The paste function is used to concatenate the different *COSdate*
 columns (i.e. year, month, day, hour and minute) to a POSIXct date format.
 The obtained series of strings is saved into the variable `POSIXdate` and
 added as the column `viscos_options()$name_COSposix` (see section about
 `viscos_options`) to the `runoff_data.
 ```{r}
+implode_cosdate <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   name_string <-  runoff_data %>% names %>% tolower
