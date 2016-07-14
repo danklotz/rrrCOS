@@ -27,8 +27,8 @@ separate sections:
 - [Explore Basin-Graphs with objective functions](LP-explore_basins_with_of.html)
 
 Currently 4 objective functions are used in **visCOS**. They are calculated from
-the data columns of a data.frame defined by `viscos_options$name_data1` and
-`viscos_options$name_data2`. Assuming that `name_data1` is $x$ and `name_data1`
+the data columns of a data.frame defined by `viscos_options("name_data1")` and
+`viscos_options("name_data2")`. Assuming that `name_data1` is $x$ and `name_data1`
 is $y$ they are defined as shown in the following.
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}
@@ -253,13 +253,13 @@ calculations:
 of the data.frame, applying `tolower` to make them independent of upper and
 lower cases and summing up all the name_data1 column,  
 - the indices of the marked periods (`periods_in_data`) are obtained by getting
-the unique values of the `viscos_options()$name_COSperiod` column, and
+the unique values of the `viscos_options("name_COSperiod")` column, and
 - number of periods (`number_of_periods`) are obtained by measuring the length
 of `periods_in_data`
 
 Step (III) computes the overall objective functions. This is done by copying all
-`viscos_options()$name_data1` columns into the `temp_x` variable and all
-`viscos_options()$name_data1` into the `temp_y` variable. The former is then
+`viscos_options("name_data1")` columns into the `temp_x` variable and all
+`viscos_options("name_data2")` into the `temp_y` variable. The former is then
 handed as observation and the latter as simulation to the `hydroGOF` functions.
 The correlation `obj_fun$CORR` is calculated with base `R`. As `cor` returns
 a whole cross-correlation matrix only the diagonal is extracted with `diag`.
@@ -267,27 +267,26 @@ Step (IV) is a period-wise a repetition of step (III). Thus,  at each each
 iteration `k` the given period is filtered from `evaluation_data`
 with `dplyr::filtr` before `temp_x` and `temp_y` is calculated.
 The so obtained period-wise objective function values are marked by `_period`
-
 ```{r}
   # (I) reduce necessary computation
   evaluation_data <- runoff_data[
-      runoff_data[[viscos_options()$name_COSperiod]] > 0,
+      runoff_data[[viscos_options("name_COSperiod")]] > 0,
     ]
   # (II) get information
   number_of_basins <- evaluation_data %>%
     names %>%
     unique %>%
     tolower %>%
-    grepl(viscos_options()$name_data1 , .) %>%
+    grepl(viscos_options("name_data1") , .) %>%
     sum
-  periods_in_data <- evaluation_data[[viscos_options()$name_COSperiod]] %>%
+  periods_in_data <- evaluation_data[[viscos_options("name_COSperiod")]] %>%
     unique
   number_of_periods <- periods_in_data %>% length
   # (III) calculate overall objective functions
   obj_fun  <- list()
-  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data1)) %>%
+  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
     unname
-  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options()$name_data2)) %>%
+  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data2"))) %>%
     unname
   obj_fun$NSE <- hydroGOF::NSE(temp_y,temp_x)
   obj_fun$KGE <- hydroGOF::KGE(temp_y,temp_x)
@@ -303,10 +302,10 @@ The so obtained period-wise objective function values are marked by `_period`
     for (k in 1:number_of_periods)
     {
       temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dplyr::select(.,starts_with(viscos_options()$name_data1)) %>%
+        dplyr::select(.,starts_with(viscos_options("name_data1"))) %>%
         unname
       temp_y <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dplyr::select(.,starts_with(viscos_options()$name_data2)) %>%
+        dplyr::select(.,starts_with(viscos_options("name_data2"))) %>%
         unname
       obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
