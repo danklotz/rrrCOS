@@ -10,15 +10,40 @@ output: html_document
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
+# Code 
+In this section the code of the plotlist functions are defined
 
+## `make_of_plotlist`
+The wrapper function for the different plotlists of the objective functions
 
-The description for the documentation is: 
 ```{r}
-#' hydyearly list of expaned barpltos 
+#' plotlists for the objective functions 
 #'
-#' creates a plotlist of bar-plots for a the provided objective functions (of)
+#' To be written soon
 #' @export
 ```
+
+```{r}
+make_plotlist <- function(runoff_data, 
+                          kind_of_plot = "barplot",
+                          of_name = "NSE_period") {
+  if (kind_of_plot == "barplot") {
+    plot_list <- serve.plotlist_periodOF(runoff_data,of_name)
+  } else {
+    stop("no such option for the kind of plot")
+  }
+  return(plot_list)
+}
+  
+
+```
+
+
+Users can define the to-be plotted objective function with the character 
+`of_name`. 
+
+The description for the documentation is: 
+
 
 The function header is: 
 ```{r}
@@ -44,34 +69,35 @@ of the individual barplots are build by gathering the main title from the
   names(of) <- tolower(names(of))
   num_basins <- get_basin_numbers(runoff_data)
   plot_titles <- paste(viscos_options("plot_title"),num_basins,sep = "")
-  temp_of <- of[[tolower(of_name)]] 
 ```
 
+ defined objective funct
 ```{r}
+  user_of <- of[[tolower(of_name)]] 
   only_one_period_or_total <- is.null(dim(temp_of)[1])
   if ( only_one_period_or_total ) {
-    ofun_period <- temp_of %>% 
+    user_of %<>% 
       t() %>%
       pmax(.,viscos_options("lb_cut")) %>%
       as.data.frame()
-    names(ofun_period) <- plot_titles
+    names(user_of) <- plot_titles
   } else {
-    ofun_period <- temp_of %>%
+    user_of %<>%
       pmax(.,viscos_options("lb_cut")) %>%
       as.data.frame()
-    names(ofun_period) <- plot_titles
+    names(user_of) <- plot_titles
   }
   #
-  eval_size <- ncol(ofun_period)
+  eval_size <- ncol(user_of)
   if ( only_one_period_or_total ) {
-    ofun_period$periods <- 1
+    user_of$periods <- 1
   } else {
-    ofun_period$periods <- unique(runoff_data$period) %>% extract(. > 0)
+    user_of$periods <- unique(runoff_data$period) %>% extract(. > 0)
   }
   # define plot function: 
 
   plot_function <- function(k) {
-    ggplot(data = ofun_period,environmnet = environment()) +
+    ggplot(data = user_of,environmnet = environment()) +
     geom_bar(stat = "identity",
              position = "identity",
              aes_string(x = "periods", y = plot_titles[k],fill = plot_titles[k])) +
