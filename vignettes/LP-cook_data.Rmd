@@ -309,7 +309,7 @@ remove_leading_zeros <- function(runoff_data) {
 
 The body of the function works in the following way:
 The variables `runoff_names` is computed by obtaining the names of the columns
-of `runoff_data` are obtained with `names` and removing all the digits with
+of `runoff_data` with `names` and removing all the digits with
 `gsub("\\d",...)`. The basin digits, `runoff_nums` are computed by doing the
 oposite, i.e.: removing all the non digits via `gsub("\\D",...)`. Afterwards,
 the empty strings ("") are replaced with a small trick: The characters are
@@ -335,7 +335,7 @@ variable numeration.
 
 ## `mark_periods`
 This function can be used to create a periods column in your data.frame. The
-period column is a integer vector, which is 1 if the row is within the period
+period column is an integer vector, which is 1 if the row is within the period
 and 0 if it out of the period.
 
 Building it was actually quite tricky. The author himself (Klotz) is not
