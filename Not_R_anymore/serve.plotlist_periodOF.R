@@ -5,8 +5,8 @@
 #' see: description-follows-soonTM xxx
 #' @export
 serve.plotlist_periodOF <- function(runoff_data,bOF) {
-    require("ggplot2", quietly = TRUE)
-    if (missing(bOF)) {bOF <- extract_objective_functions(runoff_data)}
+  require("ggplot2", quietly = TRUE)
+  if (missing(bOF)) {bOF <- extract_objective_functions(runoff_data)}
   # calc: -------------------------------------------------------------------
   ofun_hydyearly <- bOF$NSE_period
   num_basins <- get_basin_numbers(runoff_data)
@@ -35,14 +35,14 @@ serve.plotlist_periodOF <- function(runoff_data,bOF) {
     ggtitle(new_names[k]) +
     xlab(viscos_options("xlab")) +
     ylab( "NSE" ) +
-    scale_y_continuous(limits = viscos_options("limits ")) +
+    scale_y_continuous(limits = viscos_options("limits")) +
     theme(legend.position = "none",
           axis.text.x = element_text(angle = 50, hjust = 1),
           plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm") ) + # clockwise from above
     scale_fill_gradient2(space = "Lab",
-                         low = viscos_options("clr1"),
-                         mid = viscos_options("clr2"),
-                         high = viscos_options("clr3"),
+                         low = viscos_options("color_of_low"),
+                         mid = viscos_options("color_of_mid"),
+                         high = viscos_options("color_of_high"),
                          midpoint = viscos_options("midpoint"),
                          limits = viscos_options("limits") )
   }

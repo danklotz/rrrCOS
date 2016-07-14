@@ -22,8 +22,7 @@ visCOS.example <- function(runoff_path,spinup,ctrl) {
         d_raw <- pour.runoff_example()
         #§
   # eliminate chunk and basins withouth observations:
-   d_runoff <- d_raw %>% 
-    prepare.remove_chunk 
+   d_runoff <- d_raw %>% remove_chunk %>% mark_periods
   # get num of used basins and their respective num
   #§ shall I wrap this into a prepare function??
   num_basins <- get_basin_numbers(d_runoff)
