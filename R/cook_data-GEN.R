@@ -151,6 +151,7 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   runoff_data %<>% remove_chunk %>% prepare_complete_date()
+
   # (I) get labels for the months
   if (start_month <= end_month ) {
     period_range <- seq(start_month,end_month)

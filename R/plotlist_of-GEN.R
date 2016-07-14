@@ -1,29 +1,7 @@
----
-title: "Code for plotlist of"
-author: 
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "14 Juli 2016"
-output: html_document
----
-
-```{r setup, include=FALSE, purl=FALSE}
-  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
-```
-
-# Code 
-In this section the code of the plotlist functions are defined
-
-## `make_of_plotlist`
-The wrapper function for the different plotlists of the objective functions
-
-```{r}
 #' plotlists for the objective functions 
 #'
 #' To be written soon
 #' @export
-```
-
-```{r}
 make_plotlist <- function(runoff_data, 
                           kind_of_plot = "barplot",
                           of_name = "NSE_period") {
@@ -36,66 +14,39 @@ make_plotlist <- function(runoff_data,
 }
   
 
-```
-
-
-Users can define the to-be plotted objective function with the character 
-`of_name`. 
-
-The description for the documentation is: 
-
-
-The function header is: 
-```{r}
 serve.plotlist_periodOF <- function(runoff_data, of_name = "NSE_period") {
   require("ggplot2", quietly = TRUE)
   require("magrittr", quietly = TRUE)
   #################
-```
-
-The first step is the calculation of the objective functions (`of`) via 
-[`extract_objective_functions`](LP-computing_of.html).
-Then some housekeeping needs to be undertaken. For the computations and 
-selections all names are set to lower case (`tolower`), because **visCOS** works
-case-insensitive. The basin enumeration `num_basins` is obtained with
-the function [`get_basin_numbers`](LP-helpers.html). The plot-titles 
-of the individual barplots are build by gathering the main title from the 
-[global option](LP-viscos_options.html) *"plot_title"* and concatenating it with 
-`num_basins`. 
-```{r}
   # calculate objective functions
   of <- extract_objective_functions(runoff_data)
   # 
   names(of) <- tolower(names(of))
   num_basins <- get_basin_numbers(runoff_data)
   plot_titles <- paste(viscos_options("plot_title"),num_basins,sep = "")
-```
-
- defined objective funct
-```{r}
   user_of <- of[[tolower(of_name)]] 
-  only_one_period_or_total <- is.null(dim(temp_of)[1])
+  only_one_period_or_total <- is.null(dim(user_of)[1])
+  # (I)
   if ( only_one_period_or_total ) {
     user_of %<>% 
       t() %>%
-      pmax(.,viscos_options("lb_cut")) %>%
+      pmax(.,viscos_options("limits")[1]) %>%
       as.data.frame()
     names(user_of) <- plot_titles
   } else {
     user_of %<>%
-      pmax(.,viscos_options("lb_cut")) %>%
+      pmax(.,viscos_options("limits")[1]) %>%
       as.data.frame()
     names(user_of) <- plot_titles
   }
-  #
-  eval_size <- ncol(user_of)
+  # (II)
   if ( only_one_period_or_total ) {
     user_of$periods <- 1
   } else {
-    user_of$periods <- unique(runoff_data$period) %>% extract(. > 0)
+    user_of$periods <- unique(runoff_data$period) %>% 
+      extract(. > 0)
   }
   # define plot function: 
-
   plot_function <- function(k) {
     ggplot(data = user_of,environmnet = environment()) +
     geom_bar(stat = "identity",
@@ -108,7 +59,6 @@ of the individual barplots are build by gathering the main title from the
     scale_y_continuous(limits = viscos_options("limits")) +
     theme(legend.position = "none",
           axis.text.x = element_text(angle = 50, hjust = 1)
-          # clockwise from above ,plot.margin = grid::unit(c(0.2,0.5,0.2,0.5), "cm")
           ) + 
     scale_fill_gradient2(space = "Lab",
                          low = viscos_options("color_of_low"),
@@ -117,12 +67,11 @@ of the individual barplots are build by gathering the main title from the
                          midpoint = viscos_options("midpoint"),
                          limits = viscos_options("limits") )
   }
-  # apply plot function over all available stuff
+  # apply plot function over all columns in user_of
+  eval_size <- ncol(user_of)
   list_of_barplots <- lapply(1:eval_size,
                     function(k) plot_function(k)
                     )
   return(list_of_barplots)
 }
-
-```
 

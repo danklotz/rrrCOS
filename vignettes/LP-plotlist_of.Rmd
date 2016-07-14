@@ -1,0 +1,150 @@
+---
+title: "Code for plotlist of"
+author: 
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
+date: "14 Juli 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+# Code 
+In this section the code of the plotlist functions are defined
+
+## `make_of_plotlist`
+The wrapper function for the different plotlists of the objective functions
+
+```{r}
+#' plotlists for the objective functions 
+#'
+#' To be written soon
+#' @export
+```
+
+```{r}
+make_plotlist <- function(runoff_data, 
+                          kind_of_plot = "barplot",
+                          of_name = "NSE_period") {
+  if (kind_of_plot == "barplot") {
+    plot_list <- serve.plotlist_periodOF(runoff_data,of_name)
+  } else {
+    stop("no such option for the kind of plot")
+  }
+  return(plot_list)
+}
+  
+
+```
+
+
+Users can define the to-be plotted objective function with the character 
+`of_name`. 
+
+The description for the documentation is: 
+
+
+The function header is: 
+```{r}
+serve.plotlist_periodOF <- function(runoff_data, of_name = "NSE_period") {
+  require("ggplot2", quietly = TRUE)
+  require("magrittr", quietly = TRUE)
+  #################
+```
+
+The first step is the calculation of the objective functions (`of`) via 
+[`extract_objective_functions`](LP-computing_of.html).
+Then some housekeeping needs to be undertaken. For the computations and 
+selections all names are set to lower case (`tolower`), because **visCOS** works
+case-insensitive. The basin enumeration `num_basins` is obtained with
+the function [`get_basin_numbers`](LP-helpers.html). The plot-titles 
+of the individual barplots are build by gathering the main title from the 
+[global option](LP-viscos_options.html) *"plot_title"* and concatenating it with 
+`num_basins`. The user defined objective function (`user_of`) is extracted from 
+`of` by using the user defined selection `of_name`. Again, in order to avoid 
+lower-upper case distinctions the `of_name` string is allways `set tolower`. 
+
+```{r}
+  # calculate objective functions
+  of <- extract_objective_functions(runoff_data)
+  # 
+  names(of) <- tolower(names(of))
+  num_basins <- get_basin_numbers(runoff_data)
+  plot_titles <- paste(viscos_options("plot_title"),num_basins,sep = "")
+  user_of <- of[[tolower(of_name)]] 
+```
+
+Afterwards a distinction is made if the the overall 
+objective functions  or period-wise calculated objective functions have been
+extracted. The check is done be checking if the first dimenion of `user_of` is
+NULL (*overall of*) or has a dimension (*period-wise of*). Then `user_of` is
+changed in two steps so that it can be plotted easily with
+[ggplot2](http://ggplot2.org/). Step (I) transforms `user_of` into a data.frame.
+To work properly the *overall of* vector has to be transposed before it is 
+transfomred. The *period-wise of* can be transformed directly.  Before the 
+transformation into a data.frame `pmax(.,viscos_options("limits")[1])` is 
+applied to set the lowest values to the one specified in lower limits.
+Step (II) then adds the information about the periods to `user_of`. 
+```{r}
+  only_one_period_or_total <- is.null(dim(user_of)[1])
+  # (I)
+  if ( only_one_period_or_total ) {
+    user_of %<>% 
+      t() %>%
+      pmax(.,viscos_options("limits")[1]) %>%
+      as.data.frame()
+    names(user_of) <- plot_titles
+  } else {
+    user_of %<>%
+      pmax(.,viscos_options("limits")[1]) %>%
+      as.data.frame()
+    names(user_of) <- plot_titles
+  }
+  # (II)
+  if ( only_one_period_or_total ) {
+    user_of$periods <- 1
+  } else {
+    user_of$periods <- unique(runoff_data$period) %>% 
+      extract(. > 0)
+  }
+```
+
+Once `user_of` is suitably transformed the defacto plot function , 
+named `plot_function` is defined. This function will then be used in a loop 
+to plot the individual plot. 
+```{r}
+  # define plot function: 
+  plot_function <- function(k) {
+    ggplot(data = user_of,environmnet = environment()) +
+    geom_bar(stat = "identity",
+             position = "identity",
+             aes_string(x = "periods", y = plot_titles[k],fill = plot_titles[k])) +
+    theme_light(base_size = 15) +
+    ggtitle(plot_titles[k]) +
+    xlab(viscos_options("xlab")) +
+    ylab( gsub("_.*","", of_name) ) + # remove everything after "_" 
+    scale_y_continuous(limits = viscos_options("limits")) +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 50, hjust = 1)
+          ) + 
+    scale_fill_gradient2(space = "Lab",
+                         low = viscos_options("color_of_low"),
+                         mid = viscos_options("color_of_mid"),
+                         high = viscos_options("color_of_high"),
+                         midpoint = viscos_options("midpoint"),
+                         limits = viscos_options("limits") )
+  }
+```
+
+```{r}
+  # apply plot function over all columns in user_of
+  eval_size <- ncol(user_of)
+  list_of_barplots <- lapply(1:eval_size,
+                    function(k) plot_function(k)
+                    )
+  return(list_of_barplots)
+}
+
+```
+
