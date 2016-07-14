@@ -65,8 +65,8 @@ as well basins where no observations are available.
 The first part is done by identifying the names of the data_frame and
 searching for the idx of the names defined in the `viscos_options`.
 The second part is done via the function `prepare.only_observed` (see next 
-subchapter).It is actually so pretty simple, but really useful. Since the 
-solution is quite specific the function tests if the input is a data.frame and 
+subchapter). It is actually so pretty simple, but really useful. Since the 
+solution is quite specific, the function tests if the input is a data.frame and 
 returns an error if not.
 
 **Note** that the routine is **not** case sensitive. It does not distinguish
@@ -93,15 +93,16 @@ runoff_data variable is a data.frame (see: chapter about *defensive coding*):
     assert_dataframe(runoff_data)
 ```
 
-The body of `remove_chunk` works as following: First, the names of the columns of
-the runoff_data are determined via `names` and all set to lower letters with
+The body of `remove_chunk` works as following: First, the names of the columns 
+of the runoff_data are determined via `names` and all set to lower letters with
 `tolower`. This is the reason why the function is not case sensitive!
 Then helper function `get_regex_for_runoff_data` is called to get regular
 expressions that identify the wanted columns. Later, `grep` is used to get
 the index `idx` of the columns with the given names (`lowercase_names_in_data`).
 Finally, `idx`is then used to select the wanted columns.
 
-DJ! only_obs
+In the second part, the function `only_observed_basins` is being executed (see 
+next chapter)
 ```{r}
   lowercase_names_in_data <- runoff_data %>% names %>% tolower
   #
@@ -349,9 +350,9 @@ within the `runoff_data` on a monthly resolution. As the name suggests
 the period. The function requires `dplyr` and `magrittr` and tests if
 `runoff_data` is a data.frame. An error is returned if it is not.
 Furthermore, if there is *chunk* in the data.frame it is removed by
-`remove_chunk`(see above) and `prepare_complete_date` is used to ensure that
+`remove_chunk` and `prepare_complete_date` (see above)is used to ensure that
 the full time-information, i.e. both date formats, is available.
-```{r}
+```{r, echo=FALSE}
 #' calculate periods
 #'
 #' Mark the periods within runoff_data.
@@ -363,26 +364,31 @@ the full time-information, i.e. both date formats, is available.
 #' hydrological years within the data.
 #' \strong{Note:} The periods columns are formatted as characters!
 #' @export
+```
+
+```{r}
 mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   require("dplyr", quietly = TRUE, warn.conflicts = FALSE)
   require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   runoff_data %<>% remove_chunk %>% prepare_complete_date()
+
 ```
+
 
 The body of the function is split in two parts.
 In the *first part* the variable `period_range` is defined as a integer sequence
 from the `start_month` to the `end_month`.
 The solution distinguishes between two different cases:
 `start_month` <= `end_month` and `start_month` > `end_month`. The solution
-for the former is trivial, as `seq` can be used. The solution for the latter is
-in principle also simple as two ranges (`range_1` and `range_2`) can be
-constructed and concatenated.
-Note that both solution additionally construct the integer-vector
-`out_of_period`. The vector contains information about the moths which are not
-within the the period_range. It would not be necessary for the first case. But,
-since the current solution still seems to be suboptimal, it is needed for the
-second case, in order to mark the months which are out of the period later.
+for the former is trivial, as `seq` can be used. In principle the solution for 
+the latter is also simple as two ranges (`range_1` and `range_2`) can be
+constructed and concatenated. Note that both solutions additionally construct 
+the integer-vector `out_of_period`. The vector contains information about the 
+months which are not within the period_range. It would not be necessary for this 
+case. But, since the current solution still seems to be suboptimal, it is 
+needed for the second case, in order to mark the months which are out of the 
+period later.
 ```{r}
   # (I) get labels for the months
   if (start_month <= end_month ) {
@@ -398,22 +404,22 @@ second case, in order to mark the months which are out of the period later.
 
 The *second part* is a bit trickier.
 
-First, the function `eval_diff` is defined. It takes a vector `a` at calculates
-the differences for it, where the first entry of `a` is kept,
+First, the function `eval_diff` is defined. It takes a vector `a` and 
+calculates the differences for it, where the first entry of `a` is kept,
 e.g. `eval_diff( c(3,2,5,7,8) )` is `3 -1  3  2  1`.
 Then, `eval_diff` is used to to mark all the starting months of the runoff data and
-save them into an `period` column. The ` pmax(.,0)` operation guarantees that
+saves them into a `period` column. The `pmax(.,0)` operation guarantees that
 negative differencing (as above in 3 -> 2) is not included and the cumulative
 sum is used to count the periods are within the data.frame.  
 
-Secondly, the `out_of_period` of all years set back to zero again, by simply
+Secondly, the `out_of_period` of all years is set back to zero again by simply
 checking which months of our data.frame are equal to the `out_of_period` entries.
-There are two problem with that solution. One is that the last year is not
+There are two problems with that solution. One is that the last year is not
 extracted properly if `start_month` > `end_month`. For this case `dplyr::mutate`
-is used to set the out-of-period-dates from the last year to 0,
-if they are bigger then `end_month`.
+is used to set the out-of-period-dates from the last year to 0, if they are 
+bigger then `end_month`.
 The second problem is that the first and last period are also included in the
-solution even if they are **not** complete! *Thus, if an user does not want that
+solution even if they are **not** complete! *Thus, if a user does not want 
 these solutions to be "marked" he has to remove it himself!*
 ```{r}
   # (II) mark periods:
