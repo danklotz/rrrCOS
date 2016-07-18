@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}
-  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
 ```
 
 # Introduction
@@ -464,7 +464,7 @@ plot(ex2$period, xlab="Timestep", ylab="# year of summer months")
 
 
 ## `runoff_as_xts`
-This function is a actually just a wrapper around the `xts::xts` function for
+This function is actually just a wrapper around the `xts::xts` function for
 the purposes of **visCOS**. `runoff_as_xts` depends on `magrittr`, `xts` and
 `zoo` (where the last one is acutally a dependency of `xts`).
 The function takes the runoff_data as input and makes sure that the data is a
@@ -472,15 +472,7 @@ data.frame (check: `assert_dataframe` in the **defensive code** chapter),
 has no "junk" inside (`assert_chunk`, see also: `remove_chunk`) and
 has all the needed date/time columns (`assert_complete_date`, see also:
 `prepare_complete_date`).
-
-A notable quirk of the function is that the names of the header are put to lower
-cases via the `tolower` function and possible leading zeros in the enumeration
-of the basins are removed.
-
-Currently it is not exported as users can use `xts` themselves perfectly well,
-and it is felt that the function does not provide enough added value for the
-user.
-```{r}
+```{r, echo=FALSE}
 # Convert runoff_data to xts-format
 #
 # Converts the runoff_data (class: data_frame) into an xts object
@@ -488,6 +480,8 @@ user.
 # @param runoff_data data_frame of the runoff_data (see: xxx)
 # @return xts object of the runoff_data data.frame
 # @export
+```
+```{r}
 runoff_as_xts <- function(runoff_data) {
   # pre
   require("zoo", quietly = TRUE, warn.conflicts = FALSE)
@@ -496,6 +490,17 @@ runoff_as_xts <- function(runoff_data) {
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
   assert_complete_date(runoff_data)
+```
+
+A notable quirk of the function is that the names of the header are put to lower
+cases via the `tolower` function and possible leading zeros in the enumeration
+of the basins are removed.
+
+Currently it is not exported as users can use `xts` themselves perfectly well,
+and it is felt that the function does not provide enough added value for the
+user.
+
+```{r}
   # calculations:
   runoff_data %<>% remove_leading_zeros
   names(runoff_data) <- runoff_data %>%
