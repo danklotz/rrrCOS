@@ -448,6 +448,8 @@ these solutions to be "marked" he has to remove it himself!*
 ```
 Here are two example plots to display the periods numbering:
 ```{r, eval=TRUE, purl=FALSE}
+require(magrittr)
+require(visCOS)
 # mark_periods example 1: Hydrological years (September till August)
 # note that the last year is not complete, so the counter jumps back to 0
 ex1 <- get_runoff_example() %>% mark_periods(.,start_month = 9, end_month = 8)
