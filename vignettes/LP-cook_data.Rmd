@@ -464,8 +464,8 @@ plot(ex2$period, xlab="Timestep", ylab="# year of summer months")
 
 
 ## `runoff_as_xts`
-This function is actually just a wrapper around the `xts::xts` function for
-the purposes of **visCOS**. `runoff_as_xts` depends on `magrittr`, `xts` and
+This function is actually just a small wrapper around the `xts::xts` function 
+for the purposes of **visCOS**. `runoff_as_xts` depends on `magrittr`, `xts` and
 `zoo` (where the last one is acutally a dependency of `xts`).
 The function takes the runoff_data as input and makes sure that the data is a
 data.frame (check: `assert_dataframe` in the **defensive code** chapter),
@@ -501,12 +501,9 @@ and it is felt that the function does not provide enough added value for the
 user.
 
 ```{r}
-  # calculations:
-  runoff_data %<>% remove_leading_zeros
-  names(runoff_data) <- runoff_data %>%
-    remove_leading_zeros %>%
-    names %>%
-    tolower
+  # everything is set tolower because we try to keep visCOS case insensitive
+  runoff_data <- remove_leading_zeros(runoff_data)
+  names(runoff_data) <- names(runoff_data) %>% tolower
   name_posix <- viscos_options("name_COSposix") %>% tolower
   runoff_data_as_xts <- xts::xts(x = runoff_data,
                                  order.by = runoff_data[[name_posix]])
