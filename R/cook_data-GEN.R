@@ -182,6 +182,17 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
       )
     return(runoff_data)
 }
+require(magrittr)
+require(visCOS)
+# mark_periods example 1: Hydrological years (September till August)
+# note that the last year is not complete, so the counter jumps back to 0
+ex1 <- get_runoff_example() %>% mark_periods(.,start_month = 9, end_month = 8)
+plot(ex1$period, xlab="Timestep", ylab="# of hydrological year")
+
+# mark_periods example 2: Summer Months (June till August)
+ex2 <- get_runoff_example() %>% mark_periods(.,start_month = 6, end_month = 8)
+plot(ex2$period, xlab="Timestep", ylab="# year of summer months")
+
 # Convert runoff_data to xts-format
 #
 # Converts the runoff_data (class: data_frame) into an xts object

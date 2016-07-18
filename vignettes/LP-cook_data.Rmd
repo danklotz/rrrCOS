@@ -336,12 +336,13 @@ variable numeration.
 
 ## `mark_periods`
 This function can be used to create a periods column in your data.frame. The
-period column is an integer vector, which is 1 if the row is within the period
-and 0 if it out of the period.
+period column is an integer vector, which is a multiple of 1 if the row is 
+within a certain period and 0 if it is out of the period.
 
 Building it was actually quite tricky. The author himself (Klotz) is not
 sure if it is really a nice solution. But it is the best solution, in terms of
-speed and clearness, that we could come up so far.
+speed and clearness, that we could come up so far. So take it as a challenge
+to build a better solution!
 
 As shown below the function takes the `runoff_data` data.frame and the two
 integers `start_month`and `end_month`. They allow the user to define the periods
@@ -407,10 +408,12 @@ The *second part* is a bit trickier.
 First, the function `eval_diff` is defined. It takes a vector `a` and 
 calculates the differences for it, where the first entry of `a` is kept,
 e.g. `eval_diff( c(3,2,5,7,8) )` is `3 -1  3  2  1`.
-Then, `eval_diff` is used to to mark all the starting months of the runoff data and
-saves them into a `period` column. The `pmax(.,0)` operation guarantees that
+Then, `eval_diff` is used to to mark all the starting months of the runoff data 
+and saves them into a `period` column. The `pmax(.,0)` operation guarantees that
 negative differencing (as above in 3 -> 2) is not included and the cumulative
-sum is used to count the periods are within the data.frame.  
+sum is used to count the periods are within the data.frame. Therefore, at the 
+beginning of the first period, the counter jumps to "1" and becomes "2" with the 
+beginning of the second period and so on. 
 
 Secondly, the `out_of_period` of all years is set back to zero again by simply
 checking which months of our data.frame are equal to the `out_of_period` entries.
@@ -443,6 +446,20 @@ these solutions to be "marked" he has to remove it himself!*
     return(runoff_data)
 }
 ```
+Here are two example plots to display the periods numbering:
+```{r, eval=TRUE, purl=FALSE}
+# mark_periods example 1: Hydrological years (September till August)
+# note that the last year is not complete, so the counter jumps back to 0
+ex1 <- get_runoff_example() %>% mark_periods(.,start_month = 9, end_month = 8)
+plot(ex1$period, xlab="Timestep", ylab="# of hydrological year")
+
+# mark_periods example 2: Summer Months (June till August)
+ex2 <- get_runoff_example() %>% mark_periods(.,start_month = 6, end_month = 8)
+plot(ex2$period, xlab="Timestep", ylab="# year of summer months")
+
+```
+
+
 
 ## `runoff_as_xts`
 This function is a actually just a wrapper around the `xts::xts` function for
