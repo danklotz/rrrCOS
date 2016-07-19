@@ -11,7 +11,9 @@ extract_objective_functions <- function(runoff_data) {
   require("hydroGOF", quietly = TRUE)
   require("dplyr", quietly = TRUE)
   assert_dataframe(runoff_data)
-  stopifnot( exists(viscos_options("name_COSperiod"), where = runoff_data) )
+  if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
+    stop("Error! Period-Column missing in runoff_data; use `mark_periods`")
+  }
   # (I) reduce necessary computation
   evaluation_data <- runoff_data[
       runoff_data[[viscos_options("name_COSperiod")]] > 0,

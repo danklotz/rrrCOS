@@ -197,12 +197,9 @@ runoff_as_xts <- function(runoff_data) {
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
   assert_complete_date(runoff_data)
-  # calculations:
-  runoff_data %<>% remove_leading_zeros
-  names(runoff_data) <- runoff_data %>%
-    remove_leading_zeros %>%
-    names %>%
-    tolower
+  # everything is set tolower because we try to keep visCOS case insensitive
+  runoff_data <- remove_leading_zeros(runoff_data)
+  names(runoff_data) <- names(runoff_data) %>% tolower
   name_posix <- viscos_options("name_COSposix") %>% tolower
   runoff_data_as_xts <- xts::xts(x = runoff_data,
                                  order.by = runoff_data[[name_posix]])

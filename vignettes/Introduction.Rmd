@@ -5,9 +5,17 @@ date: "6 Juli 2016"
 output: html_document
 ---
 
-Here an overview of the package will follow as time progresses.
-Think of it as a kind of read.me file or an hub to the documentation and the
-examples.
+This is an overview of the visCOS package. It is kind of a read.me file or an 
+hub to the documentation and the examples.
+
+# Table of Content
+#### 1. cook_data
+##### 1.1 example
+#### 2. viscos_opitons
+##### 2.1 example
+#### 3.
+#### 4.
+
 
 # Test this is
 This is a test to show how the introduction section can be build up.
