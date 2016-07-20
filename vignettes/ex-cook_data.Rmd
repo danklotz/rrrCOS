@@ -11,11 +11,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Here examples for **visCOS**-functions are given that deal with the process of
-transforming  *raw data* into prepared data for **visCOS**.
+In this chapter examples for **visCOS**-functions are given that deal with the 
+process of transforming  *raw data* into prepared data for **visCOS**.
 The data is then *cooked* and can be used for figures etc.
 
-# Getting raw data
+The following steps can be performed:
+
+* Loading of raw data (always necessary if data is not loaded yet)
+* Setting visCOS_options (if it doesn't fit your data)
+* Remove junk and prepare date format 
+* Define and Mark periods
+
+# Loading raw data
 From the point of view of **visCOS** raw-data are time-series of observations
 and model output. Usually raw data is saved in some simple file format,
 e.g. *.txt* or *.csv*. `R` already includes many option to read those files
@@ -83,3 +90,6 @@ hydrological years, going from September till August, will be defined:
 Note that the example data starts with beginning of September, so right with 
 the first hydrological year. The end of the year 2010 is not completely inside 
 a hydrological year, so the period counter jumps to one.
+
+# Explore Data and Objective Functions for Subbasins
+

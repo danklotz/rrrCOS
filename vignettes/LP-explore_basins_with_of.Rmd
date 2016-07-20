@@ -3,6 +3,10 @@ title: "Code for Exploring Objective Functions"
 author: "Daniel Klotz"
 date: "13 Juli 2016"
 output: html_document
+  html_document:
+    number_sections: yes
+  pdf_document:
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}
