@@ -16,7 +16,7 @@ In this section the code of the plotlist functions are defined
 ## `make_of_plotlist`
 The wrapper function for the different plotlists of the objective functions
 
-```{r}
+```{r, echo=FALSE}
 #' plotlists for the objective functions 
 #'
 #' To be written soon

@@ -24,7 +24,7 @@ This chapter defines the function necessary to calculate the objective functions
 $of$. The code for exploring and visualising objective function is defined in
 separate sections:
 
-- [Explore Basin-Graphs with objective functions](LP-explore_basins_with_of.html)
+- [Explore Basin-Graphs with objective functions](vignettes/LP-explore_basins_with_of.html)
 
 Currently 4 objective functions are used in **visCOS**. They are calculated from
 the data columns of a data.frame defined by `viscos_options("name_data1")` and
@@ -298,7 +298,7 @@ The so obtained period-wise objective function values are marked by `_period`
     # pre allocation of periodic variables:
     obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
     obj_fun$KGE_period <- obj_fun$NSE_period
-    obj_fun$pBIAS_periods <- obj_fun$NSE_period
+    obj_fun$pBIAS_period <- obj_fun$NSE_period
     obj_fun$CORR_period <- obj_fun$NSE_period
     # calculation loop
     for (k in 1:number_of_periods)

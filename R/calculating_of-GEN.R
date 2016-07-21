@@ -42,7 +42,7 @@ extract_objective_functions <- function(runoff_data) {
     # pre allocation of periodic variables:
     obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
     obj_fun$KGE_period <- obj_fun$NSE_period
-    obj_fun$pBIAS_periods <- obj_fun$NSE_period
+    obj_fun$pBIAS_period <- obj_fun$NSE_period
     obj_fun$CORR_period <- obj_fun$NSE_period
     # calculation loop
     for (k in 1:number_of_periods)

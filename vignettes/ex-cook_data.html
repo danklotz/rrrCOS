@@ -133,6 +133,7 @@ $(document).ready(function () {
 <div id="loading-raw-data" class="section level1">
 <h1><span class="header-section-number">1</span> Loading raw data</h1>
 <p>From the point of view of <strong>visCOS</strong> raw-data are time-series of observations and model output. Usually raw data is saved in some simple file format, e.g. <em>.txt</em> or <em>.csv</em>. <code>R</code> already includes many option to read those files with the <code>read.table</code> functionalities. For larger unstructured files the read options of the <code>data.table</code> package is recommended. In our tests it was fastest and most flexible option. Alternatively the <code>readr</code> can be used if the data is more structured and large.</p>
+<p><strong>Note</strong> at this stage, only a comparison between <strong>numbered catchments</strong> for two parameters is possible. So the data must include an integer number after the description (like “QObs_001” and “QSim_001”).</p>
 <p>The function <code>get_runoff_example</code> can be used to get some exemplary data from within <strong>visCOS</strong>:</p>
 <pre class="r"><code>  library(visCOS)
   require(magrittr)

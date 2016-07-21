@@ -31,6 +31,10 @@ For larger unstructured files the read options of the `data.table` package is
 recommended. In our tests it was fastest and most flexible option.
 Alternatively the `readr` can be used if the data is more structured and large.
 
+**Note** at this stage, only a comparison between **numbered catchments** 
+ for two parameters is possible. So the data must include an integer 
+number after the description (like "QObs_001" and "QSim_001").
+
 The function `get_runoff_example` can be used to get some exemplary data
 from within **visCOS**:
 ```{r, message=3:5}

@@ -18,7 +18,6 @@ explore_runoff_with_ofun <- function(runoff_data) {
   require("xts", quietly = TRUE) # required for dygraphs
   require("dygraphs", quietly = TRUE) # interactive plotting
   ##########################
-  #$ this is all suboptimal!
   # (I)
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
@@ -26,8 +25,11 @@ explore_runoff_with_ofun <- function(runoff_data) {
   }
   # (II)
     d_xts <- runoff_as_xts(clean_runoff_data)
+
+  # (III)
     idx_names <- names(d_xts) %>%
-      grepl("\\d" ,.)
+      tolower %>% 
+      grepl(viscos_options("name_data1"),.)
     d_nums <- d_xts %>%
       names() %>%
       .[idx_names] %>%
@@ -45,8 +47,8 @@ explore_runoff_with_ofun <- function(runoff_data) {
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_data2"),.) ]
     # (II) select data:
-    '%&%' <- function(a,b) paste(a,b,sep = "")
-    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
+    '%&%' <- function(a,b) paste(a,b,sep = "") # %&% as substitute for function
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
       select(clean_runoff_data,

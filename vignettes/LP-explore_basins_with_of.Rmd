@@ -3,9 +3,9 @@ title: "Code for Exploring Objective Functions"
 author: "Daniel Klotz"
 date: "13 Juli 2016"
 output:
-  html_document:
-    number_sections: yes
   pdf_document:
+    number_sections: yes
+  html_document:
     number_sections: yes
 ---
 
@@ -16,15 +16,15 @@ output:
 # Introduction
 This section defines the code of a [shiny app](http://shiny.rstudio.com/)
 that lets users explore the (hydro-) graphs for the different basins in
-conjunction with a objective functions for the user-selected time-window. The
-calculation of the objective functions is independent of the code defined in
-the section about `computing_of`, since simpler constructions are preferable
-in the case at hand and more information is give to the user.
+conjunction with objective functions for the user-selected time-window. The
+calculation of the objective functions are independent of the code defined in
+the section about `calculating_of`, since simpler constructions are preferable
+in the case at hand and more information is given to the user.
 
 The computations of the app are defined in the `server` part and the
 appearance in the `ui`. The app itself is depicted in the following figure:
 
-![](figures/eg-explore_runoff_with_ofun.jpg)
+![](figures/eg_explore_basin.jpg)
 
 User can select different basins via the selection box (*# basins:*) on the
 top-left and interactively zoom and move the graph in the center by clicking
@@ -36,9 +36,8 @@ chosen time window.
 In the following paragraphs the code of the shiny app is defined.
 
 ## `explore_basins_with_of`
-This function represents the main part of the shiny app. The Rd-help is
-defined as following:
-```{r}
+This function represents the main part of the shiny app. 
+```{r, echo=FALSE}
   #' explore runoff_data with Objective Functions
   #'
   #' Runs a Shiny App which can be used to get an overview of a runoff_data time
@@ -65,28 +64,28 @@ explore_runoff_with_ofun <- function(runoff_data) {
   ##########################
 ```
 
-Currently the shiny app needs some pre-calculation, which are send with `<<-`
-to the global environment. This is actually bad, since the function changes the
-variables of the global environment. But until now, no better solution could be
-found. The first part (I) of the pre-calculations includes the defensive
-function `remove_leading_zeros`, that removes the leading zeros from the
-data.frame `runoff_data`.
+Currently the shiny app needs some pre-calculations. The first part (I) of the 
+pre-calculations includes the defensive function `remove_leading_zeros`, that 
+removes the leading zeros from the data.frame `runoff_data`.
 For example: If a column would be named `QOBS_00001` it would be transformed to
-`QOBS_1`. Afterwards, it is checked if the "cleansed" data (`clean_runoff_data`)
-does the needed `viscos_options("name_COSposix")` column. If it does not, then
-the column is created with `prepare_complete_date`. In the second part (II)
-the actual pre-calculation takes place. The data is transformed into an `xts`
-object (`d_xts`).
+`QOBS_1`. Afterwards, it is checked if the "cleaned" data (`clean_runoff_data`)
+has the needed `viscos_options("name_COSposix")` column. If it does not, then
+the column is created with `prepare_complete_date`. 
+In the second part (II)
+the actual pre-calculations take place. The data is transformed into an `xts`
+object (`d_xts`). 
 
-Then columns with $x$ and $y$ data are marked and the internal numeration is
-saved within the variable `d_nums`. The former operation is achieved by
-searching for all the columns with digits in `d_xts`. The latter by removing
-all the non-digits from the column-names and searching for the unique integer.
+Then (III) the data1 column defined in the `viscos_options` is marked and the 
+numeration of the basins is saved within the variable `d_nums`.**Note** that 
+both data series have to include a column for every existing basin and the 
+basin number after the data name (e.g. QOobs_0001). The former operation is 
+achieved by searching for all the columns with starting with 
+`viscos_options("name_data1")` . The latter by removing all the non-digits from 
+the column-names and searching for the unique integer.
 
 Note that this approach forces users to enumerate their basins with integers,
-as floating-numbers would be transformed to!
+as floating-numbers would be transformed!
 ```{r}
-  #$ this is all suboptimal!
   # (I)
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
@@ -94,8 +93,11 @@ as floating-numbers would be transformed to!
   }
   # (II)
     d_xts <- runoff_as_xts(clean_runoff_data)
+
+  # (III)
     idx_names <- names(d_xts) %>%
-      grepl("\\d" ,.)
+      tolower %>% 
+      grepl(viscos_options("name_data1"),.)
     d_nums <- d_xts %>%
       names() %>%
       .[idx_names] %>%
@@ -104,13 +106,13 @@ as floating-numbers would be transformed to!
       unique
 ```
 
-The server-side of the shiny app is rather lengthy but not to difficult.
+The server-side of the shiny app is rather lengthy but not too difficult.
 The major readability problems occur because of the unusual formatting enforced
 by shiny. The `reactive({})` marks all the interactive parts of the server.
 The calculations are saved in the output-structures, which is handed over to the
 `ui`. The graphs are saved/plotted to `output$hydrographs` and the objective
 functions to `output$slctd_OF`. The start and end of the current time window is
-haned  as string to the variable `output$selected_timewindow`. This requires
+handed  as string to the variable `output$selected_timewindow`. This requires
 some transformation from the obtained `xts` values. This is done with
 `strftime(., format = "%d %b %Y)`, which converts between character
 representations and objects of `POSIXlt` and `POSIXct`.
@@ -126,8 +128,8 @@ representations and objects of `POSIXlt` and `POSIXct`.
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_data2"),.) ]
     # (II) select data:
-    '%&%' <- function(a,b) paste(a,b,sep = "")
-    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
+    '%&%' <- function(a,b) paste(a,b,sep = "") # %&% as substitute for function
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
       select(clean_runoff_data,

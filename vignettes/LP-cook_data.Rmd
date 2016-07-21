@@ -40,6 +40,10 @@ function | exported
 visCOS porvides some exemplary data. All the available functions can be tested
 with it. `get_runoff_example` is a small wrapper function to get the data from
 within the package via `read.csv`
+
+**Note** at this stage, only a comparison between **numbered catchments** 
+is possible for two parameters is possible. So the data must include an integer 
+number after the description (like "QObs_001" and "QSim_001")
 ```{r, echo=FALSE}
   #' Get runoff example
   #'
