@@ -73,7 +73,6 @@ equivalent column in `POSIXct` format (see: [link](https://stat.ethz.ch/R-manual
  to do so.
 ```{r}
   runoff_example <- remove_chunk(runoff_example_raw) %>% 
-  #remove_leading_zeros %>% 
   prepare_complete_date()
 head(runoff_example)
 ```
@@ -92,4 +91,26 @@ the first hydrological year. The end of the year 2010 is not completely inside
 a hydrological year, so the period counter jumps to one.
 
 # Explore Data and Objective Functions for Subbasins
+In this chapter it is shown, how the function `explore_basins_with_of` can be 
+used to take a closer look at the data series you loaded. Only prerequirements 
+are properly loaded data and correctly addressed `viscos_options`. Additionally, 
+you can adapt the *color_data* options in the `viscos_options`. Information on 
+the objective functions can be found [here](LP-calculating_of.html)
+
+Running the `explore_basins_with_of` with your data as input, a shiny app is 
+started in a new window (in this case an example .jpg with explanations):
+
+```{r, eval = FALSE}
+viscos_options(color_data1 = "green", color_data2 = "red")
+explore_runoff_with_ofun(runoff_example)
+```
+![](figures/eg_explore_basin.JPG)
+
+
+The program is calculating and displaying the results always on the fly. So by 
+changing the basin or the timeframe, the displayed data series and the results 
+of the objective functions are adapting. By going with your pointer over the 
+data series, the values of the data series at the marked point are displayed in 
+the upper right corner.
+
 

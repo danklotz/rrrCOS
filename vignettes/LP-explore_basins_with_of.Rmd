@@ -2,7 +2,7 @@
 title: "Code for Exploring Objective Functions"
 author: "Daniel Klotz"
 date: "13 Juli 2016"
-output: html_document
+output:
   html_document:
     number_sections: yes
   pdf_document:
