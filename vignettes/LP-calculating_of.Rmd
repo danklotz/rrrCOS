@@ -190,8 +190,8 @@ from the illustrates some examples of $corr$ to give a feeling for its usage:
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}
   # examples:
-  of <- function(obs,sim) {diag(cor(obs,sim))}
-  plot_list <- make_plotlist(demo_data, of = of, of_designation = "corr")
+  of_corr <- function(obs,sim) {diag(cor(obs,sim))}
+  plot_list <- make_plotlist(demo_data, of = of_corr, of_designation = "corr")
 ```
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
   multiplot(plotlist = plot_list[1:3], cols = 1 )
