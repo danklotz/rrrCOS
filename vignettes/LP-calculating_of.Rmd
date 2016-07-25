@@ -92,7 +92,8 @@ make_plotlist <- function(plot_data, of = mse, of_designation = "MSE(z)") {
       scale_colour_manual("", 
                         breaks = c("x", "y"),
                         values = c("steelblue", "palevioletred")) +
-      xlab( title_i ) +
+      ggtitle( title_i ) + 
+      xlab( "" ) +
       ylab( "" ) + 
       theme_minimal() +
       theme(axis.text.x = element_blank(),
