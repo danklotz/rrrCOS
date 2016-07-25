@@ -33,12 +33,12 @@ the data columns of a data.frame defined by `viscos_options("name_data1")` and
 is $y$ they are defined as shown in the following.
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}
-  # here we define some data for the demonstration plots
-  number_of_data <- 50
-  mean <- 0
+  # here we define some data for the demonstrational plots
+  number_of_data <- 100
+  m <- 0
   sd <- 1
-  x <- rnorm(number_of_data,mean,sd)
-  noise <- rnorm(number_of_data,mean,sd)
+  x <- rnorm(number_of_data,m,sd)
+  noise <- rnorm(number_of_data,m,0.5*sd)
   demo_data <- data.frame(
     x = x,
     t = 1:length(x),
@@ -47,38 +47,58 @@ is $y$ they are defined as shown in the following.
     y_m1 = -x,
     y_1 = x,
     y_2 = x^2,
-    y_mh = -x + 0.7*noise,
-    y_h = x + 0.7*noise
+    y_mh = -x + 2*noise,
+    y_h = x + 2*noise
   )  
   demo_names <- names(demo_data)
   demo_length <- length(demo_names)
-# since I do not want to many dependencies and need to plot more functions into
-# one plot I am gonna use the `multiplot` function by Winson Chang
+
+  # since I do not want to many dependencies and need to plot more functions into
+  # one plot I am gonna use the `multiplot` function by Winson Chang
 # see: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 multiplot <- function(..., plotlist=NULL, cols) {
     require(grid, quietly = TRUE)
-
     # Make a list from the ... arguments and plotlist
     plots <- c(list(...), plotlist)
-
     numPlots = length(plots)
-
     # Make the panel
     plotCols = cols                          # Number of columns of plots
     plotRows = ceiling(numPlots/plotCols) # Number of rows needed, calculated from # of cols
-
     # Set up the page
     grid.newpage()
     pushViewport(viewport(layout = grid.layout(plotRows, plotCols)))
     vplayout <- function(x, y)
         viewport(layout.pos.row = x, layout.pos.col = y)
-
     # Make each plot, in the correct location
     for (i in 1:numPlots) {
         curRow = ceiling(i/plotCols)
         curCol = (i-1) %% plotCols + 1
         print(plots[[i]], vp = vplayout(curRow, curCol ))
     }
+}
+## make_plotlist function for multiplot: 
+make_plotlist <- function(plot_data, of = mse, of_designation = "MSE(z)") {
+  plot_list <- list()
+  data_length <- dim(plot_data)[2]
+  data_names <- names(plot_data)
+  # 
+  for (i in 3:data_length) {
+    name_i <- data_names[i]
+    obj_i <- of( obs = plot_data["x"] , sim = plot_data[name_i])
+    title_i <- paste(of_designation,"=", round(obj_i,2), sep = " ")
+    plot_list[[i-2]] <- ggplot(plot_data) +
+      geom_line(aes_string(x = "t", y = x, color = '"x"')) +
+      geom_line(aes_string(x = "t", y = name_i, color = '"y"'),linetype = 5) +
+      scale_colour_manual("", 
+                        breaks = c("x", "y"),
+                        values = c("steelblue", "palevioletred")) +
+      xlab( title_i ) +
+      ylab( "" ) + 
+      theme_minimal() +
+      theme(axis.text.x = element_blank(),
+            axis.text.y = element_blank())
+  }
+  return(plot_list)
 }
 ```
 
@@ -94,25 +114,16 @@ The variable $\bar{x}$ represents the average of $x$. The $NSE$
 can therefore be seen as the relational the estimator $y$ and the estimator
 resulting form the average of the data. The following figure illustrates
 different $NSE$ values for naive examples.
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+```{r, eval = TRUE, echo=FALSE, purl=FALSE}
   # examples:
-  plot_list <- list()
-  for (i in 3:demo_length) {
-    name_i <- demo_names[i]
-    obj_i <- NSE( obs = demo_data["x"] , sim = demo_data[name_i])
-    title_i <- paste("NSE = ", round(obj_i,2), sep = "")
-    plot_list[[i-2]] <- ggplot(demo_data) +
-      geom_line(aes_string(x = "t", y = x), color = "steelblue") +
-      geom_line(aes_string(x = "t", y = name_i), color = "palevioletred") +
-      xlab( title_i ) +
-      ylab("") +
-      theme_minimal() +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_blank())
-  }
-  multiplot(plotlist = plot_list, cols = 3 )
+  plot_list <- make_plotlist(demo_data, of = NSE, of_designation = "NSE")
 ```
-
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[1:3], cols = 1 )
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[4:6], cols = 1 )
+```
 
 
 ## Kling-Gupta Efficiency
@@ -133,23 +144,16 @@ $$ ED = \sqrt{ (corr-1)^2 + (\alpha-1)^2 + (\beta-1)^2) }; $$
 Where $\alpha = \frac{\sigma_y}{ \sigma_x }$ , i.e.: standard deviation $\sigma$ of the $y$ divided by
 the $\sigma$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean.
 The following figure exemplifies its usage for the same data as above.
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+
+```{r, eval = TRUE, echo=FALSE, purl=FALSE}
   # examples:
-  plot_list <- list()
-  for (i in 3:demo_length) {
-    name_i <- demo_names[i]
-    obj_i <- KGE( obs = demo_data["x"] , sim = demo_data[name_i])
-    title_i <- paste("KGE = ", round(obj_i,2), sep = "")
-    plot_list[[i-2]] <- ggplot(demo_data) +
-      geom_line(aes_string(x = "t", y = x), color = "steelblue") +
-      geom_line(aes_string(x = "t", y = name_i), color = "palevioletred") +
-      xlab( title_i ) +
-      ylab("") +
-      theme_minimal() +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_blank())
-  }
- multiplot(plotlist = plot_list, cols = 3 )
+  plot_list <- make_plotlist(demo_data, of = KGE, of_designation = "KGE")
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[1:3], cols = 1 )
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[4:6], cols = 1 )
 ```
 
 ## Percentage Bias
@@ -161,31 +165,23 @@ $$pBIAS = 100*\frac{\sum_{} [ x(t)-y(t) ] }{\sum_{} x(t)}.$$
 The $100*$ is just a scaling factor applied to express $pBIAS$ as a percentage.
 The following figure illustrates different $pBIAS$ values for the same data
 as above.
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples:
-plot_list <- list()
-for (i in 3:demo_length) {
-  name_i <- demo_names[i]
-  obj_i <- pbias( obs = demo_data["x"] , sim = demo_data[name_i])
-  title_i <- paste("pBIAS = ", round(obj_i,2), sep = "")
-  plot_list[[i-2]] <- ggplot(demo_data) +
-    geom_line(aes_string(x = "t", y = x), color = "steelblue") +
-    geom_line(aes_string(x = "t", y = name_i), color = "palevioletred") +
-    xlab( title_i ) +
-    ylab("") +
-    theme_minimal() +
-    theme(axis.text.x = element_blank(),
-          axis.text.y = element_blank())
-}
-multiplot(plotlist = plot_list, cols = 3 )
-```
 
+```{r, eval = TRUE, echo=FALSE, purl=FALSE}
+  # examples:
+  plot_list <- make_plotlist(demo_data, of = pbias, of_designation = "pBIAS")
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[1:3], cols = 1 )
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[4:6], cols = 1 )
+```
 
 ## Pearson's correlation coefficient
 The correlation coefficient $corr$ is a measure of the linear relationship
 between $x$ and $y$. It is defined as:
 
-$$corr = \frac{cov(x,y)}{\sigma^2_y*\sigma^2_x},$$
+$$r \equiv corr = \frac{cov(x,y)}{\sigma_y*\sigma_x},$$
 
 where $cov(...)$ denotes the covariance and $\sigma^2$ the variance. The correlation
 coefficient can take on values between -1 and 1. The former corresponds to a
@@ -193,6 +189,19 @@ inverse and the latter to a direct relationship and the closer the values
 is to zero the weaker the implied correlation. The following figure taken
 from the illustrates some examples of $corr$ to give a feeling for its usage:
 
+```{r, eval = TRUE, echo=FALSE, purl=FALSE}
+  # examples:
+  of_corr <- function(obs,sim) {diag(cor(obs,sim))}
+  plot_list <- make_plotlist(demo_data, of = of_corr, of_designation = "corr")
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[1:3], cols = 1 )
+```
+```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
+  multiplot(plotlist = plot_list[4:6], cols = 1 )
+```
+
+To get a better understaing of the data and the correlation in special it can be usefull to plot the data in a scatter plot with $x$ as the abscissa and $y$ the ordinate: 
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
 # examples:
 plot_list <- list()
