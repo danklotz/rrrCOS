@@ -10,8 +10,8 @@
   #' # clean it and
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
-  #' explore_runoff_with_ofun(d_runoff)
-explore_runoff_with_ofun <- function(runoff_data) {
+  #' explore_runoff_with_of(d_runoff)
+explore_runoff_with_of <- function(runoff_data) {
   require("shiny", quietly = TRUE)
   require("dplyr", quietly = TRUE) # supreme `selection` and the `filtering`
   require("magrittr", quietly = TRUE) # pipe operator
@@ -101,7 +101,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
     })
     output$slctd_OF <- renderTable({
       if (!is.null(input$hydrographs_date_window))
-        out <- serve_ofun( sub_slctd()$x,sub_slctd()$y )
+        out <- serve_of( sub_slctd()$x,sub_slctd()$y )
     })
   }
   ui <- fluidPage(
@@ -121,7 +121,7 @@ explore_runoff_with_ofun <- function(runoff_data) {
     )
   shinyApp(ui,server)
 }
-serve_ofun <- function(x,y) {
+serve_of <- function(x,y) {
   require("hydroGOF", quietly = TRUE)
   require("magrittr", quietly = TRUE)
   # compute objective functions

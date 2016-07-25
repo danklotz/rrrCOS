@@ -1,5 +1,5 @@
 ---
-title: "Code for Calculating the Objective Functions"
+title: "Explaining the OF"
 author: "Daniel Klotz"
 date: "12 Juli 2016"
 output:
@@ -25,6 +25,7 @@ $of$. The code for exploring and visualising objective function is defined in
 separate sections:
 
 - [Explore Basin-Graphs with objective functions](vignettes/LP-explore_basins_with_of.html)
+- [Explore periodical objective functions](vignettes/LP)
 
 Currently 4 objective functions are used in **visCOS**. They are calculated from
 the data columns of a data.frame defined by `viscos_options("name_data1")` and

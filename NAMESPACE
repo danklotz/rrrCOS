@@ -1,4 +1,4 @@
-export(explore_runoff_with_ofun)
+export(explore_runoff_with_of)
 export(extract_objective_functions)
 export(get_runoff_example)
 export(make_plotlist)

@@ -1,5 +1,5 @@
 ---
-title: "Examples for Cooking Data"
+title: "Examples for using visCOS"
 author: "Daniel Klotz"
 date: "6 Juli 2016"
 output:
@@ -106,7 +106,7 @@ started in a new window (in this case an example .jpg with explanations):
 
 ```{r, eval = FALSE}
 viscos_options(color_data1 = "green", color_data2 = "red")
-explore_runoff_with_ofun(runoff_example)
+explore_runoff_with_of(runoff_example)
 ```
 ![](figures/eg_explore_basin.JPG)
 
