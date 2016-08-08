@@ -1,5 +1,5 @@
 ---
-title: "Explaining the OF"
+title: "Calculation of Objective Functions"
 author: "Daniel Klotz"
 date: "12 Juli 2016"
 output:
@@ -9,7 +9,6 @@ output:
     number_sections: yes
 ---
 
-
 ```{r setup, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
@@ -18,210 +17,11 @@ output:
   require("ggplot2")
   require("hydroGOF")
 ```
-
 # Introduction
-This chapter defines the function necessary to calculate the objective functions
-$of$. The code for exploring and visualising objective function is defined in
-separate sections:
-
-- [Explore Basin-Graphs with objective functions](vignettes/LP-explore_basins_with_of.html)
-- [Explore periodical objective functions](vignettes/LP)
-
-Currently 4 objective functions are used in **visCOS**. They are calculated from
-the data columns of a data.frame defined by `viscos_options("name_data1")` and
-`viscos_options("name_data2")`. Assuming that `name_data1` is $x$ and `name_data1`
-is $y$ they are defined as shown in the following.
-
-```{r, eval = TRUE, echo=FALSE, purl=FALSE}
-  # here we define some data for the demonstrational plots
-  number_of_data <- 100
-  m <- 0
-  sd <- 1
-  x <- rnorm(number_of_data,m,sd)
-  noise <- rnorm(number_of_data,m,0.5*sd)
-  demo_data <- data.frame(
-    x = x,
-    t = 1:length(x),
-    # y:
-    y_0 = noise,
-    y_m1 = -x,
-    y_1 = x,
-    y_2 = x^2,
-    y_mh = -x + 2*noise,
-    y_h = x + 2*noise
-  )  
-  demo_names <- names(demo_data)
-  demo_length <- length(demo_names)
-
-  # since I do not want to many dependencies and need to plot more functions into
-  # one plot I am gonna use the `multiplot` function by Winson Chang
-# see: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
-multiplot <- function(..., plotlist=NULL, cols) {
-    require(grid, quietly = TRUE)
-    # Make a list from the ... arguments and plotlist
-    plots <- c(list(...), plotlist)
-    numPlots = length(plots)
-    # Make the panel
-    plotCols = cols                          # Number of columns of plots
-    plotRows = ceiling(numPlots/plotCols) # Number of rows needed, calculated from # of cols
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(plotRows, plotCols)))
-    vplayout <- function(x, y)
-        viewport(layout.pos.row = x, layout.pos.col = y)
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-        curRow = ceiling(i/plotCols)
-        curCol = (i-1) %% plotCols + 1
-        print(plots[[i]], vp = vplayout(curRow, curCol ))
-    }
-}
-## make_plotlist function for multiplot: 
-make_plotlist <- function(plot_data, of = mse, of_designation = "MSE(z)") {
-  plot_list <- list()
-  data_length <- dim(plot_data)[2]
-  data_names <- names(plot_data)
-  # 
-  for (i in 3:data_length) {
-    name_i <- data_names[i]
-    obj_i <- of( obs = plot_data["x"] , sim = plot_data[name_i])
-    title_i <- paste(of_designation,"=", round(obj_i,2), sep = " ")
-    plot_list[[i-2]] <- ggplot(plot_data) +
-      geom_line(aes_string(x = "t", y = x, color = '"x"')) +
-      geom_line(aes_string(x = "t", y = name_i, color = '"y"'),linetype = 5) +
-      scale_colour_manual("", 
-                        breaks = c("x", "y"),
-                        values = c("steelblue", "palevioletred")) +
-      ggtitle( title_i ) + 
-      xlab( "" ) +
-      ylab( "" ) + 
-      theme_minimal() +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_blank())
-  }
-  return(plot_list)
-}
-```
-
-## Nash-Sutcliffe Efficiency
-The Nash-Sutcliffe Criterion $NSE$ is by far the most used efficiency criterion
-in hydrology. In the hydrological context $x$ usually represents a set of
-runoff-observation and $y$ a set of simulations. The $NSE$ is defined in the
-same way as the general definition of the coefficient of determination $R^2$:
-
-$$NSE = \sum_{t=1}^T \frac{x(t)-y(t)}{x(t)-\bar{x}}.$$
-
-The variable $\bar{x}$ represents the average of $x$. The $NSE$
-can therefore be seen as the relational the estimator $y$ and the estimator
-resulting form the average of the data. The following figure illustrates
-different $NSE$ values for naive examples.
-```{r, eval = TRUE, echo=FALSE, purl=FALSE}
-  # examples:
-  plot_list <- make_plotlist(demo_data, of = NSE, of_designation = "NSE")
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[1:3], cols = 1 )
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[4:6], cols = 1 )
-```
-
-
-## Kling-Gupta Efficiency
-The Kling-Gupta Efficiency $KGE$ was introduced by Gupta et al. (2009) to
-alleviate some of the shortcomings of the $NSE$. In their paper they argue
-why the $NSE$ tends to overate simulations with small variance
-(note: in the context of the paper $\textrm{simulations} = y$) and
-propose the their efficiency criterion instead.
-
-The $KGE$ is defined as:
-
-$$ KGE = 1 - ED, $$
-
-with
-
-$$ ED = \sqrt{ (corr-1)^2 + (\alpha-1)^2 + (\beta-1)^2) }; $$
-
-Where $\alpha = \frac{\sigma_y}{ \sigma_x }$ , i.e.: standard deviation $\sigma$ of the $y$ divided by
-the $\sigma$  of $x$ and $\beta = \mu_y / \mu_x$ and $\mu$ is the arithmetic mean.
-The following figure exemplifies its usage for the same data as above.
-
-```{r, eval = TRUE, echo=FALSE, purl=FALSE}
-  # examples:
-  plot_list <- make_plotlist(demo_data, of = KGE, of_designation = "KGE")
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[1:3], cols = 1 )
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[4:6], cols = 1 )
-```
-
-## Percentage Bias
-The percentage of bias $pBIAS$ is defined as the sum of the differences
-between $x$ and $y$ divided by the sum of $x$:
-
-$$pBIAS = 100*\frac{\sum_{} [ x(t)-y(t) ] }{\sum_{} x(t)}.$$
-
-The $100*$ is just a scaling factor applied to express $pBIAS$ as a percentage.
-The following figure illustrates different $pBIAS$ values for the same data
-as above.
-
-```{r, eval = TRUE, echo=FALSE, purl=FALSE}
-  # examples:
-  plot_list <- make_plotlist(demo_data, of = pbias, of_designation = "pBIAS")
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[1:3], cols = 1 )
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[4:6], cols = 1 )
-```
-
-## Pearson's correlation coefficient
-The correlation coefficient $corr$ is a measure of the linear relationship
-between $x$ and $y$. It is defined as:
-
-$$r \equiv corr = \frac{cov(x,y)}{\sigma_y*\sigma_x},$$
-
-where $cov(...)$ denotes the covariance and $\sigma^2$ the variance. The correlation
-coefficient can take on values between -1 and 1. The former corresponds to a
-inverse and the latter to a direct relationship and the closer the values
-is to zero the weaker the implied correlation. The following figure taken
-from the illustrates some examples of $corr$ to give a feeling for its usage:
-
-```{r, eval = TRUE, echo=FALSE, purl=FALSE}
-  # examples:
-  of_corr <- function(obs,sim) {diag(cor(obs,sim))}
-  plot_list <- make_plotlist(demo_data, of = of_corr, of_designation = "corr")
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[1:3], cols = 1 )
-```
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-  multiplot(plotlist = plot_list[4:6], cols = 1 )
-```
-
-To get a better understaing of the data and the correlation in special it can be usefull to plot the data in a scatter plot with $x$ as the abscissa and $y$ the ordinate: 
-```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
-# examples:
-plot_list <- list()
-for (i in 3:demo_length) {
-  name_i <- demo_names[i]
-  obj_i <- cor( x = demo_data["x"] , y = demo_data[name_i])
-  title_i <- paste("corr = ", round(obj_i,2), sep = "")
-  plot_list[[i-2]] <- ggplot(demo_data) +
-    geom_point(aes_string(x = "x", y = name_i)) +
-    xlab( title_i ) +
-    ylab("") +
-    theme_minimal() +
-    theme(axis.text.x = element_blank(),
-          axis.text.y = element_blank())
-}
-multiplot(plotlist = plot_list, cols = 3 )
-```
-
-
+This chapter explains the code to calculate the objective functions $of$ for 
+the data and for selected periods. It can be done with the function 
+'extract_objective_functions'. **Note** that periods must be marked first to run
+the function. This is checked, too.
 
 # Code
 ## `extract_objective_functions`
@@ -229,8 +29,7 @@ The purpose of this function is to extract a set of objective functions from
 the `runoff_data` data.frame. The objective functions are extracted for each
 basin, for the all the periods as a summary and for each period separately.
 
-The .rd-File for the package documentation is defined as: 
-```{r}
+```{r, echo=FALSE}
 #' Get basic objective function for runoff_data
 #'
 #' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation) 
@@ -256,10 +55,19 @@ extract_objective_functions <- function(runoff_data) {
 ```
 
 The computational part of the function works as follows. In step (I) the
-non-marked periods of `runoff_data` (i.e. columns of
-`viscos_options("name_COSperiod")` which are smaller then > 0) are excluded 
+non-marked periods of `runoff_data` (columns of
+`viscos_options("name_COSperiod")` which are smaller then 0) are excluded 
 from further calculations. The thereby obtained data.frame is named
-`evaluation_data`. Then, step (II) extracts important information for the
+`evaluation_data`. 
+```{r}
+  # (I) reduce necessary computation
+  evaluation_data <- runoff_data[
+      runoff_data[[viscos_options("name_COSperiod")]] > 0,
+    ]
+```
+
+
+Then, step (II) extracts important information for the
 calculations:
 
 - The number of basins (`number_of_basins`) is obtained by getting the names
@@ -269,22 +77,7 @@ lower cases and summing up all the name_data1 column,
 the unique values of the `viscos_options("name_COSperiod")` column, and
 - number of periods (`number_of_periods`) are obtained by measuring the length
 of `periods_in_data`
-
-Step (III) computes the overall objective functions. This is done by copying all
-`viscos_options("name_data1")` columns into the `temp_x` variable and all
-`viscos_options("name_data2")` into the `temp_y` variable. The former is then
-handed as observation and the latter as simulation to the `hydroGOF` functions.
-The correlation `obj_fun$CORR` is calculated with base `R`. As `cor` returns
-a whole cross-correlation matrix only the diagonal is extracted with `diag`.
-Step (IV) is a period-wise a repetition of step (III). Thus,  at each each
-iteration `k` the given period is filtered from `evaluation_data`
-with `dplyr::filtr` before `temp_x` and `temp_y` is calculated.
-The so obtained period-wise objective function values are marked by `_period`
 ```{r}
-  # (I) reduce necessary computation
-  evaluation_data <- runoff_data[
-      runoff_data[[viscos_options("name_COSperiod")]] > 0,
-    ]
   # (II) get information
   number_of_basins <- evaluation_data %>%
     names %>%
@@ -295,6 +88,17 @@ The so obtained period-wise objective function values are marked by `_period`
   periods_in_data <- evaluation_data[[viscos_options("name_COSperiod")]] %>%
     unique
   number_of_periods <- periods_in_data %>% length
+```
+
+Step (III) computes the overall objective functions. This is done by copying all
+`viscos_options("name_data1")` columns into the `temp_x` variable and all
+`viscos_options("name_data2")` into the `temp_y` variable. The former is then
+handed as observation and the latter as simulation to the `hydroGOF` functions.
+The correlation `obj_fun$CORR` is calculated with 'cor' from base `R`. As `cor` 
+returns a whole cross-correlation matrix only the diagonal is extracted with 
+`diag`. 
+```{r}
+
   # (III) calculate overall objective functions
   obj_fun  <- list()
   temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
@@ -305,6 +109,13 @@ The so obtained period-wise objective function values are marked by `_period`
   obj_fun$KGE <- hydroGOF::KGE(temp_y,temp_x)
   obj_fun$pBIAS <- hydroGOF::pbias(temp_y,temp_x)
   obj_fun$CORR <- cor(temp_y,temp_x) %>% diag(.)
+```
+
+Step (IV) is a period-wise a repetition of step (III). Thus, at each 
+iteration `k` the given period is filtered from `evaluation_data`
+with `dplyr::filtr` before `temp_x` and `temp_y` is calculated.
+The so obtained period-wise objective function values are marked by `_period`
+```{r}
   # (IV) calulcated period-vise objective functions
     # pre allocation of periodic variables:
     obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
@@ -328,6 +139,7 @@ The so obtained period-wise objective function values are marked by `_period`
   #
   return(obj_fun)
 }
+
 ```
 
 
