@@ -122,21 +122,15 @@ $(document).ready(function () {
 </div>
 
 
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>This chapter explains the code to calculate the objective functions <span class="math inline">\(of\)</span> for the data and for selected periods. It can be done with the function ‘extract_objective_functions’. <strong>Note</strong> that periods must be marked first to run the function. This is checked, too.</p>
+</div>
 <div id="code" class="section level1">
-<h1><span class="header-section-number">1</span> Code</h1>
+<h1><span class="header-section-number">2</span> Code</h1>
 <div id="extract_objective_functions" class="section level2">
-<h2><span class="header-section-number">1.1</span> <code>extract_objective_functions</code></h2>
+<h2><span class="header-section-number">2.1</span> <code>extract_objective_functions</code></h2>
 <p>The purpose of this function is to extract a set of objective functions from the <code>runoff_data</code> data.frame. The objective functions are extracted for each basin, for the all the periods as a summary and for each period separately.</p>
-<p>The .rd-File for the package documentation is defined as:</p>
-<pre class="r"><code>#' Get basic objective function for runoff_data
-#'
-#' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation) 
-#' for every basin and the chosen periods.
-#'
-#' @param runoff_data runoff_data data.frame.
-#' @return list of basic objective function evaluated for the different
-#' hydrological years and over the whole timespan.
-#' @export</code></pre>
 <p>The head of the functions checks for the required packages, if <code>runoff_data</code> is a data.frame and if the <code>viscos_options(&quot;name_COSperiod&quot;)</code> exists within <code>runoff_data</code>:</p>
 <pre class="r"><code>extract_objective_functions &lt;- function(runoff_data) {
   require(&quot;hydroGOF&quot;, quietly = TRUE)
@@ -145,19 +139,19 @@ $(document).ready(function () {
   if( !exists(viscos_options(&quot;name_COSperiod&quot;), where = runoff_data) ) {
     stop(&quot;Error! Period-Column missing in runoff_data; use `mark_periods`&quot;)
   }</code></pre>
-<p>The computational part of the function works as follows. In step (I) the non-marked periods of <code>runoff_data</code> (i.e. columns of <code>viscos_options(&quot;name_COSperiod&quot;)</code> which are smaller then &gt; 0) are excluded from further calculations. The thereby obtained data.frame is named <code>evaluation_data</code>. Then, step (II) extracts important information for the calculations:</p>
+<p>The computational part of the function works as follows. In step (I) the non-marked periods of <code>runoff_data</code> (columns of <code>viscos_options(&quot;name_COSperiod&quot;)</code> which are smaller then 0) are excluded from further calculations. The thereby obtained data.frame is named <code>evaluation_data</code>.</p>
+<pre class="r"><code>  # (I) reduce necessary computation
+  evaluation_data &lt;- runoff_data[
+      runoff_data[[viscos_options(&quot;name_COSperiod&quot;)]] &gt; 0,
+    ]</code></pre>
+<p>Then, step (II) extracts important information for the calculations:</p>
 <ul>
 <li>The number of basins (<code>number_of_basins</code>) is obtained by getting the names of the data.frame, applying <code>tolower</code> to make them independent of upper and lower cases and summing up all the name_data1 column,<br />
 </li>
 <li>the indices of the marked periods (<code>periods_in_data</code>) are obtained by getting the unique values of the <code>viscos_options(&quot;name_COSperiod&quot;)</code> column, and</li>
 <li>number of periods (<code>number_of_periods</code>) are obtained by measuring the length of <code>periods_in_data</code></li>
 </ul>
-<p>Step (III) computes the overall objective functions. This is done by copying all <code>viscos_options(&quot;name_data1&quot;)</code> columns into the <code>temp_x</code> variable and all <code>viscos_options(&quot;name_data2&quot;)</code> into the <code>temp_y</code> variable. The former is then handed as observation and the latter as simulation to the <code>hydroGOF</code> functions. The correlation <code>obj_fun$CORR</code> is calculated with base <code>R</code>. As <code>cor</code> returns a whole cross-correlation matrix only the diagonal is extracted with <code>diag</code>. Step (IV) is a period-wise a repetition of step (III). Thus, at each each iteration <code>k</code> the given period is filtered from <code>evaluation_data</code> with <code>dplyr::filtr</code> before <code>temp_x</code> and <code>temp_y</code> is calculated. The so obtained period-wise objective function values are marked by <code>_period</code></p>
-<pre class="r"><code>  # (I) reduce necessary computation
-  evaluation_data &lt;- runoff_data[
-      runoff_data[[viscos_options(&quot;name_COSperiod&quot;)]] &gt; 0,
-    ]
-  # (II) get information
+<pre class="r"><code>  # (II) get information
   number_of_basins &lt;- evaluation_data %&gt;%
     names %&gt;%
     unique %&gt;%
@@ -166,8 +160,9 @@ $(document).ready(function () {
     sum
   periods_in_data &lt;- evaluation_data[[viscos_options(&quot;name_COSperiod&quot;)]] %&gt;%
     unique
-  number_of_periods &lt;- periods_in_data %&gt;% length
-  # (III) calculate overall objective functions
+  number_of_periods &lt;- periods_in_data %&gt;% length</code></pre>
+<p>Step (III) computes the overall objective functions. This is done by copying all <code>viscos_options(&quot;name_data1&quot;)</code> columns into the <code>temp_x</code> variable and all <code>viscos_options(&quot;name_data2&quot;)</code> into the <code>temp_y</code> variable. The former is then handed as observation and the latter as simulation to the <code>hydroGOF</code> functions. The correlation <code>obj_fun$CORR</code> is calculated with ‘cor’ from base <code>R</code>. As <code>cor</code> returns a whole cross-correlation matrix only the diagonal is extracted with <code>diag</code>.</p>
+<pre class="r"><code>  # (III) calculate overall objective functions
   obj_fun  &lt;- list()
   temp_x &lt;- dplyr::select(evaluation_data,starts_with(viscos_options(&quot;name_data1&quot;))) %&gt;%
     unname
@@ -176,8 +171,9 @@ $(document).ready(function () {
   obj_fun$NSE &lt;- hydroGOF::NSE(temp_y,temp_x)
   obj_fun$KGE &lt;- hydroGOF::KGE(temp_y,temp_x)
   obj_fun$pBIAS &lt;- hydroGOF::pbias(temp_y,temp_x)
-  obj_fun$CORR &lt;- cor(temp_y,temp_x) %&gt;% diag(.)
-  # (IV) calulcated period-vise objective functions
+  obj_fun$CORR &lt;- cor(temp_y,temp_x) %&gt;% diag(.)</code></pre>
+<p>Step (IV) is a period-wise a repetition of step (III). Thus, at each iteration <code>k</code> the given period is filtered from <code>evaluation_data</code> with <code>dplyr::filtr</code> before <code>temp_x</code> and <code>temp_y</code> is calculated. The so obtained period-wise objective function values are marked by <code>_period</code></p>
+<pre class="r"><code>  # (IV) calulcated period-vise objective functions
     # pre allocation of periodic variables:
     obj_fun$NSE_period &lt;- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
     obj_fun$KGE_period &lt;- obj_fun$NSE_period
@@ -203,7 +199,7 @@ $(document).ready(function () {
 </div>
 </div>
 <div id="references" class="section level1">
-<h1><span class="header-section-number">2</span> References</h1>
+<h1><span class="header-section-number">3</span> References</h1>
 <ul>
 <li>Gupta, Hoshin V.; Kling, Harald; Yilmaz, Koray K. &amp; Martinez, Guillermo F. (2009): <em>Decomposition of the mean squared error and NSE performance criteria:</em> <em>Implications for improving hydrological modelling</em> (Journal of Hydrology)</li>
 </ul>

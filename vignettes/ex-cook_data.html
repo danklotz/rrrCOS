@@ -192,7 +192,7 @@ head(runoff_example)</code></pre>
 </div>
 <div id="explore-data-and-objective-functions-for-subbasins" class="section level1">
 <h1><span class="header-section-number">3</span> Explore Data and Objective Functions for Subbasins</h1>
-<p>In this chapter it is shown, how the function <code>explore_basins_with_of</code> can be used to take a closer look at the data series you loaded. Only prerequirements are properly loaded data and correctly addressed <code>viscos_options</code>. Additionally, you can adapt the <em>color_data</em> options in the <code>viscos_options</code>. Information on the objective functions can be found <a href="LP-calculating_of.html">here</a></p>
+<p>In this chapter it is shown, how the function <code>explore_basins_with_of</code> can be used to take a closer look at the data series you loaded. Only prerequirements are properly loaded data and correctly addressed <code>viscos_options</code>. Additionally, you can adapt the <em>color_data</em> options in the <code>viscos_options</code>. Information on the <em>objective functions</em> can be found <a href="ex-OF_explanation.html">here</a></p>
 <p>Running the <code>explore_basins_with_of</code> with your data as input, a shiny app is started in a new window (in this case an example .jpg with explanations):</p>
 <pre class="r"><code>viscos_options(color_data1 = &quot;green&quot;, color_data2 = &quot;red&quot;)
 explore_runoff_with_of(runoff_example)</code></pre>
@@ -201,6 +201,43 @@ explore_runoff_with_of(runoff_example)</code></pre>
 
 </div>
 <p>The program is calculating and displaying the results always on the fly. So by changing the basin or the timeframe, the displayed data series and the results of the objective functions are adapting. By going with your pointer over the data series, the values of the data series at the marked point are displayed in the upper right corner.</p>
+</div>
+<div id="calculate-objective-functions-for-subbasins-and-periods" class="section level1">
+<h1><span class="header-section-number">4</span> Calculate Objective Functions for Subbasins and Periods</h1>
+<p>In Chapter 3, the objective functions <span class="math inline">\(of\)</span> have been introduced already for the interactive analysis of the time series. To get the <span class="math inline">\(of\)</span> values for the periods defined with ‘mark_periods()’ and as a summary over the whole timespan, the function ‘extract_objective_functions’ can be applied to the prepared data series and the results are displayed in the console or can be assigned to a variable</p>
+<pre class="r"><code>of_values &lt;- extract_objective_functions(runoff_example)
+of_values</code></pre>
+<pre><code>## $NSE
+## [1] 0.3280388 0.4290553
+## 
+## $KGE
+## [1] 0.6608722 0.6992894
+## 
+## $pBIAS
+## [1] -13.6 -14.3
+## 
+## $CORR
+## [1] 0.6896692 0.7384113
+## 
+## $NSE_period
+##           [,1]      [,2]
+## [1,] 0.4494563 0.5052688
+## [2,] 0.1141900 0.3043732
+## 
+## $KGE_period
+##           [,1]      [,2]
+## [1,] 0.7136535 0.7385322
+## [2,] 0.5588054 0.6179269
+## 
+## $pBIAS_period
+##       [,1]  [,2]
+## [1,] -14.6 -16.0
+## [2,] -12.7 -12.3
+## 
+## $CORR_period
+##           [,1]      [,2]
+## [1,] 0.7534089 0.7931690
+## [2,] 0.5779287 0.6511935</code></pre>
 </div>
 
 

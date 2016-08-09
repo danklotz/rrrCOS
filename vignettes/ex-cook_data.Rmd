@@ -99,7 +99,7 @@ In this chapter it is shown, how the function `explore_basins_with_of` can be
 used to take a closer look at the data series you loaded. Only prerequirements 
 are properly loaded data and correctly addressed `viscos_options`. Additionally, 
 you can adapt the *color_data* options in the `viscos_options`. Information on 
-the objective functions can be found [here](LP-calculating_of.html)
+the *objective functions* can be found [here](ex-OF_explanation.html)
 
 Running the `explore_basins_with_of` with your data as input, a shiny app is 
 started in a new window (in this case an example .jpg with explanations):
@@ -116,5 +116,17 @@ changing the basin or the timeframe, the displayed data series and the results
 of the objective functions are adapting. By going with your pointer over the 
 data series, the values of the data series at the marked point are displayed in 
 the upper right corner.
+
+# Calculate Objective Functions for Subbasins and Periods
+In Chapter 3, the objective functions $of$ have been introduced already for the 
+interactive analysis of the time series. To get the $of$ values for the periods 
+defined with 'mark_periods()' and as a summary over the whole timespan, the 
+function 'extract_objective_functions' can be applied to the prepared data 
+series and the results are displayed in the console or can be assigned to a 
+variable
+```{r, message=3}
+of_values <- extract_objective_functions(runoff_example)
+of_values
+```
 
 
