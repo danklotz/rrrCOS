@@ -146,6 +146,10 @@ $(document).ready(function () {
 <td align="left"><code>get_basin_numbers</code></td>
 <td align="left">no</td>
 </tr>
+<tr class="odd">
+<td align="left"><code>set_panel_size</code></td>
+<td align="left">no</td>
+</tr>
 </tbody>
 </table>
 <div id="get_regex_for_runoff_data" class="section level2">
@@ -181,7 +185,7 @@ $(document).ready(function () {
 </div>
 <div id="set_panel_size" class="section level2">
 <h2><span class="header-section-number">2.3</span> <code>set_panel_size</code></h2>
-<p>Klotz: I honestly forgot what this function does! But I think is a good helper I need to look it up, but am not ready yet! I roughly remember that setting graphical options with ggplot is a mess, and this is a function, which might solves a lot. However, I am not sure!</p>
+<p>Klotz: I honestly forgot what this function does! But I think ti is a good helper I need to look it up, but am not ready yet! I roughly remember that setting graphical options with ggplot is a mess, and this is a function, which might solves a lot. However, I am not sure!</p>
 <pre class="r"><code>set_panel_size &lt;- function(p=NULL, g=ggplotGrob(p), file=NULL,
                            margin = unit(1,&quot;mm&quot;),
                            width=unit(3, &quot;cm&quot;),

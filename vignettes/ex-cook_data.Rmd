@@ -120,8 +120,8 @@ the upper right corner.
 # Calculate Objective Functions for Subbasins and Periods
 In Chapter 3, the objective functions $of$ have been introduced already for the 
 interactive analysis of the time series. To get the $of$ values for the periods 
-defined with 'mark_periods()' and as a summary over the whole timespan, the 
-function 'extract_objective_functions' can be applied to the prepared data 
+defined with `mark_periods()` and as a summary over the whole timespan, the 
+function `extract_objective_functions` can be applied to the prepared data 
 series and the results are displayed in the console or can be assigned to a 
 variable
 ```{r, message=3}

@@ -24,6 +24,7 @@ function | exported
 ------------- | -------------
 `get_regex_for_runoff_data` | no
 `get_basin_numbers` | no
+`set_panel_size`| no
 
 ## `get_regex_for_runoff_data`
 This function can be called to get the names of the 8 allowed column-names
@@ -66,7 +67,7 @@ get_basin_numbers <- function(runoff_data) {
 
 
 ## `set_panel_size`
-Klotz: I honestly forgot what this function does! But I think is a good helper
+Klotz: I honestly forgot what this function does! But I think ti is a good helper
 I need to look it up, but am not ready yet! I roughly remember that setting
 graphical options with ggplot is a mess, and this is a function, which
 might solves a lot. However, I am not sure! 
