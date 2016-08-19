@@ -28,6 +28,7 @@ extract_objective_functions <- function(runoff_data) {
   periods_in_data <- evaluation_data[[viscos_options("name_COSperiod")]] %>%
     unique
   number_of_periods <- periods_in_data %>% length
+
   # (III) calculate overall objective functions
   obj_fun  <- list()
   temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
@@ -61,3 +62,4 @@ extract_objective_functions <- function(runoff_data) {
   #
   return(obj_fun)
 }
+
