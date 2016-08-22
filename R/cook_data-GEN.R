@@ -123,16 +123,29 @@ implode_cosdate <- function(runoff_data) {
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   runoff_data %<>% remove_chunk
-  runoff_names <- runoff_data %>% names %>% gsub("\\d","",.)
-  # get numbers and remove leading zeros
-  runoff_nums <- runoff_data %>%
-    names %>%
-    gsub("\\D","",.) %>%
-    as.numeric %>%  
-    as.character
-  runoff_nums[is.na(runoff_nums)] = ""
-  # paste new nums as new data_names
-  names(runoff_data) <- paste(runoff_names, runoff_nums, sep = "")
+  runoff_names <- runoff_data %>% names
+  runoff_lowercase_names <- runoff_names %>% tolower 
+  #
+  separator <- runoff_lowercase_names %>% 
+    extract( grep(viscos_options()$name_data1,.) ) %>% 
+    extract( 1 ) %>%
+    gsub(viscos_options()$name_data1,"",.) %>% 
+    gsub("\\d","",.)
+  searchterm <- paste0(viscos_options()$name_data1,"|", viscos_options()$name_data2)
+  runoff_nums <- runoff_lowercase_names %>% 
+    gsub(searchterm,"",.) %>% 
+    gsub(separator,"",.) %>% 
+    gsub("\\D","",.)
+  searchterm <- paste(runoff_nums, collapse = "")
+  runoff_only_names <- runoff_names %>% 
+    gsub(paste0("[",searchterm,"]"),"",.) %>% 
+    gsub(separator,"",.)
+  runoff_new_numbers <- runoff_nums %>% 
+    gsub(0,"",.) 
+  #
+  names(runoff_data) <- runoff_new_numbers %>% 
+    gsub("\\d","_",.) %>% 
+    paste0(runoff_only_names,.,runoff_new_numbers)
   return(runoff_data)
 }
 #' calculate periods

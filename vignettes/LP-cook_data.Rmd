@@ -344,7 +344,7 @@ variable numeration.
     gsub(0,"",.) 
   #
   names(runoff_data) <- runoff_new_numbers %>% 
-    gsub("\\d","_",.) %>% 
+    gsub("\\d",separator,.) %>% 
     paste0(runoff_only_names,.,runoff_new_numbers)
   return(runoff_data)
 }
