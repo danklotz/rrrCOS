@@ -25,11 +25,11 @@
     assert_dataframe(runoff_data)
   lowercase_names_in_data <- runoff_data %>% names %>% tolower
   #
-  regex_columns <- get_regex_for_runoff_data() # see: helpers
+  regex_columns <- get_regex_for_runoff_data() %>% tolower # see: helpers
 
   idx <- regex_columns %>%
     grep(.,lowercase_names_in_data)
-    no_chunk_runoff_data <- runoff_data[ , idx]
+   no_chunk_runoff_data <- runoff_data[ , idx]
     return( only_observed_basins(no_chunk_runoff_data) )
   }
 # remove basins without observations
@@ -140,11 +140,11 @@ remove_leading_zeros <- function(runoff_data) {
   runoff_only_names <- runoff_names %>% 
     gsub(paste0("[",searchterm,"]"),"",.) %>% 
     gsub(separator,"",.)
-  runoff_new_numbers <- runoff_nums %>% 
-    gsub(0,"",.) 
+  runoff_new_numbers <- runoff_nums %>% as.numeric() %>% as.character()
+  runoff_new_numbers[is.na(runoff_new_numbers)] <- ""
   #
   names(runoff_data) <- runoff_new_numbers %>% 
-    gsub("\\d","_",.) %>% 
+    gsub("\\d+",separator,.) %>% 
     paste0(runoff_only_names,.,runoff_new_numbers)
   return(runoff_data)
 }

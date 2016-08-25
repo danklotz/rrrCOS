@@ -24,13 +24,13 @@ explore_runoff_with_of <- function(runoff_data) {
     clean_runoff_data %<>% prepare_complete_date
   }
   # (II)
-    d_xts <- runoff_as_xts(clean_runoff_data)
+  d_xts <- runoff_as_xts(clean_runoff_data)
 
   # (III)
-    idx_names <- names(d_xts) %>%
-      tolower %>% 
-      grepl(viscos_options("name_data1"),.)
-    d_nums <- d_xts %>%
+  idx_names <- names(d_xts) %>%
+    tolower %>% 
+    grepl(viscos_options("name_data1"),.)
+  d_nums <- d_xts %>%
       names() %>%
       .[idx_names] %>%
       gsub("\\D","",.) %>%
