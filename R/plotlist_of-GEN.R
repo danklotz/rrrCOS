@@ -2,9 +2,9 @@
 #'
 #' To be written soon
 #' @export
-make_plotlist <- function(runoff_data, 
-                          kind_of_plot = "barplot",
-                          of_name = "NSE_period") {
+listplot <- function(runoff_data,
+                     kind_of_plot = "barplot",
+                     of_name = "NSE_period") {
   if (kind_of_plot == "barplot") {
     plot_list <- serve.plotlist_periodOF(runoff_data,of_name)
   } else {
@@ -21,57 +21,53 @@ serve.plotlist_periodOF <- function(runoff_data, of_name = "NSE_period") {
   # calculate objective functions
   of <- extract_objective_functions(runoff_data)
   # 
-  names(of) <- tolower(names(of))
-  num_basins <- get_basin_numbers(runoff_data)
-  plot_titles <- paste(viscos_options("plot_title"),num_basins,sep = "")
-  user_of <- of[[tolower(of_name)]] 
-  only_one_period_or_total <- is.null(dim(user_of)[1])
-  # (I)
-  if ( only_one_period_or_total ) {
-    user_of %<>% 
-      t() %>%
-      pmax(.,viscos_options("limits")[1]) %>%
-      as.data.frame()
-    names(user_of) <- plot_titles
-  } else {
-    user_of %<>%
-      pmax(.,viscos_options("limits")[1]) %>%
-      as.data.frame()
-    names(user_of) <- plot_titles
-  }
-  # (II)
-  if ( only_one_period_or_total ) {
-    user_of$periods <- 1
-  } else {
-    user_of$periods <- unique(runoff_data$period) %>% 
-      extract(. > 0)
-  }
+  num_basins <- ncol(of) %>% subtract(1)
+  plot_titles <- paste(viscos_options("plot_title"),1:num_basins,sep = "")
+  user_of <- of %>% 
+    extract(2:ncol(of)) %>% 
+    apply(.,2, function(x) pmax(x,viscos_options("limits")[1])) %>% 
+    apply(.,2, function(x) pmin(x,viscos_options("limits")[2])) %>%
+    cbind.data.frame(of = of$of,.)
+  
+  # user_of <- of[grepl(of_name,of$of, ignore.case = TRUE), ]
   # define plot function: 
-  plot_function <- function(k) {
-    ggplot(data = user_of,environmnet = environment()) +
-    geom_bar(stat = "identity",
-             position = "identity",
-             aes_string(x = "periods", y = plot_titles[k],fill = plot_titles[k])) +
-    theme_light(base_size = 15) +
-    ggtitle(plot_titles[k]) +
-    xlab(viscos_options("xlab")) +
-    ylab( gsub("_.*","", of_name) ) + # remove everything after "_" 
-    scale_y_continuous(limits = viscos_options("limits")) +
-    theme(legend.position = "none",
-          axis.text.x = element_text(angle = 50, hjust = 1)
-          ) + 
-    scale_fill_gradient2(space = "Lab",
-                         low = viscos_options("color_of_low"),
-                         mid = viscos_options("color_of_mid"),
-                         high = viscos_options("color_of_high"),
-                         midpoint = viscos_options("midpoint"),
-                         limits = viscos_options("limits") )
+  melted_user_of <- suppressMessages( reshape2::melt(of) )%>% 
+    mutate(of_group = ifelse(of %>% as.character %>% startsWith(.,"NSE"),"NSE",
+                             ifelse(of %>% as.character %>% startsWith(.,"KGE"),"KGE",
+                                    ifelse(of %>% as.character %>% startsWith(.,"CORR"),"CORR",
+                                           ifelse(of %>% as.character %>% startsWith(.,"pBIAS"),"pBIAS",NA))))) 
+  groupings_of <- melted_user_of$of_group %>% unique
+  # plot list function
+  plotlist_fun <- function(grouping) {
+    of_to_plot <- melted_user_of %>% filter( of_group == grouping)
+    if (grouping == "pBIAS") {
+    plot_list <- ggplot(data = of_to_plot) +
+      geom_bar(stat = "identity",
+               position = "identity",
+               aes(x = of,
+                   y = value)) +
+      ggtitle(grouping) +
+      facet_wrap(~ variable, ncol = 1) + 
+      ylim(c(-100,100))
+    return(plot_list)
+    } else {
+    plot_list <- ggplot(data = of_to_plot) +
+      geom_bar(stat = "identity",
+               position = "identity",
+               aes(x = of,
+                   y = value)) +
+      facet_wrap(~ variable, ncol = 1) + 
+      ggtitle(grouping) +
+      ylim(viscos_options("limits"))
+    return(plot_list)
+    }
+
   }
-  # apply plot function over all columns in user_of
-  eval_size <- ncol(user_of)
-  list_of_barplots <- lapply(1:eval_size,
-                    function(k) plot_function(k)
-                    )
-  return(list_of_barplots)
+  
+  
+  # map plotlist_fun
+  plot_list <- lapply(groupings_of,plotlist_fun)
+  names(plot_list) <- c("NSE","KGE","pBIAS","CORR")
+  return(plot_list)
 }
 

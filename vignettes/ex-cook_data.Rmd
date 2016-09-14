@@ -50,7 +50,6 @@ from within **visCOS**:
 The next step would be to adapt the first part of the `viscos_options`. This 
 can be done by copying the default settings from the help and adapt them. In 
 this case they are already correct:
-
 ```{r}
    viscos_options(
    # data.frame column names
@@ -64,6 +63,7 @@ this case they are already correct:
       name_COSposix = "posixdate",
       name_COSperiod = "period")
 ```
+
 ## Remove junk and prepare date format
 Now all the junk data (data columns not needed, unobserved basins) can be 
 removed using the `remove_chunk` function. Additionally, leading zeros in the 
@@ -80,6 +80,7 @@ equivalent column in `POSIXct` format (see: [link](https://stat.ethz.ch/R-manual
   prepare_complete_date()
 head(runoff_example)
 ```
+
 ## Define and Mark periods
 If a seasonal or periodical analysis of the data wants to be done, these periods 
 can be defined with the `mark_periods` function. In the example case, the 
@@ -103,13 +104,12 @@ the *objective functions* can be found [here](ex-OF_explanation.html)
 
 Running the `explore_basins_with_of` with your data as input, a shiny app is 
 started in a new window (in this case an example .jpg with explanations):
-
 ```{r, eval = FALSE}
 viscos_options(color_data1 = "green", color_data2 = "red")
 explore_runoff_with_of(runoff_example)
 ```
-![](figures/eg_explore_basin.JPG)
 
+![](figures/eg_explore_basin.JPG)
 
 The program is calculating and displaying the results always on the fly. So by 
 changing the basin or the timeframe, the displayed data series and the results 

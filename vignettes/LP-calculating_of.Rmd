@@ -61,13 +61,12 @@ from further calculations. The thereby obtained data.frame is named
 `evaluation_data`. 
 ```{r}
   # (I) reduce necessary computation
-  evaluation_data <- runoff_data[
-      runoff_data[[viscos_options("name_COSperiod")]] > 0,
-    ]
+  evaluation_data <- 
+    runoff_data[ runoff_data[[viscos_options("name_COSperiod")]] > 0, ]
 ```
 
 
-Then, step (II) extracts important information for the
+Step (II) extracts important information for the
 calculations:
 
 - The number of basins (`number_of_basins`) is obtained by getting the names
@@ -100,15 +99,15 @@ returns a whole cross-correlation matrix only the diagonal is extracted with
 ```{r}
 
   # (III) calculate overall objective functions
-  obj_fun  <- list()
   temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
     unname
   temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data2"))) %>%
     unname
-  obj_fun$NSE <- hydroGOF::NSE(temp_y,temp_x)
-  obj_fun$KGE <- hydroGOF::KGE(temp_y,temp_x)
-  obj_fun$pBIAS <- hydroGOF::pbias(temp_y,temp_x)
-  obj_fun$CORR <- cor(temp_y,temp_x) %>% diag(.)
+  nse_ <- hydroGOF::NSE(temp_y,temp_x)
+  kge_ <- hydroGOF::KGE(temp_y,temp_x)
+  pbias_ <- hydroGOF::pbias(temp_y,temp_x)
+  corr_ <- cor(temp_y,temp_x) %>% diag(.)
+
 ```
 
 Step (IV) is a period-wise a repetition of step (III). Thus, at each 
@@ -118,25 +117,41 @@ The so obtained period-wise objective function values are marked by `_period`
 ```{r}
   # (IV) calulcated period-vise objective functions
     # pre allocation of periodic variables:
-    obj_fun$NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
-    obj_fun$KGE_period <- obj_fun$NSE_period
-    obj_fun$pBIAS_period <- obj_fun$NSE_period
-    obj_fun$CORR_period <- obj_fun$NSE_period
-    # calculation loop
-    for (k in 1:number_of_periods)
-    {
+    NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
+    KGE_period <- NSE_period
+    pBIAS_period <- NSE_period
+    CORR_period <- NSE_period
+
+    # calculation loop # proabbly slow
+    for (k in 1:number_of_periods) {
       temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
         dplyr::select(.,starts_with(viscos_options("name_data1"))) %>%
         unname
       temp_y <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
         dplyr::select(.,starts_with(viscos_options("name_data2"))) %>%
         unname
-      obj_fun$NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
-      obj_fun$KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
-      obj_fun$pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(temp_y,temp_x)
-      obj_fun$CORR_period[k,1:number_of_basins] <- cor(temp_y,temp_x) %>% diag(.)
+      NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
+      KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
+      pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(temp_y,temp_x)
+      CORR_period[k,1:number_of_basins] <- cor(temp_y,temp_x) %>% diag(.)
     }
   #
+  obj_names <- c("NSE","KGE","pBIAS","CORR", 
+                    paste("NSE_period",1:number_of_periods,sep="."), 
+                    paste("KGE_period",1:number_of_periods,sep="."),
+                    paste("pBIAS_period",1:number_of_periods,sep="."),
+                    paste("CORR_period",1:number_of_periods,sep=".")
+  )
+  obj_fun <- data.frame(of = obj_names, 
+                        basin = rbind(nse_,
+                                      kge_,
+                                      pbias_,
+                                      corr_,
+                                      NSE_period,
+                                      KGE_period,
+                                      pBIAS_period,
+                                      CORR_period),
+                        row.names = NULL)
   return(obj_fun)
 }
 
