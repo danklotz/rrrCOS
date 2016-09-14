@@ -110,7 +110,7 @@ serve.plotlist_barplot <- function(runoff_data) {
   }
 
   # map plotlist_fun
-  plot_list <- sapply(groupings_of,plotlist_fun)
+  plot_list <- lapply(groupings_of,plotlist_fun)
   names(plot_list) <- c("NSE","KGE","pBIAS","CORR")
   return(plot_list)
 }
