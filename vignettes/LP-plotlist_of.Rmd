@@ -1,5 +1,5 @@
 ---
-title: "Code for listplot functions""
+title: "Code for listplot functions"
 author: 
 - "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "14 Juli 2016"
@@ -13,10 +13,11 @@ output: html_document
 # Code 
 In this section the code of the plotlist functions are defined
 
-## `make_of_plotlist`
-The wrapper function for the different plotlists of the objective functions
+## The listplot function family
+The wrapper function for the different plotlists of the objective functions.
+The code is: 
 
-```{r, echo=FALSE}
+```{r}
 #' plotlists for the objective functions 
 #'
 #' To be written soon
@@ -25,8 +26,8 @@ The wrapper function for the different plotlists of the objective functions
 
 ```{r}
 listplot <- function(runoff_data,
-                     kind_of_plot = "barplot") {
-  if (kind_of_plot == "barplot") {
+                     kind = "barplot") {
+  if (kind == "barplot") {
     plot_list <- serve.plotlist_barplot(runoff_data)
   } else {
     stop("no such option for the kind of plot")
@@ -40,9 +41,6 @@ listplot <- function(runoff_data,
 
 Users can define the to-be plotted objective function with the character 
 `of_name`. 
-
-The description for the documentation is: 
-
 
 The first step is the calculation of the objective functions (`of`) via 
 [`extract_objective_functions`](LP-computing_of.html).
@@ -65,17 +63,6 @@ serve.plotlist_barplot <- function(runoff_data) {
   of <- extract_objective_functions(runoff_data)
   # 
   num_basins <- ncol(of) %>% subtract(1)
-  plot_titles <- paste(viscos_options("plot_title"),1:num_basins,sep = "")
-  user_of <- of %>% 
-    extract(2:ncol(of)) %>% 
-    apply(.,2, function(x) pmax(x,viscos_options("limits")[1])) %>% 
-    apply(.,2, function(x) pmin(x,viscos_options("limits")[2])) %>%
-    cbind.data.frame(of = of$of,.)
-  
-  # user_of <- of[grepl(of_name,of$of, ignore.case = TRUE), ]
-```
-
-```{r}
   # define plot function: 
   melted_user_of <- suppressMessages( reshape2::melt(of) )%>% 
     mutate(of_group = ifelse(of %>% as.character %>% startsWith(.,"NSE"),"NSE",
@@ -83,6 +70,9 @@ serve.plotlist_barplot <- function(runoff_data) {
                                     ifelse(of %>% as.character %>% startsWith(.,"CORR"),"CORR",
                                            ifelse(of %>% as.character %>% startsWith(.,"pBIAS"),"pBIAS",NA))))) 
   groupings_of <- melted_user_of$of_group %>% unique
+```
+
+```{r}
   # plot list function
   plotlist_fun <- function(grouping) {
     of_to_plot <- melted_user_of %>% filter( of_group == grouping)
@@ -108,11 +98,14 @@ serve.plotlist_barplot <- function(runoff_data) {
     return(plot_list)
     }
   }
+```
 
+```{r}
   # map plotlist_fun
   plot_list <- lapply(groupings_of,plotlist_fun)
   names(plot_list) <- c("NSE","KGE","pBIAS","CORR")
   return(plot_list)
 }
 ```
+
 
