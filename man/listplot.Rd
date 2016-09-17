@@ -3,7 +3,7 @@
 \alias{listplot}
 \title{plotlists for the objective functions}
 \usage{
-listplot(runoff_data, kind_of_plot = "barplot", of_name = "NSE_period")
+listplot(runoff_data, kind = "barplot_of")
 }
 \description{
 To be written soon

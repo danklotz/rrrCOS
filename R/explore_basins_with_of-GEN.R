@@ -65,15 +65,16 @@ explore_runoff_with_of <- function(runoff_data) {
     })
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
-      dygraph(xts_selected_data(), group="A") %>%
+      dygraph( xts_selected_data() ) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_data1"),
-                 color = viscos_options("color_data1") ) %>%
+                 color = viscos_options("color_data1")) %>%
         dySeries("y",
                  label = visCOS::viscos_options("name_data2"),
-                 color = viscos_options("color_data2") ) %>%
-        dyOptions(includeZero = TRUE) %>%
-        dyRangeSelector(height = 20, strokeColor = "")
+                 color = viscos_options("color_data2")) %>%
+        dyRangeSelector(height = 20, strokeColor = "") %>% 
+        dyCrosshair(direction = "vertical") %>%
+        dyOptions(includeZero = TRUE) 
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
@@ -119,6 +120,16 @@ explore_runoff_with_of <- function(runoff_data) {
         )
       )
     )
+dyCrosshair <- function(dygraph, 
+                        direction = c("both", "horizontal", "vertical")) {
+  dyPlugin(
+    dygraph = dygraph,
+    name = "Crosshair",
+    path = system.file("examples/plugins/crosshair.js", 
+                       package = "dygraphs"),
+    options = list(direction = match.arg(direction))
+  )
+}
   shinyApp(ui,server)
 }
 serve_of <- function(x,y) {
