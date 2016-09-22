@@ -1,0 +1,10 @@
+% Please edit documentation in R/aggregationplots-GEN.R
+\name{aggregate_and_plot}
+\alias{aggregate_and_plot}
+\title{Aggreage and plot}
+\usage{
+aggregate_and_plot(runoff_data, aggregation = "mm")
+}
+\description{
+Hopefully a good description will follow
+}

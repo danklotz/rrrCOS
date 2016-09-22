@@ -1,3 +1,4 @@
+export(aggregate_and_plot)
 export(explore_runoff_with_of)
 export(extract_objective_functions)
 export(get_runoff_example)
