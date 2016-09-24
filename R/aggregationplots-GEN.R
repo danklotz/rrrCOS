@@ -15,13 +15,22 @@
     } else if (aggregation == "yyyy-mm") {
       cutting_bounds <- c(1,7)
     }
+    ###### helpers
     '%&%' <- function(a,b) paste(a,b, sep = '')
     '%|%' <- function(a,b) paste(a,b, sep = "|")
     regex_for_runoff_selection <- viscos_options("name_data1") %|%                                   viscos_options("name_data2")
-    #
+    # aggregation function
+    aggregator_fun <- function(k,data_frame){
+      the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN=median)
+      return(the_aggregation[ ,2])
+    }
+    set_new_names <- function(data_frame,new_names){
+      names(data_frame) <- new_names
+      retrun(data_frame)
+    }
+    ##### main code 
     full_runoff_data <- visCOS::prepare_complete_date(runoff_data) %>% 
       visCOS::remove_chunk()
-    #
     runoff_with_aggreggation <- cbind.data.frame(
       full_runoff_data ,
       date_selection = substr(full_runoff_data$posixdate,
@@ -29,14 +38,16 @@
                               cutting_bounds[2]) %>% as.factor()
       )
     names_runoff_selection <- grep(
-      regex_for_runoff_selection,names(runoff_with_aggreggation) %>% tolower, value = TRUE
+      regex_for_runoff_selection,
+      names(runoff_with_aggreggation) %>% tolower, 
+      value = TRUE
       )
     selected_runoff_rows <- grep(regex_for_runoff_selection,
                              names(runoff_with_aggreggation) %>% tolower)
-    sub_selection <- sapply(selected_runoff_rows, 
-                function(x)aggregator_fun(x,runoff_with_aggreggation)) %>% 
-      data.frame(.,timestep=1:nrow(.),month=unique(runoff_with_aggreggation$date_selection) )
-    names(sub_selection) <- c(names_runoff_selection,"timestep","month")
+    sub_selection <- 
+      sapply(selected_runoff_rows, function(x)aggregator_fun(x,runoff_with_aggreggation)) %>% 
+      data.frame(.,timestep=1:nrow(.),month=unique(runoff_with_aggreggation$date_selection) ) %>% 
+      set_new_names(.,c(names_runoff_selection,"timestep","month"))
     # 
     melted_sub_selection <- sub_selection %>% 
       reshape2::melt(., id.vars = c("timestep","month")) %>% 
@@ -59,8 +70,3 @@
       theme(panel.margin = unit(1.5, "lines")) 
     return(the_plot)
     }
-  # aggregation function
-  aggregator_fun <- function(k,data_frame){
-    the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN=median)
-    return(the_aggregation[ ,2])
-  }
