@@ -22,27 +22,32 @@ plotlist_runoffpeaks <- function(runoff_data,
 }
 plotlist_one_basin <- function(qobs,qsim,n_events,window_size) {
    #### calc:
-  single_data <- tibble::tibble(time = as.integer(1:nrow(runoff_example)),
+  single_data <- tibble::tibble(time = as.integer(1:length(qobs)),
                                 obs = as.double(qobs),
                                 sim = as.double(qsim))
   #
   peak_idx <- find_peaks(single_data$obs,m = window_size)
   peak_organised <- tibble::tibble(idx = as.integer(peak_idx), 
-                           peak = single_data$obs[peak_idx])
-  highest_peaks_organised <- peak_organised$peak %>% 
+                           peak_obs = single_data$obs[peak_idx], 
+                           peak_sim = single_data$sim[peak_idx])
+  highest_peaks_organised <- peak_organised$peak_obs %>% 
     sort(decreasing = TRUE) %>% 
     .[1:n_events] %>%
-    '%in%'(peak_organised$peak,.) %>% 
+    '%in%'(peak_organised$peak_obs,.) %>% 
     which( . ) %>% 
     peak_organised[., ]
   #
   overview_plot <- ggplot() +
-    geom_line(data = single_data,aes(x = time, y = sim), col = "orange") + 
-    geom_line(data = single_data,aes(x = time, y = obs), col = "steelblue") + 
-    geom_point(data = highest_peaks_organised, aes(idx, peak))
+    geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_data2")) + 
+    geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_data1")) + 
+    geom_point(data = highest_peaks_organised, aes(idx, peak_obs))
+  overview_scatter <- ggplot(highest_peaks_organised) + 
+    geom_abline(color = viscos_options("color_of_mid")) +
+    geom_point(aes(peak_obs,peak_sim), size = 4) +
+    expand_limits(x = 0, y = 0)
   sub_plots <- lapply(1:nrow(highest_peaks_organised),
                       function(x) sub_peakplot_fun(x,window_size,highest_peaks_organised,single_data) )
-  return(overview = append(list(overview_plot),sub_plots))
+  return(overview = append(list(overview = overview_plot,scatter = overview_scatter), sub_plots))
 }
 # helper function to give the list some names
 rename_peakslist <- function(data_list,data_numbers) {
@@ -78,6 +83,6 @@ rename_peakslist <- function(data_list,data_numbers) {
       geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
                 aes(x = time, y = obs), 
                 col = "steelblue") + 
-      geom_point(data = point, aes(idx, peak))
+      geom_point(data = point, aes(idx, peak_obs))
     return(plot_sub)
   }

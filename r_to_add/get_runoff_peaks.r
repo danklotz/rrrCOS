@@ -2,28 +2,34 @@
 ## script to get runoff peaks
 
 # read data
-setwd("D:/VERBUND/CosMur/Auswertung_MHe/R")
+ setwd("D:/Arbeit/COSERO/in_viscos")
+# 
+# file <- "QsimQobs_60min_Kalibrierung_MS1.txt"
+ file <- "QsimQobs_60min_KalibrierungValidierung_MS1.txt"
+ Data.read <- read.table(file, header=TRUE, sep="\t", dec=".", na.strings="-999", stringsAsFactors=FALSE)
 
-file <- "QsimQobs_60min_Kalibrierung_MS1.txt"
-file <- "QsimQobs_60min_KalibrierungValidierung_MS1.txt"
-Data.read <- read.table(file, header=TRUE, sep="\t", dec=".", na.strings="-999", stringsAsFactors=FALSE)
+# Data.read <- visCOS::get_runoff_example()
+pracma::tic()
+test <- visCOS::plotlist_runoffpeaks(Data.read,n_events = 5, window_size = 48)
+pracma::toc()
 
 ## User definitions
+pracma::tic()
 NB <- 1 # define subbasin (not subbasin nr from cosero, but column)
 wdw <- 2 # wdw = days before and after a maximum peak which are to be ignored, since it is assumed that they are part of the same flood event.
 HQcount <- 5 # HQcount = number of flood peaks to calculate
-
-
 for (NB in 1:46) {
-result <- ExtractAndPlotQmax.func(Data.read, NB, wdw, HQcount)
-
-if (NB == 1) {
-    r <- result
-  } else
-    {
-      r <- rbind(r, result)
-  }
+  result <- ExtractAndPlotQmax.func(Data.read, NB, wdw, HQcount)
+  
+  if (NB == 1) {
+      r <- result
+    } else
+      {
+        r <- rbind(r, result)
+    }
 }
+pracma::toc()
+
 
 write.table(as.matrix(r), file="results.csv", sep=";", row.names = FALSE)
 
@@ -171,7 +177,7 @@ points(x.val , y.val, pch=19, col=Data.read$Calib1_Valid2[Qobs.fin$ND_ObsMax], y
 #abline(lm(x.val~y.val), col="red", lwd=0.8, lty=2)
 #x.pos <- 25
 #y.pos <- 15
-#exp.label <- paste("R²=", round(summary(lm(x.val~y.val))$r.squared,3), sep="")
+#exp.label <- paste("R?=", round(summary(lm(x.val~y.val))$r.squared,3), sep="")
 #text(x.pos, y.pos, label=exp.label, cex= 0.8, offset=0,pos=c(3))
 #legend("bottomright", exp.label, cex=0.6, bty="n")
 
@@ -195,7 +201,7 @@ Q <- as.data.frame(Qmax.daily[,1:2])
 Q <- cbind(1:nrow(Q), Q)
 colnames(Q)[1] <- "ND_day"
 
-#plot (Q$ND_day[2000:2500], Q$ObsMax[2000:2500], type="l", col="blue", xlab="ND", ylab="Größter Tagesabfluss[m³/s]")
+#plot (Q$ND_day[2000:2500], Q$ObsMax[2000:2500], type="l", col="blue", xlab="ND", ylab="Gr??ter Tagesabfluss[m?/s]")
 
 title <- colnames(Data.read[x.1[NB]])
 save.plot <- paste(NB.1,"hydrograph",title,".png", sep="_")
@@ -210,7 +216,7 @@ par(mar = c(2, 3, 2, 0.125), mgp = c(0.5,0.2,0), tcl=0.5)
 plot(Date[Q$ND_ObsMax], Q$ObsMax, type="l", col="blue", ylim=c(0.0,ymax*1.1), 
      cex=pch.cex.obs, ylab="", xlab="")
 points(Date[Qobs.fin$ND_ObsMax], Qobs.fin$ObsMax, type="p", col=Data.read$Calib1_Valid2[Qobs.fin$ND_ObsMax], pch=14)
-mtext("Max. Tagesabfluss [m³/s]", side=2, line=1.5, cex=0.8)
+mtext("Max. Tagesabfluss [m?/s]", side=2, line=1.5, cex=0.8)
 
 legend("topright", title, text.col="black" , box.lwd=0, box.col="white", bg="white", cex=0.7)
 
