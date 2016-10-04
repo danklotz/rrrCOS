@@ -6,10 +6,12 @@
 #' @param runoff_data runoff_data data.frame.
 #' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
+#' 
+#' @import hydroGOF 
+#' @import dplyr
+#'
 #' @export
 extract_objective_functions <- function(runoff_data) {
-  require("hydroGOF", quietly = TRUE)
-  require("dplyr", quietly = TRUE)
   assert_dataframe(runoff_data)
   if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
     stop("Error! Period-Column missing in runoff_data; use `mark_periods`")

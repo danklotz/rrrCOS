@@ -18,31 +18,34 @@
   #' @param runoff_data data.frame object containing at least COSdate,
   #' and two data rows defined in viscos_options
   #' @return data.frame object without the chunk
+  #' 
+  #' @import magrittr
+  #' 
   #' @export
 
   remove_chunk <- function(runoff_data) {
-    require("magrittr", quietly = TRUE)
-    assert_dataframe(runoff_data)
+  assert_dataframe(runoff_data)
+  # 
   lowercase_names_in_data <- runoff_data %>% names %>% tolower
-  #
   regex_columns <- get_regex_for_runoff_data() %>% tolower # see: helpers
-
+  # 
   idx <- regex_columns %>%
     grep(.,lowercase_names_in_data)
    no_chunk_runoff_data <- runoff_data[ , idx]
     return( only_observed_basins(no_chunk_runoff_data) )
   }
-# remove basins without observations
-#
-# Removes basins without observation (-999/NA values) from the provided data.frame
-#
-# @param runoff_data A raw runoff_data data.frame, which may contains basins
-# without observations.
-# \strong{Note:} It is assumed that all available basins are simulated!
-# @return data.frame without the observation-free basins
-# @export
+  # remove basins without observations
+  #
+  # Removes basins without observation (-999/NA values) from the provided data.frame
+  #
+  # @param runoff_data A raw runoff_data data.frame, which may contains basins
+  # without observations.
+  # \strong{Note:} It is assumed that all available basins are simulated!
+  # @return data.frame without the observation-free basins
+  # 
+  # @import magrittr
 only_observed_basins <- function(runoff_data) {
-  require("magrittr", quietly = TRUE)
+  require("magrittr")
   assert_dataframe(runoff_data)
   runoff_data[is.na(runoff_data)] <- -999
   colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
@@ -70,20 +73,22 @@ only_observed_basins <- function(runoff_data) {
 }
 
 
-#' Complete the date-formats with POSIXct or COSdate
-#'
-#' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
-#'
-#' @param runoff_data The data.frame, which contains the runoff information
-#' @param name_cosyear string with the name of the `COSdate` year column
-#' @param name_posix string with the name of the POSIXct column
-#' @return The new runoff data.frame with the added data-format.
-#' @export
+  #' Complete the date-formats with POSIXct or COSdate
+  #'
+  #' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
+  #'
+  #' @param runoff_data The data.frame, which contains the runoff information
+  #' @param name_cosyear string with the name of the `COSdate` year column
+  #' @param name_posix string with the name of the POSIXct column
+  #' @return The new runoff data.frame with the added data-format.
+  #' 
+  #' @import magrittr
+  #' 
+  #' @export
 prepare_complete_date <- function(runoff_data = NULL,
                                   name_cosyear = "yyyy",
                                   name_posix = "POSIXdate") {
   # make sure that magrittr is loaded:
-  require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   # check for COSdates and stop if non-logical expression are obtained
   OK_COSdate <- any(names(runoff_data)== viscos_options("name_COSyear"))
@@ -120,6 +125,7 @@ implode_cosdate <- function(runoff_data) {
   runoff_data[[viscos_options("name_COSposix")]] <- POSIXdate
   return(runoff_data)
 }
+# remove leading zeros from the names of runoff_data (data.frame)
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
   runoff_data %<>% remove_chunk
@@ -148,20 +154,22 @@ remove_leading_zeros <- function(runoff_data) {
     paste0(runoff_only_names,.,runoff_new_numbers)
   return(runoff_data)
 }
-#' calculate periods
-#'
-#' Mark the periods within runoff_data.
-# The marking uses a monthly resolution, which are defined by the integers
-#' `start_month` and `end_month`.  
-#'
-#' @param runoff_data The data.frame, which contains the runoff information
-#' @return The runoff data.frame reduced and ordered according to the
-#' hydrological years within the data.
-#' \strong{Note:} The periods columns are formatted as characters!
-#' @export
+  #' calculate periods
+  #'
+  #' Mark the periods within runoff_data.
+  # The marking uses a monthly resolution, which are defined by the integers
+  #' `start_month` and `end_month`.  
+  #'
+  #' @param runoff_data The data.frame, which contains the runoff information
+  #' @return The runoff data.frame reduced and ordered according to the
+  #' hydrological years within the data.
+  #' \strong{Note:} The periods columns are formatted as characters!
+  #' 
+  #' @import dplyr
+  #' @import magrittr
+  #'
+  #' @export
 mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
-  require("dplyr", quietly = TRUE, warn.conflicts = FALSE)
-  require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   runoff_data %<>% remove_chunk %>% prepare_complete_date()
 
@@ -195,18 +203,20 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
       )
     return(runoff_data)
 }
-# Convert runoff_data to xts-format
-#
-# Converts the runoff_data (class: data_frame) into an xts object
-#
-# @param runoff_data data_frame of the runoff_data (see: xxx)
-# @return xts object of the runoff_data data.frame
-# @export
+  #' Convert runoff_data to xts-format
+  #'
+  #' Converts the runoff_data (class: data_frame) into an xts object
+  #'
+  #' @param runoff_data data_frame of the runoff_data (see: xxx)
+  #' @return xts object of the runoff_data data.frame
+  #' 
+  #' @import zoo 
+  #' @import xts
+  #' @import magrittr
+  #' 
+  #' @export
 runoff_as_xts <- function(runoff_data) {
   # pre
-  require("zoo", quietly = TRUE, warn.conflicts = FALSE)
-  require("xts", quietly = TRUE, warn.conflicts = FALSE)
-  require("magrittr", quietly = TRUE)
   assert_dataframe(runoff_data)
   assert_chunk(runoff_data)
   assert_complete_date(runoff_data)

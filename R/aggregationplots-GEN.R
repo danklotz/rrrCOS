@@ -1,10 +1,12 @@
   #' Aggreage and plot
   #' 
   #' Hopefully a good description will follow 
+  #'
+  #' @import magrittr
+  #' @import ggplot2
+  #'
   #' @export
   aggregate_and_plot <- function( runoff_data,aggregation = "mm") {
-    require("magrittr")
-    require("ggplot2")
     #
     if (aggregation == "dd"){
       cutting_bounds <- c(9,11)
@@ -15,18 +17,19 @@
     } else if (aggregation == "yyyy-mm") {
       cutting_bounds <- c(1,7)
     }
-    ###### helpers
+    ######  define helpers
+    # Paste funcitons:
     '%&%' <- function(a,b) paste(a,b, sep = '')
     '%|%' <- function(a,b) paste(a,b, sep = "|")
     regex_for_runoff_selection <- viscos_options("name_data1") %|%                                   viscos_options("name_data2")
-    # aggregation function
+    # aggregation function:
     aggregator_fun <- function(k,data_frame){
       the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN=median)
       return(the_aggregation[ ,2])
     }
     set_new_names <- function(data_frame,new_names){
       names(data_frame) <- new_names
-      retrun(data_frame)
+      return(data_frame)
     }
     ##### main code 
     full_runoff_data <- visCOS::prepare_complete_date(runoff_data) %>% 

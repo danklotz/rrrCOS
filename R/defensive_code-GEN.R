@@ -1,5 +1,5 @@
+#' @import magrittr
 assert_chunk <- function(runoff_data) {
-  require(magrittr, quietly = TRUE)
   regEx <- get_regex_for_runoff_data()
   assertChunk <- names(runoff_data) %>% tolower %>% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
@@ -7,8 +7,8 @@ assert_chunk <- function(runoff_data) {
   }
 }
 assert_complete_date <- function(runoff_data) {
-  OK_COSdate <- any(names(runoff_data)== viscos_options("name_COSyear"))
-  OK_POSIXdates <- any(names(runoff_data)== viscos_options("name_COSposix"))
+  OK_COSdate <- any(names(runoff_data) == viscos_options("name_COSyear"))
+  OK_POSIXdates <- any(names(runoff_data) == viscos_options("name_COSposix"))
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")
@@ -20,14 +20,5 @@ assert_complete_date <- function(runoff_data) {
 }
 # uses stop if the input: "data" is not of class "data.frame"
 assert_dataframe <- function(data) {
-  if ( !is.data.frame(data) ) stop("runoff_data is no data_frame!")
-}
-assert_of<- function(of) {
-  if ( !is.list(of) ) {
-    stop("The basic objective functions are not stored in a list!")
-  }
-  assert_right_of <- any( grepl("NSE.*|KGE.*|pBIAS.*|CORR.*",names(of)) == TRUE)
-  if ( !assert_right_of ) {
-    stop("The objective functions do not contain the right named entries, i.e. NSE,KGE,pBIAS,CORR")
-  }
+  if ( !is.data.frame(data) ) stop("data needs to be a data_frame!")
 }

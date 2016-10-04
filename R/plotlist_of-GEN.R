@@ -1,6 +1,11 @@
 #' plotlists for the objective functions 
 #'
 #' To be written soon
+#' 
+#' @import magrittr
+#' @import reshape2
+#' @import ggplot2 
+#' 
 #' @export
 listplot <- function(runoff_data,
                      kind = "barplot_of") {
@@ -20,8 +25,6 @@ listplot <- function(runoff_data,
   
 
 serve.plotlist_barplot <- function(of) {
-  require("ggplot2", quietly = TRUE)
-  require("magrittr", quietly = TRUE)
   #################
   # calculate objective functions
   num_basins <- ncol(of) %>% subtract(1)
@@ -68,9 +71,6 @@ serve.plotlist_barplot <- function(of) {
 # xxx description to follow 
 #
 serve.plotlist_raster <- function(of) {
-  require(ggplot2, quietly = TRUE)
-  require(magrittr, quietly = TRUE)
-  require(reshape2, quietly = TRUE)
   # 
   regex_of <- c("NSE.*","KGE.*","pBIAS.*","CORR.*")
   plot_list <- lapply(regex_of,function(x) plot_fun_raster(x,of))
@@ -92,7 +92,7 @@ serve.plotlist_raster <- function(of) {
     }
     # 
     plot_data <- of %>% 
-      extract(grep(regex_single_of,.$of), )%>% 
+      extract(grep(regex_single_of,.$of), ) %>% 
       cbind(.,facets = c("overall",period_characters)) %>% 
       reshape2::melt(., id.vars = c("of","facets")) %>% 
       reverse_basin_levels %>% 

@@ -94,7 +94,6 @@ button.code-folding-btn:focus {
 </style>
 
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -141,11 +140,6 @@ $(document).ready(function () {
 <p>This function represents the main part of the shiny app.</p>
 <p>The app has actually quite a lot of dependencies. Right now these are:</p>
 <pre class="r"><code>explore_runoff_with_of &lt;- function(runoff_data) {
-  require(&quot;shiny&quot;, quietly = TRUE)
-  require(&quot;dplyr&quot;, quietly = TRUE) # supreme `selection` and the `filtering`
-  require(&quot;magrittr&quot;, quietly = TRUE) # pipe operator
-  require(&quot;xts&quot;, quietly = TRUE) # required for dygraphs
-  require(&quot;dygraphs&quot;, quietly = TRUE) # interactive plotting
   ##########################</code></pre>
 <p>Currently the shiny app needs some pre-calculations. The first part (I) of the pre-calculations includes the defensive function <code>remove_leading_zeros</code>, that removes the leading zeros from the data.frame <code>runoff_data</code>. For example: If a column would be named <code>QOBS_00001</code> it would be transformed to <code>QOBS_1</code>. Afterwards, it is checked if the “cleaned” data (<code>clean_runoff_data</code>) has the needed <code>viscos_options(&quot;name_COSposix&quot;)</code> column. If it does not, then the column is created with <code>prepare_complete_date</code>. In the second part (II) the actual pre-calculations take place. The data is transformed into an <code>xts</code> object (<code>d_xts</code>).</p>
 <p>Then (III) the data1 column defined in the <code>viscos_options</code> is marked and the numeration of the basins is saved within the variable <code>d_nums</code>.<strong>Note</strong> that both data series have to include a column for every existing basin and the basin number after the data name (e.g. QOobs_0001). The former operation is achieved by searching for all the columns with starting with <code>viscos_options(&quot;name_data1&quot;)</code> . The latter by removing all the non-digits from the column-names and searching for the unique integer.</p>
@@ -271,8 +265,6 @@ $(document).ready(function () {
 <p>This function is a sub-function of <code>explore_basins_with_of</code> and basically simpler version of <code>extract_objective_functions</code>. <code>explore_of</code> is not exported and envisioned to be used within the shiny app. It takes the two variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> (as used within this section) and calculates the root mean squared error <span class="math inline">\(RMSE = \sqrt{\sum(x(t)-y(t))^2}\)</span> and the objective functions used within <strong>visCOS</strong> (see: introduction). It also returns the <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> of the <span class="math inline">\(KGE\)</span>. The former is the relation of the standard deviations and therefore a measure of the of relative variability in the <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> values. The latter represents the bias as a ratio of the two mean values of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>.</p>
 <p>Including <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> is supposed to enable users to get a bit more intuition about the how the <span class="math inline">\(KGE\)</span> works. Personal experience suggests however that the <span class="math inline">\(KGE\)</span> is difficult to grasp!</p>
 <pre class="r"><code>serve_of &lt;- function(x,y) {
-  require(&quot;hydroGOF&quot;, quietly = TRUE)
-  require(&quot;magrittr&quot;, quietly = TRUE)
   # compute objective functions
   out &lt;- data.frame(
     RMSE = rmse(y,x) %&gt;% as.numeric,
@@ -300,7 +292,6 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
-
 
 </script>
 

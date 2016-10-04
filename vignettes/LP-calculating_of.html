@@ -94,7 +94,6 @@ button.code-folding-btn:focus {
 </style>
 
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -134,8 +133,6 @@ $(document).ready(function () {
 <p>The purpose of this function is to extract a set of objective functions from the <code>runoff_data</code> data.frame. The objective functions are extracted for each basin, for the all the periods as a summary and for each period separately.</p>
 <p>The head of the functions checks for the required packages, if <code>runoff_data</code> is a data.frame and if the <code>viscos_options(&quot;name_COSperiod&quot;)</code> exists within <code>runoff_data</code>:</p>
 <pre class="r"><code>extract_objective_functions &lt;- function(runoff_data) {
-  require(&quot;hydroGOF&quot;, quietly = TRUE)
-  require(&quot;dplyr&quot;, quietly = TRUE)
   assert_dataframe(runoff_data)
   if( !exists(viscos_options(&quot;name_COSperiod&quot;), where = runoff_data) ) {
     stop(&quot;Error! Period-Column missing in runoff_data; use `mark_periods`&quot;)
@@ -231,7 +228,6 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
-
 
 </script>
 

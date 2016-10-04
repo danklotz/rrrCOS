@@ -13,10 +13,6 @@ output:
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-```{r, eval = TRUE, echo = FALSE, message=FALSE, purl=FALSE}
-  require("ggplot2")
-  require("hydroGOF")
-```
 # Introduction
 This chapter explains the code to calculate the objective functions $of$ for 
 the data and for selected periods. It can be done with the function 
@@ -38,6 +34,10 @@ basin, for the all the periods as a summary and for each period separately.
 #' @param runoff_data runoff_data data.frame.
 #' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
+#' 
+#' @import hydroGOF 
+#' @import dplyr
+#'
 #' @export
 ```
 
@@ -46,8 +46,6 @@ a data.frame and if the `viscos_options("name_COSperiod")` exists within
 `runoff_data `:
 ```{r}
 extract_objective_functions <- function(runoff_data) {
-  require("hydroGOF", quietly = TRUE)
-  require("dplyr", quietly = TRUE)
   assert_dataframe(runoff_data)
   if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
     stop("Error! Period-Column missing in runoff_data; use `mark_periods`")

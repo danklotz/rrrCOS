@@ -4,7 +4,17 @@
   #' series object.
   #'
   #' @param d_xts runoff_data formatted as time series
+  #' 
+  #' @import shiny 
+  #' @import xts
+  #' @import dplyr
+  #' @import magrittr
+  #' @import xts 
+  #' @import dygraphs 
+  #' @import hydroGOF
+  #' 
   #' @export
+  #' 
   #' @examples
   #' # get example data,
   #' # clean it and
@@ -12,11 +22,6 @@
   #' d_runoff <- get_runoff_example()
   #' explore_runoff_with_of(d_runoff)
 explore_runoff_with_of <- function(runoff_data) {
-  require("shiny", quietly = TRUE)
-  require("dplyr", quietly = TRUE) # supreme `selection` and the `filtering`
-  require("magrittr", quietly = TRUE) # pipe operator
-  require("xts", quietly = TRUE) # required for dygraphs
-  require("dygraphs", quietly = TRUE) # interactive plotting
   ##########################
   # (I)
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
@@ -133,8 +138,6 @@ dyCrosshair <- function(dygraph,
   shinyApp(ui,server)
 }
 serve_of <- function(x,y) {
-  require("hydroGOF", quietly = TRUE)
-  require("magrittr", quietly = TRUE)
   # compute objective functions
   out <- data.frame(
     RMSE = rmse(y,x) %>% as.numeric,

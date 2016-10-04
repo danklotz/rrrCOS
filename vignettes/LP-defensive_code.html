@@ -94,7 +94,6 @@ button.code-folding-btn:focus {
 </style>
 
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -161,8 +160,8 @@ $(document).ready(function () {
 <div id="assert_chunk" class="section level2">
 <h2><span class="header-section-number">2.1</span> <code>assert_chunk</code></h2>
 <p>This function tests if there are any columns in the data.frame <code>runoff_data</code>, which are not named after one of the 8 allowed column-names of <strong>visCOS</strong>. <strong>Note</strong> however that the check is not case sensitive as all names in <code>runoff_data</code> are set to lower cases with <code>tolower</code>.</p>
-<pre class="r"><code>assert_chunk &lt;- function(runoff_data) {
-  require(magrittr, quietly = TRUE)
+<pre class="r"><code>#' @import magrittr
+assert_chunk &lt;- function(runoff_data) {
   regEx &lt;- get_regex_for_runoff_data()
   assertChunk &lt;- names(runoff_data) %&gt;% tolower %&gt;% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
@@ -174,8 +173,8 @@ $(document).ready(function () {
 <h2><span class="header-section-number">2.2</span> <code>assert_complete_date</code></h2>
 <p>Checks if all the date-/time- columns as defined within <code>viscos_options</code> are existent in <code>runoff_data</code>. This is done by checking if the names of the <em>COSdate</em> year column (as defined in <code>viscos_options</code>) and if the <em>POSIXct</em> column (as defined in <code>viscos_options</code>) are there.</p>
 <pre class="r"><code>assert_complete_date &lt;- function(runoff_data) {
-  OK_COSdate &lt;- any(names(runoff_data)== viscos_options(&quot;name_COSyear&quot;))
-  OK_POSIXdates &lt;- any(names(runoff_data)== viscos_options(&quot;name_COSposix&quot;))
+  OK_COSdate &lt;- any(names(runoff_data) == viscos_options(&quot;name_COSyear&quot;))
+  OK_POSIXdates &lt;- any(names(runoff_data) == viscos_options(&quot;name_COSposix&quot;))
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate &amp; !OK_POSIXdates) {
     stop(&quot;No COSdates and no POSIXct-dates in the data!&quot;)
@@ -191,20 +190,7 @@ $(document).ready(function () {
 <p>Tests if <code>data</code> is a data.frame and returns an error if not.</p>
 <pre class="r"><code># uses stop if the input: &quot;data&quot; is not of class &quot;data.frame&quot;
 assert_dataframe &lt;- function(data) {
-  if ( !is.data.frame(data) ) stop(&quot;runoff_data is no data_frame!&quot;)
-}</code></pre>
-</div>
-<div id="assert_of" class="section level2">
-<h2><span class="header-section-number">2.4</span> <code>assert_of</code></h2>
-<p>This function returns checks if the basic objective functions <code>of</code> require the minimal requirements for <strong>visCOS</strong>: - An error message is returned if <code>of</code> is not a list and - an error message is returned if <code>of</code> does not contain the named-entires <code>NSE</code>, <code>KGE</code>, <code>pBIAS</code> and <code>CORR</code>. Thus the list <code>list(NSE = NA, KGE = NA, pBIAS = NA, CORR = NA)</code> would pass the test.</p>
-<pre class="r"><code>assert_of&lt;- function(of) {
-  if ( !is.list(of) ) {
-    stop(&quot;The basic objective functions are not stored in a list!&quot;)
-  }
-  assert_right_of &lt;- any( grepl(&quot;NSE.*|KGE.*|pBIAS.*|CORR.*&quot;,names(of)) == TRUE)
-  if ( !assert_right_of ) {
-    stop(&quot;The objective functions do not contain the right named entries, i.e. NSE,KGE,pBIAS,CORR&quot;)
-  }
+  if ( !is.data.frame(data) ) stop(&quot;data needs to be a data_frame!&quot;)
 }</code></pre>
 </div>
 </div>
@@ -220,7 +206,6 @@ assert_dataframe &lt;- function(data) {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
-
 
 </script>
 

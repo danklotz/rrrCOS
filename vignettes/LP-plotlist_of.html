@@ -94,7 +94,6 @@ button.code-folding-btn:focus {
 </style>
 
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -132,6 +131,11 @@ $(document).ready(function () {
 <pre class="r"><code>#' plotlists for the objective functions 
 #'
 #' To be written soon
+#' 
+#' @import magrittr
+#' @import reshape2
+#' @import ggplot2 
+#' 
 #' @export</code></pre>
 <pre class="r"><code>listplot &lt;- function(runoff_data,
                      kind = &quot;barplot_of&quot;) {
@@ -151,8 +155,6 @@ $(document).ready(function () {
 <p>Users can define the to-be plotted objective function with the character <code>of_name</code>.</p>
 <p>The first step is the calculation of the objective functions (<code>of</code>) via <a href="LP-computing_of.html"><code>extract_objective_functions</code></a>. Then some housekeeping needs to be undertaken. For the computations and selections all names are set to lower case (<code>tolower</code>), because <strong>visCOS</strong> works case-insensitive. The basin enumeration <code>num_basins</code> is obtained with the function <a href="LP-helpers.html"><code>get_basin_numbers</code></a>. The plot-titles of the individual barplots are build by gathering the main title from the <a href="LP-viscos_options.html">global option</a> <em>“plot_title”</em> and concatenating it with <code>num_basins</code>. The user defined objective function (<code>user_of</code>) is extracted from <code>of</code> by using the user defined selection <code>of_name</code>. Again, in order to avoid lower-upper case distinctions the <code>of_name</code> string is allways <code>set tolower</code>.</p>
 <pre class="r"><code>serve.plotlist_barplot &lt;- function(of) {
-  require(&quot;ggplot2&quot;, quietly = TRUE)
-  require(&quot;magrittr&quot;, quietly = TRUE)
   #################
   # calculate objective functions
   num_basins &lt;- ncol(of) %&gt;% subtract(1)
@@ -199,9 +201,6 @@ $(document).ready(function () {
 # xxx description to follow 
 #
 serve.plotlist_raster &lt;- function(of) {
-  require(ggplot2, quietly = TRUE)
-  require(magrittr, quietly = TRUE)
-  require(reshape2, quietly = TRUE)
   # 
   regex_of &lt;- c(&quot;NSE.*&quot;,&quot;KGE.*&quot;,&quot;pBIAS.*&quot;,&quot;CORR.*&quot;)
   plot_list &lt;- lapply(regex_of,function(x) plot_fun_raster(x,of))
@@ -223,7 +222,7 @@ serve.plotlist_raster &lt;- function(of) {
     }
     # 
     plot_data &lt;- of %&gt;% 
-      extract(grep(regex_single_of,.$of), )%&gt;% 
+      extract(grep(regex_single_of,.$of), ) %&gt;% 
       cbind(.,facets = c(&quot;overall&quot;,period_characters)) %&gt;% 
       reshape2::melt(., id.vars = c(&quot;of&quot;,&quot;facets&quot;)) %&gt;% 
       reverse_basin_levels %&gt;% 
@@ -275,7 +274,6 @@ serve.plotlist_raster &lt;- function(of) {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
-
 
 </script>
 
