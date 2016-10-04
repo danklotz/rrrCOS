@@ -3,7 +3,7 @@
 \alias{plotlist_runoffpeaks}
 \title{Plot List for Runoff Peaks}
 \usage{
-plotlist_runoffpeaks(runoff_data, n_events = 10, window_size = 24)
+plotlist_runoffpeaks(runoff_data, n_events = 10L, window_size = 24L)
 }
 \description{
 Plot List for Runoff Peaks
