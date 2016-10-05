@@ -6,10 +6,9 @@
   #' @param d_xts runoff_data formatted as time series
   #' 
   #' @import shiny 
-  #' @import xts
+  #' @importFrom xts xts
   #' @import dplyr
   #' @import magrittr
-  #' @import xts 
   #' @import dygraphs 
   #' @import hydroGOF
   #' 

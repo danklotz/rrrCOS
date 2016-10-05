@@ -211,7 +211,7 @@ mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   #' @return xts object of the runoff_data data.frame
   #' 
   #' @import zoo 
-  #' @import xts
+  #' @importFrom xts xts
   #' @import magrittr
   #' 
   #' @export
@@ -224,7 +224,7 @@ runoff_as_xts <- function(runoff_data) {
   runoff_data <- remove_leading_zeros(runoff_data)
   names(runoff_data) <- names(runoff_data) %>% tolower
   name_posix <- viscos_options("name_COSposix") %>% tolower
-  runoff_data_as_xts <- xts::xts(x = runoff_data,
+  runoff_data_as_xts <- xts(x = runoff_data,
                                  order.by = runoff_data[[name_posix]])
   #
   return(runoff_data_as_xts)
