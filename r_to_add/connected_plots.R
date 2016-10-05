@@ -1,3 +1,5 @@
+# approach 1 --------------------------------------------------------------
+
   require(magrittr)
   require(visCOS)
   require(ggplot2)
@@ -28,22 +30,35 @@
   
   grouped_data1 <- data1 %>% 
     filter(period > 0) %>% 
-    group_by(group) 
-  
-  %>% 
+    group_by(group) %>% 
+    mutate(kge = max(0,KGE(sim,obs))) %>% 
     summarise(x = mean(x),
               period = min(period),
               mark = mean(cut_marks), 
               obs = mean(obs), 
               sim = mean(sim), 
-              nse = mean(abs(obs-sim))) 
+              mean_abs_error = mean(abs(obs-sim)), 
+              kge = mean(kge)) 
+  #plot 1
   ggplot() + 
+    geom_abline(intercept = 0, slope = 1, color = "grey") + 
+    geom_path(data = grouped_data1, 
+              aes(x = obs, y = sim, color = kge), 
+              alpha = 0.1) + 
     geom_point(data = grouped_data1, 
-               aes(x = x, y = sim, color = nse), 
+               aes(x = obs, y = sim, color = kge), 
                alpha = 0.5, 
                size = 5) +
-    scale_color_gradient(low = "steelblue", high = "red") +  + 
-    facet_wrap(~period, scale = "free")
-  
-
-  
+    scale_color_gradient(low = "red", high = "green") + 
+    expand_limits(x = 0, y = 0) +
+    facet_wrap(~period, scale = "free") 
+  #plot2
+  ggplot() + 
+    geom_path(data = grouped_data1, 
+              aes(x = x, y = sim, color = kge), 
+              alpha = 0.6) + 
+    geom_point(data = grouped_data1, 
+               aes(x = x, y = sim, color = kge), 
+               alpha = 0.9) +
+    scale_color_gradient(low = "red", high = "green") + 
+    facet_wrap(~period, scale = "free") 

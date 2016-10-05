@@ -27,10 +27,6 @@
       the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN=median)
       return(the_aggregation[ ,2])
     }
-    set_new_names <- function(data_frame,new_names){
-      names(data_frame) <- new_names
-      return(data_frame)
-    }
     ##### main code 
     full_runoff_data <- visCOS::prepare_complete_date(runoff_data) %>% 
       visCOS::remove_chunk()
@@ -50,7 +46,7 @@
     sub_selection <- 
       sapply(selected_runoff_rows, function(x)aggregator_fun(x,runoff_with_aggreggation)) %>% 
       data.frame(.,timestep=1:nrow(.),month=unique(runoff_with_aggreggation$date_selection) ) %>% 
-      set_new_names(.,c(names_runoff_selection,"timestep","month"))
+      set_names(.,c(names_runoff_selection,"timestep","month"))
     # 
     melted_sub_selection <- sub_selection %>% 
       reshape2::melt(., id.vars = c("timestep","month")) %>% 

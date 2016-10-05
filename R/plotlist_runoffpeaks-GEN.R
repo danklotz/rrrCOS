@@ -70,8 +70,6 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
   return(overview = append(list(overview = overview_plot,scatter = overview_scatter), sub_plots))
 }
   ####
-  #   propsoed by http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data
-  #   btw. also a nice idea: http://stats.stackexchange.com/questions/36309/how-do-i-find-peaks-in-a-dataset
   find_peaks <- function (x, m = 3){
     shape <- diff(sign(diff(x, na.pad = FALSE)))
     pks <- sapply(which(shape < 0), FUN = function(i){
