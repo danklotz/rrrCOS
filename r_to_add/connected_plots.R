@@ -1,5 +1,4 @@
 # approach 1 --------------------------------------------------------------
-
   require(magrittr)
   require(visCOS)
   require(ggplot2)
@@ -10,9 +9,9 @@
   runoff_data <- get_runoff_example() %>% 
     remove_chunk() %>% 
     mark_periods()
-  data1 <- data.frame(x = 1:length(runoff_data$QOBS_0001),
-                     obs = runoff_data$QOBS_0001, 
-                     sim = runoff_data$QSIM_0001,
+  data1 <- data.frame(x = 1:length(runoff_data$QOBS_0002),
+                     obs = runoff_data$QOBS_0002, 
+                     sim = runoff_data$QSIM_0002,
                      period = runoff_data$period)
   # 
   data1$cut_marks <- data1$obs %>% 
@@ -24,41 +23,76 @@
     cumsum() %>% 
     add(1)
   
-  calc_nse <- function(obs,sim) {
-    1 - sum((obs - sim)^2)/sum((obs-mean(obs))^2)
-  }
-  
-  grouped_data1 <- data1 %>% 
+  data1 %<>%
     filter(period > 0) %>% 
     group_by(group) %>% 
-    mutate(kge = max(0,KGE(sim,obs))) %>% 
+    mutate(bound_kge = max(0,KGE(sim,obs))) %>% 
+    ungroup
+  
+  grouped_data1 <- data1 %>% 
+    group_by(group) %>% 
     summarise(x = mean(x),
               period = min(period),
               mark = mean(cut_marks), 
               obs = mean(obs), 
               sim = mean(sim), 
               mean_abs_error = mean(abs(obs-sim)), 
-              kge = mean(kge)) 
+              bound_kge = mean(bound_kge)) 
   #plot 1
   ggplot() + 
     geom_abline(intercept = 0, slope = 1, color = "grey") + 
     geom_path(data = grouped_data1, 
-              aes(x = obs, y = sim, color = kge), 
+              aes(x = obs, y = sim),
               alpha = 0.1) + 
     geom_point(data = grouped_data1, 
-               aes(x = obs, y = sim, color = kge), 
+               aes(x = obs, y = sim, color = bound_kge), 
                alpha = 0.5, 
                size = 5) +
     scale_color_gradient(low = "red", high = "green") + 
     expand_limits(x = 0, y = 0) +
     facet_wrap(~period, scale = "free") 
-  #plot2
+  #plot 2
   ggplot() + 
-    geom_path(data = grouped_data1, 
-              aes(x = x, y = sim, color = kge), 
-              alpha = 0.6) + 
     geom_point(data = grouped_data1, 
-               aes(x = x, y = sim, color = kge), 
-               alpha = 0.9) +
+               aes(x = bound_kge, y = sim, color = mark), 
+               alpha = 0.5, 
+               size = 5) +
+    expand_limits(x = 0, y = 0) +
+    facet_wrap(~period) 
+  
+  # plot xx
+    # ggplot() + 
+    #   geom_line(data = data1, 
+    #             aes(x = x, y = sim, color = kge)) + 
+    #   scale_color_gradient(low = "red", high = "green") + 
+    #   facet_wrap(~period, scale = "free") 
+  # plot 3  
+  ggplot() + 
+    geom_line(data = data1, 
+              aes(x = x, y = obs), 
+              color = viscos_options("color_data1"),
+              alpha = 0.2) + 
+    geom_line(data = data1, 
+              aes(x = x, y = sim), 
+              color = viscos_options("color_data2"),
+              alpha = 0.2) + 
+    geom_point(data = grouped_data1, 
+               aes(x = x, y = sim, color = bound_kge), 
+               size = 5) +
     scale_color_gradient(low = "red", high = "green") + 
     facet_wrap(~period, scale = "free") 
+ 
+  ggplot() + 
+    geom_ribbon(data = data1, aes(x = x, ymin = 0, ymax = obs), 
+                fill = viscos_options("color_data1"), 
+                alpha = 0.75) +
+    geom_ribbon(data = data1, aes(x = x, ymin = 0, ymax = sim), 
+                fill = viscos_options("color_data2"), 
+                alpha = 0.5) +
+    geom_point(data = grouped_data1, 
+               aes(x = x, y = sim, color = bound_kge), 
+               size = 5, 
+               alpha = 0.5) +
+    scale_color_gradient(low = "red", high = "green") + 
+    facet_wrap(~period, scale = "free") 
+  
