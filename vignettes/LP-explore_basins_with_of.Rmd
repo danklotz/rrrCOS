@@ -95,7 +95,6 @@ as floating-numbers would be transformed!
   }
   # (II)
   d_xts <- runoff_as_xts(clean_runoff_data)
-
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>% 

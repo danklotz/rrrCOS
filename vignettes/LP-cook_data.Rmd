@@ -116,8 +116,8 @@ next chapter)
   # 
   idx <- regex_columns %>%
     grep(.,lowercase_names_in_data)
-   no_chunk_runoff_data <- runoff_data[ , idx]
-    return( only_observed_basins(no_chunk_runoff_data) )
+  no_chunk_runoff_data <- runoff_data[ , idx]
+  return( only_observed_basins(no_chunk_runoff_data) )
   }
 ```
 
@@ -149,8 +149,11 @@ only_observed_basins <- function(runoff_data) {
 In order to handle the `NA's` and -999 in the same way all `NA's` are replaced
 with -999. Then the `lapply` function is used to find the max of each column.
 ```{r}
-  runoff_data[is.na(runoff_data)] <- -999
-  colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
+  chosen_cols <- which( names(runoff_data) != viscos_options("name_COSposix") )
+  chosen_rows <- is.na(runoff_data[,chosen_cols])
+  data_no_posix <- runoff_data[ ,chosen_cols]
+  data_no_posix[chosen_rows] <- -999
+  colmax <- lapply(X = data_no_posix, FUN = max) # get max of any column
 ```
 
 If any column has a max of -999 it is worth further investigation.
@@ -162,6 +165,14 @@ We combine both information via `grepl` to check if only observed columns have
 been selected. If so everything is fine, but if `any` of the selected cols came
 from an simulation col the function stops the execution and gives a warning
 message.
+The next step involves a little trick in which +1 is added to the `idx` to
+obtain the indexes of the corresponding simulation. Here we assume that for each
+observation there is a corresponding simulation **in next the next colum**!
+This allows us then to select only the observed basins. But now all NA values
+are actually -999! Thus, we replace them again back to NA, via `lapply(...,min)`
+assuming that all negative values are NAs. This is not a strong assumption,
+because there should never be negative flows! In the end the resulting
+data.frame is returned.
 ```{r}
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0)
@@ -174,17 +185,6 @@ message.
     if (!OnlyQobsSelected){
       stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
     }
-```
-The next step involves a little trick in which +1 is added to the `idx` to
-obtain the indexes of the corresponding simulation. Here we assume that for each
-observation there is a corresponding simulation **in next the next colum**!
-This allows us then to select only the observed basins. But now all NA values
-are actually -999! Thus, we replace them again back to NA, via `lapply(...,min)`
-assuming that all negative values are NAs. This is not a strong assumption,
-because there should never be negative flows! In the end the resulting
-data.frame is returned.
-
-```{r}
     idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
     d_onlyObserved <- runoff_data[-idx_slct]
     # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
@@ -295,7 +295,7 @@ implode_cosdate <- function(runoff_data) {
                      sprintf("%02d",runoff_data[[viscos_options("name_COShour")]]),
                      sprintf("%02d",runoff_data[[viscos_options("name_COSmin")]]),
                      sep= "" ) %>%
-    as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
+    as.POSIXct(format = "%Y%m%d%H%M", origin = .[1], scale = "hourly", tz = "UTC")
   runoff_data[[viscos_options("name_COSposix")]] <- POSIXdate
   return(runoff_data)
 }
@@ -527,10 +527,11 @@ user.
 ```{r}
   # everything is set tolower because we try to keep visCOS case insensitive
   runoff_data <- remove_leading_zeros(runoff_data)
+
   names(runoff_data) <- names(runoff_data) %>% tolower
   name_posix <- viscos_options("name_COSposix") %>% tolower
-  runoff_data_as_xts <- xts(x = runoff_data,
-                                 order.by = runoff_data[[name_posix]])
+  runoff_data_as_xts <- xts(x = runoff_data[], # ,names(runoff_data) != name_posix
+                            order.by = runoff_data[[name_posix]])
   #
   return(runoff_data_as_xts)
 }
