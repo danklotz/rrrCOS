@@ -31,8 +31,8 @@
   # 
   idx <- regex_columns %>%
     grep(.,lowercase_names_in_data)
-   no_chunk_runoff_data <- runoff_data[ , idx]
-    return( only_observed_basins(no_chunk_runoff_data) )
+  no_chunk_runoff_data <- runoff_data[ , idx]
+  return( only_observed_basins(no_chunk_runoff_data) )
   }
   # remove basins without observations
   #
@@ -47,8 +47,11 @@
 only_observed_basins <- function(runoff_data) {
   require("magrittr")
   assert_dataframe(runoff_data)
-  runoff_data[is.na(runoff_data)] <- -999
-  colmax <- lapply(X = runoff_data, FUN = max) # get max of any column
+  chosen_cols <- which( names(runoff_data) != viscos_options("name_COSposix") )
+  chosen_rows <- is.na(runoff_data[,chosen_cols])
+  data_no_posix <- runoff_data[ ,chosen_cols]
+  data_no_posix[chosen_rows] <- -999
+  colmax <- lapply(X = data_no_posix, FUN = max) # get max of any column
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0)
     obs_regex <- paste(viscos_options("name_data1"),".*", sep ="")
@@ -121,7 +124,7 @@ implode_cosdate <- function(runoff_data) {
                      sprintf("%02d",runoff_data[[viscos_options("name_COShour")]]),
                      sprintf("%02d",runoff_data[[viscos_options("name_COSmin")]]),
                      sep= "" ) %>%
-    as.POSIXct(format = "%Y%m%d%H%M",tz = "UTC")
+    as.POSIXct(format = "%Y%m%d%H%M", origin = .[1], scale = "hourly", tz = "UTC")
   runoff_data[[viscos_options("name_COSposix")]] <- POSIXdate
   return(runoff_data)
 }
@@ -222,10 +225,11 @@ runoff_as_xts <- function(runoff_data) {
   assert_complete_date(runoff_data)
   # everything is set tolower because we try to keep visCOS case insensitive
   runoff_data <- remove_leading_zeros(runoff_data)
+
   names(runoff_data) <- names(runoff_data) %>% tolower
   name_posix <- viscos_options("name_COSposix") %>% tolower
-  runoff_data_as_xts <- xts(x = runoff_data,
-                                 order.by = runoff_data[[name_posix]])
+  runoff_data_as_xts <- xts(x = runoff_data[], # ,names(runoff_data) != name_posix
+                            order.by = runoff_data[[name_posix]])
   #
   return(runoff_data_as_xts)
 }

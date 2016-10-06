@@ -60,38 +60,26 @@
     expand_limits(x = 0, y = 0) +
     facet_wrap(~period) 
   
-  # plot xx
-    # ggplot() + 
-    #   geom_line(data = data1, 
-    #             aes(x = x, y = sim, color = kge)) + 
-    #   scale_color_gradient(low = "red", high = "green") + 
-    #   facet_wrap(~period, scale = "free") 
+  # plot 2
+     ggplot() + 
+       geom_ribbon(data = data1, aes(x = x, ymin = 0, ymax = obs), 
+                   fill = "black") +
+       geom_ribbon(data = data1, aes(x = x, ymin = 0, ymax = sim), 
+                   fill = "grey", 
+                   alpha = 0.5) +
+       geom_line(data = data1, 
+                 aes(x = x, y = sim, color = bound_kge)) + 
+       scale_color_gradient(low = "red", high = "green") + 
+       facet_wrap(~period, scale = "free_x") 
   # plot 3  
   ggplot() + 
-    geom_line(data = data1, 
-              aes(x = x, y = obs), 
-              color = viscos_options("color_data1"),
-              alpha = 0.2) + 
-    geom_line(data = data1, 
-              aes(x = x, y = sim), 
-              color = viscos_options("color_data2"),
-              alpha = 0.2) + 
-    geom_point(data = grouped_data1, 
-               aes(x = x, y = sim, color = bound_kge), 
-               size = 5) +
-    scale_color_gradient(low = "red", high = "green") + 
-    facet_wrap(~period, scale = "free") 
- 
-  ggplot() + 
     geom_ribbon(data = data1, aes(x = x, ymin = 0, ymax = obs), 
-                fill = viscos_options("color_data1"), 
-                alpha = 0.75) +
+                fill = "black") +
     geom_ribbon(data = data1, aes(x = x, ymin = 0, ymax = sim), 
-                fill = viscos_options("color_data2"), 
-                alpha = 0.5) +
-    geom_point(data = grouped_data1, 
+                fill = "white", 
+                alpha = 0.75) +
+    geom_step(data = grouped_data1, 
                aes(x = x, y = sim, color = bound_kge), 
-               size = 5, 
                alpha = 0.5) +
     scale_color_gradient(low = "red", high = "green") + 
     facet_wrap(~period, scale = "free") 
