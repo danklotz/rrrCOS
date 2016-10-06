@@ -29,7 +29,6 @@ explore_runoff_with_of <- function(runoff_data) {
   }
   # (II)
   d_xts <- runoff_as_xts(clean_runoff_data)
-
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>% 
@@ -144,7 +143,7 @@ serve_of <- function(x,y) {
     nse = NSE(y,x) %>% as.numeric,
     inv_nse = NSE(x,y) %>% as.numeric,
     kge = KGE(y,x) %>% as.numeric,
-    corr = -cor(x,y) %>% diag(),
+    corr = cor(x,y) %>% diag(),
     beta =  mean(y)/mean(x),
     alpha =  sd(y)/sd(x)
   )
