@@ -13,31 +13,57 @@ output:
 ```
 
 # Introduction
-This is a still badly named and documented function to identify the highest 
-peaks and plot them with marks in an overview and in details. 
-Just check out the example: 
+The fucntion `plotlist_runoffpeaks` lets users explore the highest events in 
+among the available basins. It provides a list of [ggplot2](http://ggplot2.org/) 
+plots, containing an overview plot (`overview`), a scatter plot (`scatter`) 
+and detail plots of the individual events (`event_plot`). Instead of 
+explaining the properties of each plot in detail it is best to get an intuition 
+of the function by looking at some examples. 
+
+The function takes tree arguments: 
+
+argument | explenation 
+-------- | ------------
+runoff_data | `data.frame` as used within visCOS
+n_events | number of events to be searched 
+window_size | Extension of individual events 
+
+## Examples:
+For the examples 10 events are extracted from a runoff example
 ```{r, eval = TRUE, purl=FALSE}
   require(visCOS)
-  runoff_example <- get_runoff_example()
-  peakplots <- plotlist_runoffpeaks(runoff_example, n_events = 10L)
+  runoff_data <- get_runoff_example()
+  peakplots <- plotlist_runoffpeaks(runoff_data, n_events = 10L)
 ```
 
+The `peakplots` list does now contain plots for each basin within the 
+`runoff_data` data.frame: 
 ```{r, eval = TRUE, purl=FALSE}
   names(peakplots)
 ```
 
+For each basin the a set of plots (`overview`,`scatter`,`event_plot`) are saved 
+within a list for each basin. In the following the plots for basin 1 are shown:
 ```{r, eval = TRUE, purl=FALSE}
   names(peakplots$basin0001)
 ```
 
+The `overview` plot shows the entire time series of `data1` and `data2` of the 
+basin. The found events are marked with black dots. The `overview` plot for 
+basin 1 is:
 ```{r, eval = TRUE, purl=FALSE}
   peakplots$basin0001$overview
 ```
 
+The `scatter` plot shows the found events within a scatter plot, where  `data1` 
+is the x-axis and `data2` on the y-axis. In the followin an example for basin 1
+is given.
 ```{r, eval = TRUE, purl=FALSE}
   peakplots$basin0001$scatter
 ```
 
+Detail plots for each of the found events are given in form of the `event_plot`
+objects. Here an example:
 ```{r, eval = TRUE, purl=FALSE}
   peakplots$basin0001$event_plot5
 ```
@@ -111,9 +137,10 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
     geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_data2")) + 
     geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_data1")) + 
     geom_point(data = highest_peaks_organised, aes(idx, peak_obs))
-  overview_scatter <- ggplot(highest_peaks_organised) + 
+  overview_scatter <- ggplot() + 
+    geom_point(data = single_data, aes(obs,sim), color = "#DDDDDD") +
     geom_abline(color = viscos_options("color_of_mid")) +
-    geom_point(aes(peak_obs,peak_sim), size = 4) +
+    geom_point(data = highest_peaks_organised, aes(peak_obs,peak_sim), size = 4) +
     expand_limits(x = 0, y = 0) 
   sub_plots <- lapply(1:nrow(highest_peaks_organised),
                       function(x) sub_peakplot_fun(x,window_size_int,highest_peaks_organised,single_data) ) %>%

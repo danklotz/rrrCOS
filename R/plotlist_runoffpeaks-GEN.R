@@ -60,9 +60,10 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
     geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_data2")) + 
     geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_data1")) + 
     geom_point(data = highest_peaks_organised, aes(idx, peak_obs))
-  overview_scatter <- ggplot(highest_peaks_organised) + 
+  overview_scatter <- ggplot() + 
+    geom_point(data = single_data, aes(obs,sim), color = "#DDDDDD") +
     geom_abline(color = viscos_options("color_of_mid")) +
-    geom_point(aes(peak_obs,peak_sim), size = 4) +
+    geom_point(data = highest_peaks_organised, aes(peak_obs,peak_sim), size = 4) +
     expand_limits(x = 0, y = 0) 
   sub_plots <- lapply(1:nrow(highest_peaks_organised),
                       function(x) sub_peakplot_fun(x,window_size_int,highest_peaks_organised,single_data) ) %>%
