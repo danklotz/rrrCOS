@@ -139,10 +139,11 @@ dyCrosshair <- function(dygraph,
 serve_of <- function(x,y) {
   # compute objective functions
   out <- data.frame(
-    RMSE = rmse(y,x) %>% as.numeric,
-    pbias = pbias(y,x) %>% as.numeric,
-    NSE = NSE(y,x) %>% as.numeric,
-    KGE = KGE(y,x) %>% as.numeric,
+    rmse = rmse(y,x) %>% as.numeric,
+    p_bias = pbias(y,x) %>% as.numeric,
+    nse = NSE(y,x) %>% as.numeric,
+    inv_nse = NSE(x,y) %>% as.numeric,
+    kge = KGE(y,x) %>% as.numeric,
     corr = -cor(x,y) %>% diag(),
     beta =  mean(y)/mean(x),
     alpha =  sd(y)/sd(x)
