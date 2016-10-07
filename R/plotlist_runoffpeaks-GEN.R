@@ -40,7 +40,6 @@ plotlist_runoffpeaks <- function(runoff_data,
   return(plotlist)
 }
 plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
-   #### calc:
   single_data <- tibble::tibble(time = as.integer(1:length(qobs)),
                                 obs = as.double(qobs),
                                 sim = as.double(qsim))
@@ -71,6 +70,7 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
   return(overview = append(list(overview = overview_plot,scatter = overview_scatter), sub_plots))
 }
   ####
+  # peak finder function: 
   find_peaks <- function (x, m = 3){
     shape <- diff(sign(diff(x, na.pad = FALSE)))
     pks <- sapply(which(shape < 0), FUN = function(i){
@@ -84,7 +84,7 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
     pks
   }
   ####
-  # sub plot function
+  # sub plot function:
   sub_peakplot_fun <- function(x,window_size,highest_peaks_organised,peak_data) {
     point <- highest_peaks_organised[x,]
     plot_sub <- ggplot() +

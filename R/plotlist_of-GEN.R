@@ -7,7 +7,7 @@
 #' @import ggplot2 
 #' 
 #' @export
-listplot <- function(runoff_data,
+plotlist_of <- function(runoff_data,
                      kind = "barplot_of") {
   # def missing ! 
   
@@ -35,7 +35,6 @@ serve.plotlist_barplot <- function(of) {
                                     ifelse(of %>% as.character %>% startsWith(.,"CORR"),"CORR",
                                            ifelse(of %>% as.character %>% startsWith(.,"pBIAS"),"pBIAS",NA))))) 
   groupings_of <- melted_user_of$of_group %>% unique
-
   # define plot list function
   plotlist_fun_barplot <- function(grouping) {
     of_to_plot <- melted_user_of %>% filter( of_group == grouping)
@@ -69,11 +68,11 @@ serve.plotlist_barplot <- function(of) {
 # raster hydyearly NSE ----------------------------------------------------
 # NSE raster plot for the available hydrological years
 # xxx description to follow 
-#
 serve.plotlist_raster <- function(of) {
   # 
   regex_of <- c("NSE.*","KGE.*","pBIAS.*","CORR.*")
-  plot_list <- lapply(regex_of,function(x) plot_fun_raster(x,of))
+  plot_list <- lapply(regex_of,function(x) plot_fun_raster(x,of)) %>% 
+    set_names(c("NSE","KGE","pBIAS","CORR"))
   return(plot_list)
 }
   plot_fun_raster <- function(regex_single_of,of) {
