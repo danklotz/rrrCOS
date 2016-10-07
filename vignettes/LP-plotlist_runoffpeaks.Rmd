@@ -13,7 +13,7 @@ output:
 ```
 
 # Introduction
-The fucntion `plotlist_runoffpeaks` lets users explore the highest events in 
+The function `plotlist_runoffpeaks` lets users explore the highest events in 
 among the available basins. It provides a list of [ggplot2](http://ggplot2.org/) 
 plots, containing an overview plot (`overview`), a scatter plot (`scatter`) 
 and detail plots of the individual events (`event_plot`). Instead of 
@@ -70,6 +70,7 @@ objects. Here an example:
 
 
 # Code
+This part of the document defines the code of `plotlist_runoffpeaks`
 ```{r}
 #' Plot List for Runoff Peaks 
 #' @export
@@ -114,10 +115,13 @@ plotlist_runoffpeaks <- function(runoff_data,
 }
 ```
 
-
+## Generating the Plots for one basin. 
+This is the function for generating the different plots for one basin. 
+At first the provided time series are groupded into a tibble, then the 
+peaks of the observations are obtained via the peak_finder function and 
+organised.Then `ggplot2` is used for plotting. 
 ```{r}
 plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
-   #### calc:
   single_data <- tibble::tibble(time = as.integer(1:length(qobs)),
                                 obs = as.double(qobs),
                                 sim = as.double(qsim))
@@ -150,11 +154,16 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
 ```
 
 ## Function to find peaks
-Propsoed by http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data
+The fucntio for finding the peaks was proposed and developed by 
+Propsoed by the cross validated user "stas g" in [this](http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data)
+thread.  
+This is by far not the only option/possibility to appraoch the peak finding task. 
+Other nice ideas for finding peaks can be found in [this](http://stats.stackexchange.com/questions/36309/how-do-i-find-peaks-in-a-dataset)
+cross validated thread. 
 
-btw. also a nice idea: http://stats.stackexchange.com/questions/36309/how-do-i-find-peaks-in-a-dataset
 ```{r}
   ####
+  # peak finder function: 
   find_peaks <- function (x, m = 3){
     shape <- diff(sign(diff(x, na.pad = FALSE)))
     pks <- sapply(which(shape < 0), FUN = function(i){
@@ -170,9 +179,11 @@ btw. also a nice idea: http://stats.stackexchange.com/questions/36309/how-do-i-f
 ```
 
 ## Subplot Function 
+This function is a wrapper around ggplot, which is used to generate the 
+individual event plots. 
 ```{r}
   ####
-  # sub plot function
+  # sub plot function:
   sub_peakplot_fun <- function(x,window_size,highest_peaks_organised,peak_data) {
     point <- highest_peaks_organised[x,]
     plot_sub <- ggplot() +
