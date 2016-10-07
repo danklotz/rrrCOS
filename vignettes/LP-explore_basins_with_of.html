@@ -151,7 +151,6 @@ $(document).ready(function () {
   }
   # (II)
   d_xts &lt;- runoff_as_xts(clean_runoff_data)
-
   # (III)
   idx_names &lt;- names(d_xts) %&gt;%
     tolower %&gt;% 
@@ -267,11 +266,12 @@ $(document).ready(function () {
 <pre class="r"><code>serve_of &lt;- function(x,y) {
   # compute objective functions
   out &lt;- data.frame(
-    RMSE = rmse(y,x) %&gt;% as.numeric,
-    pbias = pbias(y,x) %&gt;% as.numeric,
-    NSE = NSE(y,x) %&gt;% as.numeric,
-    KGE = KGE(y,x) %&gt;% as.numeric,
-    corr = -cor(x,y) %&gt;% diag(),
+    rmse = rmse(y,x) %&gt;% as.numeric,
+    p_bias = pbias(y,x) %&gt;% as.numeric,
+    nse = NSE(y,x) %&gt;% as.numeric,
+    inv_nse = NSE(x,y) %&gt;% as.numeric,
+    kge = KGE(y,x) %&gt;% as.numeric,
+    corr = cor(x,y) %&gt;% diag(),
     beta =  mean(y)/mean(x),
     alpha =  sd(y)/sd(x)
   )
