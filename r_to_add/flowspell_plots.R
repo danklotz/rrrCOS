@@ -11,6 +11,7 @@ runoff_data <- get_runoff_example() %>%
   remove_chunk() %>% 
   prepare_complete_date() %>% 
   mark_periods()
+
 # get sub selection strings
 selection_string <- paste(viscos_options("name_data1"),".*|",
                           viscos_options("name_data2"),".*", 

@@ -20,22 +20,38 @@ the section about `calculating_of`, since simpler constructions are preferable
 in the case at hand and more information is given to the user.
 
 The computations of the app are defined in the `server` part and the
-appearance in the `ui`. The app itself is depicted in the following figure:
+appearance in the `ui`. 
 
-![](figures/eg_explore_basin.jpg)
+# Example
+In this chapter it is shown, how the function `explore_basins_with_of` can be 
+used to take a closer look at the data series you loaded. Only prerequirements 
+are properly loaded data and correctly addressed `viscos_options`. Additionally, 
+you can adapt the *color_data* options in the `viscos_options`. Information on 
+the *objective functions* can be found [here](ex-OF_explanation.html)
 
-User can select different basins via the selection box (*# basins:*) on the
+Running the `explore_basins_with_of` with your data as input, a shiny app is 
+started in a new window (in this case an example .jpg with explanations):
+```{r,purl=FALSE, eval = FALSE}
+viscos_options(color_data1 = "green", color_data2 = "red")
+explore_runoff_with_of(runoff_example)
+```
+
+![](figures/eg_explore_basin.JPG)
+
+Users can select different basins via the selection box (*# basins:*) on the
 top-left and interactively zoom and move the graph in the center by clicking
 on it or moving the date switches below the graph. While doing so the
 objective functions (presented in the table below) are re-calculated for the
-chosen time window.
+chosen time window. 
+
 
 # Code
 In the following paragraphs the code of the shiny app is defined.
 
 ## `explore_basins_with_of`
 This function represents the main part of the shiny app. 
-```{r, echo=FALSE}
+
+```{r}
   #' explore runoff_data with Objective Functions
   #'
   #' Runs a Shiny App which can be used to get an overview of a runoff_data time
@@ -58,36 +74,23 @@ This function represents the main part of the shiny app.
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
   #' explore_runoff_with_of(d_runoff)
-```
-
-The app has actually quite a lot of dependencies. Right now these are:
-```{r}
 explore_runoff_with_of <- function(runoff_data) {
-  ##########################
+  
 ```
 
-Currently the shiny app needs some pre-calculations. The first part (I) of the 
-pre-calculations includes the defensive function `remove_leading_zeros`, that 
-removes the leading zeros from the data.frame `runoff_data`.
-For example: If a column would be named `QOBS_00001` it would be transformed to
-`QOBS_1`. Afterwards, it is checked if the "cleaned" data (`clean_runoff_data`)
-has the needed `viscos_options("name_COSposix")` column. If it does not, then
-the column is created with `prepare_complete_date`. 
-In the second part (II)
-the actual pre-calculations take place. The data is transformed into an `xts`
-object (`d_xts`). 
+At its current state the shiny app needs some pre-calculation, which are defined 
+in this part of the code: 
 
-Then (III) the data1 column defined in the `viscos_options` is marked and the 
-numeration of the basins is saved within the variable `d_nums`.**Note** that 
-both data series have to include a column for every existing basin and the 
-basin number after the data name (e.g. QOobs_0001). The former operation is 
-achieved by searching for all the columns with starting with 
-`viscos_options("name_data1")` . The latter by removing all the non-digits from 
-the column-names and searching for the unique integer.
+- (I) Defensive code (basically, the leadign zeros are removed from colum names
+ and the date formated is completed and ).
+- (II) Transform data into `xts` (`d_xts`). 
+- (III) Save numeration of basins within the variable `d_nums`.
 
-Note that this approach forces users to enumerate their basins with integers,
-as floating-numbers would be transformed!
+**Note** that this approach forces users to enumerate their basins with
+integers. `Doubles` would be transformed into integers by the `as.integer`
+command!
 ```{r}
+  # pre-calculations
   # (I)
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
