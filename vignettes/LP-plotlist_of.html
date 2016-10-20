@@ -137,7 +137,7 @@ $(document).ready(function () {
 #' @import ggplot2 
 #' 
 #' @export</code></pre>
-<pre class="r"><code>listplot &lt;- function(runoff_data,
+<pre class="r"><code>plotlist_of &lt;- function(runoff_data,
                      kind = &quot;barplot_of&quot;) {
   # def missing ! 
   
@@ -165,7 +165,6 @@ $(document).ready(function () {
                                     ifelse(of %&gt;% as.character %&gt;% startsWith(.,&quot;CORR&quot;),&quot;CORR&quot;,
                                            ifelse(of %&gt;% as.character %&gt;% startsWith(.,&quot;pBIAS&quot;),&quot;pBIAS&quot;,NA))))) 
   groupings_of &lt;- melted_user_of$of_group %&gt;% unique
-
   # define plot list function
   plotlist_fun_barplot &lt;- function(grouping) {
     of_to_plot &lt;- melted_user_of %&gt;% filter( of_group == grouping)
@@ -199,13 +198,15 @@ $(document).ready(function () {
 <pre class="r"><code># raster hydyearly NSE ----------------------------------------------------
 # NSE raster plot for the available hydrological years
 # xxx description to follow 
-#
 serve.plotlist_raster &lt;- function(of) {
   # 
   regex_of &lt;- c(&quot;NSE.*&quot;,&quot;KGE.*&quot;,&quot;pBIAS.*&quot;,&quot;CORR.*&quot;)
-  plot_list &lt;- lapply(regex_of,function(x) plot_fun_raster(x,of))
+  plot_list &lt;- lapply(regex_of,function(x) plot_fun_raster(x,of)) %&gt;% 
+    set_names(c(&quot;NSE&quot;,&quot;KGE&quot;,&quot;pBIAS&quot;,&quot;CORR&quot;))
   return(plot_list)
 }</code></pre>
+<div id="function-to-generatea-ratser-plot-for-one-basin" class="section level3">
+<h3>Function to generatea Ratser-Plot for one Basin</h3>
 <pre class="r"><code>  plot_fun_raster &lt;- function(regex_single_of,of) {
     period_characters &lt;- rep(&quot;period&quot;,(ncol(of) - 1))
     if (regex_single_of == &quot;pBIAS.*&quot;) {
@@ -260,6 +261,7 @@ serve.plotlist_raster &lt;- function(of) {
                                    rev() )
     return(plot_data)
   }</code></pre>
+</div>
 </div>
 </div>
 

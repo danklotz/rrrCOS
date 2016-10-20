@@ -27,7 +27,9 @@ function `extract_objective_functions` can be applied to the prepared data
 series and the results are displayed in the console or can be assigned to a 
 variable
 ```{r, message=3, purl=FALSE, eval=TRUE}
-of_values <- visCOS::extract_objective_functions(visCOS::get_runoff_example())
+require(visCOS)
+require(magrittr)
+of_values <- extract_objective_functions(get_runoff_example() %>% mark_periods())
 of_values
 ```
 

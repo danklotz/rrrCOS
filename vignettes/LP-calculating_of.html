@@ -126,13 +126,47 @@ $(document).ready(function () {
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <p>This chapter explains the code to calculate the objective functions <span class="math inline">\(of\)</span> for the data and for selected periods. It can be done with the function ‘extract_objective_functions’. <strong>Note</strong> that periods must be marked first to run the function. This is checked, too.</p>
 </div>
+<div id="calculate-objective-functions-for-subbasins-and-periods" class="section level1">
+<h1><span class="header-section-number">2</span> Calculate Objective Functions for Subbasins and Periods</h1>
+<p>In Chapter 3, the objective functions <span class="math inline">\(of\)</span> have been introduced already for the interactive analysis of the time series. To get the <span class="math inline">\(of\)</span> values for the periods defined with <code>mark_periods()</code> and as a summary over the whole timespan, the function <code>extract_objective_functions</code> can be applied to the prepared data series and the results are displayed in the console or can be assigned to a variable</p>
+<pre class="r"><code>require(visCOS)
+require(magrittr)
+of_values &lt;- extract_objective_functions(get_runoff_example() %&gt;% mark_periods())
+of_values</code></pre>
+<pre><code>##                of    basin.1     basin.2
+## 1             NSE  0.5177309   0.8012919
+## 2             KGE  0.7246877   0.7489862
+## 3           pBIAS  0.3000000 -12.5000000
+## 4            CORR  0.8177663   0.9107391
+## 5    NSE_period.1  0.1326604   0.7566200
+## 6    NSE_period.2  0.7096110   0.8168895
+## 7    KGE_period.1  0.4138710   0.8487406
+## 8    KGE_period.2  0.8419666   0.6820128
+## 9  pBIAS_period.1  8.8000000  -8.6000000
+## 10 pBIAS_period.2 -6.9000000 -15.9000000
+## 11  CORR_period.1  0.8243198   0.8806770
+## 12  CORR_period.2  0.8577983   0.9385221</code></pre>
+</div>
 <div id="code" class="section level1">
-<h1><span class="header-section-number">2</span> Code</h1>
+<h1><span class="header-section-number">3</span> Code</h1>
 <div id="extract_objective_functions" class="section level2">
-<h2><span class="header-section-number">2.1</span> <code>extract_objective_functions</code></h2>
+<h2><span class="header-section-number">3.1</span> <code>extract_objective_functions</code></h2>
 <p>The purpose of this function is to extract a set of objective functions from the <code>runoff_data</code> data.frame. The objective functions are extracted for each basin, for the all the periods as a summary and for each period separately.</p>
 <p>The head of the functions checks for the required packages, if <code>runoff_data</code> is a data.frame and if the <code>viscos_options(&quot;name_COSperiod&quot;)</code> exists within <code>runoff_data</code>:</p>
-<pre class="r"><code>extract_objective_functions &lt;- function(runoff_data) {
+<pre class="r"><code>#' Get basic objective function for runoff_data
+#'
+#' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation) 
+#' for every basin and the chosen periods.
+#'
+#' @param runoff_data runoff_data data.frame.
+#' @return list of basic objective function evaluated for the different
+#' hydrological years and over the whole timespan.
+#' 
+#' @import hydroGOF 
+#' @import dplyr
+#'
+#' @export
+extract_objective_functions &lt;- function(runoff_data) {
   assert_dataframe(runoff_data)
   if( !exists(viscos_options(&quot;name_COSperiod&quot;), where = runoff_data) ) {
     stop(&quot;Error! Period-Column missing in runoff_data; use `mark_periods`&quot;)
@@ -211,7 +245,7 @@ $(document).ready(function () {
 </div>
 </div>
 <div id="references" class="section level1">
-<h1><span class="header-section-number">3</span> References</h1>
+<h1><span class="header-section-number">4</span> References</h1>
 <ul>
 <li>Gupta, Hoshin V.; Kling, Harald; Yilmaz, Koray K. &amp; Martinez, Guillermo F. (2009): <em>Decomposition of the mean squared error and NSE performance criteria:</em> <em>Implications for improving hydrological modelling</em> (Journal of Hydrology)</li>
 </ul>
