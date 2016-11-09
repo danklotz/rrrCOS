@@ -1,0 +1,10 @@
+% Please edit documentation in R/serve-GEN.R
+\name{serve}
+\alias{serve}
+\title{Serve is still beta}
+\usage{
+serve(plotlist, path = "", fig_width = 800L, fig_height = 500L)
+}
+\description{
+More description shall follow
+}

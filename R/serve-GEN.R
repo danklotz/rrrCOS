@@ -1,3 +1,7 @@
+#' Serve is still beta 
+#' 
+#' More description shall follow 
+#' @export
 serve <- function(plotlist,path = "", fig_width = 800L, fig_height = 500L) {
   hmtl_filename <- "summary"
   # establish html-file in chosen folder
