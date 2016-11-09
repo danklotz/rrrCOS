@@ -21,7 +21,8 @@
   #' d_runoff <- get_runoff_example()
   #' explore_runoff_with_of(d_runoff)
 explore_runoff_with_of <- function(runoff_data) {
-  ##########################
+  
+  # pre-calculations
   # (I)
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {

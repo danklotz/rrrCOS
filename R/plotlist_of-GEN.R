@@ -7,8 +7,7 @@
 #' @import ggplot2 
 #' 
 #' @export
-plotlist_of <- function(runoff_data,
-                     kind = "barplot_of") {
+plotlist_of <- function(runoff_data, kind = "barplot_of") {
   # def missing ! 
   
   # calc 
@@ -76,7 +75,6 @@ serve.plotlist_raster <- function(of) {
   return(plot_list)
 }
   plot_fun_raster <- function(regex_single_of,of) {
-    period_characters <- rep("period",(ncol(of) - 1))
     if (regex_single_of == "pBIAS.*") {
       gglimits <- c(-viscos_options("limits")[2]*100,
                     viscos_options("limits")[2]*100)
@@ -92,7 +90,7 @@ serve.plotlist_raster <- function(of) {
     # 
     plot_data <- of %>% 
       extract(grep(regex_single_of,.$of), ) %>% 
-      cbind(.,facets = c("overall",period_characters)) %>% 
+      cbind(.,facets = c("overall", rep("period",(nrow(.) - 1)))) %>% 
       reshape2::melt(., id.vars = c("of","facets")) %>% 
       reverse_basin_levels %>% 
       reverse_facetting_levels %>%
