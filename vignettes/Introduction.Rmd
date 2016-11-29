@@ -5,12 +5,30 @@ date: "6 Juli 2016"
 output: html_document
 ---
 
-This is an overview of the visCOS package. It is kind of a read.me file or an 
-hub to the documentation and the examples.
+visCOS is still under (heavy) development, so it is not recommended to use the
+package, yet. If you want to do it nevertheless...
+
+visCOS is an R-package that provides summaries and visualisation to support
+parameter estimation for conceptual rainfall-runoff models in general and
+COSERO in special. COSERO is a hbv-like model that was developed at the
+institue for water management, hydrology and hydraulic engineering (IWHW) at
+BOKU, Vienna. The name is an abreviation for "**Co**nceptual
+**Se**mi-Distributed **R**ainfall Run**o**ff Model".
+This page provides a hub to access the differnet examples and the entire program
+code.
 
 # Table of Content
-1. cook_data
-2. viscos_opitons
+1. [The basic data structure](LP-cookd_data.html)
+2. [Set Options](LP-viscos_options.html)
+3. [Objective Functions](ex-OF_explanation.html)
+  - [Calculating Objective Functions](LP-calculating_of.html)
+  - [Explore Runoff and Objective Functions](LP-explore_bains_with_of.html)
+4. Plotlists
+  - [Aggregation Plots](LP-aggregationsplots.html)
+  - [Objective Function Plots](LP-plotlist_of.html)
+  - [Saving Plots](LP-serve.html)
++ [Defensive Code](LP-defensive_code.html)
++ [Helper Funcitons](LP-helpers.html)
 
 
 # Test this is

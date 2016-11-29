@@ -154,7 +154,7 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
 ```
 
 ## Function to find peaks
-The fucntio for finding the peaks was proposed and developed by 
+The function for finding the peaks was proposed and developed by 
 Propsoed by the cross validated user "stas g" in [this](http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data)
 thread.  
 This is by far not the only option/possibility to appraoch the peak finding task. 

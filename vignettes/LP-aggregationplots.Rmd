@@ -1,5 +1,5 @@
 ---
-title: "Aggregation Plot"
+title: "Aggregate and Plot"
 author: 
 - "Daniel Klotz, Johannes Wesemann"
 date: "22 September 2016"
@@ -15,8 +15,14 @@ output:
 ```
 
 # Introduction
-This is still a badly named function for plotting the aggregated function over a given time resolution ("yyyy","mm" or "dd") for 
-all basins in runoff_data, e.g. 
+ In hydrology it is often usefull 
+to summarise the runoff with respect to a given time dimension. 
+In **visCOS** this can be done by using the `aggreate_and_plot` functions. 
+This is still an experimental function with a rather badly name. 
+The function takes [COSERO data.frame](cook_data.html),  aggregates them 
+accodring to a single or more given time resolutions and returns a `ggplot` of 
+`data1` and `data2`. The different basins are faceted into different plots. 
+
 
 ```{r, eval = TRUE, purl=FALSE}
   runoff_data <- visCOS::get_runoff_example()
@@ -48,32 +54,44 @@ all basins in runoff_data, e.g.
   #'
   #' @import magrittr
   #' @import ggplot2
-  #'
+  #' @import pasta
+  
   #' @export
   aggregate_and_plot <- function( runoff_data,aggregation = "mm") {
+```
+The time aggregation is done by cutting the needed information out of the 
+date-string. This is a bit ruff, but works nicely and seems to be more 
+commonly used than you would expect. 
+```{r}
     #
-    if (aggregation == "dd"){
-      cutting_bounds <- c(9,11)
-    } else if (aggregation == "mm") {
-      cutting_bounds <- c(6,7)
-    } else if (aggregation == "yyyy") {
-      cutting_bounds <- c(1,4)
-    } else if (aggregation == "yyyy-mm") {
-      cutting_bounds <- c(1,7)
+    cutting_bounds <- c(Inf,-Inf)
+    if (grepl("dd",aggregation)) {
+      cutting_bounds[1] <- min(9,cutting_bounds[1])
+      cutting_bounds[2] <- max(11,cutting_bounds[2])
     }
+    if (grepl("mm",aggregation)) {
+      cutting_bounds[1] <- min(6,cutting_bounds[1])
+      cutting_bounds[2] <- max(7,cutting_bounds[2])
+    }
+    if (grepl("yyyy",aggregation)) {
+      cutting_bounds[1] <- min(1,cutting_bounds[1])
+      cutting_bounds[2] <- max(4,cutting_bounds[2])
+    }
+```
+
+```{r}
     ######  define helpers
     # Paste funcitons:
-    '%&%' <- function(a,b) paste(a,b, sep = '')
-    '%|%' <- function(a,b) paste(a,b, sep = "|")
-    regex_for_runoff_selection <- viscos_options("name_data1") %|%                                   viscos_options("name_data2")
+    regex_for_runoff_selection <- viscos_options("name_data1") %|%  viscos_options("name_data2")
     # aggregation function:
     aggregator_fun <- function(k,data_frame){
       the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN=median)
       return(the_aggregation[ ,2])
     }
     ##### main code 
-    full_runoff_data <- visCOS::prepare_complete_date(runoff_data) %>% 
-      visCOS::remove_chunk()
+    runoff_data %>% 
+      visCOS::prepare_complete_date() %>% 
+      visCOS::remove_chunk() -> full_runoff_data 
     runoff_with_aggreggation <- cbind.data.frame(
       full_runoff_data ,
       date_selection = substr(full_runoff_data$posixdate,
@@ -87,10 +105,13 @@ all basins in runoff_data, e.g.
       )
     selected_runoff_rows <- grep(regex_for_runoff_selection,
                              names(runoff_with_aggreggation) %>% tolower)
-    sub_selection <- 
-      sapply(selected_runoff_rows, function(x)aggregator_fun(x,runoff_with_aggreggation)) %>% 
-      data.frame(.,timestep=1:nrow(.),month=unique(runoff_with_aggreggation$date_selection) ) %>% 
-      set_names(.,c(names_runoff_selection,"timestep","month"))
+    sub_selection <- sapply(selected_runoff_rows, 
+                            function(x) aggregator_fun(x,runoff_with_aggreggation)) %>% 
+      data.frame(.,
+                 timestep = 1:nrow(.), 
+                 month = unique(runoff_with_aggreggation$date_selection) ) %>% 
+      set_names(.,
+                c(names_runoff_selection,"timestep","month"))
     # 
     melted_sub_selection <- sub_selection %>% 
       reshape2::melt(., id.vars = c("timestep","month")) %>% 
@@ -110,7 +131,7 @@ all basins in runoff_data, e.g.
       facet_wrap( ~ basin,
                   ncol = 2, 
                   scales = "free") +
-      theme(panel.margin = unit(1.5, "lines")) 
+      theme(panel.spacing = unit(1.5, "lines")) 
     return(the_plot)
     }
 ```
