@@ -22,16 +22,6 @@
       cutting_bounds[1] <- min(1,cutting_bounds[1])
       cutting_bounds[2] <- max(4,cutting_bounds[2])
     }
-    # 
-    # if (aggregation == "dd"){
-    #   cutting_bounds <- c(9,11)
-    # } else if (aggregation == "mm") {
-    #   cutting_bounds <- c(6,7)
-    # } else if (aggregation == "yyyy") {
-    #   cutting_bounds <- c(1,4)
-    # } else if (aggregation == "yyyy-mm") {
-    #   cutting_bounds <- c(1,7)
-    # } 
     ######  define helpers
     # Paste funcitons:
     regex_for_runoff_selection <- viscos_options("name_data1") %|%  viscos_options("name_data2")

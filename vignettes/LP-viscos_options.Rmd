@@ -11,7 +11,12 @@ output:
 ```{r setup, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
-```{r, echo=FALSE}
+
+# Introduction 
+This section defines code of the visCOS functions used to set and adapt the 
+visCOS options. With the added comments code is pretty much self-explanatory. 
+
+```{r}
 #' visCOS global options
 #' 
 #' Get and set the global options of visCOS
@@ -21,46 +26,33 @@ knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 #' \preformatted{
 #'   viscos_options(
 #'    # data.frame column names
-#'       name_data1 = "qobs",
-#'       name_data2 = "qsim",
-#'       name_COSyear = "yyyy",
-#'       name_COSmonth = "mm",
-#'       name_COSday = "dd",
-#'       name_COShour = "hh",
-#'       name_COSmin = "min",
-#'       name_COSposix = "posixdate",
-#'       name_COSperiod = "period",
+#'       name_data1 = "qobs", # name of the first time-series data (observations)  
+#'       name_data2 = "qsim", # name of the second time-series data (simulations)  
+#'       name_COSyear = "yyyy", # name of year-column
+#'       name_COSmonth = "mm",  # name of month-column
+#'       name_COSday = "dd",  # name of day-column
+#'       name_COShour = "hh", # name of hour-column
+#'       name_COSmin = "min", # name of minute-column
+#'       name_COSposix = "posixdate", # name of the complete-date-column
+#'       name_COSperiod = "period", # name of the marked-period column
 #'    # plot options
-#'       color_data1 = "steelblue", 
-#'       color_data2 = "palevioletred",
-#'       plot_title = "title",
-#'       legend_title = "legend",
+#'       color_data1 = "steelblue", # color associated with the first time-series data
+#'       color_data2 = "orange",  # color associated with the second time-series data
+#'       legend_title = "legend", 
 #'       xlab = "year",
-#'       color_of_low = '#FF3300',
-#'       olor_of_mid = '#f6f3a1',
-#'       color_of_high = '#005900',
-#'       clr4 = "purple4",
+#'       color_of_low = 'darkred', # color associated with a bad objective function 
+#'       olor_of_mid = 'grey', # color associated with an average objective function 
+#'       color_of_high = 'magenta', # color associated with a high objective function 
 #'       midpoint = 0.5,
-#'       limits = c(0,1),
-#'       lb_cut = 0,
-#'       text_size = 0.5)}
+#'       limits = c(0,1)
+#'   )
+#' }
 #'
 #' @examples
 #' viscos_options("name_data1")
 #' viscos_options(name_data1 = "OtherData")
 #' viscos_options("name_data1")
 #' @export
-```
-# Introduction 
-This section defines code of the visCOS functions used to set and adapt the 
-visCOS options. There are options for the (raw) data and for the settings for 
- plots.
-
-# Code
-The `viscos_options` function is build using the GlobalOptions package.
-
-```{r}
-
 viscos_options <- GlobalOptions::setGlobalOptions( 
   # data.frame column names
   name_data1 = "qobs", 
@@ -75,17 +67,11 @@ viscos_options <- GlobalOptions::setGlobalOptions(
  # plot options
   color_data1 = "steelblue", 
   color_data2 = "orange",
-  plot_title = "title",
-  legend_title = "legend",
-  xlab = "year",
-  color_of_low = 'red',
-  color_of_mid = 'orange',
+  color_of_low = 'darkred',
+  color_of_mid = 'magenta',
   color_of_high = 'green',
-  color_of_out = "purple4",
   midpoint = 0.5,
-  limits = c(0,1),
-  lb_cut = 0,
-  text_size = 0.5
+  limits = c(0,1)
 )
 
 ```

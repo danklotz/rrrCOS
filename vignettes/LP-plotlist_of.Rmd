@@ -57,12 +57,7 @@ The first step is the calculation of the objective functions (`of`) via
 Then some housekeeping needs to be undertaken. For the computations and 
 selections all names are set to lower case (`tolower`), because **visCOS** works
 case-insensitive. The basin enumeration `num_basins` is obtained with
-the function [`get_basin_numbers`](LP-helpers.html). The plot-titles 
-of the individual barplots are build by gathering the main title from the 
-[global option](LP-viscos_options.html) *"plot_title"* and concatenating it with 
-`num_basins`. The user defined objective function (`user_of`) is extracted from 
-`of` by using the user defined selection `of_name`. Again, in order to avoid 
-lower-upper case distinctions the `of_name` string is allways `set tolower`. 
+the function [`get_basin_numbers`](LP-helpers.html).  
 
 ```{r}
 serve.plotlist_barplot <- function(of) {
