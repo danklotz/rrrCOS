@@ -215,7 +215,8 @@ representations and objects of `POSIXlt` and `POSIXct`.
     observeEvent(input$done, {
       returnValue <- list(
         selected_time = c(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),strftime(selcted_to(), format = "%Y-%m-%d-%H-%M")),
-        selected_data = sub_slctd(),
+        selected_data = data.frame(date = index(sub_slctd()),
+                                   coredata(sub_slctd())),
         selected_of = out_of()
       )
       stopApp(returnValue)

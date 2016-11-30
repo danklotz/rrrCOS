@@ -1,5 +1,5 @@
 export(aggregate_time)
-export(explore_runoff_with_of)
+export(explore_runoff)
 export(get_main_of)
 export(get_runoff_example)
 export(mark_periods)

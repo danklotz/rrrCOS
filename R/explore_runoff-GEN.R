@@ -20,8 +20,8 @@
   #' # get example data,
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
-  #' explore_runoff_with_of(d_runoff)
-explore_runoff_with_of <- function(runoff_data,
+  #' explore_runoff(d_runoff)
+explore_runoff <- function(runoff_data,
                                    of_list = list(
                                      nse = of_nse, 
                                      kge = of_kge, 
@@ -134,7 +134,8 @@ explore_runoff_with_of <- function(runoff_data,
     observeEvent(input$done, {
       returnValue <- list(
         selected_time = c(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),strftime(selcted_to(), format = "%Y-%m-%d-%H-%M")),
-        selected_data = sub_slctd(),
+        selected_data = data.frame(date = index(sub_slctd()),
+                                   coredata(sub_slctd())),
         selected_of = out_of()
       )
       stopApp(returnValue)
@@ -170,18 +171,4 @@ dyCrosshair <- function(dygraph,
   )
 }
   runGadget(ui,server)
-}
-serve_of <- function(x,y) {
-  # compute objective functions
-  out <- data.frame(
-    rmse = rmse(y,x) %>% as.numeric,
-    p_bias = pbias(y,x) %>% as.numeric,
-    nse = NSE(y,x) %>% as.numeric,
-    inv_nse = NSE(x,y) %>% as.numeric,
-    kge = KGE(y,x) %>% as.numeric,
-    corr = cor(x,y) %>% diag(),
-    beta =  mean(y)/mean(x),
-    alpha =  sd(y)/sd(x)
-  )
-  return(out)
 }

@@ -1,4 +1,4 @@
-% Please edit documentation in R/calculating_of-GEN.R
+% Please edit documentation in R/get_main_of-GEN.R
 \name{get_main_of}
 \alias{get_main_of}
 \title{Get basic objective function for runoff_data}
