@@ -11,7 +11,7 @@ plotlist_of <- function(runoff_data, kind = "barplot_of") {
   # def missing ! 
   
   # calc 
-  of <- extract_objective_functions(runoff_data)
+  of <- get_main_of(runoff_data)
   if (kind == "barplot_of") {
     plot_list <- serve.plotlist_barplot(of)
   } else if(kind == "rasterplot_of") {

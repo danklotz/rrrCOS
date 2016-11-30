@@ -34,7 +34,7 @@ plotlist_of <- function(runoff_data, kind = "barplot_of") {
   # def missing ! 
   
   # calc 
-  of <- extract_objective_functions(runoff_data)
+  of <- get_main_of(runoff_data)
   if (kind == "barplot_of") {
     plot_list <- serve.plotlist_barplot(of)
   } else if(kind == "rasterplot_of") {
@@ -53,7 +53,7 @@ Users can define the to-be plotted objective function with the character
 `of_name`. 
 
 The first step is the calculation of the objective functions (`of`) via 
-[`extract_objective_functions`](LP-computing_of.html).
+[`get_main_of`](LP-computing_of.html).
 Then some housekeeping needs to be undertaken. For the computations and 
 selections all names are set to lower case (`tolower`), because **visCOS** works
 case-insensitive. The basin enumeration `num_basins` is obtained with

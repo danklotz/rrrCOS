@@ -1,4 +1,4 @@
-% Please edit documentation in R/aggregationplots-GEN.R
+% Please edit documentation in R/time_aggregation-GEN.R
 \name{aggregate_time}
 \alias{aggregate_time}
 \title{Aggreage and plot}

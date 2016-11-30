@@ -11,7 +11,7 @@
 #' @import dplyr
 #'
 #' @export
-extract_objective_functions <- function(runoff_data) {
+get_main_of <- function(runoff_data) {
   assert_dataframe(runoff_data)
   if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
     stop("Error! Period-Column missing in runoff_data; use `mark_periods`")

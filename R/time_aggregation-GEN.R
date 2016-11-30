@@ -47,13 +47,12 @@
     selected_runoff_rows <- grep(regex_for_runoff_selection,
                              names(runoff_with_aggreggation), 
                              ignore.case = TRUE)
-    time_aggregate <- sapply(selected_runoff_rows, 
-                            function(x) aggregator_fun(x,runoff_with_aggreggation)) %>% 
+    selected_runoff_rows %>% 
+      sapply(.,function(x) aggregator_fun(x,runoff_with_aggreggation)) %>% 
       data.frame(idx = 1:nrow(.), 
                  time_aggregate = unique(runoff_with_aggreggation$date_selection),
                  .) %>% 
-      set_names(.,
-                c("idx","time_aggregate",names_runoff_selection))
+      set_names(., c("idx","time_aggregate",names_runoff_selection)) -> time_aggregate
     # 
     melted_time_aggregate <- time_aggregate %>% 
       reshape2::melt(., id.vars = c("idx","time_aggregate")) %>% 

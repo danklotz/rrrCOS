@@ -6,21 +6,30 @@
   #' @param d_xts runoff_data formatted as time series
   #' 
   #' @import shiny 
+  #' @import miniUI
   #' @importFrom xts xts
   #' @import dplyr
   #' @import magrittr
   #' @import dygraphs 
   #' @import hydroGOF
+  #' @importFrom purrr map_df
   #' 
   #' @export
   #' 
   #' @examples
   #' # get example data,
-  #' # clean it and
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
   #' explore_runoff_with_of(d_runoff)
-explore_runoff_with_of <- function(runoff_data) {
+explore_runoff_with_of <- function(runoff_data,
+                                   of_list = list(
+                                     nse = of_nse, 
+                                     kge = of_kge, 
+                                     pBIAS = of_pbias,
+                                     r = of_cor
+                                   ),
+                                   start_date = NULL,
+                                   end_date = NULL) {
   
   # pre-calculations
   # (I)
@@ -82,12 +91,19 @@ explore_runoff_with_of <- function(runoff_data) {
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
-      if (!is.null(input$hydrographs_date_window))
+      if (!is.null(start_date)) {
+        start_date
+      } else if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[1]]
+      }
     })
     selcted_to <- reactive({
-      if (!is.null(input$hydrographs_date_window))
+      if (!is.null(end_date)) {
+        end_date
+      } else if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[2]]
+      }
+
     })
     # (V) extract time_window for the stats header:
     output$selected_timewindow <- renderText({
@@ -104,26 +120,45 @@ explore_runoff_with_of <- function(runoff_data) {
                                strftime(selcted_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
-    output$slctd_OF <- renderTable({
-      if (!is.null(input$hydrographs_date_window))
-        out <- serve_of( sub_slctd()$x,sub_slctd()$y )
+    out_of <- reactive({
+      if (!is.null(input$hydrographs_date_window)) {
+          map_df(of_list, function(of_,x,y) of_(x,y), 
+                 x = sub_slctd()$x, 
+                 y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
+      }
+    })
+    
+    output$slctd_OF <- renderTable(out_of(), align = "c")
+    # (VII) exit when user clicks on done 
+     # When the Done button is clicked, return a value
+    observeEvent(input$done, {
+      returnValue <- list(
+        selected_time = c(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),strftime(selcted_to(), format = "%Y-%m-%d-%H-%M")),
+        selected_data = sub_slctd(),
+        selected_of = out_of()
+      )
+      stopApp(returnValue)
     })
   }
-  ui <- fluidPage(
-      selectInput("basin_num",
-                  "# basins:",
-                  choices = d_nums,
-                  selected = 1,
-                  width = "100px"),
-      dygraphOutput("hydrographs", width = "100%", height = "400px"),
-      hr(),
-      fluidRow(
-        column(12, align = "center",
+  ui <- miniPage(
+    miniButtonBlock(selectInput("basin_num",
+                                "# basin:",
+                                choices = d_nums,
+                                selected = 1, 
+                                selectize = FALSE)),
+    miniContentPanel(
+      fillCol(
+        flex = c(4,1),
+        dygraphOutput("hydrographs", width = "100%", height = "100%"),
+        fillCol(
+          align = "center",
           textOutput("selected_timewindow"),
           tableOutput("slctd_OF")
         )
       )
-    )
+    ),
+    gadgetTitleBar("test")
+  )
 dyCrosshair <- function(dygraph, 
                         direction = c("both", "horizontal", "vertical")) {
   dyPlugin(
@@ -134,7 +169,7 @@ dyCrosshair <- function(dygraph,
     options = list(direction = match.arg(direction))
   )
 }
-  shinyApp(ui,server)
+  runGadget(ui,server)
 }
 serve_of <- function(x,y) {
   # compute objective functions

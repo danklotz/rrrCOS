@@ -1,0 +1,128 @@
+---
+title: "Ojective Functions"
+author: 
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
+date: "14 Juli 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+
+# Introduction
+Here the code for different objective functions is defined. If posisble the
+calculation is done with the help of the `hydroGOF` package, if not an R-code
+solution is tried. 
+
+# Code 
+```{r}
+#' Objective Functions
+#' 
+#' Different objective Functions, provided by visCOS.
+
+#' @param x observation 
+#' @param y simulations 
+#' @name of_overview
+NULL
+```
+
+
+```{r}
+#' Root Mean Sqaured Error 
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_rmse <- function(x,y) {
+  as.numeric( rmse(y,x) )
+}
+```
+
+```{r}
+#' Percentage Bias 
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_pbias <- function(x,y) {
+  as.numeric( pbias(y,x) )
+}
+```
+
+```{r}
+#' Nash-Sutcliffe Efficiency
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_nse <- function(x,y) {
+  as.numeric( NSE(y,x) )
+}
+```
+
+```{r}
+#' Inverted Nash-Sutcliffe Efficiency
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_invert_nse <- function(x,y) {
+  as.numeric( NSE(x,y) )
+}
+```
+
+```{r}
+#' Kling-Gupta Efficiency
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_kge <- function(x,y) {
+  as.numeric( KGE(y,x) )
+}
+```
+
+```{r}
+#' Correlation
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_cor <- function(x,y) {
+  diag( cor(x,y) )
+}
+```
+
+```{r}
+#' Ratio of Standard Deviations
+#'
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_rsd <- function(x,y) {
+  as.numeric( rSD(y,x) )
+}
+```
+
+```{r}
+#' Ratio of Means
+#'
+#' @rdname of_overview
+#' @export
+of_rmeans <- function(x,y) {
+  as.numeric( mean(y)/mean(x) )
+}
+```
+
+```{r}
+#' Volumetric Efficiency
+#'
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_ve <- function(x,y) {
+  as.numeric( VE(y,x) )
+}
+```

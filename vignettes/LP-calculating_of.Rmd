@@ -16,25 +16,25 @@ output:
 # Introduction
 This chapter explains the code to calculate the objective functions $of$ for 
 the data and for selected periods. It can be done with the function 
-'extract_objective_functions'. **Note** that periods must be marked first to run
+'get_main_of'. **Note** that periods must be marked first to run
 the function. This is checked, too.
 
 # Calculate Objective Functions for Subbasins and Periods
 In Chapter 3, the objective functions $of$ have been introduced already for the 
 interactive analysis of the time series. To get the $of$ values for the periods 
 defined with `mark_periods()` and as a summary over the whole timespan, the 
-function `extract_objective_functions` can be applied to the prepared data 
+function `get_main_of` can be applied to the prepared data 
 series and the results are displayed in the console or can be assigned to a 
 variable
 ```{r, message=3, purl=FALSE, eval=TRUE}
 require(visCOS)
 require(magrittr)
-of_values <- extract_objective_functions(get_runoff_example() %>% mark_periods())
+of_values <- get_main_of(get_runoff_example() %>% mark_periods())
 of_values
 ```
 
 # Code
-## `extract_objective_functions`
+## `get_main_of`
 The purpose of this function is to extract a set of objective functions from
 the `runoff_data` data.frame. The objective functions are extracted for each
 basin, for the all the periods as a summary and for each period separately.
@@ -56,7 +56,7 @@ a data.frame and if the `viscos_options("name_COSperiod")` exists within
 #' @import dplyr
 #'
 #' @export
-extract_objective_functions <- function(runoff_data) {
+get_main_of <- function(runoff_data) {
   assert_dataframe(runoff_data)
   if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
     stop("Error! Period-Column missing in runoff_data; use `mark_periods`")

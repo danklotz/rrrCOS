@@ -23,13 +23,13 @@ The computations of the app are defined in the `server` part and the
 appearance in the `ui`. 
 
 # Example
-In this chapter it is shown, how the function `explore_basins_with_of` can be 
+In this chapter it is shown, how the function `explore_runoff` can be 
 used to take a closer look at the data series you loaded. Only prerequirements 
 are properly loaded data and correctly addressed `viscos_options`. Additionally, 
 you can adapt the *color_data* options in the `viscos_options`. Information on 
 the *objective functions* can be found [here](ex-OF_explanation.html)
 
-Running the `explore_basins_with_of` with your data as input, a shiny app is 
+Running the `explore_runoff` with your data as input, a shiny app is 
 started in a new window (in this case an example .jpg with explanations):
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_data1 = "green", color_data2 = "red")
@@ -48,7 +48,7 @@ chosen time window.
 # Code
 In the following paragraphs the code of the shiny app is defined.
 
-## `explore_basins_with_of`
+## `explore_runoff`
 This function represents the main part of the shiny app. 
 
 ```{r}
@@ -60,21 +60,30 @@ This function represents the main part of the shiny app.
   #' @param d_xts runoff_data formatted as time series
   #' 
   #' @import shiny 
+  #' @import miniUI
   #' @importFrom xts xts
   #' @import dplyr
   #' @import magrittr
   #' @import dygraphs 
   #' @import hydroGOF
+  #' @importFrom purrr map_df
   #' 
   #' @export
   #' 
   #' @examples
   #' # get example data,
-  #' # clean it and
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
   #' explore_runoff_with_of(d_runoff)
-explore_runoff_with_of <- function(runoff_data) {
+explore_runoff_with_of <- function(runoff_data,
+                                   of_list = list(
+                                     nse = of_nse, 
+                                     kge = of_kge, 
+                                     pBIAS = of_pbias,
+                                     r = of_cor
+                                   ),
+                                   start_date = NULL,
+                                   end_date = NULL) {
   
 ```
 
@@ -163,12 +172,19 @@ representations and objects of `POSIXlt` and `POSIXct`.
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
-      if (!is.null(input$hydrographs_date_window))
+      if (!is.null(start_date)) {
+        start_date
+      } else if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[1]]
+      }
     })
     selcted_to <- reactive({
-      if (!is.null(input$hydrographs_date_window))
+      if (!is.null(end_date)) {
+        end_date
+      } else if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[2]]
+      }
+
     })
     # (V) extract time_window for the stats header:
     output$selected_timewindow <- renderText({
@@ -185,35 +201,54 @@ representations and objects of `POSIXlt` and `POSIXct`.
                                strftime(selcted_to(), format = "%Y-%m-%d-%H-%M"),
                                sep = "/")]
     })
-    output$slctd_OF <- renderTable({
-      if (!is.null(input$hydrographs_date_window))
-        out <- serve_of( sub_slctd()$x,sub_slctd()$y )
+    out_of <- reactive({
+      if (!is.null(input$hydrographs_date_window)) {
+          map_df(of_list, function(of_,x,y) of_(x,y), 
+                 x = sub_slctd()$x, 
+                 y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
+      }
+    })
+    
+    output$slctd_OF <- renderTable(out_of(), align = "c")
+    # (VII) exit when user clicks on done 
+     # When the Done button is clicked, return a value
+    observeEvent(input$done, {
+      returnValue <- list(
+        selected_time = c(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),strftime(selcted_to(), format = "%Y-%m-%d-%H-%M")),
+        selected_data = sub_slctd(),
+        selected_of = out_of()
+      )
+      stopApp(returnValue)
     })
   }
 ```
 
-The `ui` is quite spartan. It consists a input selection (`selectInput`),
+The `miniUI` is quite spartan. It consists a input selection (`selectInput`),
 which allows user to select different basins, the `dygraph` output `hydrographs`
 for the interactive exploration of the $x$ and $y$ data and a formatted table
 output (`slctd_OF`), which displays the different objective functions (defined
 in `explore_of`). The `hr` command block separates this table from the
 `dygraph` output via a small-grey line.
 ```{r}
-  ui <- fluidPage(
-      selectInput("basin_num",
-                  "# basins:",
-                  choices = d_nums,
-                  selected = 1,
-                  width = "100px"),
-      dygraphOutput("hydrographs", width = "100%", height = "400px"),
-      hr(),
-      fluidRow(
-        column(12, align = "center",
+  ui <- miniPage(
+    miniButtonBlock(selectInput("basin_num",
+                                "# basin:",
+                                choices = d_nums,
+                                selected = 1, 
+                                selectize = FALSE)),
+    miniContentPanel(
+      fillCol(
+        flex = c(4,1),
+        dygraphOutput("hydrographs", width = "100%", height = "100%"),
+        fillCol(
+          align = "center",
           textOutput("selected_timewindow"),
           tableOutput("slctd_OF")
         )
       )
-    )
+    ),
+    gadgetTitleBar("test")
+  )
 ```
 
 ```{r}
@@ -231,40 +266,7 @@ dyCrosshair <- function(dygraph,
 
 
 ```{r}
-  shinyApp(ui,server)
+  runGadget(ui,server)
 }
 ```
 
-
-
-### `explore_of`
-This function is a sub-function of `explore_basins_with_of` and basically simpler
-version of `extract_objective_functions`. `explore_of` is not exported and
-envisioned to be used within the shiny app.
-It takes the two variables $x$ and $y$ (as used within this section)
-and calculates the root mean squared error $RMSE = \sqrt{\sum(x(t)-y(t))^2}$
-and the objective functions used within **visCOS** (see: introduction).
-It also returns the $\alpha$ and $\beta$ of the $KGE$.
-The former is the relation of the standard deviations and therefore a measure
-of the of relative variability in the $y$ and $x$ values. The latter represents
-the bias as a ratio of the two mean values of $x$ and $y$.
-
-Including $\alpha$ and $\beta$ is supposed to enable users to get a bit more
-intuition about the how the $KGE$ works. Personal experience suggests however
-that the $KGE$ is difficult to grasp!
-```{r}
-serve_of <- function(x,y) {
-  # compute objective functions
-  out <- data.frame(
-    rmse = rmse(y,x) %>% as.numeric,
-    p_bias = pbias(y,x) %>% as.numeric,
-    nse = NSE(y,x) %>% as.numeric,
-    inv_nse = NSE(x,y) %>% as.numeric,
-    kge = KGE(y,x) %>% as.numeric,
-    corr = cor(x,y) %>% diag(),
-    beta =  mean(y)/mean(x),
-    alpha =  sd(y)/sd(x)
-  )
-  return(out)
-}
-```

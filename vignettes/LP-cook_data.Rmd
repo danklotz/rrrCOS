@@ -117,7 +117,7 @@ function | exported
 `remove_leading_zeros` | no
 `mark_periods` | yes
 `runoff_as_xts` | no
-`extract_objective_functions` | yes
+`get_main_of` | yes
 
 ## `get_runoff_example`
 visCOS porvides some exemplary data. All the available functions can be tested
