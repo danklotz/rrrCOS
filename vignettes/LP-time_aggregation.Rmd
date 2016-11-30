@@ -1,0 +1,160 @@
+---
+title: "Make Time Aggregates"
+author: 
+- "Daniel Klotz, Johannes Wesemann"
+date: "22 September 2016"
+output:
+  html_document:
+    number_sections: yes
+---
+
+
+
+```{r setup, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
+```
+
+# Introduction
+In hydrology it is often usefull to summarise the runoff with respect to a 
+given time dimension. In **visCOS** this can be done by using the 
+`aggregate_time` function. Thevfunction takes 
+[COSERO data.frame](cook_data.html) and aggregates them according to a chosen
+time dimension. Note, that the name of the dimension can be specified via the 
+[options](LP-viscos_options.html).
+
+
+```{r, eval = TRUE, purl=FALSE}
+  require(ggplot2, quietly = TRUE)
+  require(visCOS, quietly = TRUE)
+```
+
+```{r, eval = TRUE, purl=FALSE}
+  runoff_data <- visCOS::get_runoff_example()
+  runoff_aggregate_dd <- aggregate_time(runoff_data, "dd")
+  ggplot(runoff_aggregate_dd) + 
+      geom_line(aes(x = idx, y = value, col = obs_sim)) + 
+      scale_colour_manual(values = c(viscos_options("color_data1"),
+                                     viscos_options("color_data2"))) + 
+      facet_wrap( ~ basin,ncol = 1) +
+      theme_minimal()
+```
+
+```{r, eval = TRUE, purl=FALSE}
+  runoff_aggregate_mm <- aggregate_time(runoff_data, "mm")
+  ggplot(runoff_aggregate_mm) + 
+      geom_line(aes(x = idx, y = value, col = obs_sim)) + 
+      scale_colour_manual(values = c(viscos_options("color_data1"),
+                                     viscos_options("color_data2"))) + 
+      scale_x_discrete(limits = runoff_aggregate_mm$time_aggregate) +
+      facet_wrap( ~ basin, scales= "free") + 
+      theme_minimal()
+```
+
+```{r, eval = TRUE, purl=FALSE}
+  runoff_aggregate_yyyy <- aggregate_time(runoff_data, "yyyy")
+  ggplot(runoff_aggregate_yyyy) + 
+    geom_point(aes(x = idx, y = value, col = obs_sim)) + 
+    scale_colour_manual(values = c(viscos_options("color_data1"),
+                                   viscos_options("color_data2"))) + 
+    facet_wrap( ~ basin) +
+    scale_x_discrete(limits = runoff_aggregate_yyyy$time_aggregate,  
+                    labels = abbreviate) + 
+    theme_minimal()
+```
+
+```{r, eval = TRUE, purl=FALSE}
+  runoff_aggregate_yyyymm <- aggregate_time(runoff_data, "yyyy-mm")
+  ggplot(runoff_aggregate_yyyymm) + 
+    geom_line(aes(x = idx, y = value, col = obs_sim)) + 
+    scale_colour_manual(values = c(viscos_options("color_data1"),
+                                   viscos_options("color_data2"))) + 
+    scale_x_discrete(limits = runoff_aggregate_yyyymm$time_aggregate,  
+                     labels = abbreviate) +
+    facet_wrap( ~ basin,ncol = 1) +
+    theme_minimal() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+# Code
+
+```{r}
+  #' Aggreage and plot
+  #' 
+  #' Hopefully a good description will follow 
+  #'
+  #' @import magrittr
+  #' @import ggplot2
+  #' @import pasta
+  
+  #' @export
+  aggregate_time <- function( runoff_data, aggregation = "mm") {
+```
+The time aggregation is done by cutting the needed information out of the 
+date-string. This is a bit ruff, but works nicely and seems to be more 
+commonly used than you would expect. 
+```{r}
+    #
+    cutting_bounds <- c(Inf,-Inf)
+    if (grepl("dd",aggregation)) {
+      cutting_bounds[1] <- min(9,cutting_bounds[1])
+      cutting_bounds[2] <- max(11,cutting_bounds[2])
+    }
+    if (grepl("mm",aggregation)) {
+      cutting_bounds[1] <- min(6,cutting_bounds[1])
+      cutting_bounds[2] <- max(7,cutting_bounds[2])
+    }
+    if (grepl("yyyy",aggregation)) {
+      cutting_bounds[1] <- min(1,cutting_bounds[1])
+      cutting_bounds[2] <- max(4,cutting_bounds[2])
+    }
+```
+
+```{r}
+    ######  define helpers
+    regex_for_runoff_selection <- viscos_options("name_data1") %|%  viscos_options("name_data2")
+    # aggregation function:
+    aggregator_fun <- function(k,data_frame){
+      the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean)
+      return(the_aggregation[ ,2])
+    }
+    ##### 
+    runoff_data %>% 
+      visCOS::prepare_complete_date() %>% 
+      visCOS::remove_chunk() -> full_runoff_data 
+    runoff_with_aggreggation <- cbind.data.frame(
+      full_runoff_data,
+      date_selection = substr(full_runoff_data$posixdate,
+                              cutting_bounds[1],
+                              cutting_bounds[2]) %>% as.factor()
+      )
+    names_runoff_selection <- grep(
+      regex_for_runoff_selection,
+      names(runoff_with_aggreggation) %>% tolower, 
+      value = TRUE
+      )
+    selected_runoff_rows <- grep(regex_for_runoff_selection,
+                             names(runoff_with_aggreggation), 
+                             ignore.case = TRUE)
+    selected_runoff_rows %>% 
+      sapply(.,function(x) aggregator_fun(x,runoff_with_aggreggation)) %>% 
+      data.frame(idx = 1:nrow(.), 
+                 time_aggregate = unique(runoff_with_aggreggation$date_selection),
+                 .) %>% 
+      set_names(., c("idx","time_aggregate",names_runoff_selection)) -> time_aggregate
+    # 
+    melted_time_aggregate <- time_aggregate %>% 
+      reshape2::melt(., id.vars = c("idx","time_aggregate")) %>% 
+      cbind.data.frame(., 
+                       basin =  .$variable %>%
+                         gsub(regex_for_runoff_selection,"",.) %>% 
+                         gsub("\\D","",.) %>%
+                         as.integer, 
+                       obs_sim = .$variable %>% 
+                         gsub(viscos_options("name_data1") %&% ".*",viscos_options("name_data1"),.) %>% 
+                         gsub(viscos_options("name_data2") %&% ".*",viscos_options("name_data2"),.))
+    return(melted_time_aggregate)
+  }
+```
+
+
+
