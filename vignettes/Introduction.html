@@ -94,6 +94,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -122,19 +123,32 @@ $(document).ready(function () {
 </div>
 
 
-<p>This is an overview of the visCOS package. It is kind of a read.me file or an hub to the documentation and the examples.</p>
+<p>visCOS is still under (heavy) development, so it is not recommended to use the package, yet. If you want to do it nevertheless…</p>
+<p>visCOS is an R-package that provides summaries and visualisation to support parameter estimation for conceptual rainfall-runoff models in general and COSERO in special. COSERO is a hbv-like model that was developed at the institue for water management, hydrology and hydraulic engineering (IWHW) at BOKU, Vienna. The name is an abreviation for “<strong>Co</strong>nceptual <strong>Se</strong>mi-Distributed <strong>R</strong>ainfall Run<strong>o</strong>ff Model”. This page provides a hub to access the differnet examples and the entire program code.</p>
 <div id="table-of-content" class="section level1">
 <h1>Table of Content</h1>
-<ol style="list-style-type: decimal">
-<li>cook_data</li>
-<li>viscos_opitons</li>
-<li></li>
-<li></li>
-</ol>
-</div>
-<div id="test-this-is" class="section level1">
-<h1>Test this is</h1>
-<p>This is a test to show how the introduction section can be build up. This is a <a href="LP-cook_data.html">link</a> to the cooking data code, where data is cooked. I hope you are hungry.</p>
+<p><strong>1. Basics</strong></p>
+<ul>
+<li><a href="LP-cookd_data.html">The basic data structure</a></li>
+<li><a href="LP-viscos_options.html">Set Options</a></li>
+</ul>
+<p><strong>2. Data Cooking</strong></p>
+<ul>
+<li><a href="LP-aggregationsplots.html">Time aggregation</a></li>
+<li><a href="ex-OF_explanation.html">Objective Functions</a></li>
+<li><a href="LP-get_main_of.html">Calculating Objective Functions</a></li>
+<li><a href="LP-explore_runoff.html">Explore Runoff and Objective Functions</a></li>
+</ul>
+<p><strong>3. Plotlists</strong></p>
+<ul>
+<li><a href="LP-plotlist_of.html">Objective Function Plots</a></li>
+<li><a href="LP-serve.html">Saving Plots</a></li>
+</ul>
+<p><strong>Other</strong></p>
+<ul>
+<li><a href="LP-defensive_code.html">Defensive Code</a></li>
+<li><a href="LP-helpers.html">Helper Funcitons</a></li>
+</ul>
 </div>
 
 
@@ -148,6 +162,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

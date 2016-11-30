@@ -16,7 +16,7 @@ This section defines the code of a [shiny app](http://shiny.rstudio.com/)
 that lets users explore the (hydro-) graphs for the different basins in
 conjunction with objective functions for the user-selected time-window. The
 calculation of the objective functions are independent of the code defined in
-the section about `calculating_of`, since simpler constructions are preferable
+the section about `get_main_of`, since simpler constructions are preferable
 in the case at hand and more information is given to the user.
 
 The computations of the app are defined in the `server` part and the
@@ -33,7 +33,7 @@ Running the `explore_runoff` with your data as input, a shiny app is
 started in a new window (in this case an example .jpg with explanations):
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_data1 = "green", color_data2 = "red")
-explore_runoff_with_of(runoff_example)
+explore_runoff(runoff_example)
 ```
 
 ![](figures/eg_explore_basin.JPG)
@@ -74,8 +74,8 @@ This function represents the main part of the shiny app.
   #' # get example data,
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
-  #' explore_runoff_with_of(d_runoff)
-explore_runoff_with_of <- function(runoff_data,
+  #' explore_runoff(d_runoff)
+explore_runoff <- function(runoff_data,
                                    of_list = list(
                                      nse = of_nse, 
                                      kge = of_kge, 

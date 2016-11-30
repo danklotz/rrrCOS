@@ -27,8 +27,8 @@ code.
 
 - [Time aggregation](LP-aggregationsplots.html)
 - [Objective Functions](ex-OF_explanation.html)
-- [Calculating Objective Functions](LP-calculating_of.html)
-- [Explore Runoff and Objective Functions](LP-explore_bains_with_of.html)
+- [Calculating Objective Functions](LP-get_main_of.html)
+- [Explore Runoff and Objective Functions](LP-explore_runoff.html)
 
 **3. Plotlists**
 

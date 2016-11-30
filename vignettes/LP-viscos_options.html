@@ -94,6 +94,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -124,12 +125,44 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This section defines code of the visCOS functions used to set and adapt the visCOS options. There are options for the (raw) data and for the settings for plots.</p>
-</div>
-<div id="code" class="section level1">
-<h1><span class="header-section-number">2</span> Code</h1>
-<p>The <code>viscos_options</code> function is build using the GlobalOptions package.</p>
-<pre class="r"><code>viscos_options &lt;- GlobalOptions::setGlobalOptions( 
+<p>This section defines code of the visCOS functions used to set and adapt the visCOS options. With the added comments code is pretty much self-explanatory.</p>
+<pre class="r"><code>#' visCOS global options
+#' 
+#' Get and set the global options of visCOS
+#' 
+#' These are the options you can adapt by executing the function 
+#' (default values)
+#' \preformatted{
+#'   viscos_options(
+#'    # data.frame column names
+#'       name_data1 = &quot;qobs&quot;, # name of the first time-series data (observations)  
+#'       name_data2 = &quot;qsim&quot;, # name of the second time-series data (simulations)  
+#'       name_COSyear = &quot;yyyy&quot;, # name of year-column
+#'       name_COSmonth = &quot;mm&quot;,  # name of month-column
+#'       name_COSday = &quot;dd&quot;,  # name of day-column
+#'       name_COShour = &quot;hh&quot;, # name of hour-column
+#'       name_COSmin = &quot;min&quot;, # name of minute-column
+#'       name_COSposix = &quot;posixdate&quot;, # name of the complete-date-column
+#'       name_COSperiod = &quot;period&quot;, # name of the marked-period column
+#'    # plot options
+#'       color_data1 = &quot;steelblue&quot;, # color associated with the first time-series data
+#'       color_data2 = &quot;orange&quot;,  # color associated with the second time-series data
+#'       legend_title = &quot;legend&quot;, 
+#'       xlab = &quot;year&quot;,
+#'       color_of_low = 'darkred', # color associated with a bad objective function 
+#'       olor_of_mid = 'grey', # color associated with an average objective function 
+#'       color_of_high = 'magenta', # color associated with a high objective function 
+#'       midpoint = 0.5,
+#'       limits = c(0,1)
+#'   )
+#' }
+#'
+#' @examples
+#' viscos_options(&quot;name_data1&quot;)
+#' viscos_options(name_data1 = &quot;OtherData&quot;)
+#' viscos_options(&quot;name_data1&quot;)
+#' @export
+viscos_options &lt;- GlobalOptions::setGlobalOptions( 
   # data.frame column names
   name_data1 = &quot;qobs&quot;, 
   name_data2 = &quot;qsim&quot;, 
@@ -143,17 +176,11 @@ $(document).ready(function () {
  # plot options
   color_data1 = &quot;steelblue&quot;, 
   color_data2 = &quot;orange&quot;,
-  plot_title = &quot;title&quot;,
-  legend_title = &quot;legend&quot;,
-  xlab = &quot;year&quot;,
-  color_of_low = 'red',
-  color_of_mid = 'orange',
+  color_of_low = 'darkred',
+  color_of_mid = 'magenta',
   color_of_high = 'green',
-  color_of_out = &quot;purple4&quot;,
   midpoint = 0.5,
-  limits = c(0,1),
-  lb_cut = 0,
-  text_size = 0.5
+  limits = c(0,1)
 )</code></pre>
 </div>
 
@@ -168,6 +195,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 
