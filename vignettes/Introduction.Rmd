@@ -18,20 +18,25 @@ This page provides a hub to access the differnet examples and the entire program
 code.
 
 # Table of Content
-1. [The basic data structure](LP-cookd_data.html)
-2. [Set Options](LP-viscos_options.html)
-3. [Objective Functions](ex-OF_explanation.html)
-  - [Calculating Objective Functions](LP-calculating_of.html)
-  - [Explore Runoff and Objective Functions](LP-explore_bains_with_of.html)
-4. Plotlists
-  - [Aggregation Plots](LP-aggregationsplots.html)
-  - [Objective Function Plots](LP-plotlist_of.html)
-  - [Saving Plots](LP-serve.html)
-+ [Defensive Code](LP-defensive_code.html)
-+ [Helper Funcitons](LP-helpers.html)
+**1. Basics** 
 
+- [The basic data structure](LP-cookd_data.html)
+- [Set Options](LP-viscos_options.html)
 
-# Test this is
-This is a test to show how the introduction section can be build up.
-This is a [link](LP-cook_data.html) to the cooking data code, where data is
-cooked. I hope you are hungry.
+**2. Data Cooking**
+
+- [Time aggregation](LP-aggregationsplots.html)
+- [Objective Functions](ex-OF_explanation.html)
+- [Calculating Objective Functions](LP-calculating_of.html)
+- [Explore Runoff and Objective Functions](LP-explore_bains_with_of.html)
+
+**3. Plotlists**
+
+- [Objective Function Plots](LP-plotlist_of.html)
+- [Saving Plots](LP-serve.html)
+
+**Other**
+
+- [Defensive Code](LP-defensive_code.html)
+- [Helper Funcitons](LP-helpers.html)
+
