@@ -75,7 +75,8 @@ Tests if `data` is a data.frame and returns an error if not.
 ```{r}
 # uses stop if the input: "data" is not of class "data.frame"
 assert_dataframe <- function(data) {
-  if ( !is.data.frame(data) ) stop("data needs to be a data_frame!")
+  require("tibble", quietly = TRUE)
+  if ( !is.data.frame(data)&!is.tibble(data) ) stop("data needs to be a data_frame!")
 }
 ```
 

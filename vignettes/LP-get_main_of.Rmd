@@ -14,27 +14,26 @@ output:
 ```
 
 # Introduction
-This chapter explains the code to calculate the objective functions $of$ for 
-the data and for selected periods. It can be done with the function 
-'get_main_of'. **Note** that periods must be marked first to run
-the function. This is checked, too.
+This chapter explains the code to calculate the main objective functions $of$ 
+used in visCOS. As explained in [respective section](LP-of.html) objective 
+functions are a pivotal part of model calibration. As of now, **visCOS** focuses
+on 4 main objective function: NSE, KGE, Pearsons Correlation and the Percentage 
+bias (the respective definitions are given [here](LP-of.html)).
 
-# Calculate Objective Functions for Subbasins and Periods
-In Chapter 3, the objective functions $of$ have been introduced already for the 
-interactive analysis of the time series. To get the $of$ values for the periods 
-defined with `mark_periods()` and as a summary over the whole timespan, the 
-function `get_main_of` can be applied to the prepared data 
-series and the results are displayed in the console or can be assigned to a 
-variable
+The main objective functions for the overall data and the marked periods 
+can be computed through the function `get_main_of`. In order to run the 
+function the period have to be marked first, e.g. through the `mark_periods`
+function. For example: 
+
 ```{r, message=3, purl=FALSE, eval=TRUE}
 require(visCOS)
 require(magrittr)
-of_values <- get_main_of(get_runoff_example() %>% mark_periods())
+of_values <- get_runoff_example() %>% mark_periods() %>% get_main_of()
 of_values
 ```
 
 # Code
-## `get_main_of`
+## Compute the Main Objective Functions
 The purpose of this function is to extract a set of objective functions from
 the `runoff_data` data.frame. The objective functions are extracted for each
 basin, for the all the periods as a summary and for each period separately.
@@ -69,45 +68,27 @@ non-marked periods of `runoff_data` (columns of
 from further calculations. The thereby obtained data.frame is named
 `evaluation_data`. 
 ```{r}
-  # (I) reduce necessary computation
   evaluation_data <- 
     runoff_data[ runoff_data[[viscos_options("name_COSperiod")]] > 0, ]
 ```
 
-
-Step (II) extracts important information for the
-calculations:
-
-- The number of basins (`number_of_basins`) is obtained by getting the names
-of the data.frame, applying `tolower` to make them independent of upper and
-lower cases and summing up all the name_data1 column,  
-- the indices of the marked periods (`periods_in_data`) are obtained by getting
-the unique values of the `viscos_options("name_COSperiod")` column, and
-- number of periods (`number_of_periods`) are obtained by measuring the length
-of `periods_in_data`
+Extract the important information for the calculations:
 ```{r}
-  # (II) get information
   number_of_basins <- evaluation_data %>%
     names %>%
     unique %>%
-    tolower %>%
-    grepl(viscos_options("name_data1") , .) %>%
-    sum
-  periods_in_data <- evaluation_data[[viscos_options("name_COSperiod")]] %>%
+    grepl(viscos_options("name_data1"), ., ignore.case = TRUE) %>%
+    sum 
+  periods_in_data <- evaluation_data %>%
+    magrittr::extract2(viscos_options("name_COSperiod")) %>% 
     unique
   number_of_periods <- periods_in_data %>% length
 ```
 
-Step (III) computes the overall objective functions. This is done by copying all
+Next, compute the overall objective functions. This is done by copying all
 `viscos_options("name_data1")` columns into the `temp_x` variable and all
-`viscos_options("name_data2")` into the `temp_y` variable. The former is then
-handed as observation and the latter as simulation to the `hydroGOF` functions.
-The correlation `obj_fun$CORR` is calculated with 'cor' from base `R`. As `cor` 
-returns a whole cross-correlation matrix only the diagonal is extracted with 
-`diag`. 
+`viscos_options("name_data2")` into the `temp_y` variable. 
 ```{r}
-
-  # (III) calculate overall objective functions
   temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
     unname
   temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data2"))) %>%
@@ -119,10 +100,8 @@ returns a whole cross-correlation matrix only the diagonal is extracted with
 
 ```
 
-Step (IV) is a period-wise a repetition of step (III). Thus, at each 
-iteration `k` the given period is filtered from `evaluation_data`
-with `dplyr::filtr` before `temp_x` and `temp_y` is calculated.
-The so obtained period-wise objective function values are marked by `_period`
+Lasty, a period-wise a repetition of the previous step is done to get the
+`main_of` for each marked period (see: `mark_periods`):
 ```{r}
   # (IV) calulcated period-vise objective functions
     # pre allocation of periodic variables:
@@ -166,9 +145,158 @@ The so obtained period-wise objective function values are marked by `_period`
 
 ```
 
+## Plotting
+In this section the code for plotting the main_of is defined. There is no 
+wrapper function, but a central explenation for the plotting of the main 
+valuse is prodied:
+```{r}
+#' Plot main objective fucnction values
+#'
+#' Currently two options for plotting the main objectives are provided by 
+#' visCOS: Plotting the differnet objective functions values as a set of 
+#' barplots \code{barplot_of} and plotting a summary table in form of 
+#' a large raster of all the objective fucntion values \code{rasterplot_of}.
+#' 
+#' @name plot_main_of 
+NULL 
+```
+
+One can define the to-be plotted objective function with the character 
+`of_name`. 
 
 
-# References
-- Gupta, Hoshin V.; Kling, Harald; Yilmaz, Koray K. & Martinez, Guillermo F.
-(2009): *Decomposition of the mean squared error and NSE performance criteria:*
-*Implications for improving hydrological modelling* (Journal of Hydrology)
+Then some housekeeping needs to be undertaken. For the computations and 
+selections all names are set to lower case (`tolower`), because **visCOS** works
+case-insensitive. The basin enumeration `num_basins` is obtained with
+the function [`get_basin_numbers`](LP-helpers.html).  
+
+### Bar Plot 
+```{r}
+#' Barplot for the Main Objective Function Values 
+#' 
+#' @rdname of_overview
+#' @export
+barplot_main_of <- function(runoff_data) {
+  assert_dataframe(runoff_data)
+  of <- get_main_of(runoff_data)
+  # calculate objective functions
+  num_basins <- ncol(of) %>% subtract(1)
+  # melt the of:
+  # a bit of a mess, and there is probaly a better solution...
+  melted_user_of <- suppressMessages( reshape2::melt(of) )%>% 
+    mutate(of_group = ifelse(of %>% as.character %>% startsWith(.,"NSE"),"NSE",
+                             ifelse(of %>% as.character %>% startsWith(.,"KGE"),"KGE",
+                                    ifelse(of %>% as.character %>% startsWith(.,"CORR"),"CORR",
+                                           ifelse(of %>% as.character %>% startsWith(.,"pBIAS"),"pBIAS",NA))))) 
+  groupings_of <- melted_user_of$of_group %>% unique
+  # define plot list function
+  plotlist_fun_barplot <- function(grouping) {
+    of_to_plot <- melted_user_of %>% filter( of_group == grouping)
+    if (grouping == "pBIAS") {
+    plt_out <- ggplot(data = of_to_plot) +
+      geom_bar(stat = "identity",
+               position = "identity",
+               aes(x = of,
+                   y = value)) +
+      ggtitle(grouping) +
+      facet_wrap(~ variable, ncol = 1) + 
+      ylim(c(-100,100))
+    return(plt_out)
+    } else {
+    plt_out <- ggplot(data = of_to_plot) +
+      geom_bar(stat = "identity",
+               position = "identity",
+               aes(x = of,
+                   y = value)) +
+      facet_wrap(~ variable, ncol = 1) + 
+      ggtitle(grouping) +
+      ylim(viscos_options("of_limits"))
+    return(plt_out)
+    }
+  }
+```
+
+```{r}
+  # map plotlist_fun
+  plot_list <- lapply(groupings_of,plotlist_fun_barplot)
+  names(plot_list) <- c("NSE","KGE","pBIAS","CORR")
+  return(plot_list)
+}
+```
+
+### Raster-Plot
+```{r}
+#' Barplot for the Main Objective Function Values 
+#' 
+#' @rdname of_overview
+#' @export
+rasterplot_main_of <- function(runoff_data) {
+  assert_dataframe(runoff_data)
+  of <- get_main_of(runoff_data)
+  #
+  regex_of <- c("NSE.*","KGE.*","pBIAS.*","CORR.*")
+  plot_list <- lapply(regex_of,function(x) plot_fun_raster(x,of)) %>% 
+    set_names(c("NSE","KGE","pBIAS","CORR"))
+  return(plot_list)
+}
+```
+
+**Raster-Plot for one Basin**
+
+```{r}
+  plot_fun_raster <- function(regex_single_of,of) {
+    if (regex_single_of == "pBIAS.*") {
+      gglimits <- c(-viscos_options("of_limits")[2]*100,
+                    viscos_options("of_limits")[2]*100)
+      ggcolors <- c(viscos_options("color_of_mid"),
+                    viscos_options("color_of_high"),
+                    viscos_options("color_of_low"))
+    } else {
+      gglimits <- viscos_options("of_limits")
+      ggcolors <- c(viscos_options("color_of_low"),
+                    viscos_options("color_of_mid"),
+                    viscos_options("color_of_high"))
+    }
+    # 
+    plot_data <- of %>% 
+      extract(grep(regex_single_of,.$of), ) %>% 
+      cbind(.,facets = c("overall", rep("period",(nrow(.) - 1)))) %>% 
+      reshape2::melt(., id.vars = c("of","facets")) %>% 
+      reverse_basin_levels %>% 
+      reverse_facetting_levels %>%
+      dplyr::mutate(value = pmax(value,gglimits[1])) %>% 
+      dplyr::mutate(value = pmin(value,gglimits[2])) %>% 
+      dplyr::mutate(value = round(value,2))
+    #
+    plt_out <- ggplot(plot_data, aes(of,variable, fill = value),environmnet = environment()) +
+      geom_raster(position = "identity") +
+      coord_fixed(ratio = 5)  + 
+      facet_grid(~ facets,  scales = "free_x", space = "free") +
+      scale_fill_gradient2(space = "Lab",
+                           low = ggcolors[1],
+                           mid= ggcolors[2], 
+                           high = ggcolors[3],
+                           na.value = viscos_options("color_of_out")) +
+      theme( legend.position="none" )  +
+      geom_tile(color = "white", size = 0.25 ) +
+      geom_text(aes(of,variable, label = as.character(value,2)), color= "black") 
+    return(plt_out)
+  }
+
+  reverse_basin_levels <- function(plot_data) {
+    plot_data$variable <- factor(plot_data$variable,
+                                 levels = plot_data$variable %>%
+                                   levels() %>% 
+                                   rev() )
+    return(plot_data)
+  }
+  reverse_facetting_levels <- function(plot_data) {
+    plot_data$facets <- factor(plot_data$facets,
+                                 levels = plot_data$facets %>%
+                                   levels() %>% 
+                                   rev() )
+    return(plot_data)
+  }
+```
+
+

@@ -1,5 +1,6 @@
-% Please edit documentation in R/of-GEN.R
-\name{of_overview}
+% Please edit documentation in R/get_main_of-GEN.R, R/of-GEN.R
+\name{barplot_main_of}
+\alias{barplot_main_of}
 \alias{of_cor}
 \alias{of_invert_nse}
 \alias{of_kge}
@@ -10,8 +11,13 @@
 \alias{of_rmse}
 \alias{of_rsd}
 \alias{of_ve}
-\title{Objective Functions}
+\alias{rasterplot_main_of}
+\title{Barplot for the Main Objective Function Values}
 \usage{
+barplot_main_of(runoff_data)
+
+rasterplot_main_of(runoff_data)
+
 of_rmse(x, y)
 
 of_pbias(x, y)
@@ -36,6 +42,10 @@ of_ve(x, y)
 \item{y}{simulations}
 }
 \description{
+Barplot for the Main Objective Function Values
+
+Barplot for the Main Objective Function Values
+
 Different objective Functions, provided by visCOS.
 
 Root Mean Sqaured Error

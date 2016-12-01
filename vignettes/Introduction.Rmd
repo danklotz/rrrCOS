@@ -32,7 +32,7 @@ code.
 
 **3. Plotlists**
 
-- [Objective Function Plots](LP-plotlist_of.html)
+- [Objective Function Plots](LP-plot_main_of.html)
 - [Saving Plots](LP-serve.html)
 
 **Other**

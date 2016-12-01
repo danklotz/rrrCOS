@@ -20,5 +20,6 @@ assert_complete_date <- function(runoff_data) {
 }
 # uses stop if the input: "data" is not of class "data.frame"
 assert_dataframe <- function(data) {
-  if ( !is.data.frame(data) ) stop("data needs to be a data_frame!")
+  require("tibble", quietly = TRUE)
+  if ( !is.data.frame(data)&!is.tibble(data) ) stop("data needs to be a data_frame!")
 }

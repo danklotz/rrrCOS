@@ -1,0 +1,13 @@
+---
+title: "Code for plotting the main_of"
+author: 
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
+date: "14 Juli 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+# Code 

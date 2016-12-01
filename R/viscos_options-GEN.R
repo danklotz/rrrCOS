@@ -24,8 +24,9 @@
 #'       color_of_low = 'darkred', # color associated with a bad objective function 
 #'       olor_of_mid = 'grey', # color associated with an average objective function 
 #'       color_of_high = 'magenta', # color associated with a high objective function 
+#'       color_of_out = "grey". # color given to values outside the of range (as defined by of_limits)
 #'       midpoint = 0.5,
-#'       limits = c(0,1)
+#'       of_limits = c(0,1)
 #'   )
 #' }
 #'
@@ -51,7 +52,8 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   color_of_low = 'darkred',
   color_of_mid = 'magenta',
   color_of_high = 'green',
+  color_of_out = "grey",
   midpoint = 0.5,
-  limits = c(0,1)
+  of_limits = c(0,1)
 )
 
