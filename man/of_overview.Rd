@@ -1,6 +1,8 @@
-% Please edit documentation in R/get_main_of-GEN.R, R/of-GEN.R
+% Please edit documentation in R/get_main_of-GEN.R, R/main_of-GEN.R, R/of-GEN.R
 \name{barplot_main_of}
 \alias{barplot_main_of}
+\alias{main_of_barplot}
+\alias{main_of_rasterplot}
 \alias{of_cor}
 \alias{of_invert_nse}
 \alias{of_kge}
@@ -17,6 +19,10 @@
 barplot_main_of(runoff_data)
 
 rasterplot_main_of(runoff_data)
+
+main_of_barplot(runoff_data)
+
+main_of_rasterplot(runoff_data)
 
 of_rmse(x, y)
 
@@ -42,6 +48,10 @@ of_ve(x, y)
 \item{y}{simulations}
 }
 \description{
+Barplot for the Main Objective Function Values
+
+Barplot for the Main Objective Function Values
+
 Barplot for the Main Objective Function Values
 
 Barplot for the Main Objective Function Values

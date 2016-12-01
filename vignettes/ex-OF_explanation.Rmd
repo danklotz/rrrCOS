@@ -24,7 +24,7 @@ code for exploring and visualising objective function is defined in
 separate sections:
 
 - [Explore Basin-Graphs with objective functions](LP-explore_runoff.html)
-- [Explore periodical objective functions](LP-get_main_of.html)
+- [Explore periodical objective functions](LP-main_of.html)
 
 Currently 4 objective functions are used in **visCOS**. They are calculated from
 the data columns of a data.frame defined by `viscos_options("name_data1")` and

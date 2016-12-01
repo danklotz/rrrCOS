@@ -107,18 +107,6 @@ a hydrological year, so the period counter jumps to one.
 The following functions are defined below. Exported functions can be seen by the
 user.
 
-function | exported
-------------- | -------------
-`get_runoff_example` | yes
-`remove_chunk` | yes
-`only_observed_basins` | no
-`prepare_complete_date` | yes
-`implode_cosdate` | no
-`remove_leading_zeros` | no
-`mark_periods` | yes
-`runoff_as_xts` | no
-`get_main_of` | yes
-
 ## `get_runoff_example`
 visCOS porvides some exemplary data. All the available functions can be tested
 with it. `get_runoff_example` is a small wrapper function to get the data from

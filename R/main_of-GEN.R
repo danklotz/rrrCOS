@@ -1,47 +1,3 @@
----
-title: "Calculation of Objective Functions"
-author: "Daniel Klotz"
-date: "12 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
-  pdf_document:
-    number_sections: yes
----
-
-```{r setup, include=FALSE, purl=FALSE}
-  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
-```
-
-# Introduction
-This chapter explains the code to calculate the main objective functions $of$ 
-used in visCOS. As explained in [respective section](LP-of.html) objective 
-functions are a pivotal part of model calibration. As of now, **visCOS** focuses
-on 4 main objective function: NSE, KGE, Pearsons Correlation and the Percentage 
-bias (the respective definitions are given [here](LP-of.html)).
-
-The main objective functions for the overall data and the marked periods 
-can be computed through the function `get_main_of`. In order to run the 
-function the period have to be marked first, e.g. through the `mark_periods`
-function. For example: 
-
-```{r, message=3, purl=FALSE, eval=TRUE}
-require(visCOS)
-require(magrittr)
-of_values <- get_runoff_example() %>% mark_periods() %>% get_main_of()
-of_values
-```
-
-# Code
-## Compute the Main Objective Functions
-The purpose of this function is to extract a set of objective functions from
-the `runoff_data` data.frame. The objective functions are extracted for each
-basin, for the all the periods as a summary and for each period separately.
-
-The head of the functions checks for the required packages, if `runoff_data` is 
-a data.frame and if the `viscos_options("name_COSperiod")` exists within
-`runoff_data `:
-```{r}
 #' Get basic objective function for runoff_data
 #'
 #' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation) 
@@ -55,25 +11,13 @@ a data.frame and if the `viscos_options("name_COSperiod")` exists within
 #' @import dplyr
 #'
 #' @export
-get_main_of <- function(runoff_data) {
+main_of_compute <- function(runoff_data) {
   assert_dataframe(runoff_data)
   if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
     stop("Error! Period-Column missing in runoff_data; use `mark_periods`")
   }
-```
-
-The computational part of the function works as follows. In step (I) the
-non-marked periods of `runoff_data` (columns of
-`viscos_options("name_COSperiod")` which are smaller then 0) are excluded 
-from further calculations. The thereby obtained data.frame is named
-`evaluation_data`. 
-```{r}
   evaluation_data <- 
     runoff_data[ runoff_data[[viscos_options("name_COSperiod")]] > 0, ]
-```
-
-Extract the important information for the calculations:
-```{r}
   number_of_basins <- evaluation_data %>%
     names %>%
     unique %>%
@@ -83,12 +27,6 @@ Extract the important information for the calculations:
     magrittr::extract2(viscos_options("name_COSperiod")) %>% 
     unique
   number_of_periods <- periods_in_data %>% length
-```
-
-Next, compute the overall objective functions. This is done by copying all
-`viscos_options("name_data1")` columns into the `temp_x` variable and all
-`viscos_options("name_data2")` into the `temp_y` variable. 
-```{r}
   temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
     unname
   temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data2"))) %>%
@@ -98,18 +36,12 @@ Next, compute the overall objective functions. This is done by copying all
   pbias_ <- hydroGOF::pbias(temp_y,temp_x)
   corr_ <- cor(temp_y,temp_x) %>% diag(.)
 
-```
-
-Lasty, a period-wise a repetition of the previous step is done to get the
-`main_of` for each marked period (see: `mark_periods`):
-```{r}
-  # (IV) calulcated period-vise objective functions
+  # Calulcated period-vise objective functions
     # pre allocation of periodic variables:
     NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
     KGE_period <- NSE_period
     pBIAS_period <- NSE_period
     CORR_period <- NSE_period
-
     # calculation loop # proabbly slow
     for (k in 1:number_of_periods) {
       temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
@@ -143,13 +75,6 @@ Lasty, a period-wise a repetition of the previous step is done to get the
   return(obj_fun)
 }
 
-```
-
-## Plotting
-In this section the code for plotting the main_of is defined. There is no 
-wrapper function, but a central explenation for the plotting of the main 
-valuse is prodied:
-```{r}
 #' Plot main objective fucnction values
 #'
 #' Currently two options for plotting the main objectives are provided by 
@@ -159,103 +84,70 @@ valuse is prodied:
 #' 
 #' @name plot_main_of 
 NULL 
-```
-
-One can define the to-be plotted objective function with the character 
-`of_name`. 
-
-
-Then some housekeeping needs to be undertaken. For the computations and 
-selections all names are set to lower case (`tolower`), because **visCOS** works
-case-insensitive. The basin enumeration `num_basins` is obtained with
-the function [`get_basin_numbers`](LP-helpers.html).  
-
-### Bar Plot 
-```{r}
 #' Barplot for the Main Objective Function Values 
 #' 
 #' @rdname of_overview
 #' @export
-barplot_main_of <- function(runoff_data) {
+main_of_barplot <- function(runoff_data) {
+  main_of_names <- c("NSE","KGE","CORR","pBIAS")
   assert_dataframe(runoff_data)
-  of <- get_main_of(runoff_data)
+  of <- main_of_compute(runoff_data)
   # calculate objective functions
-  num_basins <- ncol(of) %>% subtract(1)
+  num_basins <- ncol(of) - 1
   # melt the of:
   # a bit of a mess, and there is probaly a better solution...
-  melted_user_of <- suppressMessages( reshape2::melt(of) )%>% 
-    mutate(of_group = ifelse(of %>% as.character %>% startsWith(.,"NSE"),"NSE",
-                             ifelse(of %>% as.character %>% startsWith(.,"KGE"),"KGE",
-                                    ifelse(of %>% as.character %>% startsWith(.,"CORR"),"CORR",
-                                           ifelse(of %>% as.character %>% startsWith(.,"pBIAS"),"pBIAS",NA))))) 
-  groupings_of <- melted_user_of$of_group %>% unique
-  # define plot list function
-  plotlist_fun_barplot <- function(grouping) {
-    of_to_plot <- melted_user_of %>% filter( of_group == grouping)
-    if (grouping == "pBIAS") {
-    plt_out <- ggplot(data = of_to_plot) +
-      geom_bar(stat = "identity",
-               position = "identity",
-               aes(x = of,
-                   y = value)) +
-      ggtitle(grouping) +
-      facet_wrap(~ variable, ncol = 1) + 
-      ylim(c(-100,100))
-    return(plt_out)
-    } else {
-    plt_out <- ggplot(data = of_to_plot) +
-      geom_bar(stat = "identity",
-               position = "identity",
-               aes(x = of,
-                   y = value)) +
-      facet_wrap(~ variable, ncol = 1) + 
-      ggtitle(grouping) +
-      ylim(viscos_options("of_limits"))
-    return(plt_out)
-    }
-  }
-```
+  melted_of <- suppressMessages( reshape2::melt(of) ) %>% 
+    mutate(of_group = ifelse(of %>% as.character %>% startsWith(.,main_of_names[1]),main_of_names[1],
+                             ifelse(of %>% as.character %>% startsWith(.,main_of_names[2]),main_of_names[2],
+                                    ifelse(of %>% as.character %>% startsWith(.,main_of_names[3]),main_of_names[3],
+                                           ifelse(of %>% as.character %>% startsWith(.,main_of_names[4]),main_of_names[4],NA))))) 
+  # define plot-list function
+  plotlist_fun_barplot <- function(of_name) {
+    of_to_plot <- melted_of %>% filter( of_group == of_name)
+    if (of_name == "pBIAS") {
+      gglimits <- c(-viscos_options("of_limits")[2]*100,
+                   viscos_options("of_limits")[2]*100)
 
-```{r}
-  # map plotlist_fun
-  plot_list <- lapply(groupings_of,plotlist_fun_barplot)
-  names(plot_list) <- c("NSE","KGE","pBIAS","CORR")
+    } else {
+      gglimits <- viscos_options("of_limits")
+    }
+    plt_out <- ggplot(data = of_to_plot) +
+      geom_bar(stat = "identity",
+               position = "identity",
+               aes(x = of,
+                   y = value, 
+                   fill = value)) +
+      facet_wrap(~ variable, ncol = 1) + 
+      ggtitle(of_name) +
+      ylim(gglimits)
+    return(plt_out)
+  }
+  # apply plot.list function to the different groupings
+  plot_list <- lapply(main_of_names,plotlist_fun_barplot)
+  names(plot_list) <- main_of_names
   return(plot_list)
 }
-```
-
-### Raster-Plot
-```{r}
 #' Barplot for the Main Objective Function Values 
 #' 
 #' @rdname of_overview
+#' @import pasta
 #' @export
-rasterplot_main_of <- function(runoff_data) {
+main_of_rasterplot <- function(runoff_data) {
+  main_of_names <- c("NSE","KGE","CORR","pBIAS")
+  regex_main_of <- main_of_names %&% ".*"
   assert_dataframe(runoff_data)
-  of <- get_main_of(runoff_data)
+  of <- main_of_compute(runoff_data)
   #
-  regex_of <- c("NSE.*","KGE.*","pBIAS.*","CORR.*")
-  plot_list <- lapply(regex_of,function(x) plot_fun_raster(x,of)) %>% 
+  plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of)) %>% 
     set_names(c("NSE","KGE","pBIAS","CORR"))
   return(plot_list)
 }
-```
-
-**Raster-Plot for one Basin**
-
-```{r}
   plot_fun_raster <- function(regex_single_of,of) {
     if (regex_single_of == "pBIAS.*") {
       gglimits <- c(-viscos_options("of_limits")[2]*100,
                     viscos_options("of_limits")[2]*100)
-      ggcolors <- c(viscos_options("color_of_mid"),
-                    viscos_options("color_of_high"),
-                    viscos_options("color_of_low"))
     } else {
       gglimits <- viscos_options("of_limits")
-      ggcolors <- c(viscos_options("color_of_low"),
-                    viscos_options("color_of_mid"),
-                    viscos_options("color_of_high"))
     }
     # 
     plot_data <- of %>% 
@@ -268,16 +160,11 @@ rasterplot_main_of <- function(runoff_data) {
       dplyr::mutate(value = pmin(value,gglimits[2])) %>% 
       dplyr::mutate(value = round(value,2))
     #
-    plt_out <- ggplot(plot_data, aes(of,variable, fill = value),environmnet = environment()) +
+    plt_out <- ggplot(plot_data, aes(of,variable, fill = value), environmnet = environment()) +
       geom_raster(position = "identity") +
       coord_fixed(ratio = 5)  + 
       facet_grid(~ facets,  scales = "free_x", space = "free") +
-      scale_fill_gradient2(space = "Lab",
-                           low = ggcolors[1],
-                           mid= ggcolors[2], 
-                           high = ggcolors[3],
-                           na.value = viscos_options("color_of_out")) +
-      theme( legend.position="none" )  +
+      theme( legend.position = "none")  +
       geom_tile(color = "white", size = 0.25 ) +
       geom_text(aes(of,variable, label = as.character(value,2)), color= "black") 
     return(plt_out)
@@ -297,6 +184,3 @@ rasterplot_main_of <- function(runoff_data) {
                                    rev() )
     return(plot_data)
   }
-```
-
-

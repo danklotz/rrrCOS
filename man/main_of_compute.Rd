@@ -1,0 +1,18 @@
+% Please edit documentation in R/main_of-GEN.R
+\name{main_of_compute}
+\alias{main_of_compute}
+\title{Get basic objective function for runoff_data}
+\usage{
+main_of_compute(runoff_data)
+}
+\arguments{
+\item{runoff_data}{runoff_data data.frame.}
+}
+\value{
+list of basic objective function evaluated for the different
+hydrological years and over the whole timespan.
+}
+\description{
+Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation) 
+for every basin and the chosen periods.
+}

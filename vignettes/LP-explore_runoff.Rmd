@@ -16,7 +16,7 @@ This section defines the code of a [shiny app](http://shiny.rstudio.com/)
 that lets users explore the (hydro-) graphs for the different basins in
 conjunction with objective functions for the user-selected time-window. The
 calculation of the objective functions are independent of the code defined in
-the section about `get_main_of`, since simpler constructions are preferable
+the section about `main_of_compute`, since simpler constructions are preferable
 in the case at hand and more information is given to the user.
 
 The computations of the app are defined in the `server` part and the

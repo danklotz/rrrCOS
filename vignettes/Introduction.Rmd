@@ -26,8 +26,7 @@ code.
 **2. Data Cooking**
 
 - [Time aggregation](LP-aggregationsplots.html)
-- [Objective Functions](ex-OF_explanation.html)
-- [Calculating Objective Functions](LP-get_main_of.html)
+- [Objective Functions](LP-main_of.html)
 - [Explore Runoff and Objective Functions](LP-explore_runoff.html)
 
 **3. Plotlists**
