@@ -31,8 +31,11 @@ explore_runoff <- function(runoff_data,
                                    start_date = NULL,
                                    end_date = NULL) {
   
-  # pre-calculations
-  # (I)
+  # pre-sets
+  # (I) Defense
+  if (is.null(names(of_list))){
+    names(of_list) <- paste("of", 1:length(of_list), sep = "_")
+  }
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
     clean_runoff_data %<>% prepare_complete_date
@@ -128,7 +131,7 @@ explore_runoff <- function(runoff_data,
       }
     })
     
-    output$slctd_OF <- renderTable(out_of(), align = "c")
+    output$slctd_OF <- renderTable(out_of())
     # (VII) exit when user clicks on done 
      # When the Done button is clicked, return a value
     observeEvent(input$done, {

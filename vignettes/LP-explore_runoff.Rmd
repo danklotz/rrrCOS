@@ -90,8 +90,7 @@ explore_runoff <- function(runoff_data,
 At its current state the shiny app needs some pre-calculation, which are defined 
 in this part of the code: 
 
-- (I) Defensive code (basically, the leadign zeros are removed from colum names
- and the date formated is completed and ).
+- (I) Defensive code 
 - (II) Transform data into `xts` (`d_xts`). 
 - (III) Save numeration of basins within the variable `d_nums`.
 
@@ -99,8 +98,11 @@ in this part of the code:
 integers. `Doubles` would be transformed into integers by the `as.integer`
 command!
 ```{r}
-  # pre-calculations
-  # (I)
+  # pre-sets
+  # (I) Defense
+  if (is.null(names(of_list))){
+    names(of_list) <- paste("of", 1:length(of_list), sep = "_")
+  }
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
     clean_runoff_data %<>% prepare_complete_date
@@ -209,7 +211,7 @@ representations and objects of `POSIXlt` and `POSIXct`.
       }
     })
     
-    output$slctd_OF <- renderTable(out_of(), align = "c")
+    output$slctd_OF <- renderTable(out_of())
     # (VII) exit when user clicks on done 
      # When the Done button is clicked, return a value
     observeEvent(input$done, {
