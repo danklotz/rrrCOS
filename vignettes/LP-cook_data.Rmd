@@ -61,8 +61,8 @@ this case they are already correct:
 ```{r, purl=FALSE, eval=TRUE}
    viscos_options(
    # data.frame column names
-      name_data1 = "qobs",
-      name_data2 = "qsim",
+      name_o = "qobs",
+      name_s = "qsim",
       name_COSyear = "yyyy",
       name_COSmonth = "mm",
       name_COSday = "dd",
@@ -247,7 +247,7 @@ data.frame is returned.
 ```{r}
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0)
-    obs_regex <- paste(viscos_options("name_data1"),".*", sep ="")
+    obs_regex <- paste(viscos_options("name_o"),".*", sep ="")
     OnlyQobsSelected <- idx_temp %>%
       names %>%
       tolower %>%
@@ -401,11 +401,11 @@ variable numeration.
   runoff_lowercase_names <- runoff_names %>% tolower 
   #
   separator <- runoff_lowercase_names %>% 
-    extract( grep(viscos_options()$name_data1,.) ) %>% 
+    extract( grep(viscos_options()$name_o,.) ) %>% 
     extract( 1 ) %>%
-    gsub(viscos_options()$name_data1,"",.) %>% 
+    gsub(viscos_options()$name_o,"",.) %>% 
     gsub("\\d","",.)
-  searchterm <- paste0(viscos_options()$name_data1,"|", viscos_options()$name_data2)
+  searchterm <- paste0(viscos_options()$name_o,"|", viscos_options()$name_s)
   runoff_nums <- runoff_lowercase_names %>% 
     gsub(searchterm,"",.) %>% 
     gsub(separator,"",.) %>% 

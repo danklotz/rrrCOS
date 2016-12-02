@@ -27,8 +27,8 @@ separate sections:
 - [Explore periodical objective functions](LP-main_of.html)
 
 Currently 4 objective functions are used in **visCOS**. They are calculated from
-the data columns of a data.frame defined by `viscos_options("name_data1")` and
-`viscos_options("name_data2")`. Assuming that `name_data1` is $x$ and `name_data1`
+the data columns of a data.frame defined by `viscos_options("name_o")` and
+`viscos_options("name_s")`. Assuming that `name_o` is $x$ and `name_o`
 is $y$ they are defined as shown in the following.
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}

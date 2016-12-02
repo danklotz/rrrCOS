@@ -121,7 +121,7 @@ commonly used than you would expect.
 
 ```{r}
     ###### function and string definitions
-    regex_for_cos_selection <- viscos_options("name_data1") %|%  viscos_options("name_data2")
+    regex_for_cos_selection <- viscos_options("name_o") %|%  viscos_options("name_s")
     # aggregation function:
     aggregator_fun <- function(k,data_frame){
       the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean)
@@ -163,8 +163,8 @@ commonly used than you would expect.
                          gsub("\\D","",.) %>%
                          as.integer, 
                        obs_sim = .$variable %>% 
-                         gsub(viscos_options("name_data1") %&% ".*",viscos_options("name_data1"),.) %>% 
-                         gsub(viscos_options("name_data2") %&% ".*",viscos_options("name_data2"),.))
+                         gsub(viscos_options("name_o") %&% ".*",viscos_options("name_o"),.) %>% 
+                         gsub(viscos_options("name_s") %&% ".*",viscos_options("name_s"),.))
     return(melted_time_aggregate)
   }
 ```
