@@ -74,7 +74,7 @@ this case they are already correct:
 
 ### Remove junk and prepare date format
 Now all the junk data (data columns not needed, unobserved basins) can be 
-removed using the `remove_chunk` function. Additionally, leading zeros in the 
+removed using the `remove_junk` function. Additionally, leading zeros in the 
 column names can be deleted with `remove_leading_zeros` if necessary.
 
 In order to properly analyse the data with **visCOS**, the timesteps must be 
@@ -84,7 +84,7 @@ Within the data.frame the user has to provide either 5 columns with the
 equivalent column in `POSIXct` format (see: [link](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html))
  to do so.
 ```{r, purl=FALSE, eval=TRUE}
-  runoff_example <- remove_chunk(runoff_example_raw) %>% 
+  runoff_example <- remove_junk(runoff_example_raw) %>% 
   prepare_complete_date()
 head(runoff_example)
 ```
@@ -134,7 +134,7 @@ number after the description (like "QObs_001" and "QSim_001")
 ```
 
 
-## `remove_chunk`
+## `remove_junk`
 This function removes all columns not specified in the `viscos_options`,
 as well basins where no observations are available.
 The first part is done by identifying the names of the data_frame and
@@ -166,10 +166,10 @@ between small and capital letters!
 The first part of the code loads the dependencies and makes sure that the
 runoff_data variable is a data.frame (see: chapter about *defensive coding*):
 ```{r}
-  remove_chunk <- function(runoff_data) {
+  remove_junk <- function(runoff_data) {
 ```
 
-The body of `remove_chunk` works as following: First, the names of the columns 
+The body of `remove_junk` works as following: First, the names of the columns 
 of the runoff_data are determined via `names` and all set to lower letters with
 `tolower`. This is the reason why the function is not case sensitive!
 Then helper function `get_regex_for_runoff_data` is called to get regular
@@ -376,14 +376,14 @@ implode_cosdate <- function(runoff_data) {
 ## `remove_leading_zeros`
 This function removes leading zeros from column names of the data.frame
 `runoff_data`.The function has no defensive coding, apart from the execution
-of `remove_chunk` (see corresponding chapter) to be sure that no non-needed
+of `remove_junk` (see corresponding chapter) to be sure that no non-needed
 columns are within the data.frame.
 
 ```{r}
 # remove leading zeros from the names of runoff_data (data.frame)
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
-  runoff_data %<>% remove_chunk
+  runoff_data %<>% remove_junk
 ```
 
 The body of the function works in the following way:
@@ -442,7 +442,7 @@ within the `runoff_data` on a monthly resolution. As the name suggests
 the period. The function requires `dplyr` and `magrittr` and tests if
 `runoff_data` is a data.frame. An error is returned if it is not.
 Furthermore, if there is *chunk* in the data.frame it is removed by
-`remove_chunk` and `prepare_complete_date` (see above)is used to ensure that
+`remove_junk` and `prepare_complete_date` (see above)is used to ensure that
 the full time-information, i.e. both date formats, is available.
 ```{r, echo=FALSE}
   #' calculate periods
@@ -465,7 +465,7 @@ the full time-information, i.e. both date formats, is available.
 ```{r}
 mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   assert_dataframe(runoff_data)
-  runoff_data %<>% remove_chunk %>% prepare_complete_date()
+  runoff_data %<>% remove_junk %>% prepare_complete_date()
 
 ```
 
@@ -562,7 +562,7 @@ for the purposes of **visCOS**. `runoff_as_xts` depends on `magrittr`, `xts` and
 `zoo` (where the last one is acutally a dependency of `xts`).
 The function takes the runoff_data as input and makes sure that the data is a
 data.frame (check: `assert_dataframe` in the **defensive code** chapter),
-has no "junk" inside (`assert_chunk`, see also: `remove_chunk`) and
+has no "junk" inside (`assert_chunk`, see also: `remove_junk`) and
 has all the needed date/time columns (`assert_complete_date`, see also:
 `prepare_complete_date`).
 ```{r, echo=FALSE}

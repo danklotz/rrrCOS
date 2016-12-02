@@ -1,6 +1,7 @@
 ---
 title: "Introduction"
-author: "Daniel Klotz"
+author: 
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "6 Juli 2016"
 output: html_document
 ---
