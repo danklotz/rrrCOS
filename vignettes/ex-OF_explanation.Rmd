@@ -1,6 +1,7 @@
 ---
 title: "Explanation of the Objective Functions"
-author: "JWBoku"
+author: 
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "08 August 2016"
 output:
   html_document:
