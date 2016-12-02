@@ -29,7 +29,7 @@ of_kge <- function(o,s) {
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_pbias <- function(o,s) {
+of_p_bias <- function(o,s) {
   as.numeric( pbias(s,o) )
 }
 #' Correlation

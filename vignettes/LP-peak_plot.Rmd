@@ -26,6 +26,7 @@ For the examples 10 events are extracted from a runoff example
   require(visCOS)
   runoff_data <- get_runoff_example()
   peakplots <- peak_plot(runoff_data, n_events = 10L)
+  
 ```
 
 The `peakplots` list does now contain plots for each basin within the 
@@ -130,12 +131,12 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
     peak_organised[., ]
   #
   overview_plot <- ggplot() +
-    geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_data2")) + 
-    geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_data1")) + 
+    geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_s")) + 
+    geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_o")) + 
     geom_point(data = highest_peaks_organised, aes(idx, peak_obs))
   overview_scatter <- ggplot() + 
     geom_point(data = single_data, aes(obs,sim), color = "#DDDDDD") +
-    geom_abline(color = viscos_options("color_of_mid")) +
+    geom_abline() +
     geom_point(data = highest_peaks_organised, aes(peak_obs,peak_sim), size = 4) +
     expand_limits(x = 0, y = 0) 
   sub_plots <- lapply(1:nrow(highest_peaks_organised),

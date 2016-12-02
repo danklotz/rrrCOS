@@ -33,14 +33,14 @@ main_of_compute <- function(runoff_data) {
     unname
   nse_ <- hydroGOF::NSE(temp_y,temp_x)
   kge_ <- hydroGOF::KGE(temp_y,temp_x)
-  pbias_ <- hydroGOF::pbias(temp_y,temp_x)
+  p_bias_ <- hydroGOF::pbias(temp_y,temp_x)
   corr_ <- cor(temp_y,temp_x) %>% diag(.)
 
   # Calulcated period-vise objective functions
     # pre allocation of periodic variables:
     NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
     KGE_period <- NSE_period
-    pBIAS_period <- NSE_period
+    p_bias_period <- NSE_period
     CORR_period <- NSE_period
     # calculation loop # proabbly slow
     for (k in 1:number_of_periods) {
@@ -52,24 +52,24 @@ main_of_compute <- function(runoff_data) {
         unname
       NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
-      pBIAS_period[k,1:number_of_basins] <- hydroGOF::pbias(temp_y,temp_x)
+      p_bias_period[k,1:number_of_basins] <- hydroGOF::pbias(temp_y,temp_x)
       CORR_period[k,1:number_of_basins] <- cor(temp_y,temp_x) %>% diag(.)
     }
   #
-  obj_names <- c("NSE","KGE","pBIAS","CORR", 
+  obj_names <- c("NSE","KGE","p_bias","CORR", 
                     paste("NSE_period",1:number_of_periods,sep="."), 
                     paste("KGE_period",1:number_of_periods,sep="."),
-                    paste("pBIAS_period",1:number_of_periods,sep="."),
+                    paste("p_bias_period",1:number_of_periods,sep="."),
                     paste("CORR_period",1:number_of_periods,sep=".")
   )
   obj_fun <- data.frame(of = obj_names, 
                         basin = rbind(nse_,
                                       kge_,
-                                      pbias_,
+                                      p_bias_,
                                       corr_,
                                       NSE_period,
                                       KGE_period,
-                                      pBIAS_period,
+                                      p_bias_period,
                                       CORR_period),
                         row.names = NULL)
   return(obj_fun)
@@ -89,7 +89,7 @@ NULL
 #' @rdname of_overview
 #' @export
 main_of_barplot <- function(runoff_data) {
-  main_of_names <- c("NSE","KGE","CORR","pBIAS")
+  main_of_names <- c("NSE","KGE","CORR","p_bias")
   assert_dataframe(runoff_data)
   of <- main_of_compute(runoff_data)
   # calculate objective functions
@@ -104,7 +104,7 @@ main_of_barplot <- function(runoff_data) {
   # define plot-list function
   plotlist_fun_barplot <- function(of_name) {
     of_to_plot <- melted_of %>% filter( of_group == of_name)
-    if (of_name == "pBIAS") {
+    if (of_name == "p_bias") {
       gglimits <- c(-viscos_options("of_limits")[2]*100,
                    viscos_options("of_limits")[2]*100)
 
@@ -133,17 +133,17 @@ main_of_barplot <- function(runoff_data) {
 #' @import pasta
 #' @export
 main_of_rasterplot <- function(runoff_data) {
-  main_of_names <- c("NSE","KGE","CORR","pBIAS")
+  main_of_names <- c("NSE","KGE","CORR","p_bias")
   regex_main_of <- main_of_names %&% ".*"
   assert_dataframe(runoff_data)
   of <- main_of_compute(runoff_data)
   #
   plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of)) %>% 
-    set_names(c("NSE","KGE","pBIAS","CORR"))
+    set_names(main_of_names)
   return(plot_list)
 }
   plot_fun_raster <- function(regex_single_of,of) {
-    if (regex_single_of == "pBIAS.*") {
+    if (regex_single_of == "p_bias.*") {
       gglimits <- c(-viscos_options("of_limits")[2]*100,
                     viscos_options("of_limits")[2]*100)
     } else {

@@ -17,14 +17,10 @@
 #'       name_COSposix = "posixdate", # name of the complete-date-column
 #'       name_COSperiod = "period", # name of the marked-period column
 #'    # plot options
-#'       color_data1 = "steelblue", # color associated with the first time-series data
-#'       color_data2 = "orange",  # color associated with the second time-series data
+#'       color_o = "steelblue", # color associated with the first o time-series data
+#'       color_s= "orange",  # color associated with the second s time-series data
 #'       legend_title = "legend", 
 #'       xlab = "year",
-#'       color_of_low = 'darkred', # color associated with a bad objective function 
-#'       olor_of_mid = 'grey', # color associated with an average objective function 
-#'       color_of_high = 'magenta', # color associated with a high objective function 
-#'       color_of_out = "grey". # color given to values outside the of range (as defined by of_limits)
 #'       midpoint = 0.5,
 #'       of_limits = c(0,1)
 #'   )
@@ -47,12 +43,8 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSposix = "posixdate",
   name_COSperiod = "period",
  # plot options
-  color_data1 = "steelblue", 
-  color_data2 = "orange",
-  color_of_low = 'darkred',
-  color_of_mid = 'magenta',
-  color_of_high = 'green',
-  color_of_out = "grey",
+  color_o = "steelblue", 
+  color_s = "orange",
   midpoint = 0.5,
   of_limits = c(0,1)
 )

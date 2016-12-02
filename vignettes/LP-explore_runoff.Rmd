@@ -26,13 +26,13 @@ appearance in the `ui`.
 In this chapter it is shown, how the function `explore_runoff` can be 
 used to take a closer look at the data series you loaded. Only prerequirements 
 are properly loaded data and correctly addressed `viscos_options`. Additionally, 
-you can adapt the *color_data* options in the `viscos_options`. Information on 
+you can adapt the *color_* options in the `viscos_options`. Information on 
 the *objective functions* can be found [here](ex-OF_explanation.html)
 
 Running the `explore_runoff` with your data as input, a shiny app is 
 started in a new window (in this case an example .jpg with explanations):
 ```{r,purl=FALSE, eval = FALSE}
-viscos_options(color_data1 = "green", color_data2 = "red")
+viscos_options(color_o = "green", color_s = "red")
 explore_runoff(runoff_example)
 ```
 
@@ -164,10 +164,10 @@ representations and objects of `POSIXlt` and `POSIXct`.
       dygraph( xts_selected_data() ) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),
-                 color = viscos_options("color_data1")) %>%
+                 color = viscos_options("color_o")) %>%
         dySeries("y",
                  label = visCOS::viscos_options("name_s"),
-                 color = viscos_options("color_data2")) %>%
+                 color = viscos_options("color_s")) %>%
         dyRangeSelector(height = 20, strokeColor = "") %>% 
         dyCrosshair(direction = "vertical") %>%
         dyOptions(includeZero = TRUE) 

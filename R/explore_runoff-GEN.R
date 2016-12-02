@@ -25,7 +25,7 @@ explore_runoff <- function(runoff_data,
                                    of_list = list(
                                      nse = of_nse, 
                                      kge = of_kge, 
-                                     pBIAS = of_pbias,
+                                     p_bias = of_pbias,
                                      r = of_cor
                                    ),
                                    start_date = NULL,
@@ -84,10 +84,10 @@ explore_runoff <- function(runoff_data,
       dygraph( xts_selected_data() ) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),
-                 color = viscos_options("color_data1")) %>%
+                 color = viscos_options("color_o")) %>%
         dySeries("y",
                  label = visCOS::viscos_options("name_s"),
-                 color = viscos_options("color_data2")) %>%
+                 color = viscos_options("color_s")) %>%
         dyRangeSelector(height = 20, strokeColor = "") %>% 
         dyCrosshair(direction = "vertical") %>%
         dyOptions(includeZero = TRUE) 

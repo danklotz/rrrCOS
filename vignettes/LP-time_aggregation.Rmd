@@ -35,8 +35,8 @@ Daily runoff aggregation:
   # plot data:
   ggplot(runoff_aggregate_dd) + 
       geom_line(aes(x = idx, y = value, col = obs_sim)) + 
-      scale_colour_manual(values = c(viscos_options("color_data1"),
-                                     viscos_options("color_data2"))) + 
+      scale_colour_manual(values = c(viscos_options("color_o"),
+                                     viscos_options("color_a"))) + 
       facet_wrap( ~ basin,ncol = 1) +
       theme_minimal()
 ```
@@ -47,8 +47,8 @@ Monthly runoff aggregation:
   # plot data:
   ggplot(runoff_aggregate_mm) + 
       geom_line(aes(x = idx, y = value, col = obs_sim)) + 
-      scale_colour_manual(values = c(viscos_options("color_data1"),
-                                     viscos_options("color_data2"))) + 
+      scale_colour_manual(values = c(viscos_options("color_o"),
+                                     viscos_options("color_s"))) + 
       scale_x_discrete(limits = runoff_aggregate_mm$time_aggregate) +
       facet_wrap( ~ basin, scales = "free") + 
       theme_minimal()
@@ -60,8 +60,8 @@ Yearly runoff aggregation:
   # plot data:
   ggplot(runoff_aggregate_yyyy) + 
     geom_point(aes(x = idx, y = value, col = obs_sim)) + 
-    scale_colour_manual(values = c(viscos_options("color_data1"),
-                                   viscos_options("color_data2"))) + 
+    scale_colour_manual(values = c(viscos_options("color_o"),
+                                   viscos_options("color_s"))) + 
     facet_wrap( ~ basin) +
     scale_x_discrete(limits = runoff_aggregate_yyyy$time_aggregate,  
                     labels = abbreviate) + 
@@ -74,8 +74,8 @@ Yearly and monthly runoff aggregation:
   # plot data:
   ggplot(runoff_aggregate_yyyymm) + 
     geom_line(aes(x = idx, y = value, col = obs_sim)) + 
-    scale_colour_manual(values = c(viscos_options("color_data1"),
-                                   viscos_options("color_data2"))) + 
+    scale_colour_manual(values = c(viscos_options("color_o"),
+                                   viscos_options("color_s"))) + 
     scale_x_discrete(limits = runoff_aggregate_yyyymm$time_aggregate,  
                      labels = abbreviate) +
     facet_wrap( ~ basin,ncol = 1) +
