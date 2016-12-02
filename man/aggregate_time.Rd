@@ -13,6 +13,6 @@ aggregate_time(cos_data, aggregation = "mm")
 \description{
 Aggregates the cosero data.frame (\code{cos_data}) according to the 
 timely resolution defined via \code{aggregation}. Possible 
-resolution-choices are 'yyyy' - year, 'mm' - month and 'dd' - day and 
-combinations thereof.
+resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
+\code{'dd}' - day and combinations thereof.
 }

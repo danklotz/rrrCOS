@@ -24,28 +24,28 @@ main_of_barplot(runoff_data)
 
 main_of_rasterplot(runoff_data)
 
-of_rmse(x, y)
+of_nse(o, s)
 
-of_pbias(x, y)
+of_kge(o, s)
 
-of_nse(x, y)
+of_pbias(o, s)
 
-of_invert_nse(x, y)
+of_cor(o, s)
 
-of_kge(x, y)
+of_rmse(o, s)
 
-of_cor(x, y)
+of_invert_nse(o, s)
 
-of_rsd(x, y)
+of_rsd(o, s)
 
-of_rmeans(x, y)
+of_rmeans(o, s)
 
-of_ve(x, y)
+of_ve(o, s)
 }
 \arguments{
-\item{x}{observation}
+\item{o}{The reference data or observations (o_data)}
 
-\item{y}{simulations}
+\item{s}{The created data or the simulations (s_data)}
 }
 \description{
 Barplot for the Main Objective Function Values
@@ -56,19 +56,21 @@ Barplot for the Main Objective Function Values
 
 Barplot for the Main Objective Function Values
 
-Different objective Functions, provided by visCOS.
-
-Root Mean Sqaured Error
-
-Percentage Bias
+Different objective Functions, provided by visCOS. A detailed description 
+of each of the provided objective function is provided in the respective
+vignette
 
 Nash-Sutcliffe Efficiency
 
-Inverted Nash-Sutcliffe Efficiency
-
 Kling-Gupta Efficiency
 
+Percentage Bias
+
 Correlation
+
+Root Mean Sqaured Error
+
+Inverted Nash-Sutcliffe Efficiency
 
 Ratio of Standard Deviations
 

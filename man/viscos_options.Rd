@@ -16,8 +16,8 @@ These are the options you can adapt by executing the function
 \preformatted{
   viscos_options(
    # data.frame column names
-      name_data1 = "qobs", # name of the first time-series data (observations)  
-      name_data2 = "qsim", # name of the second time-series data (simulations)  
+      name_o = "qobs", # name of the first time-series data (observations)  
+      name_s = "qsim", # name of the second time-series data (simulations)  
       name_COSyear = "yyyy", # name of year-column
       name_COSmonth = "mm",  # name of month-column
       name_COSday = "dd",  # name of day-column
@@ -40,8 +40,8 @@ These are the options you can adapt by executing the function
 }
 }
 \examples{
-viscos_options("name_data1")
-viscos_options(name_data1 = "OtherData")
-viscos_options("name_data1")
+viscos_options("name_o")
+viscos_options(name_o = "OtherData")
+viscos_options("name_o")
 }
 \keyword{datasets}

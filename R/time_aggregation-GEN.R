@@ -2,8 +2,8 @@
   #' 
   #' Aggregates the cosero data.frame (\code{cos_data}) according to the 
   #' timely resolution defined via \code{aggregation}. Possible 
-  #' resolution-choices are 'yyyy' - year, 'mm' - month and 'dd' - day and 
-  #' combinations thereof. 
+  #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
+  #' \code{'dd}' - day and combinations thereof. 
   #' 
   #' @param cos_data the COSERO data.frame as used within visCOS
   #' @param aggregation string that defines the resolution of the aggregation.
@@ -26,17 +26,20 @@
       cutting_bounds[1] <- min(1,cutting_bounds[1])
       cutting_bounds[2] <- max(4,cutting_bounds[2])
     }
-    ######  define helpers
-    regex_for_cos_selection <- viscos_options("name_data1") %|%  viscos_options("name_data2")
+    ###### function and string definitions
+    regex_for_cos_selection <- viscos_options("name_o") %|%  viscos_options("name_s")
     # aggregation function:
     aggregator_fun <- function(k,data_frame){
       the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean)
       return(the_aggregation[ ,2])
     }
     ##### 
-    cos_data %>% 
+    # If cos_data is not provided fully, the date is completed automatically 
+    # + junk is removed from the data frame
+    full_cos_data <- cos_data %>% 
       visCOS::prepare_complete_date() %>% 
-      visCOS::remove_chunk() -> full_cos_data 
+      visCOS::remove_junk() 
+    # aggregate:
     cos_with_aggreggation <- cbind.data.frame(
       full_cos_data,
       date_selection = substr(full_cos_data$posixdate,
@@ -51,13 +54,13 @@
     selected_cos_rows <- grep(regex_for_cos_selection,
                              names(cos_with_aggreggation), 
                              ignore.case = TRUE)
-    selected_cos_rows %>% 
+    time_aggregate <- selected_cos_rows %>% 
       sapply(.,function(x) aggregator_fun(x,cos_with_aggreggation)) %>% 
       data.frame(idx = 1:nrow(.), 
                  time_aggregate = unique(cos_with_aggreggation$date_selection),
                  .) %>% 
-      set_names(., c("idx","time_aggregate",names_cos_selection)) -> time_aggregate
-    # 
+      set_names(., c("idx","time_aggregate",names_cos_selection)) 
+    # melt the data in a tidy format:
     melted_time_aggregate <- time_aggregate %>% 
       reshape2::melt(., id.vars = c("idx","time_aggregate")) %>% 
       cbind.data.frame(., 
@@ -66,7 +69,7 @@
                          gsub("\\D","",.) %>%
                          as.integer, 
                        obs_sim = .$variable %>% 
-                         gsub(viscos_options("name_data1") %&% ".*",viscos_options("name_data1"),.) %>% 
-                         gsub(viscos_options("name_data2") %&% ".*",viscos_options("name_data2"),.))
+                         gsub(viscos_options("name_o") %&% ".*",viscos_options("name_o"),.) %>% 
+                         gsub(viscos_options("name_s") %&% ".*",viscos_options("name_s"),.))
     return(melted_time_aggregate)
   }

@@ -45,7 +45,7 @@ explore_runoff <- function(runoff_data,
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>% 
-    grepl(viscos_options("name_data1"),.)
+    grepl(viscos_options("name_o"),.)
   d_nums <- d_xts %>%
       names() %>%
       .[idx_names] %>%
@@ -59,9 +59,9 @@ explore_runoff <- function(runoff_data,
       tolower %>%
       unique
     x_string <- unique_data_names[ unique_data_names %>%
-                                     grep(viscos_options("name_data1"),.) ]
+                                     grep(viscos_options("name_o"),.) ]
     y_string <- unique_data_names[ unique_data_names  %>%
-                                     grep(viscos_options("name_data2"),.) ]
+                                     grep(viscos_options("name_s"),.) ]
     # (II) select data:
     '%&%' <- function(a,b) paste(a,b,sep = "") # %&% as substitute for function
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
@@ -83,10 +83,10 @@ explore_runoff <- function(runoff_data,
     output$hydrographs <- renderDygraph({
       dygraph( xts_selected_data() ) %>%
         dySeries("x",
-                 label = visCOS::viscos_options("name_data1"),
+                 label = visCOS::viscos_options("name_o"),
                  color = viscos_options("color_data1")) %>%
         dySeries("y",
-                 label = visCOS::viscos_options("name_data2"),
+                 label = visCOS::viscos_options("name_s"),
                  color = viscos_options("color_data2")) %>%
         dyRangeSelector(height = 20, strokeColor = "") %>% 
         dyCrosshair(direction = "vertical") %>%

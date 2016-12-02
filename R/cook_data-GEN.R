@@ -23,7 +23,7 @@
   #' 
   #' @export
 
-  remove_chunk <- function(runoff_data) {
+  remove_junk <- function(runoff_data) {
   assert_dataframe(runoff_data)
   # 
   lowercase_names_in_data <- runoff_data %>% names %>% tolower
@@ -54,7 +54,7 @@ only_observed_basins <- function(runoff_data) {
   colmax <- lapply(X = data_no_posix, FUN = max) # get max of any column
   if ( any(colmax < 0.0) ){
     idx_temp <- which(colmax < 0.0)
-    obs_regex <- paste(viscos_options("name_data1"),".*", sep ="")
+    obs_regex <- paste(viscos_options("name_o"),".*", sep ="")
     OnlyQobsSelected <- idx_temp %>%
       names %>%
       tolower %>%
@@ -131,16 +131,16 @@ implode_cosdate <- function(runoff_data) {
 # remove leading zeros from the names of runoff_data (data.frame)
 remove_leading_zeros <- function(runoff_data) {
   require("magrittr", quietly = TRUE)
-  runoff_data %<>% remove_chunk
+  runoff_data %<>% remove_junk
   runoff_names <- runoff_data %>% names
   runoff_lowercase_names <- runoff_names %>% tolower 
   #
   separator <- runoff_lowercase_names %>% 
-    extract( grep(viscos_options()$name_data1,.) ) %>% 
+    extract( grep(viscos_options()$name_o,.) ) %>% 
     extract( 1 ) %>%
-    gsub(viscos_options()$name_data1,"",.) %>% 
+    gsub(viscos_options()$name_o,"",.) %>% 
     gsub("\\d","",.)
-  searchterm <- paste0(viscos_options()$name_data1,"|", viscos_options()$name_data2)
+  searchterm <- paste0(viscos_options()$name_o,"|", viscos_options()$name_s)
   runoff_nums <- runoff_lowercase_names %>% 
     gsub(searchterm,"",.) %>% 
     gsub(separator,"",.) %>% 
@@ -174,7 +174,7 @@ remove_leading_zeros <- function(runoff_data) {
   #' @export
 mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   assert_dataframe(runoff_data)
-  runoff_data %<>% remove_chunk %>% prepare_complete_date()
+  runoff_data %<>% remove_junk %>% prepare_complete_date()
 
   # (I) get labels for the months
   if (start_month <= end_month ) {

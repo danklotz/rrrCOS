@@ -21,15 +21,15 @@ main_of_compute <- function(runoff_data) {
   number_of_basins <- evaluation_data %>%
     names %>%
     unique %>%
-    grepl(viscos_options("name_data1"), ., ignore.case = TRUE) %>%
+    grepl(viscos_options("name_o"), ., ignore.case = TRUE) %>%
     sum 
   periods_in_data <- evaluation_data %>%
     magrittr::extract2(viscos_options("name_COSperiod")) %>% 
     unique
   number_of_periods <- periods_in_data %>% length
-  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data1"))) %>%
+  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_o"))) %>%
     unname
-  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_data2"))) %>%
+  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_s"))) %>%
     unname
   nse_ <- hydroGOF::NSE(temp_y,temp_x)
   kge_ <- hydroGOF::KGE(temp_y,temp_x)
@@ -45,10 +45,10 @@ main_of_compute <- function(runoff_data) {
     # calculation loop # proabbly slow
     for (k in 1:number_of_periods) {
       temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dplyr::select(.,starts_with(viscos_options("name_data1"))) %>%
+        dplyr::select(.,starts_with(viscos_options("name_o"))) %>%
         unname
       temp_y <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dplyr::select(.,starts_with(viscos_options("name_data2"))) %>%
+        dplyr::select(.,starts_with(viscos_options("name_s"))) %>%
         unname
       NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
       KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)

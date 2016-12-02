@@ -3,7 +3,7 @@ assert_chunk <- function(runoff_data) {
   regEx <- get_regex_for_runoff_data()
   assertChunk <- names(runoff_data) %>% tolower %>% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
-    stop("there is still unwanted columns in the data. Try: remove_chunk")
+    stop("there is still unwanted columns in the data. Try: remove_junk")
   }
 }
 assert_complete_date <- function(runoff_data) {

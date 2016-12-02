@@ -7,8 +7,8 @@
 #' \preformatted{
 #'   viscos_options(
 #'    # data.frame column names
-#'       name_data1 = "qobs", # name of the first time-series data (observations)  
-#'       name_data2 = "qsim", # name of the second time-series data (simulations)  
+#'       name_o = "qobs", # name of the first time-series data (observations)  
+#'       name_s = "qsim", # name of the second time-series data (simulations)  
 #'       name_COSyear = "yyyy", # name of year-column
 #'       name_COSmonth = "mm",  # name of month-column
 #'       name_COSday = "dd",  # name of day-column
@@ -31,14 +31,14 @@
 #' }
 #'
 #' @examples
-#' viscos_options("name_data1")
-#' viscos_options(name_data1 = "OtherData")
-#' viscos_options("name_data1")
+#' viscos_options("name_o")
+#' viscos_options(name_o = "OtherData")
+#' viscos_options("name_o")
 #' @export
 viscos_options <- GlobalOptions::setGlobalOptions( 
   # data.frame column names
-  name_data1 = "qobs", 
-  name_data2 = "qsim", 
+  name_o = "qobs", 
+  name_s = "qsim", 
   name_COSyear = "yyyy",
   name_COSmonth = "mm",
   name_COSday = "dd",

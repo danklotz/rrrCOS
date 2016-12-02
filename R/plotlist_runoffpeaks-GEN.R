@@ -25,11 +25,11 @@ plotlist_runoffpeaks <- function(runoff_data,
     stop("window_size is ill defined")
   }
   data1 <- runoff_data %>%
-     select( starts_with(viscos_options("name_data1")) )
+     select( starts_with(viscos_options("name_o")) )
   data2 <- runoff_data %>%
-     select( starts_with(viscos_options("name_data2")) )
+     select( starts_with(viscos_options("name_s")) )
   data_numbers <- names(data1) %>%
-    gsub(viscos_options("name_data1"),"",.,ignore.case = TRUE) %>% 
+    gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>% 
     gsub("\\D","",.,ignore.case = TRUE)
   # make plotlist: 
   plotlist <- lapply(1:ncol(data1), function(x) plotlist_one_basin(data1[,x],

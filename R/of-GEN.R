@@ -1,79 +1,81 @@
 #' Objective Functions
 #' 
-#' Different objective Functions, provided by visCOS.
-
-#' @param x observation 
-#' @param y simulations 
+#' Different objective Functions, provided by visCOS. A detailed description 
+#' of each of the provided objective function is provided in the respective
+#' vignette
+#' 
+#' @param o The reference data or observations (o_data)
+#' @param s The created data or the simulations (s_data)
 #' @name of_overview
 NULL
-#' Root Mean Sqaured Error 
-#' 
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_rmse <- function(x,y) {
-  as.numeric( rmse(y,x) )
-}
-#' Percentage Bias 
-#' 
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_pbias <- function(x,y) {
-  as.numeric( pbias(y,x) )
-}
 #' Nash-Sutcliffe Efficiency
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_nse <- function(x,y) {
-  as.numeric( NSE(y,x) )
-}
-#' Inverted Nash-Sutcliffe Efficiency
-#' 
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_invert_nse <- function(x,y) {
-  as.numeric( NSE(x,y) )
+of_nse <- function(o,s) {
+  as.numeric( NSE(s,o) )
 }
 #' Kling-Gupta Efficiency
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_kge <- function(x,y) {
-  as.numeric( KGE(y,x) )
+of_kge <- function(o,s) {
+  as.numeric( KGE(s,o) )
+}
+#' Percentage Bias 
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_pbias <- function(o,s) {
+  as.numeric( pbias(s,o) )
 }
 #' Correlation
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_cor <- function(x,y) {
-  diag( cor(x,y) )
+of_cor <- function(o,s) {
+  diag( cor(o,s) )
+}
+#' Root Mean Sqaured Error 
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_rmse <- function(o,s) {
+  as.numeric( rmse(s,o) )
+}
+#' Inverted Nash-Sutcliffe Efficiency
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_invert_nse <- function(o,s) {
+  as.numeric( NSE(o,s) )
 }
 #' Ratio of Standard Deviations
 #'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_rsd <- function(x,y) {
-  as.numeric( rSD(y,x) )
+of_rsd <- function(o,s) {
+  as.numeric( rSD(s,o) )
 }
 #' Ratio of Means
 #'
 #' @rdname of_overview
 #' @export
-of_rmeans <- function(x,y) {
-  as.numeric( mean(y)/mean(x) )
+of_rmeans <- function(o,s) {
+  as.numeric( mean(s)/mean(o) )
 }
 #' Volumetric Efficiency
 #'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_ve <- function(x,y) {
-  as.numeric( VE(y,x) )
+of_ve <- function(o,s) {
+  as.numeric( VE(s,o) )
 }
