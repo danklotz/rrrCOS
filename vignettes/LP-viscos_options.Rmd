@@ -1,7 +1,7 @@
 ---
 title: "visCOS - Options"
 author: 
-- "Daniel Klotz, Johannes Wesemann"
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "11 Juli 2016"
 output: 
   html_document:

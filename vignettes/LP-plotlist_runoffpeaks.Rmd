@@ -1,7 +1,7 @@
 ---
-title: "Runoff Peaks Plots"
+title: "Plotting Runoff Peaks Plots"
 author: 
-- "Daniel Klotz, Johannes Wesemann"
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "22 September 2016"
 output:
   html_document:
@@ -13,27 +13,19 @@ output:
 ```
 
 # Introduction
-The function `plotlist_runoffpeaks` lets users explore the highest events in 
+The function `peak_plot` lets users explore the highest events in 
 among the available basins. It provides a list of [ggplot2](http://ggplot2.org/) 
 plots, containing an overview plot (`overview`), a scatter plot (`scatter`) 
 and detail plots of the individual events (`event_plot`). Instead of 
 explaining the properties of each plot in detail it is best to get an intuition 
 of the function by looking at some examples. 
 
-The function takes tree arguments: 
-
-argument | explenation 
--------- | ------------
-runoff_data | `data.frame` as used within visCOS
-n_events | number of events to be searched 
-window_size | Extension of individual events 
-
 ## Examples:
 For the examples 10 events are extracted from a runoff example
 ```{r, eval = TRUE, purl=FALSE}
   require(visCOS)
   runoff_data <- get_runoff_example()
-  peakplots <- plotlist_runoffpeaks(runoff_data, n_events = 10L)
+  peakplots <- peak_plot(runoff_data, n_events = 10L)
 ```
 
 The `peakplots` list does now contain plots for each basin within the 
@@ -70,7 +62,7 @@ objects. Here an example:
 
 
 # Code
-This part of the document defines the code of `plotlist_runoffpeaks`
+This part of the document defines the code of `peak_plot`
 ```{r}
 #' Plot List for Runoff Peaks 
 #' @export
@@ -79,7 +71,7 @@ This part of the document defines the code of `plotlist_runoffpeaks`
 #' @import dplyr 
 #' @import magrittr
 #' @importFrom tibble tibble
-plotlist_runoffpeaks <- function(runoff_data,
+peak_plot <- function(runoff_data,
                                  n_events= 10L,
                                  window_size = 24L) {
   # pre:
