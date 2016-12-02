@@ -162,8 +162,8 @@ $(document).ready(function () {
 <p>The next step would be to adapt the first part of the <code>viscos_options</code>. This can be done by copying the default settings from the help and adapt them. In this case they are already correct:</p>
 <pre class="r"><code>   viscos_options(
    # data.frame column names
-      name_data1 = &quot;qobs&quot;,
-      name_data2 = &quot;qsim&quot;,
+      name_o = &quot;qobs&quot;,
+      name_s = &quot;qsim&quot;,
       name_COSyear = &quot;yyyy&quot;,
       name_COSmonth = &quot;mm&quot;,
       name_COSday = &quot;dd&quot;,
@@ -174,9 +174,9 @@ $(document).ready(function () {
 </div>
 <div id="remove-junk-and-prepare-date-format" class="section level3">
 <h3><span class="header-section-number">2.2.2</span> Remove junk and prepare date format</h3>
-<p>Now all the junk data (data columns not needed, unobserved basins) can be removed using the <code>remove_chunk</code> function. Additionally, leading zeros in the column names can be deleted with <code>remove_leading_zeros</code> if necessary.</p>
+<p>Now all the junk data (data columns not needed, unobserved basins) can be removed using the <code>remove_junk</code> function. Additionally, leading zeros in the column names can be deleted with <code>remove_leading_zeros</code> if necessary.</p>
 <p>In order to properly analyse the data with <strong>visCOS</strong>, the timesteps must be complete and in the right format. This can be done with <code>prepare_complete_date</code>. Within the data.frame the user has to provide either 5 columns with the <em>COSdate</em> format: <code>yyyy-mm-dd-hh-min</code> i.e.: year-month-day-hour-minute or an equivalent column in <code>POSIXct</code> format (see: <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html">link</a>) to do so.</p>
-<pre class="r"><code>  runoff_example &lt;- remove_chunk(runoff_example_raw) %&gt;% 
+<pre class="r"><code>  runoff_example &lt;- remove_junk(runoff_example_raw) %&gt;% 
   prepare_complete_date()
 head(runoff_example)</code></pre>
 <pre><code>##   yyyy mm dd hh min QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002           posixdate
@@ -201,52 +201,6 @@ head(runoff_example)</code></pre>
 <div id="code" class="section level1">
 <h1><span class="header-section-number">3</span> Code</h1>
 <p>The following functions are defined below. Exported functions can be seen by the user.</p>
-<table>
-<thead>
-<tr class="header">
-<th>function</th>
-<th>exported</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>get_runoff_example</code></td>
-<td>yes</td>
-</tr>
-<tr class="even">
-<td><code>remove_chunk</code></td>
-<td>yes</td>
-</tr>
-<tr class="odd">
-<td><code>only_observed_basins</code></td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>prepare_complete_date</code></td>
-<td>yes</td>
-</tr>
-<tr class="odd">
-<td><code>implode_cosdate</code></td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>remove_leading_zeros</code></td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>mark_periods</code></td>
-<td>yes</td>
-</tr>
-<tr class="even">
-<td><code>runoff_as_xts</code></td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>get_main_of</code></td>
-<td>yes</td>
-</tr>
-</tbody>
-</table>
 <div id="get_runoff_example" class="section level2">
 <h2><span class="header-section-number">3.1</span> <code>get_runoff_example</code></h2>
 <p>visCOS porvides some exemplary data. All the available functions can be tested with it. <code>get_runoff_example</code> is a small wrapper function to get the data from within the package via <code>read.csv</code></p>
@@ -259,13 +213,13 @@ head(runoff_example)</code></pre>
     return(runoff_example)
   }</code></pre>
 </div>
-<div id="remove_chunk" class="section level2">
-<h2><span class="header-section-number">3.2</span> <code>remove_chunk</code></h2>
+<div id="remove_junk" class="section level2">
+<h2><span class="header-section-number">3.2</span> <code>remove_junk</code></h2>
 <p>This function removes all columns not specified in the <code>viscos_options</code>, as well basins where no observations are available. The first part is done by identifying the names of the data_frame and searching for the idx of the names defined in the <code>viscos_options</code>. The second part is done via the function <code>prepare.only_observed</code> (see next subchapter). It is actually so pretty simple, but really useful. Since the solution is quite specific, the function tests if the input is a data.frame and returns an error if not.</p>
 <p><strong>Note</strong> that the routine is <strong>not</strong> case sensitive. It does not distinguish between small and capital letters!</p>
 <p>The first part of the code loads the dependencies and makes sure that the runoff_data variable is a data.frame (see: chapter about <em>defensive coding</em>):</p>
-<pre class="r"><code>  remove_chunk &lt;- function(runoff_data) {</code></pre>
-<p>The body of <code>remove_chunk</code> works as following: First, the names of the columns of the runoff_data are determined via <code>names</code> and all set to lower letters with <code>tolower</code>. This is the reason why the function is not case sensitive! Then helper function <code>get_regex_for_runoff_data</code> is called to get regular expressions that identify the wanted columns. Later, <code>grep</code> is used to get the index <code>idx</code> of the columns with the given names (<code>lowercase_names_in_data</code>). Finally, <code>idx</code>is then used to select the wanted columns.</p>
+<pre class="r"><code>  remove_junk &lt;- function(runoff_data) {</code></pre>
+<p>The body of <code>remove_junk</code> works as following: First, the names of the columns of the runoff_data are determined via <code>names</code> and all set to lower letters with <code>tolower</code>. This is the reason why the function is not case sensitive! Then helper function <code>get_regex_for_runoff_data</code> is called to get regular expressions that identify the wanted columns. Later, <code>grep</code> is used to get the index <code>idx</code> of the columns with the given names (<code>lowercase_names_in_data</code>). Finally, <code>idx</code>is then used to select the wanted columns.</p>
 <p>In the second part, the function <code>only_observed_basins</code> is being executed (see next chapter)</p>
 <pre class="r"><code>  assert_dataframe(runoff_data)
   # 
@@ -293,7 +247,7 @@ head(runoff_example)</code></pre>
 <p>If any column has a max of -999 it is worth further investigation. Unfortunately the -999 columns could also mean, that something went wrong with the simulation, thus one has to make sure that only observation columns are selected. To do so we first identify the idx of the max == -999 cols and build a regular expression with the help of the <code>viscos_options</code>. We combine both information via <code>grepl</code> to check if only observed columns have been selected. If so everything is fine, but if <code>any</code> of the selected cols came from an simulation col the function stops the execution and gives a warning message. The next step involves a little trick in which +1 is added to the <code>idx</code> to obtain the indexes of the corresponding simulation. Here we assume that for each observation there is a corresponding simulation <strong>in next the next colum</strong>! This allows us then to select only the observed basins. But now all NA values are actually -999! Thus, we replace them again back to NA, via <code>lapply(...,min)</code> assuming that all negative values are NAs. This is not a strong assumption, because there should never be negative flows! In the end the resulting data.frame is returned.</p>
 <pre class="r"><code>  if ( any(colmax &lt; 0.0) ){
     idx_temp &lt;- which(colmax &lt; 0.0)
-    obs_regex &lt;- paste(viscos_options(&quot;name_data1&quot;),&quot;.*&quot;, sep =&quot;&quot;)
+    obs_regex &lt;- paste(viscos_options(&quot;name_o&quot;),&quot;.*&quot;, sep =&quot;&quot;)
     OnlyQobsSelected &lt;- idx_temp %&gt;%
       names %&gt;%
       tolower %&gt;%
@@ -379,21 +333,21 @@ prepare_complete_date &lt;- function(runoff_data = NULL,
 </div>
 <div id="remove_leading_zeros" class="section level2">
 <h2><span class="header-section-number">3.4</span> <code>remove_leading_zeros</code></h2>
-<p>This function removes leading zeros from column names of the data.frame <code>runoff_data</code>.The function has no defensive coding, apart from the execution of <code>remove_chunk</code> (see corresponding chapter) to be sure that no non-needed columns are within the data.frame.</p>
+<p>This function removes leading zeros from column names of the data.frame <code>runoff_data</code>.The function has no defensive coding, apart from the execution of <code>remove_junk</code> (see corresponding chapter) to be sure that no non-needed columns are within the data.frame.</p>
 <pre class="r"><code># remove leading zeros from the names of runoff_data (data.frame)
 remove_leading_zeros &lt;- function(runoff_data) {
   require(&quot;magrittr&quot;, quietly = TRUE)
-  runoff_data %&lt;&gt;% remove_chunk</code></pre>
+  runoff_data %&lt;&gt;% remove_junk</code></pre>
 <p>The body of the function works in the following way: The variables <code>runoff_names</code> is computed by obtaining the names of the columns of <code>runoff_data</code> with <code>names</code> and removing all the digits with <code>gsub(&quot;\\d&quot;,...)</code>. The basin digits, <code>runoff_nums</code> are computed by doing the oposite, i.e.: removing all the non digits via <code>gsub(&quot;\\D&quot;,...)</code>. Afterwards, the empty strings (“”) are replaced with a small trick: The characters are transformed into a numerics (induces <code>NA's</code>) and back again. In the last step the variables <code>runoff_names</code> and <code>runoff_nums</code> are simply put togehter again via the paste command. The result has no leading zeros as in the variable numeration.</p>
 <pre class="r"><code>  runoff_names &lt;- runoff_data %&gt;% names
   runoff_lowercase_names &lt;- runoff_names %&gt;% tolower 
   #
   separator &lt;- runoff_lowercase_names %&gt;% 
-    extract( grep(viscos_options()$name_data1,.) ) %&gt;% 
+    extract( grep(viscos_options()$name_o,.) ) %&gt;% 
     extract( 1 ) %&gt;%
-    gsub(viscos_options()$name_data1,&quot;&quot;,.) %&gt;% 
+    gsub(viscos_options()$name_o,&quot;&quot;,.) %&gt;% 
     gsub(&quot;\\d&quot;,&quot;&quot;,.)
-  searchterm &lt;- paste0(viscos_options()$name_data1,&quot;|&quot;, viscos_options()$name_data2)
+  searchterm &lt;- paste0(viscos_options()$name_o,&quot;|&quot;, viscos_options()$name_s)
   runoff_nums &lt;- runoff_lowercase_names %&gt;% 
     gsub(searchterm,&quot;&quot;,.) %&gt;% 
     gsub(separator,&quot;&quot;,.) %&gt;% 
@@ -415,10 +369,10 @@ remove_leading_zeros &lt;- function(runoff_data) {
 <h2><span class="header-section-number">3.5</span> <code>mark_periods</code></h2>
 <p>This function can be used to create a periods column in your data.frame. The period column is an integer vector, which is a multiple of 1 if the row is within a certain period and 0 if it is out of the period.</p>
 <p>Building it was actually quite tricky. The author himself (Klotz) is not sure if it is really a nice solution. But it is the best solution, in terms of speed and clearness, that we could come up so far. So take it as a challenge to build a better solution!</p>
-<p>As shown below the function takes the <code>runoff_data</code> data.frame and the two integers <code>start_month</code>and <code>end_month</code>. They allow the user to define the periods within the <code>runoff_data</code> on a monthly resolution. As the name suggests <code>start_month</code> defines the beginning of the period and <code>end_month</code> the end of the period. The function requires <code>dplyr</code> and <code>magrittr</code> and tests if <code>runoff_data</code> is a data.frame. An error is returned if it is not. Furthermore, if there is <em>chunk</em> in the data.frame it is removed by <code>remove_chunk</code> and <code>prepare_complete_date</code> (see above)is used to ensure that the full time-information, i.e. both date formats, is available.</p>
+<p>As shown below the function takes the <code>runoff_data</code> data.frame and the two integers <code>start_month</code>and <code>end_month</code>. They allow the user to define the periods within the <code>runoff_data</code> on a monthly resolution. As the name suggests <code>start_month</code> defines the beginning of the period and <code>end_month</code> the end of the period. The function requires <code>dplyr</code> and <code>magrittr</code> and tests if <code>runoff_data</code> is a data.frame. An error is returned if it is not. Furthermore, if there is <em>chunk</em> in the data.frame it is removed by <code>remove_junk</code> and <code>prepare_complete_date</code> (see above)is used to ensure that the full time-information, i.e. both date formats, is available.</p>
 <pre class="r"><code>mark_periods &lt;- function(runoff_data, start_month = 10, end_month = 9) {
   assert_dataframe(runoff_data)
-  runoff_data %&lt;&gt;% remove_chunk %&gt;% prepare_complete_date()</code></pre>
+  runoff_data %&lt;&gt;% remove_junk %&gt;% prepare_complete_date()</code></pre>
 <p>The body of the function is split in two parts. In the <em>first part</em> the variable <code>period_range</code> is defined as a integer sequence from the <code>start_month</code> to the <code>end_month</code>. The solution distinguishes between two different cases: <code>start_month</code> &lt;= <code>end_month</code> and <code>start_month</code> &gt; <code>end_month</code>. The solution for the former is trivial, as <code>seq</code> can be used. In principle the solution for the latter is also simple as two ranges (<code>range_1</code> and <code>range_2</code>) can be constructed and concatenated. Note that both solutions additionally construct the integer-vector <code>out_of_period</code>. The vector contains information about the months which are not within the period_range. It would not be necessary for this case. But, since the current solution still seems to be suboptimal, it is needed for the second case, in order to mark the months which are out of the period later.</p>
 <pre class="r"><code>  # (I) get labels for the months
   if (start_month &lt;= end_month ) {
@@ -468,7 +422,7 @@ plot(ex2$period, xlab=&quot;Timestep&quot;, ylab=&quot;# year of summer months&q
 </div>
 <div id="runoff_as_xts" class="section level2">
 <h2><span class="header-section-number">3.6</span> <code>runoff_as_xts</code></h2>
-<p>This function is actually just a small wrapper around the <code>xts::xts</code> function for the purposes of <strong>visCOS</strong>. <code>runoff_as_xts</code> depends on <code>magrittr</code>, <code>xts</code> and <code>zoo</code> (where the last one is acutally a dependency of <code>xts</code>). The function takes the runoff_data as input and makes sure that the data is a data.frame (check: <code>assert_dataframe</code> in the <strong>defensive code</strong> chapter), has no “junk” inside (<code>assert_chunk</code>, see also: <code>remove_chunk</code>) and has all the needed date/time columns (<code>assert_complete_date</code>, see also: <code>prepare_complete_date</code>).</p>
+<p>This function is actually just a small wrapper around the <code>xts::xts</code> function for the purposes of <strong>visCOS</strong>. <code>runoff_as_xts</code> depends on <code>magrittr</code>, <code>xts</code> and <code>zoo</code> (where the last one is acutally a dependency of <code>xts</code>). The function takes the runoff_data as input and makes sure that the data is a data.frame (check: <code>assert_dataframe</code> in the <strong>defensive code</strong> chapter), has no “junk” inside (<code>assert_chunk</code>, see also: <code>remove_junk</code>) and has all the needed date/time columns (<code>assert_complete_date</code>, see also: <code>prepare_complete_date</code>).</p>
 <pre class="r"><code>runoff_as_xts &lt;- function(runoff_data) {
   # pre
   assert_dataframe(runoff_data)

@@ -135,8 +135,8 @@ $(document).ready(function () {
 #' \preformatted{
 #'   viscos_options(
 #'    # data.frame column names
-#'       name_data1 = &quot;qobs&quot;, # name of the first time-series data (observations)  
-#'       name_data2 = &quot;qsim&quot;, # name of the second time-series data (simulations)  
+#'       name_o = &quot;qobs&quot;, # name of the first time-series data (observations)  
+#'       name_s = &quot;qsim&quot;, # name of the second time-series data (simulations)  
 #'       name_COSyear = &quot;yyyy&quot;, # name of year-column
 #'       name_COSmonth = &quot;mm&quot;,  # name of month-column
 #'       name_COSday = &quot;dd&quot;,  # name of day-column
@@ -152,20 +152,21 @@ $(document).ready(function () {
 #'       color_of_low = 'darkred', # color associated with a bad objective function 
 #'       olor_of_mid = 'grey', # color associated with an average objective function 
 #'       color_of_high = 'magenta', # color associated with a high objective function 
+#'       color_of_out = &quot;grey&quot;. # color given to values outside the of range (as defined by of_limits)
 #'       midpoint = 0.5,
-#'       limits = c(0,1)
+#'       of_limits = c(0,1)
 #'   )
 #' }
 #'
 #' @examples
-#' viscos_options(&quot;name_data1&quot;)
-#' viscos_options(name_data1 = &quot;OtherData&quot;)
-#' viscos_options(&quot;name_data1&quot;)
+#' viscos_options(&quot;name_o&quot;)
+#' viscos_options(name_o = &quot;OtherData&quot;)
+#' viscos_options(&quot;name_o&quot;)
 #' @export
 viscos_options &lt;- GlobalOptions::setGlobalOptions( 
   # data.frame column names
-  name_data1 = &quot;qobs&quot;, 
-  name_data2 = &quot;qsim&quot;, 
+  name_o = &quot;qobs&quot;, 
+  name_s = &quot;qsim&quot;, 
   name_COSyear = &quot;yyyy&quot;,
   name_COSmonth = &quot;mm&quot;,
   name_COSday = &quot;dd&quot;,
@@ -179,8 +180,9 @@ viscos_options &lt;- GlobalOptions::setGlobalOptions(
   color_of_low = 'darkred',
   color_of_mid = 'magenta',
   color_of_high = 'green',
+  color_of_out = &quot;grey&quot;,
   midpoint = 0.5,
-  limits = c(0,1)
+  of_limits = c(0,1)
 )</code></pre>
 </div>
 

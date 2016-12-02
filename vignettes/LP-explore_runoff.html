@@ -125,7 +125,7 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This section defines the code of a <a href="http://shiny.rstudio.com/">shiny app</a> that lets users explore the (hydro-) graphs for the different basins in conjunction with objective functions for the user-selected time-window. The calculation of the objective functions are independent of the code defined in the section about <code>get_main_of</code>, since simpler constructions are preferable in the case at hand and more information is given to the user.</p>
+<p>This section defines the code of a <a href="http://shiny.rstudio.com/">shiny app</a> that lets users explore the (hydro-) graphs for the different basins in conjunction with objective functions for the user-selected time-window. The calculation of the objective functions are independent of the code defined in the section about <code>main_of_compute</code>, since simpler constructions are preferable in the case at hand and more information is given to the user.</p>
 <p>The computations of the app are defined in the <code>server</code> part and the appearance in the <code>ui</code>.</p>
 </div>
 <div id="example" class="section level1">
@@ -173,7 +173,7 @@ explore_runoff &lt;- function(runoff_data,
                                    of_list = list(
                                      nse = of_nse, 
                                      kge = of_kge, 
-                                     pBIAS = of_pbias,
+                                     p_bias = of_pbias,
                                      r = of_cor
                                    ),
                                    start_date = NULL,
@@ -181,7 +181,7 @@ explore_runoff &lt;- function(runoff_data,
 <p>At its current state the shiny app needs some pre-calculation, which are defined in this part of the code:</p>
 <ul>
 <li><ol style="list-style-type: upper-roman">
-<li>Defensive code (basically, the leadign zeros are removed from colum names and the date formated is completed and ).</li>
+<li>Defensive code</li>
 </ol></li>
 <li><ol start="2" style="list-style-type: upper-roman">
 <li>Transform data into <code>xts</code> (<code>d_xts</code>).</li>
@@ -191,8 +191,11 @@ explore_runoff &lt;- function(runoff_data,
 </ol></li>
 </ul>
 <p><strong>Note</strong> that this approach forces users to enumerate their basins with integers. <code>Doubles</code> would be transformed into integers by the <code>as.integer</code> command!</p>
-<pre class="r"><code>  # pre-calculations
-  # (I)
+<pre class="r"><code>  # pre-sets
+  # (I) Defense
+  if (is.null(names(of_list))){
+    names(of_list) &lt;- paste(&quot;of&quot;, 1:length(of_list), sep = &quot;_&quot;)
+  }
   clean_runoff_data &lt;- runoff_data %&gt;% remove_leading_zeros
   if ( !viscos_options(&quot;name_COSposix&quot;) %in% names(clean_runoff_data) ) {
     clean_runoff_data %&lt;&gt;% prepare_complete_date
@@ -202,7 +205,7 @@ explore_runoff &lt;- function(runoff_data,
   # (III)
   idx_names &lt;- names(d_xts) %&gt;%
     tolower %&gt;% 
-    grepl(viscos_options(&quot;name_data1&quot;),.)
+    grepl(viscos_options(&quot;name_o&quot;),.)
   d_nums &lt;- d_xts %&gt;%
       names() %&gt;%
       .[idx_names] %&gt;%
@@ -217,9 +220,9 @@ explore_runoff &lt;- function(runoff_data,
       tolower %&gt;%
       unique
     x_string &lt;- unique_data_names[ unique_data_names %&gt;%
-                                     grep(viscos_options(&quot;name_data1&quot;),.) ]
+                                     grep(viscos_options(&quot;name_o&quot;),.) ]
     y_string &lt;- unique_data_names[ unique_data_names  %&gt;%
-                                     grep(viscos_options(&quot;name_data2&quot;),.) ]
+                                     grep(viscos_options(&quot;name_s&quot;),.) ]
     # (II) select data:
     '%&amp;%' &lt;- function(a,b) paste(a,b,sep = &quot;&quot;) # %&amp;% as substitute for function
     selector_x &lt;- reactive({ x_string %&amp;% input$basin_num %&amp;% &quot;$&quot; }) # &quot;$&quot; terminates the searchstring; see regex
@@ -241,10 +244,10 @@ explore_runoff &lt;- function(runoff_data,
     output$hydrographs &lt;- renderDygraph({
       dygraph( xts_selected_data() ) %&gt;%
         dySeries(&quot;x&quot;,
-                 label = visCOS::viscos_options(&quot;name_data1&quot;),
+                 label = visCOS::viscos_options(&quot;name_o&quot;),
                  color = viscos_options(&quot;color_data1&quot;)) %&gt;%
         dySeries(&quot;y&quot;,
-                 label = visCOS::viscos_options(&quot;name_data2&quot;),
+                 label = visCOS::viscos_options(&quot;name_s&quot;),
                  color = viscos_options(&quot;color_data2&quot;)) %&gt;%
         dyRangeSelector(height = 20, strokeColor = &quot;&quot;) %&gt;% 
         dyCrosshair(direction = &quot;vertical&quot;) %&gt;%
@@ -289,13 +292,14 @@ explore_runoff &lt;- function(runoff_data,
       }
     })
     
-    output$slctd_OF &lt;- renderTable(out_of(), align = &quot;c&quot;)
+    output$slctd_OF &lt;- renderTable(out_of())
     # (VII) exit when user clicks on done 
      # When the Done button is clicked, return a value
     observeEvent(input$done, {
       returnValue &lt;- list(
         selected_time = c(strftime(selcted_from(), format = &quot;%Y-%m-%d-%H-%M&quot;),strftime(selcted_to(), format = &quot;%Y-%m-%d-%H-%M&quot;)),
-        selected_data = sub_slctd(),
+        selected_data = data.frame(date = index(sub_slctd()),
+                                   coredata(sub_slctd())),
         selected_of = out_of()
       )
       stopApp(returnValue)

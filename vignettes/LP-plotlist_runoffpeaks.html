@@ -205,11 +205,11 @@ plotlist_runoffpeaks &lt;- function(runoff_data,
     stop(&quot;window_size is ill defined&quot;)
   }
   data1 &lt;- runoff_data %&gt;%
-     select( starts_with(viscos_options(&quot;name_data1&quot;)) )
+     select( starts_with(viscos_options(&quot;name_o&quot;)) )
   data2 &lt;- runoff_data %&gt;%
-     select( starts_with(viscos_options(&quot;name_data2&quot;)) )
+     select( starts_with(viscos_options(&quot;name_s&quot;)) )
   data_numbers &lt;- names(data1) %&gt;%
-    gsub(viscos_options(&quot;name_data1&quot;),&quot;&quot;,.,ignore.case = TRUE) %&gt;% 
+    gsub(viscos_options(&quot;name_o&quot;),&quot;&quot;,.,ignore.case = TRUE) %&gt;% 
     gsub(&quot;\\D&quot;,&quot;&quot;,.,ignore.case = TRUE)
   # make plotlist: 
   plotlist &lt;- lapply(1:ncol(data1), function(x) plotlist_one_basin(data1[,x],

@@ -123,91 +123,171 @@ $(document).ready(function () {
 </div>
 
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>Here the code for different objective functions is defined. If posisble the calculation is done with the help of the <code>hydroGOF</code> package, if not an R-code solution is tried.</p>
+<div id="introduciton" class="section level1">
+<h1><span class="header-section-number">1</span> Introduciton</h1>
+<p>This chapter defines the objective functions that are used in <strong>visCOS</strong>.</p>
+<p>Objective functions, in short <span class="math inline">\(of\)</span>, are an important part of the hydrological model calibration. Their importance arises from the approximate nature of the models and the large uncertainties of the process. Hydrological models are not only imperfect, in the sense that they simplify nature, but in most cases structurally different than the reality so that different models or their respective parametrisations approximate the hydrograph equally well. Thus, over the time a pletora of objective fucntions have been developed to either make the model-results better interpretable/comparable or to adress specific problems of given objective functions.</p>
 </div>
-<div id="code" class="section level1">
-<h1>Code</h1>
+<div id="objective-functions" class="section level1">
+<h1><span class="header-section-number">2</span> Objective Functions</h1>
+<p>This section defines the code for different objective functions. If possible the calculation is done with the help of the <code>hydroGOF</code> package, if not an R-code solution is tried. Currently 4 main objective functions are provided in <strong>visCOS</strong>. They can be directly extracted from the <code>cos_data</code> data.frame via the <a href="LP-main_of.html"><code>main_of_</code></a> functions. Other objective functions are provided to, but no special extraction and visualisation functions are provided for them.</p>
+<p>For the explanation and definition of the objective fucntion it is assumed that <span class="math inline">\(o\)</span> are the observations (defined by <code>name_o</code> in visCOS) and <span class="math inline">\(s\)</span> are the simulation(defined by <code>name_s</code> in visCOS).</p>
 <pre class="r"><code>#' Objective Functions
 #' 
-#' Different objective Functions, provided by visCOS.
-
-#' @param x observation 
-#' @param y simulations 
+#' Different objective Functions, provided by visCOS. A detailed description 
+#' of each of the provided objective function is provided in the respective
+#' vignette
+#' 
+#' @param o The reference data or observations (o_data)
+#' @param s The created data or the simulations (s_data)
 #' @name of_overview
 NULL</code></pre>
-<pre class="r"><code>#' Root Mean Sqaured Error 
-#' 
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_rmse &lt;- function(x,y) {
-  as.numeric( rmse(y,x) )
-}</code></pre>
-<pre class="r"><code>#' Percentage Bias 
-#' 
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_pbias &lt;- function(x,y) {
-  as.numeric( pbias(y,x) )
-}</code></pre>
+<div id="main-objective-functions" class="section level2">
+<h2><span class="header-section-number">2.1</span> Main Objective Functions</h2>
+<p>Currently the main objective functions are the Nash-Sutcliffe Efficiency, the Kling-Gupta Efficiency, the percentage bias and the correlation.</p>
+<div id="nash-sutcliffe-efficiency" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Nash-Sutcliffe Efficiency</h3>
+<p>The Nash-Sutcliffe Criterion <span class="math inline">\(NSE\)</span> is by far the most used efficiency criterion in hydrology. In the hydrological context <span class="math inline">\(o\)</span> usually represents a set of runoff-observation and <span class="math inline">\(s\)</span> a set of simulations. The <span class="math inline">\(NSE\)</span> is defined in the same way as the general definition of the coefficient of determination <span class="math inline">\(R^2\)</span>:</p>
+<p><span class="math display">\[ NSE = \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
+              {\sum_{t=1}^T \big( o(t)-\bar{o} \big)^2} . \]</span></p>
+<p>The variable <span class="math inline">\(\bar{o}\)</span> represents the average of <span class="math inline">\(o\)</span>. The <span class="math inline">\(NSE\)</span> can be seen as the relational the estimator <span class="math inline">\(s\)</span> and the estimator resulting form the average of the data. It can can have values between minus infinity and 1 with 1 being the perfect fit, 0 when the mean of <span class="math inline">\(s\)</span> is as good as the mean of <span class="math inline">\(o\)</span> and negative values are even worse.</p>
+<p>The code for the <span class="math inline">\(NSE\)</span> computation is:</p>
 <pre class="r"><code>#' Nash-Sutcliffe Efficiency
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_nse &lt;- function(x,y) {
-  as.numeric( NSE(y,x) )
+of_nse &lt;- function(o,s) {
+  as.numeric( NSE(s,o) )
 }</code></pre>
-<pre class="r"><code>#' Inverted Nash-Sutcliffe Efficiency
-#' 
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_invert_nse &lt;- function(x,y) {
-  as.numeric( NSE(x,y) )
-}</code></pre>
+</div>
+<div id="kling-gupta-efficiency" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Kling-Gupta Efficiency</h3>
+<p>The Kling-Gupta Efficiency <span class="math inline">\(KGE\)</span> was introduced by Gupta et al. (2009) to alleviate some of the shortcomings of the <span class="math inline">\(NSE\)</span>. In their paper they argue why the <span class="math inline">\(NSE\)</span> tends to overate simulations with small variance (note: in the context of the paper <span class="math inline">\(\textrm{simulations} = s\)</span>) and propose their efficiency criterion instead.</p>
+<p>The <span class="math inline">\(KGE\)</span> is defined as:</p>
+<p><span class="math display">\[ KGE = 1 - ED, \]</span></p>
+<p>with</p>
+<p><span class="math display">\[ ED = \sqrt{\big(corr(o,s)-1 \big)^2 +
+              \big(\alpha(o,s)-1 \big)^2 +
+              \big(\beta(o,s)-1 \big)^2 }. \]</span></p>
+<p>In which <span class="math inline">\(\alpha(o,s) = \frac{\sigma_s}{ \sigma_o }\)</span> is the standard deviation <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(s\)</span> divided by the <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(o\)</span>, <span class="math inline">\(\beta(o,s) = \mu_s / \mu_o\)</span> with<span class="math inline">\(\mu\)</span> being the arithmetic mean and <span class="math inline">\(corr(o,s)\)</span> as the Pearson’s correlation coefficient (see below). The value range and the quality is similar to the <span class="math inline">\(NSE\)</span>.</p>
+<p>The code for the <span class="math inline">\(KGE\)</span> computation is:</p>
 <pre class="r"><code>#' Kling-Gupta Efficiency
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_kge &lt;- function(x,y) {
-  as.numeric( KGE(y,x) )
+of_kge &lt;- function(o,s) {
+  as.numeric( KGE(s,o) )
 }</code></pre>
+</div>
+<div id="percentage-bias" class="section level3">
+<h3><span class="header-section-number">2.1.3</span> Percentage Bias</h3>
+<p>The percentage of bias <span class="math inline">\(p_{bias}\)</span> is defined as the sum of the differences between <span class="math inline">\(o\)</span> and <span class="math inline">\(s\)</span> divided by the sum of <span class="math inline">\(o\)</span>:</p>
+<p><span class="math display">\[ p_{bias} = 100*\frac{\sum_{t=1}^T [ o(t)-s(t) ] }{\sum_{t=1}^T o(t)}. \]</span></p>
+<p>The <span class="math inline">\(100*\)</span> is just a scaling factor applied to express <span class="math inline">\(p_{bias}\)</span> as a percentage.</p>
+<p>The code for the <span class="math inline">\(p_{bias}\)</span> computation is:</p>
+<pre class="r"><code>#' Percentage Bias 
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_p_bias &lt;- function(o,s) {
+  as.numeric( pbias(s,o) )
+}</code></pre>
+</div>
+<div id="pearsons-correlation-coefficient" class="section level3">
+<h3><span class="header-section-number">2.1.4</span> Pearson’s correlation coefficient</h3>
+<p>Pearson’s correlation coefficient, <span class="math inline">\(r\)</span> or <span class="math inline">\(corr(o,s)\)</span>, is a measure of the linear relationship between <span class="math inline">\(o\)</span> and <span class="math inline">\(s\)</span>. It is defined as:</p>
+<p><span class="math display">\[ r \equiv corr(o,s) = \frac{cov(o,s)}{\sigma_s*\sigma_o}, \]</span></p>
+<p>where <span class="math inline">\(cov(...)\)</span> denotes the covariance. The correlation coefficient can take on values between -1 and 1. The former corresponds to an inverse and the latter to a direct relationship and the closer the values is to zero the weaker is the implied correlation.</p>
+<p>The code for the correlation is:</p>
 <pre class="r"><code>#' Correlation
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_cor &lt;- function(x,y) {
-  diag( cor(x,y) )
+of_cor &lt;- function(o,s) {
+  diag( cor(o,s) )
 }</code></pre>
+</div>
+</div>
+<div id="ohter-objective-functions" class="section level2">
+<h2><span class="header-section-number">2.2</span> Ohter Objective Functions</h2>
+<p>Descriptions shall follow</p>
+<div id="root-mean-sqaured-error" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Root Mean Sqaured Error</h3>
+<p><span class="math display">\[ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
+              {T} \]</span></p>
+<pre class="r"><code>#' Root Mean Sqaured Error 
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_rmse &lt;- function(o,s) {
+  as.numeric( rmse(s,o) )
+}</code></pre>
+</div>
+<div id="inverted-nash-sutcliffe-efficiency" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Inverted Nash-Sutcliffe Efficiency</h3>
+<p><span class="math display">\[ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
+              {\sum_{t=1}^T \big( s(t)-\bar{s} \big)^2} \]</span></p>
+<pre class="r"><code>#' Inverted Nash-Sutcliffe Efficiency
+#' 
+#' @rdname of_overview
+#' @import hydroGOF
+#' @export
+of_invert_nse &lt;- function(o,s) {
+  as.numeric( NSE(o,s) )
+}</code></pre>
+</div>
+<div id="ratio-of-the-standard-deviations" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Ratio of the Standard Deviations</h3>
+<p><span class="math display">\[ rsd = \frac{\sigma_s}{ \sigma_o } \]</span></p>
 <pre class="r"><code>#' Ratio of Standard Deviations
 #'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_rsd &lt;- function(x,y) {
-  as.numeric( rSD(y,x) )
+of_rsd &lt;- function(o,s) {
+  as.numeric( rSD(s,o) )
 }</code></pre>
+</div>
+<div id="ratio-of-the-means" class="section level3">
+<h3><span class="header-section-number">2.2.4</span> Ratio of the Means</h3>
+<p><span class="math display">\[ rmeans = \mu_s / \mu_o\]</span></p>
 <pre class="r"><code>#' Ratio of Means
 #'
 #' @rdname of_overview
 #' @export
-of_rmeans &lt;- function(x,y) {
-  as.numeric( mean(y)/mean(x) )
+of_rmeans &lt;- function(o,s) {
+  as.numeric( mean(s)/mean(o) )
 }</code></pre>
+</div>
+<div id="volumetric-efficiency" class="section level3">
+<h3><span class="header-section-number">2.2.5</span> Volumetric Efficiency</h3>
+<p>The volumetric efficency, <span class="math inline">\(VE\)</span>, uses the absolute distance between observation ans simulation instead of the quadratic and is bound between 0 to 1.</p>
+<p><span class="math display">\[ VE = 1- \frac{\sum_{t=1}^T abs\big( s(t)-o(t) \big)}
+                {\sum_{t=1}^T o(t) } \]</span></p>
 <pre class="r"><code>#' Volumetric Efficiency
 #'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_ve &lt;- function(x,y) {
-  as.numeric( VE(y,x) )
+of_ve &lt;- function(o,s) {
+  as.numeric( VE(s,o) )
 }</code></pre>
+</div>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">3</span> References</h1>
+<ul>
+<li><strong>Percentage Bias:</strong> Yapo P. O., Gupta H. V., Sorooshian S., 1996. Automatic calibration of conceptual rainfall-runoff models: sensitivity to calibration data. Journal of Hydrology. v181 i1-4. 23-48</li>
+<li><strong>Nash-Sutcliffe Efficiency:</strong> Nash, J. E. and J. V. Sutcliffe (1970), River flow forecasting through conceptual models part I -A discussion of principles, Journal of Hydrology, 10 (3), 282-290</li>
+<li><strong>Kling-Gupta Efficiency:</strong> Gupta, Hoshin V., Harald Kling, Koray K. Yilmaz, Guillermo F. Martinez. Decomposition of the mean squared error and NSE performance criteria: Implications for improving hydrological modelling. Journal of Hydrology, Volume 377, Issues 1-2, 20 October 2009, Pages 80-91. DOI: 10.1016/j.jhydrol.2009.08.003. ISSN 0022-1694</li>
+<li><strong>Volumetric Efficency:</strong> Criss, R. E. and Winston, W. E. (2008), Do Nash values have value? Discussion and alternate proposals. Hydrological Processes, 22: 2723-2725. doi: 10.1002/hyp.7072</li>
+</ul>
 </div>
 
 

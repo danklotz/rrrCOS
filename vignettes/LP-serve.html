@@ -145,7 +145,7 @@ serve &lt;- function(plotlist,path = &quot;&quot;, fig_width = 800L, fig_height 
   #writeLines(text = '&lt;html&gt;',fileConn)
   writeLines(text = '&lt;body&gt;',fileConn)
   # check which kind of plotlsit we are dealing with: 
-  if ( all(names(plotlist) == c(&quot;NSE&quot;,&quot;KGE&quot;,&quot;pBIAS&quot;,&quot;CORR&quot;)) ) {
+  if ( all(names(plotlist) == c(&quot;NSE&quot;,&quot;KGE&quot;,&quot;p_bias&quot;,&quot;CORR&quot;)) ) {
     list_to_plot &lt;- plotlist
 
   } else if ( all(grepl(&quot;basin&quot;,names(plotlist1))) ) {

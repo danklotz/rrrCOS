@@ -166,7 +166,7 @@ assert_chunk &lt;- function(runoff_data) {
   regEx &lt;- get_regex_for_runoff_data()
   assertChunk &lt;- names(runoff_data) %&gt;% tolower %&gt;% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
-    stop(&quot;there is still unwanted columns in the data. Try: remove_chunk&quot;)
+    stop(&quot;there is still unwanted columns in the data. Try: remove_junk&quot;)
   }
 }</code></pre>
 </div>
@@ -191,7 +191,8 @@ assert_chunk &lt;- function(runoff_data) {
 <p>Tests if <code>data</code> is a data.frame and returns an error if not.</p>
 <pre class="r"><code># uses stop if the input: &quot;data&quot; is not of class &quot;data.frame&quot;
 assert_dataframe &lt;- function(data) {
-  if ( !is.data.frame(data) ) stop(&quot;data needs to be a data_frame!&quot;)
+  require(&quot;tibble&quot;, quietly = TRUE)
+  if ( !is.data.frame(data)&amp;!is.tibble(data) ) stop(&quot;data needs to be a data_frame!&quot;)
 }</code></pre>
 </div>
 </div>
