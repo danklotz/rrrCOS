@@ -32,7 +32,7 @@ serve <- function(plotlist,path = "", fig_width = 800L, fig_height = 500L) {
   #writeLines(text = '<html>',fileConn)
   writeLines(text = '<body>',fileConn)
   # check which kind of plotlsit we are dealing with: 
-  if ( all(names(plotlist) == c("NSE","KGE","pBIAS","CORR")) ) {
+  if ( all(names(plotlist) == c("NSE","KGE","p_bias","CORR")) ) {
     list_to_plot <- plotlist
 
   } else if ( all(grepl("basin",names(plotlist1))) ) {

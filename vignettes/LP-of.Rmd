@@ -120,21 +120,21 @@ of_kge <- function(o,s) {
 ```
 
 ### Percentage Bias
-The percentage of bias $pBIAS$ is defined as the sum of the differences
+The percentage of bias $p_{bias}$ is defined as the sum of the differences
 between $o$ and $s$ divided by the sum of $o$:
 
-$$pBIAS = 100*\frac{\sum_{t=1}^T [ o(t)-s(t) ] }{\sum_{t=1}^T o(t)}.$$
+$$ p_{bias} = 100*\frac{\sum_{t=1}^T [ o(t)-s(t) ] }{\sum_{t=1}^T o(t)}. $$
 
-The $100*$ is just a scaling factor applied to express $pBIAS$ as a percentage.
+The $100*$ is just a scaling factor applied to express $p_{bias}$ as a percentage.
 
-The code for the $pBIAS$ computation is:
+The code for the $p_{bias}$ computation is:
 ```{r}
 #' Percentage Bias 
 #' 
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
-of_pbias <- function(o,s) {
+of_p_bias <- function(o,s) {
   as.numeric( pbias(s,o) )
 }
 ```

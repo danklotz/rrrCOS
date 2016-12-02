@@ -165,18 +165,18 @@ exemplify its usage for the same data as above.
 ```
 
 ## Percentage Bias
-The percentage of bias $pBIAS$ is defined as the sum of the differences
+The percentage of bias $p_{bias}$ is defined as the sum of the differences
 between $x$ and $y$ divided by the sum of $x$:
 
-$$pBIAS = 100*\frac{\sum_{} [ x(t)-y(t) ] }{\sum_{} x(t)}.$$
+$$p_{bias} = 100*\frac{\sum_{} [ x(t)-y(t) ] }{\sum_{} x(t)}.$$
 
-The $100*$ is just a scaling factor applied to express $pBIAS$ as a percentage.
-The following figure illustrates different $pBIAS$ values for the same data
+The $100*$ is just a scaling factor applied to express $p_{bias}$ as a percentage.
+The following figure illustrates different $p_{bias}$ values for the same data
 as above.
 
 ```{r, eval = TRUE, echo=FALSE, purl=FALSE}
   # examples:
-  plot_list <- make_plotlist(demo_data, of = pbias, of_designation = "pBIAS")
+  plot_list <- make_plotlist(demo_data, of = pbias, of_designation = "p_bias")
 ```
 ```{r, fig.align = "center", eval = TRUE, echo=FALSE, purl=FALSE}
   multiplot(plotlist = plot_list[1:3], cols = 1 )
