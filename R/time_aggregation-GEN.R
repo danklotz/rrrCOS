@@ -37,7 +37,7 @@
     # If cos_data is not provided fully, the date is completed automatically 
     # + junk is removed from the data frame
     full_cos_data <- cos_data %>% 
-      visCOS::prepare_complete_date() %>% 
+      visCOS::complete_dates() %>% 
       visCOS::remove_junk() 
     # aggregate:
     cos_with_aggreggation <- cbind.data.frame(

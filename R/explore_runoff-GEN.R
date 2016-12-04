@@ -38,7 +38,7 @@ explore_runoff <- function(runoff_data,
   }
   clean_runoff_data <- runoff_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
-    clean_runoff_data %<>% prepare_complete_date
+    clean_runoff_data %<>% complete_dates
   }
   # (II)
   d_xts <- runoff_as_xts(clean_runoff_data)

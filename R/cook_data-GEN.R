@@ -88,7 +88,7 @@ only_observed_basins <- function(runoff_data) {
   #' @import magrittr
   #' 
   #' @export
-prepare_complete_date <- function(runoff_data = NULL,
+complete_dates <- function(runoff_data = NULL,
                                   name_cosyear = "yyyy",
                                   name_posix = "POSIXdate") {
   # make sure that magrittr is loaded:
@@ -174,8 +174,7 @@ remove_leading_zeros <- function(runoff_data) {
   #' @export
 mark_periods <- function(runoff_data, start_month = 10, end_month = 9) {
   assert_dataframe(runoff_data)
-  runoff_data %<>% remove_junk %>% prepare_complete_date()
-
+  runoff_data %<>% remove_junk %>% complete_dates()
   # (I) get labels for the months
   if (start_month <= end_month ) {
     period_range <- seq(start_month,end_month)
