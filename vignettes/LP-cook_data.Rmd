@@ -40,20 +40,10 @@ from within **visCOS**:
 ```
 
 The next step would be to adapt the options 
-([`viscos_options`](LP-viscos_options.html)). In this case they are already set 
-as in the example data:
+([`viscos_options`](LP-viscos_options.html), but in this case the options
+are already set as in the data:
 ```{r, purl=FALSE, eval=TRUE}
-   viscos_options(
-   # data.frame column names
-      name_o = "qobs",
-      name_s = "qsim",
-      name_COSyear = "yyyy",
-      name_COSmonth = "mm",
-      name_COSday = "dd",
-      name_COShour = "hh",
-      name_COSmin = "min",
-      name_COSposix = "posixdate",
-      name_COSperiod = "period")
+   viscos_options() %>% unlist()
 ```
 
 However, a glims of the data above showsthat some of the columns 
@@ -94,8 +84,7 @@ the first hydrological year. The end of the year 2010 is not completely inside
 a hydrological year, so the period counter jumps to one.
 
 # Code
-The following functions are defined below. Exported functions can be seen by the
-user.
+This function defines the data cooking functions. 
 
 ## `get_runoff_example`
 visCOS porvides some exemplary data. All the available functions can be tested
@@ -105,15 +94,11 @@ within the package via `read.csv`
 **Note** at this stage, only a comparison between **numbered catchments** 
 is possible for two parameters is possible. So the data must include an integer 
 number after the description (like "QObs_001" and "QSim_001")
-```{r, echo=FALSE}
+```{r}
   #' Get runoff example
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
-  
-```
-
-```{r}
   get_runoff_example <- function() {
     file_path <- system.file("extdata",
                              "runoff_example.csv",
@@ -123,21 +108,25 @@ number after the description (like "QObs_001" and "QSim_001")
   }
 ```
 
-
 ## `remove_junk`
 This function removes all columns not specified in the `viscos_options`,
-as well basins where no observations are available.
-The first part is done by identifying the names of the data_frame and
-searching for the idx of the names defined in the `viscos_options`.
-The second part is done via the function `prepare.only_observed` (see next 
-subchapter). It is actually so pretty simple, but really useful. Since the 
-solution is quite specific, the function tests if the input is a data.frame and 
-returns an error if not.
-
+as well basins where no `data_o` is available.
 **Note** that the routine is **not** case sensitive. It does not distinguish
 between small and capital letters!
 
-```{r echo=FALSE}
+The first part of the code loads the dependencies and makes sure that the
+runoff_data variable is a data.frame (see: chapter about *defensive coding*).
+
+The body of `remove_junk` works as following: First, the names of the columns 
+of the runoff_data are determined and [helper function](LP-helpers.html) 
+`get_regex_for_runoff_data` is invoked to get regular expressions for the 
+columns defined within `viscos_otopns`. Then the `idx` of the different wanted 
+data is extracted and used to select the appropriate columns. 
+
+Afterwards, the "sub" function `only_observed_basins` is being executed (see 
+next chapter)
+
+```{r}
   #' removes chunk in runoff_data
   #'
   #' Removes all columns which are not foreseen (see: viscos_options) from
@@ -151,42 +140,25 @@ between small and capital letters!
   #' 
   #' @export
 
-```
-
-The first part of the code loads the dependencies and makes sure that the
-runoff_data variable is a data.frame (see: chapter about *defensive coding*):
-```{r}
   remove_junk <- function(runoff_data) {
-```
-
-The body of `remove_junk` works as following: First, the names of the columns 
-of the runoff_data are determined via `names` and all set to lower letters with
-`tolower`. This is the reason why the function is not case sensitive!
-Then helper function `get_regex_for_runoff_data` is called to get regular
-expressions that identify the wanted columns. Later, `grep` is used to get
-the index `idx` of the columns with the given names (`lowercase_names_in_data`).
-Finally, `idx`is then used to select the wanted columns.
-
-In the second part, the function `only_observed_basins` is being executed (see 
-next chapter)
-```{r}
   assert_dataframe(runoff_data)
   # 
-  lowercase_names_in_data <- runoff_data %>% names %>% tolower
-  regex_columns <- get_regex_for_runoff_data() %>% tolower # see: helpers
+  names_in_data <- runoff_data %>% names
+  regex_columns <- get_regex_for_runoff_data() # see: helpers
   # 
   idx <- regex_columns %>%
-    grep(.,lowercase_names_in_data)
-  no_chunk_runoff_data <- runoff_data[ , idx]
-  return( only_observed_basins(no_chunk_runoff_data) )
+    grep(.,names_in_data, ignore.case = TRUE)
+  no_junk_runoff_data <- runoff_data[ , idx]
+  return( only_observed_basins(no_junk_runoff_data) )
   }
 ```
 
-
 ### `only_observed_basins`
-This function removes basins for which no observations are available. No
-observation are interpreted as columns in which all the entries are either -999
-or `NA's`. 
+This function removes basins for which no data in the `o_data` colum.
+No observation are interpreted as columns in which all the entries are either as 
+defined in `viscos_options("missing_data")` or `NA's`. Internaly they are 
+threaded in the same way by replacing all `NA's` with whatever is defined 
+within `viscos_options("missing_data")`.
 ```{r, echo=FALSE}
   # remove basins without observations
   #
@@ -198,23 +170,14 @@ or `NA's`.
   # @return data.frame without the observation-free basins
   # 
   # @import magrittr
-```
-
-Initiation of function: 
-```{r}
-only_observed_basins <- function(runoff_data) {
-  require("magrittr")
-  assert_dataframe(runoff_data)
-```
-
-In order to handle the `NA's` and -999 in the same way all `NA's` are replaced
-with -999. Then the `lapply` function is used to find the max of each column.
-```{r}
-  chosen_cols <- which( names(runoff_data) != viscos_options("name_COSposix") )
-  chosen_rows <- is.na(runoff_data[,chosen_cols])
-  data_no_posix <- runoff_data[ ,chosen_cols]
-  data_no_posix[chosen_rows] <- -999
-  colmax <- lapply(X = data_no_posix, FUN = max) # get max of any column
+  only_observed_basins <- function(runoff_data) {
+    require("magrittr")
+    assert_dataframe(runoff_data)
+    chosen_cols <- which( names(runoff_data) != viscos_options("name_COSposix") )
+    chosen_rows <- is.na(runoff_data[,chosen_cols])
+    data_no_posix <- runoff_data[ ,chosen_cols]
+    data_no_posix[chosen_rows] <- viscos_options("missing_data")
+    colmax <- lapply(X = data_no_posix, FUN = max) # get max of any column
 ```
 
 If any column has a max of -999 it is worth further investigation.
@@ -235,32 +198,29 @@ assuming that all negative values are NAs. This is not a strong assumption,
 because there should never be negative flows! In the end the resulting
 data.frame is returned.
 ```{r}
-  if ( any(colmax < 0.0) ){
-    idx_temp <- which(colmax < 0.0)
-    obs_regex <- paste(viscos_options("name_o"),".*", sep ="")
-    OnlyQobsSelected <- idx_temp %>%
-      names %>%
-      tolower %>%
-      grepl(obs_regex,.) %>%
-      any
-    if (!OnlyQobsSelected){
-      stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
+    if ( any(colmax < 0.0) ){
+      idx_temp <- which(colmax < 0.0)
+      obs_regex <- paste(viscos_options("name_o"),".*", sep ="")
+      OnlyQobsSelected <- idx_temp %>%
+        names %>%
+        tolower %>%
+        grepl(obs_regex,.) %>%
+        any
+      if (!OnlyQobsSelected){
+        stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
+      }
+      idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
+      d_onlyObserved <- runoff_data[-idx_slct]
+      # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
+      colmin <- lapply(X = d_onlyObserved, FUN = min)
+      idx_temp <- which(colmin < 0.0)
+      d_onlyObserved[d_onlyObserved[idx_temp]<0, idx_temp] <- NA
+      return(d_onlyObserved)
+    } else {
+      return(runoff_data)
     }
-    idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
-    d_onlyObserved <- runoff_data[-idx_slct]
-    # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
-    colmin <- lapply(X = d_onlyObserved, FUN = min)
-    idx_temp <- which(colmin < 0.0)
-    d_onlyObserved[d_onlyObserved[idx_temp]<0, idx_temp] <- NA
-    return(d_onlyObserved)
-  } else {
-    return(runoff_data)
   }
-}
-
-
 ```
-
 
 ## `complete_dates`
 This function is a wrapper. It is however not finished yet!
