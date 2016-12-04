@@ -22,16 +22,16 @@ The subsequent functions are defined below
 
 function | exported
 ------------- | -------------
-`get_regex_for_runoff_data` | no
+`get_regex_for_cos_data` | no
 `get_basin_numbers` | no
 `set_panel_size`| no
 
-## `get_regex_for_runoff_data`
+## `get_regex_for_cos_data`
 This function can be called to get the names of the 8 allowed column-names
-within **visCOS**. `get_regex_for_runoff_data` takes no input, as it gets the
+within **visCOS**. `get_regex_for_cos_data` takes no input, as it gets the
 information directly from the global options (see: *viscos_options section*).
 ```{r}
-get_regex_for_runoff_data <- function() {
+get_regex_for_cos_data <- function() {
   regex_pattern <- paste("^",viscos_options("name_COSyear"),"$|",
                          "^",viscos_options("name_COSmonth"),"$|",
                          "^",viscos_options("name_COSday"),"$|",
@@ -49,14 +49,14 @@ get_regex_for_runoff_data <- function() {
 
 ## `get_basin_numbers`
 This function fetches the number of basins from the provided data.frame
-(`runoff_data`) by removing all the non-digits characters from the column names.
+(`cos_data`) by removing all the non-digits characters from the column names.
 ```{r}
-get_basin_numbers <- function(runoff_data) {
+get_basin_numbers <- function(cos_data) {
   require("magrittr", quietly = TRUE)
-  assert_dataframe(runoff_data)
-  assert_chunk(runoff_data)
+  assert_dataframe(cos_data)
+  assert_chunk(cos_data)
   #
-  d_names <- names(runoff_data)
+  d_names <- names(cos_data)
   d_nums <- d_names  %>% gsub('\\D','',.) %>% unique
   d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)

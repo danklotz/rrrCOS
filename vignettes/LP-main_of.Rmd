@@ -69,12 +69,12 @@ from the `COSERO` data.frame. The objective functions are extracted for each
 basin separately and computed for the entire length of the data, as well as
 for each period separately.
 ```{r}
-#' Get basic objective function for runoff_data
+#' Get basic objective function for cos_data
 #'
 #' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation)
 #' for every basin and the chosen periods.
 #'
-#' @param runoff_data runoff_data data.frame.
+#' @param cos_data cos_data data.frame.
 #' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
 #'
@@ -82,21 +82,21 @@ for each period separately.
 #' @import dplyr
 #'
 #' @export
-main_of_compute <- function(runoff_data) {
-  assert_dataframe(runoff_data)
-  if( !exists(viscos_options("name_COSperiod"), where = runoff_data) ) {
-    stop("Error! Period-Column missing in runoff_data; use `mark_periods`")
+main_of_compute <- function(cos_data) {
+  assert_dataframe(cos_data)
+  if( !exists(viscos_options("name_COSperiod"), where = cos_data) ) {
+    stop("Error! Period-Column missing in cos_data, use `mark_periods`")
   }
 ```
 
 The computational part of the function works as follows. In step (I) the
-non-marked periods of `runoff_data` (columns of
+non-marked periods of `cos_data` (columns of
 `viscos_options("name_COSperiod")` which are smaller then 0) are excluded
 from further calculations. The thereby obtained data.frame is named
 `evaluation_data`.
 ```{r}
   evaluation_data <-
-    runoff_data[ runoff_data[[viscos_options("name_COSperiod")]] > 0, ]
+    cos_data[ cos_data[[viscos_options("name_COSperiod")]] > 0, ]
 ```
 
 Extract the important information for the calculations:
@@ -201,10 +201,10 @@ the function [`get_basin_numbers`](LP-helpers.html).
 #'
 #' @rdname of_overview
 #' @export
-main_of_barplot <- function(runoff_data) {
+main_of_barplot <- function(cos_data) {
   main_of_names <- c("NSE","KGE","CORR","p_bias")
-  assert_dataframe(runoff_data)
-  of <- main_of_compute(runoff_data)
+  assert_dataframe(cos_data)
+  of <- main_of_compute(cos_data)
   # calculate objective functions
   num_basins <- ncol(of) - 1
   # melt the of:
@@ -249,11 +249,11 @@ main_of_barplot <- function(runoff_data) {
 #' @rdname of_overview
 #' @import pasta
 #' @export
-main_of_rasterplot <- function(runoff_data) {
+main_of_rasterplot <- function(cos_data) {
   main_of_names <- c("NSE","KGE","CORR","p_bias")
   regex_main_of <- main_of_names %&% ".*"
-  assert_dataframe(runoff_data)
-  of <- main_of_compute(runoff_data)
+  assert_dataframe(cos_data)
+  of <- main_of_compute(cos_data)
   #
   plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of)) %>%
     set_names(main_of_names)

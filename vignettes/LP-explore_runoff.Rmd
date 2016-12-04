@@ -57,12 +57,12 @@ made before the app as such is defined. They include:
 - (II) Transform data into `xts` (`d_xts`).
 - (III) Save numeration of basins within the variable `d_nums`.
 ```{r}
-  #' explore runoff_data with Objective Functions
+  #' explore cos_data with Objective Functions
   #'
-  #' Runs a Shiny App which can be used to get an overview of a runoff_data time
+  #' Runs a Shiny App which can be used to get an overview of a cos_data time
   #' series object.
   #'
-  #' @param d_xts runoff_data formatted as time series
+  #' @param d_xts cos_data formatted as time series
   #'
   #' @import shiny
   #' @import miniUI
@@ -80,7 +80,7 @@ made before the app as such is defined. They include:
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
   #' explore_runoff(d_runoff)
-explore_runoff <- function(runoff_data,
+explore_runoff <- function(cos_data,
                                    of_list = list(
                                      nse = of_nse,
                                      kge = of_kge,
@@ -94,12 +94,12 @@ explore_runoff <- function(runoff_data,
   if (is.null(names(of_list))){
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
-  clean_runoff_data <- runoff_data %>% remove_leading_zeros
-  if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
-    clean_runoff_data %<>% complete_dates
+  clean_cos_data <- cos_data %>% remove_leading_zeros
+  if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
+    clean_cos_data %<>% complete_dates
   }
   # (II)
-  d_xts <- runoff_as_xts(clean_runoff_data)
+  d_xts <- runoff_as_xts(clean_cos_data)
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>%
@@ -117,8 +117,8 @@ The major readability problems occur because of the unusual formatting enforced
 by shinyApps.
 ```{r}
   server <- function(input, output, session) {
-    # (I) get strings used in the naming of clean_runoff_data:
-    unique_data_names <- names(clean_runoff_data) %>%
+    # (I) get strings used in the naming of clean_cos_data:
+    unique_data_names <- names(clean_cos_data) %>%
       gsub("\\d","",.) %>%
       tolower %>%
       unique
@@ -131,7 +131,7 @@ by shinyApps.
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
-      select(clean_runoff_data,
+      select(clean_cos_data,
              matches( selector_x() ),
              matches( selector_y() )
              ) %>%
@@ -141,7 +141,7 @@ by shinyApps.
     # (III) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
-          order.by = clean_runoff_data[[viscos_options("name_COSposix")]])
+          order.by = clean_cos_data[[viscos_options("name_COSposix")]])
     })
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
