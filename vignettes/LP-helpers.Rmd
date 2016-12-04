@@ -65,14 +65,14 @@ get_basin_numbers <- function(runoff_data) {
 
 ```
 
-
 ## `set_panel_size`
-Klotz: I honestly forgot what this function does! But I think ti is a good helper
-I need to look it up, but am not ready yet! I roughly remember that setting
-graphical options with ggplot is a mess, and this is a function, which
-might solves a lot. However, I am not sure! 
+Klotz:
+This function is most likely not needed anymore, but I honestly forgot what this function does!
+
+ I think it is a good helper if multiple `ggplots` should be plotted within one plot.
+
 ```{r}
-set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
+set_panel_size <- function(p=NULL, g = ggplotGrob(p), file=NULL,
                            margin = unit(1,"mm"),
                            width=unit(3, "cm"),
                            height=unit(2, "cm")){
@@ -86,7 +86,7 @@ set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
   g$heights[panel_index_h] <- rep(list(height), nh)
   class(g) <- c("fixed", class(g), "ggplot")
   if(!is.null(file))
-    ggsave(file, 
+    ggsave(file,
            g,
            width = convertWidth(sum(g$widths) + margin,
                                 unitTo = "in", valueOnly = TRUE),

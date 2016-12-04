@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-author: 
+author:
 - "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "6 Juli 2016"
 output: html_document
@@ -12,10 +12,10 @@ package, yet. If you want to do it nevertheless...
 visCOS is an R-package that provides summaries and visualisation to support
 parameter estimation for conceptual rainfall-runoff models in general and
 COSERO in special. COSERO is a hbv-like model that was developed at the
-institue for water management, hydrology and hydraulic engineering (IWHW) at
-BOKU, Vienna. The name is an abreviation for "**Co**nceptual
+institute for water management, hydrology and hydraulic engineering (IWHW) at
+BOKU, Vienna. The name is an abbreviation for "**Co**nceptual
 **Se**mi-Distributed **R**ainfall Run**o**ff Model".
-This page provides a hub to access the differnet examples and the entire program
+This page provides a hub to access the different examples and the entire program
 code.
 
 ## Loading raw data
@@ -23,19 +23,19 @@ From the point of view of **visCOS** raw-data are time-series of observations
 and model output. Usually raw data is saved in some simple file format,
 e.g. *.txt* or *.csv*. `R` already includes many option to read those files
 with the `read.table` functionalities.
-For larger unstructured files the read options of the `data.table` package is 
+For larger unstructured files the read options of the `data.table` package is
 recommended. In our tests it was fastest and most flexible option.
 Alternatively the `readr` can be used if the data is more structured and large.
 
-**Note** at this stage, only a comparison between **numbered catchments** 
- for two parameters is possible. So the data must include an integer 
+**Note** at this stage, only a comparison between **numbered catchments**
+ for two parameters is possible. So the data must include an integer
 number after the description (like "QObs_001" and "QSim_001").
 
-## The basic data structure 
+## The basic data structure
 Shall follow
 
 # The Package
-**1. Basics** 
+**1. Basics**
 
 - [Cooking Data](LP-cook_data.html)
 - [Set Options](LP-viscos_options.html)
@@ -55,4 +55,3 @@ Shall follow
 
 - [Defensive Code](LP-defensive_code.html)
 - [Helper Funcitons](LP-helpers.html)
-

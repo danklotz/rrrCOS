@@ -1,6 +1,6 @@
 ---
 title: "Ojective Functions"
-author: 
+author:
 - "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "14 Juli 2016"
 output:
@@ -16,35 +16,35 @@ output:
 # Introduciton
 This chapter defines the objective functions that are used in **visCOS**.
 
-Objective functions, in short $of$, are an important part of the hydrological 
-model calibration. Their importance arises from the approximate nature of the 
-models and the large uncertainties of the process. Hydrological models are not 
-only imperfect, in the sense that they simplify nature, but in most cases 
-structurally different than the reality so that different models or their 
-respective parametrisations approximate the hydrograph equally well. Thus, 
-over the time a pletora of objective fucntions have been developed to either 
-make the model-results better interpretable/comparable or to adress specific 
-problems of given objective functions. 
+Objective functions, in short $of$, are an important part of the hydrological
+model calibration. Their importance arises from the approximate nature of the
+models and the large uncertainties of the process. Hydrological models are not
+only imperfect, in the sense that they simplify nature, but in most cases
+structurally different than the reality so that different models or their
+respective parametrisations approximate the hydrograph equally well. Thus,
+over the time a many objective functions have been developed to either
+make the model-results better interpretable/comparable or to address specific
+problems of given objective functions.
 
-# Objective Functions 
+# Objective Functions
 This section defines the code for different objective functions. If possible the
 calculation is done with the help of the `hydroGOF` package, if not an R-code
-solution is tried. 
+solution is tried.
 Currently 4 main objective functions are provided in **visCOS**. They can
-be directly extracted from the `cos_data` data.frame via the 
-[`main_of_`](LP-main_of.html) functions. Other objective functions are provided 
-to, but no special extraction and visualisation functions are provided for them. 
+be directly extracted from the `cos_data` data.frame via the
+[`main_of_`](LP-main_of.html) functions. Other objective functions are provided
+to, but no special extraction and visualisation functions are provided for them.
 
-For the explanation and definition of the objective fucntion it is assumed that 
- $o$ are the observations (defined by `name_o` in visCOS) and $s$ are the 
+For the explanation and definition of the objective function it is assumed that
+ $o$ are the observations (defined by `name_o` in visCOS) and $s$ are the
  simulation(defined by `name_s` in visCOS).
 ```{r}
 #' Objective Functions
-#' 
-#' Different objective Functions, provided by visCOS. A detailed description 
+#'
+#' Different objective Functions, provided by visCOS. A detailed description
 #' of each of the provided objective function is provided in the respective
 #' vignette
-#' 
+#'
 #' @param o The reference data or observations (o_data)
 #' @param s The created data or the simulations (s_data)
 #' @name of_overview
@@ -52,7 +52,7 @@ NULL
 ```
 
 ## Main Objective Functions
-Currently the main objective functions are the Nash-Sutcliffe Efficiency, 
+Currently the main objective functions are the Nash-Sutcliffe Efficiency,
 the Kling-Gupta Efficiency, the percentage bias and the correlation.
 
 ### Nash-Sutcliffe Efficiency
@@ -66,15 +66,15 @@ $$ NSE = \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
 
 The variable $\bar{o}$ represents the average of $o$. The $NSE$
 can be seen as the relational the estimator $s$ and the estimator
-resulting form the average of the data. It can can have values between minus 
-infinity and 1 with 1 being the perfect fit, 0 when the mean of $s$ is as 
+resulting form the average of the data. It can can have values between minus
+infinity and 1 with 1 being the perfect fit, 0 when the mean of $s$ is as
 good as the mean of $o$ and negative values are even worse.
 
 The code for the $NSE$ computation is:
 
 ```{r}
 #' Nash-Sutcliffe Efficiency
-#' 
+#'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
@@ -102,15 +102,15 @@ $$ ED = \sqrt{\big(corr(o,s)-1 \big)^2 +
               \big(\beta(o,s)-1 \big)^2 }. $$
 
 In which $\alpha(o,s) = \frac{\sigma_s}{ \sigma_o }$ is the standard deviation
-$\sigma$ of $s$ divided by the $\sigma$  of $o$, $\beta(o,s) = \mu_s / \mu_o$ 
-with$\mu$ being the arithmetic mean and $corr(o,s)$ as the 
-Pearson's correlation coefficient (see below). The value range and the 
-quality is similar to the $NSE$. 
+$\sigma$ of $s$ divided by the $\sigma$  of $o$, $\beta(o,s) = \mu_s / \mu_o$
+with$\mu$ being the arithmetic mean and $corr(o,s)$ as the
+Pearson's correlation coefficient (see below). The value range and the
+quality is similar to the $NSE$.
 
 The code for the $KGE$ computation is:
 ```{r}
 #' Kling-Gupta Efficiency
-#' 
+#'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
@@ -129,8 +129,8 @@ The $100*$ is just a scaling factor applied to express $p_{bias}$ as a percentag
 
 The code for the $p_{bias}$ computation is:
 ```{r}
-#' Percentage Bias 
-#' 
+#' Percentage Bias
+#'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
@@ -140,7 +140,7 @@ of_p_bias <- function(o,s) {
 ```
 
 ### Pearson's correlation coefficient
-Pearson's correlation coefficient, $r$ or $corr(o,s)$, is a measure of the 
+Pearson's correlation coefficient, $r$ or $corr(o,s)$, is a measure of the
 linear relationship between $o$ and $s$. It is defined as:
 
 $$ r \equiv corr(o,s) = \frac{cov(o,s)}{\sigma_s*\sigma_o}, $$
@@ -148,12 +148,12 @@ $$ r \equiv corr(o,s) = \frac{cov(o,s)}{\sigma_s*\sigma_o}, $$
 where $cov(...)$ denotes the covariance. The correlation
 coefficient can take on values between -1 and 1. The former corresponds to an
 inverse and the latter to a direct relationship and the closer the values
-is to zero the weaker is the implied correlation. 
+is to zero the weaker is the implied correlation.
 
 The code for the correlation is:
 ```{r}
 #' Correlation
-#' 
+#'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
@@ -162,7 +162,7 @@ of_cor <- function(o,s) {
 }
 ```
 
-## Ohter Objective Functions 
+## Ohter Objective Functions
 
 Descriptions shall follow
 
@@ -171,8 +171,8 @@ Descriptions shall follow
 $$ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
               {T} $$
 ```{r}
-#' Root Mean Sqaured Error 
-#' 
+#' Root Mean Sqaured Error
+#'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
@@ -187,7 +187,7 @@ $$ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
               {\sum_{t=1}^T \big( s(t)-\bar{s} \big)^2} $$
 ```{r}
 #' Inverted Nash-Sutcliffe Efficiency
-#' 
+#'
 #' @rdname of_overview
 #' @import hydroGOF
 #' @export
@@ -224,8 +224,8 @@ of_rmeans <- function(o,s) {
 ```
 
 ### Volumetric Efficiency
-The volumetric efficency, $VE$, uses the absolute distance between observation ans 
-simulation instead of the quadratic and is bound between 0 to 1. 
+The volumetric efficiency, $VE$, uses the absolute distance between observation and
+simulation instead of the quadratic and is bound between 0 to 1.
 
 $$ VE = 1- \frac{\sum_{t=1}^T abs\big( s(t)-o(t) \big)}
                 {\sum_{t=1}^T o(t) } $$
@@ -241,9 +241,9 @@ of_ve <- function(o,s) {
 }
 ```
 
-# References 
+# References
 - **Percentage Bias:** Yapo P. O., Gupta H. V., Sorooshian S., 1996. Automatic calibration of conceptual rainfall-runoff models: sensitivity to calibration data. Journal of Hydrology. v181 i1-4. 23-48
-- **Nash-Sutcliffe Efficiency:** Nash, J. E. and J. V. Sutcliffe (1970), River flow forecasting through conceptual models part I -A discussion of principles, Journal of Hydrology, 10 (3), 282-290 
+- **Nash-Sutcliffe Efficiency:** Nash, J. E. and J. V. Sutcliffe (1970), River flow forecasting through conceptual models part I -A discussion of principles, Journal of Hydrology, 10 (3), 282-290
 - **Kling-Gupta Efficiency:** Gupta, Hoshin V., Harald Kling, Koray K. Yilmaz, Guillermo F. Martinez. Decomposition of the mean squared error and NSE performance criteria: Implications for improving hydrological modelling. Journal of Hydrology, Volume 377, Issues 1-2, 20 October 2009, Pages 80-91. DOI: 10.1016/j.jhydrol.2009.08.003. ISSN 0022-1694
-- **Volumetric Efficency:** Criss, R. E. and Winston, W. E. (2008), Do Nash values have value?
+- **Volumetric Efficiency:** Criss, R. E. and Winston, W. E. (2008), Do Nash values have value?
 Discussion and alternate proposals. Hydrological Processes, 22: 2723-2725. doi: 10.1002/hyp.7072

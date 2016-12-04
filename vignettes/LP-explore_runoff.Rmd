@@ -20,16 +20,16 @@ the section about `main_of_compute`, since simpler constructions are preferable
 in the case at hand and more information is given to the user.
 
 The computations of the app are defined in the `server` part and the
-appearance in the `ui`. 
+appearance in the `ui`.
 
 # Example
-In this chapter it is shown, how the function `explore_runoff` can be 
-used to take a closer look at the data series you loaded. Only prerequirements 
-are properly loaded data and correctly addressed `viscos_options`. Additionally, 
-you can adapt the *color_* options in the `viscos_options`. Information on 
+In this chapter it is shown, how the function `explore_runoff` can be
+used to take a closer look at the data series you loaded. Only pre-requirements
+are properly loaded data and correctly addressed `viscos_options`. Additionally,
+you can adapt the *color_* options in the `viscos_options`. Information on
 the *objective functions* can be found [here](ex-OF_explanation.html)
 
-Running the `explore_runoff` with your data as input, a shiny app is 
+Running the `explore_runoff` with your data as input, a shiny app is
 started in a new window (in this case an example .jpg with explanations):
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_o = "green", color_s = "red")
@@ -42,15 +42,20 @@ Users can select different basins via the selection box (*# basins:*) on the
 top-left and interactively zoom and move the graph in the center by clicking
 on it or moving the date switches below the graph. While doing so the
 objective functions (presented in the table below) are re-calculated for the
-chosen time window. 
+chosen time window.
 
 
 # Code
 In the following paragraphs the code of the shiny app is defined.
 
 ## `explore_runoff`
-This function represents the main part of the shiny app. 
+This function represents the main part of the shiny app.
+The current solution **forces** users to enumerate their basins with and the shiny app needs some pre-calculation, which need to be calculated before the app is started. These calculations are
+made before the app as such is defined. They include:
 
+- (I) Defensive code
+- (II) Transform data into `xts` (`d_xts`).
+- (III) Save numeration of basins within the variable `d_nums`.
 ```{r}
   #' explore runoff_data with Objective Functions
   #'
@@ -58,18 +63,18 @@ This function represents the main part of the shiny app.
   #' series object.
   #'
   #' @param d_xts runoff_data formatted as time series
-  #' 
-  #' @import shiny 
+  #'
+  #' @import shiny
   #' @import miniUI
   #' @importFrom xts xts
   #' @import dplyr
   #' @import magrittr
-  #' @import dygraphs 
+  #' @import dygraphs
   #' @import hydroGOF
   #' @importFrom purrr map_df
-  #' 
+  #'
   #' @export
-  #' 
+  #'
   #' @examples
   #' # get example data,
   #' # explore the model performance
@@ -77,27 +82,13 @@ This function represents the main part of the shiny app.
   #' explore_runoff(d_runoff)
 explore_runoff <- function(runoff_data,
                                    of_list = list(
-                                     nse = of_nse, 
-                                     kge = of_kge, 
+                                     nse = of_nse,
+                                     kge = of_kge,
                                      p_bias = of_pbias,
                                      r = of_cor
                                    ),
                                    start_date = NULL,
                                    end_date = NULL) {
-  
-```
-
-At its current state the shiny app needs some pre-calculation, which are defined 
-in this part of the code: 
-
-- (I) Defensive code 
-- (II) Transform data into `xts` (`d_xts`). 
-- (III) Save numeration of basins within the variable `d_nums`.
-
-**Note** that this approach forces users to enumerate their basins with
-integers. `Doubles` would be transformed into integers by the `as.integer`
-command!
-```{r}
   # pre-sets
   # (I) Defense
   if (is.null(names(of_list))){
@@ -111,7 +102,7 @@ command!
   d_xts <- runoff_as_xts(clean_runoff_data)
   # (III)
   idx_names <- names(d_xts) %>%
-    tolower %>% 
+    tolower %>%
     grepl(viscos_options("name_o"),.)
   d_nums <- d_xts %>%
       names() %>%
@@ -123,14 +114,7 @@ command!
 
 The server-side of the shiny app is rather lengthy but not too difficult.
 The major readability problems occur because of the unusual formatting enforced
-by shiny. The `reactive({})` marks all the interactive parts of the server.
-The calculations are saved in the output-structures, which is handed over to the
-`ui`. The graphs are saved/plotted to `output$hydrographs` and the objective
-functions to `output$slctd_OF`. The start and end of the current time window is
-handed  as string to the variable `output$selected_timewindow`. This requires
-some transformation from the obtained `xts` values. This is done with
-`strftime(., format = "%d %b %Y)`, which converts between character
-representations and objects of `POSIXlt` and `POSIXct`.
+by shinyApps.
 ```{r}
   server <- function(input, output, session) {
     # (I) get strings used in the naming of clean_runoff_data:
@@ -168,9 +152,9 @@ representations and objects of `POSIXlt` and `POSIXct`.
         dySeries("y",
                  label = visCOS::viscos_options("name_s"),
                  color = viscos_options("color_s")) %>%
-        dyRangeSelector(height = 20, strokeColor = "") %>% 
+        dyRangeSelector(height = 20, strokeColor = "") %>%
         dyCrosshair(direction = "vertical") %>%
-        dyOptions(includeZero = TRUE) 
+        dyOptions(includeZero = TRUE)
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
@@ -205,14 +189,14 @@ representations and objects of `POSIXlt` and `POSIXct`.
     })
     out_of <- reactive({
       if (!is.null(input$hydrographs_date_window)) {
-          map_df(of_list, function(of_,x,y) of_(x,y), 
-                 x = sub_slctd()$x, 
+          map_df(of_list, function(of_,x,y) of_(x,y),
+                 x = sub_slctd()$x,
                  y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
       }
     })
-    
+
     output$slctd_OF <- renderTable(out_of())
-    # (VII) exit when user clicks on done 
+    # (VII) exit when user clicks on done
      # When the Done button is clicked, return a value
     observeEvent(input$done, {
       returnValue <- list(
@@ -226,18 +210,14 @@ representations and objects of `POSIXlt` and `POSIXct`.
   }
 ```
 
-The `miniUI` is quite spartan. It consists a input selection (`selectInput`),
-which allows user to select different basins, the `dygraph` output `hydrographs`
-for the interactive exploration of the $x$ and $y$ data and a formatted table
-output (`slctd_OF`), which displays the different objective functions (defined
-in `explore_of`). The `hr` command block separates this table from the
-`dygraph` output via a small-grey line.
+The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `explore_runoff` .
 ```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",
                                 "# basin:",
                                 choices = d_nums,
-                                selected = 1, 
+                                selected = 1,
                                 selectize = FALSE)),
     miniContentPanel(
       fillCol(
@@ -255,12 +235,12 @@ in `explore_of`). The `hr` command block separates this table from the
 ```
 
 ```{r}
-dyCrosshair <- function(dygraph, 
+dyCrosshair <- function(dygraph,
                         direction = c("both", "horizontal", "vertical")) {
   dyPlugin(
     dygraph = dygraph,
     name = "Crosshair",
-    path = system.file("examples/plugins/crosshair.js", 
+    path = system.file("examples/plugins/crosshair.js",
                        package = "dygraphs"),
     options = list(direction = match.arg(direction))
   )
@@ -272,4 +252,3 @@ dyCrosshair <- function(dygraph,
   runGadget(ui,server)
 }
 ```
-

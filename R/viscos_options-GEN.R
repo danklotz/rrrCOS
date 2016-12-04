@@ -19,10 +19,7 @@
 #'    # plot options
 #'       color_o = "steelblue", # color associated with the first o time-series data
 #'       color_s= "orange",  # color associated with the second s time-series data
-#'       legend_title = "legend", 
-#'       xlab = "year",
-#'       midpoint = 0.5,
-#'       of_limits = c(0,1)
+#'       of_limits = c(0,1) # limits of the plotted objective functions
 #'   )
 #' }
 #'
@@ -45,7 +42,6 @@ viscos_options <- GlobalOptions::setGlobalOptions(
  # plot options
   color_o = "steelblue", 
   color_s = "orange",
-  midpoint = 0.5,
   of_limits = c(0,1)
 )
 

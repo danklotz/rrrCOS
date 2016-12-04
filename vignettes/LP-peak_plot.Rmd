@@ -1,6 +1,6 @@
 ---
 title: "Plotting Runoff Peaks Plots"
-author: 
+author:
 - "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "22 September 2016"
 output:
@@ -13,12 +13,12 @@ output:
 ```
 
 # Introduction
-The function `peak_plot` lets users explore the highest events in 
-among the available basins. It provides a list of [ggplot2](http://ggplot2.org/) 
-plots, containing an overview plot (`overview`), a scatter plot (`scatter`) 
-and detail plots of the individual events (`event_plot`). Instead of 
-explaining the properties of each plot in detail it is best to get an intuition 
-of the function by looking at some examples. 
+The function `peak_plot` lets users explore the highest events in
+among the available basins. It provides a list of [ggplot2](http://ggplot2.org/)
+plots, containing an overview plot (`overview`), a scatter plot (`scatter`)
+and detail plots of the individual events (`event_plot`). Instead of
+explaining the properties of each plot in detail it is best to get an intuition
+of the function by looking at some examples.
 
 ## Examples:
 For the examples 10 events are extracted from a runoff example
@@ -26,30 +26,30 @@ For the examples 10 events are extracted from a runoff example
   require(visCOS)
   runoff_data <- get_runoff_example()
   peakplots <- peak_plot(runoff_data, n_events = 10L)
-  
+
 ```
 
-The `peakplots` list does now contain plots for each basin within the 
-`runoff_data` data.frame: 
+The `peakplots` list does now contain plots for each basin within the
+`runoff_data` data.frame:
 ```{r, eval = TRUE, purl=FALSE}
   names(peakplots)
 ```
 
-For each basin the a set of plots (`overview`,`scatter`,`event_plot`) are saved 
+For each basin the a set of plots (`overview`,`scatter`,`event_plot`) are saved
 within a list for each basin. In the following the plots for basin 1 are shown:
 ```{r, eval = TRUE, purl=FALSE}
   names(peakplots$basin0001)
 ```
 
-The `overview` plot shows the entire time series of `data1` and `data2` of the 
-basin. The found events are marked with black dots. The `overview` plot for 
+The `overview` plot shows the entire time series of `data1` and `data2` of the
+basin. The found events are marked with black dots. The `overview` plot for
 basin 1 is:
 ```{r, eval = TRUE, purl=FALSE}
   peakplots$basin0001$overview
 ```
 
-The `scatter` plot shows the found events within a scatter plot, where  `data1` 
-is the x-axis and `data2` on the y-axis. In the followin an example for basin 1
+The `scatter` plot shows the found events within a scatter plot, where  `data1`
+is the x-axis and `data2` on the y-axis. In the following an example for basin 1
 is given.
 ```{r, eval = TRUE, purl=FALSE}
   peakplots$basin0001$scatter
@@ -65,11 +65,11 @@ objects. Here an example:
 # Code
 This part of the document defines the code of `peak_plot`
 ```{r}
-#' Plot List for Runoff Peaks 
+#' Plot List for Runoff Peaks
 #' @export
-#' 
-#' @import ggplot2 
-#' @import dplyr 
+#'
+#' @import ggplot2
+#' @import dplyr
 #' @import magrittr
 #' @importFrom tibble tibble
 peak_plot <- function(runoff_data,
@@ -77,17 +77,17 @@ peak_plot <- function(runoff_data,
                                  window_size = 24L) {
   # pre:
   assert_dataframe(runoff_data)
-  n_events_int <- as.integer(n_events) 
+  n_events_int <- as.integer(n_events)
   window_size_int <- as.integer(window_size)
-  if( is.na(n_events_int)  | 
-      is.nan(n_events_int) | 
-      is.infinite(n_events_int) | 
+  if( is.na(n_events_int)  |
+      is.nan(n_events_int) |
+      is.infinite(n_events_int) |
       !is.integer(n_events_int) ) {
     stop("n_events is ill defined")
   }
-  if( is.na(window_size)  | 
-      is.nan(window_size) | 
-      is.infinite(window_size) | 
+  if( is.na(window_size)  |
+      is.nan(window_size) |
+      is.infinite(window_size) |
       !is.integer(window_size) ) {
     stop("window_size is ill defined")
   }
@@ -96,23 +96,23 @@ peak_plot <- function(runoff_data,
   data2 <- runoff_data %>%
      select( starts_with(viscos_options("name_s")) )
   data_numbers <- names(data1) %>%
-    gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>% 
+    gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
     gsub("\\D","",.,ignore.case = TRUE)
-  # make plotlist: 
+  # make plotlist:
   plotlist <- lapply(1:ncol(data1), function(x) plotlist_one_basin(data1[,x],
                                                                    data2[,x],
-                                                                   n_events_int, 
+                                                                   n_events_int,
                                                                    window_size_int)) %>%
     set_names(.,paste("basin", data_numbers, sep =""))
   return(plotlist)
 }
 ```
 
-## Generating the Plots for one basin. 
-This is the function for generating the different plots for one basin. 
-At first the provided time series are groupded into a tibble, then the 
-peaks of the observations are obtained via the peak_finder function and 
-organised.Then `ggplot2` is used for plotting. 
+## Generating the Plots for one basin.
+This is the function for generating the different plots for one basin.
+At first the provided time series are grouped into a `tibble`, then the
+peaks of the observations are obtained via the peak_finder function and
+organised. Then `ggplot2` is used for plotting.
 ```{r}
 plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
   single_data <- tibble::tibble(time = as.integer(1:length(qobs)),
@@ -120,25 +120,25 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
                                 sim = as.double(qsim))
   #
   peak_idx <- find_peaks(single_data$obs,m = window_size_int)
-  peak_organised <- tibble::tibble(idx = as.integer(peak_idx), 
-                           peak_obs = single_data$obs[peak_idx], 
+  peak_organised <- tibble::tibble(idx = as.integer(peak_idx),
+                           peak_obs = single_data$obs[peak_idx],
                            peak_sim = single_data$sim[peak_idx])
-  highest_peaks_organised <- peak_organised$peak_obs %>% 
-    sort(decreasing = TRUE) %>% 
+  highest_peaks_organised <- peak_organised$peak_obs %>%
+    sort(decreasing = TRUE) %>%
     .[1:n_events_int] %>%
-    '%in%'(peak_organised$peak_obs,.) %>% 
-    which( . ) %>% 
+    '%in%'(peak_organised$peak_obs,.) %>%
+    which( . ) %>%
     peak_organised[., ]
   #
   overview_plot <- ggplot() +
-    geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_s")) + 
-    geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_o")) + 
+    geom_line(data = single_data,aes(x = time, y = sim), col = viscos_options("color_s")) +
+    geom_line(data = single_data,aes(x = time, y = obs), col = viscos_options("color_o")) +
     geom_point(data = highest_peaks_organised, aes(idx, peak_obs))
-  overview_scatter <- ggplot() + 
+  overview_scatter <- ggplot() +
     geom_point(data = single_data, aes(obs,sim), color = "#DDDDDD") +
     geom_abline() +
     geom_point(data = highest_peaks_organised, aes(peak_obs,peak_sim), size = 4) +
-    expand_limits(x = 0, y = 0) 
+    expand_limits(x = 0, y = 0)
   sub_plots <- lapply(1:nrow(highest_peaks_organised),
                       function(x) sub_peakplot_fun(x,window_size_int,highest_peaks_organised,single_data) ) %>%
     set_names(.,paste("event_plot",1:length(.),sep=""))
@@ -147,16 +147,15 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
 ```
 
 ## Function to find peaks
-The function for finding the peaks was proposed and developed by 
-Propsoed by the cross validated user "stas g" in [this](http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data)
+The function for finding the peaks was proposed and developed by the cross validated user "stas g" in [this](http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data)
 thread.  
-This is by far not the only option/possibility to appraoch the peak finding task. 
+This is by far not the only option/possibility to approach the peak finding task.
 Other nice ideas for finding peaks can be found in [this](http://stats.stackexchange.com/questions/36309/how-do-i-find-peaks-in-a-dataset)
-cross validated thread. 
+cross validated thread.
 
 ```{r}
   ####
-  # peak finder function: 
+  # peak finder function:
   find_peaks <- function (x, m = 3){
     shape <- diff(sign(diff(x, na.pad = FALSE)))
     pks <- sapply(which(shape < 0), FUN = function(i){
@@ -171,30 +170,22 @@ cross validated thread.
   }
 ```
 
-## Subplot Function 
-This function is a wrapper around ggplot, which is used to generate the 
-individual event plots. 
+## Subplot Function
+This function is a wrapper around `ggplot`, which is used to generate the
+individual event plots.
 ```{r}
   ####
   # sub plot function:
-  sub_peakplot_fun <- function(x,window_size,highest_peaks_organised,peak_data) {
+  sub_peakplot_fun <- function(x, window_size, highest_peaks_organised, peak_data) {
     point <- highest_peaks_organised[x,]
     plot_sub <- ggplot() +
       geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
-                aes(x = time, y = sim), 
-                col = "orange") + 
+                aes(x = time, y = sim),
+                col = "orange") +
       geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
-                aes(x = time, y = obs), 
-                col = "steelblue") + 
+                aes(x = time, y = obs),
+                col = "steelblue") +
       geom_point(data = point, aes(idx, peak_obs))
     return(plot_sub)
   }
 ```
-
-
-
-
-
-
-
-
