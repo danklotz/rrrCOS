@@ -16,6 +16,7 @@
 #'       name_COSmin = "min", # name of minute-column
 #'       name_COSposix = "posixdate", # name of the complete-date-column
 #'       name_COSperiod = "period", # name of the marked-period column
+#'       missing_data = -999, # marker for missing data in the o_columns
 #'    # plot options
 #'       color_o = "steelblue", # color associated with the first o time-series data
 #'       color_s= "orange",  # color associated with the second s time-series data
@@ -39,6 +40,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSmin = "min",
   name_COSposix = "posixdate",
   name_COSperiod = "period",
+  missing_data = -999,
  # plot options
   color_o = "steelblue", 
   color_s = "orange",

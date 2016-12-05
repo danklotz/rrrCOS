@@ -1,50 +1,49 @@
-  #' explore runoff_data with Objective Functions
+  #' explore cos_data with Objective Functions
   #'
-  #' Runs a Shiny App which can be used to get an overview of a runoff_data time
+  #' Runs a Shiny App which can be used to get an overview of a cos_data time
   #' series object.
   #'
-  #' @param d_xts runoff_data formatted as time series
-  #' 
-  #' @import shiny 
+  #' @param d_xts cos_data formatted as time series
+  #'
+  #' @import shiny
   #' @import miniUI
   #' @importFrom xts xts
   #' @import dplyr
   #' @import magrittr
-  #' @import dygraphs 
+  #' @import dygraphs
   #' @import hydroGOF
   #' @importFrom purrr map_df
-  #' 
+  #'
   #' @export
-  #' 
+  #'
   #' @examples
   #' # get example data,
   #' # explore the model performance
   #' d_runoff <- get_runoff_example()
   #' explore_runoff(d_runoff)
-explore_runoff <- function(runoff_data,
+explore_runoff <- function(cos_data,
                                    of_list = list(
-                                     nse = of_nse, 
-                                     kge = of_kge, 
+                                     nse = of_nse,
+                                     kge = of_kge,
                                      p_bias = of_pbias,
                                      r = of_cor
                                    ),
                                    start_date = NULL,
                                    end_date = NULL) {
-  
   # pre-sets
   # (I) Defense
   if (is.null(names(of_list))){
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
-  clean_runoff_data <- runoff_data %>% remove_leading_zeros
-  if ( !viscos_options("name_COSposix") %in% names(clean_runoff_data) ) {
-    clean_runoff_data %<>% complete_dates
+  clean_cos_data <- cos_data %>% remove_leading_zeros
+  if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
+    clean_cos_data %<>% complete_dates
   }
   # (II)
-  d_xts <- runoff_as_xts(clean_runoff_data)
+  d_xts <- runoff_as_xts(clean_cos_data)
   # (III)
   idx_names <- names(d_xts) %>%
-    tolower %>% 
+    tolower %>%
     grepl(viscos_options("name_o"),.)
   d_nums <- d_xts %>%
       names() %>%
@@ -53,8 +52,8 @@ explore_runoff <- function(runoff_data,
       as.integer %>%
       unique
   server <- function(input, output, session) {
-    # (I) get strings used in the naming of clean_runoff_data:
-    unique_data_names <- names(clean_runoff_data) %>%
+    # (I) get strings used in the naming of clean_cos_data:
+    unique_data_names <- names(clean_cos_data) %>%
       gsub("\\d","",.) %>%
       tolower %>%
       unique
@@ -67,7 +66,7 @@ explore_runoff <- function(runoff_data,
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
-      select(clean_runoff_data,
+      select(clean_cos_data,
              matches( selector_x() ),
              matches( selector_y() )
              ) %>%
@@ -77,7 +76,7 @@ explore_runoff <- function(runoff_data,
     # (III) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
-          order.by = clean_runoff_data[[viscos_options("name_COSposix")]])
+          order.by = clean_cos_data[[viscos_options("name_COSposix")]])
     })
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
@@ -88,9 +87,9 @@ explore_runoff <- function(runoff_data,
         dySeries("y",
                  label = visCOS::viscos_options("name_s"),
                  color = viscos_options("color_s")) %>%
-        dyRangeSelector(height = 20, strokeColor = "") %>% 
+        dyRangeSelector(height = 20, strokeColor = "") %>%
         dyCrosshair(direction = "vertical") %>%
-        dyOptions(includeZero = TRUE) 
+        dyOptions(includeZero = TRUE)
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({
@@ -125,14 +124,14 @@ explore_runoff <- function(runoff_data,
     })
     out_of <- reactive({
       if (!is.null(input$hydrographs_date_window)) {
-          map_df(of_list, function(of_,x,y) of_(x,y), 
-                 x = sub_slctd()$x, 
+          map_df(of_list, function(of_,x,y) of_(x,y),
+                 x = sub_slctd()$x,
                  y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
       }
     })
-    
+
     output$slctd_OF <- renderTable(out_of())
-    # (VII) exit when user clicks on done 
+    # (VII) exit when user clicks on done
      # When the Done button is clicked, return a value
     observeEvent(input$done, {
       returnValue <- list(
@@ -148,7 +147,7 @@ explore_runoff <- function(runoff_data,
     miniButtonBlock(selectInput("basin_num",
                                 "# basin:",
                                 choices = d_nums,
-                                selected = 1, 
+                                selected = 1,
                                 selectize = FALSE)),
     miniContentPanel(
       fillCol(
@@ -163,12 +162,12 @@ explore_runoff <- function(runoff_data,
     ),
     gadgetTitleBar("test")
   )
-dyCrosshair <- function(dygraph, 
+dyCrosshair <- function(dygraph,
                         direction = c("both", "horizontal", "vertical")) {
   dyPlugin(
     dygraph = dygraph,
     name = "Crosshair",
-    path = system.file("examples/plugins/crosshair.js", 
+    path = system.file("examples/plugins/crosshair.js",
                        package = "dygraphs"),
     options = list(direction = match.arg(direction))
   )

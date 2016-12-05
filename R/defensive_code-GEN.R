@@ -1,21 +1,21 @@
 #' @import magrittr
-assert_chunk <- function(runoff_data) {
-  regEx <- get_regex_for_runoff_data()
-  assertChunk <- names(runoff_data) %>% tolower %>% grepl(regEx,.)
+assert_chunk <- function(cos_data) {
+  regEx <- get_regex_for_cos_data()
+  assertChunk <- names(cos_data) %>% tolower %>% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
     stop("there is still unwanted columns in the data. Try: remove_junk")
   }
 }
-assert_complete_date <- function(runoff_data) {
-  OK_COSdate <- any(names(runoff_data) == viscos_options("name_COSyear"))
-  OK_POSIXdates <- any(names(runoff_data) == viscos_options("name_COSposix"))
+assert_complete_date <- function(cos_data) {
+  OK_COSdate <- any(names(cos_data) == viscos_options("name_COSyear"))
+  OK_POSIXdates <- any(names(cos_data) == viscos_options("name_COSposix"))
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate & !OK_POSIXdates) {
     stop("No COSdates and no POSIXct-dates in the data!")
   } else if (OK_COSdate & !OK_POSIXdates) {
-    stop("NO POSIXct fomrated column within the runoff_data!")
+    stop("NO POSIXct fomrated column within the cos_data!")
   } else if (!OK_COSdate & OK_POSIXdates) {
-    stop("NO COSdate year within the runoff_data!")
+    stop("NO COSdate year within the cos_data!")
   }
 }
 # uses stop if the input: "data" is not of class "data.frame"

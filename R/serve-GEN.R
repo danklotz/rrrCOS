@@ -1,11 +1,11 @@
-#' Serve is still beta 
-#' 
-#' More description shall follow 
+#' Serve is still beta
+#'
+#' More description shall follow
 #' @export
-serve <- function(plotlist,path = "", fig_width = 800L, fig_height = 500L) {
+serve <- function(plotlist, path = "", fig_width = 800L, fig_height = 500L) {
   hmtl_filename <- "summary"
   # establish html-file in chosen folder
-  '%&%' <- function(a,b) paste(a,b,sep = "") # helper for easiser string concatenation
+  '%&%' <- function(a,b) paste(a,b,sep = "") # helper for easier string concatenation
   fileConn <- file(path %&% hmtl_filename %&% ".html" , "w")
   # write html header
   #writeLines(text = '<!DOCTYPE html>',fileConn)
@@ -13,10 +13,10 @@ serve <- function(plotlist,path = "", fig_width = 800L, fig_height = 500L) {
   writeLines(text = "  <STYLE type='text/css'>",fileConn)
   writeLines(text = "    H1 { text-align: center}",fileConn)
   writeLines(text = "  </STYLE>",fileConn)
- writeLines(text = "</HEAD>",fileConn) 
+ writeLines(text = "</HEAD>",fileConn)
   #writeLines(text = '<html>',fileConn)
   writeLines(text = '<body>',fileConn)
-  # check which kind of plotlsit we are dealing with: 
+  # check which kind of plotlsit we are dealing with:
   if ( all(names(plotlist) == c("NSE","KGE","p_bias","CORR")) ) {
     list_to_plot <- plotlist
 
@@ -29,7 +29,7 @@ serve <- function(plotlist,path = "", fig_width = 800L, fig_height = 500L) {
   figure_names <- names(list_to_plot)
   ## save everything localy & link it within the html file
   jpg_filenames <- "figure"
-  
+
   for (i in 1:num_plots) {
     writeLines(text = "<H1>" %&% figure_names[i] %&% "</H1>",fileConn)
     plt_name <- jpg_filenames %&% i %&% ".jpg"
