@@ -1,0 +1,216 @@
+---
+title: "Code for Exploring Objective Functions"
+author: "Daniel Klotz"
+date: "13 Juli 2016"
+output:
+  html_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+# Introduction
+
+```{r,purl=FALSE, eval = FALSE}
+viscos_options(color_o = "green", color_s = "red")
+explore_runoff(runoff_example)
+```
+
+![](figures/eg_explore_basin.JPG)
+
+```{r}
+  #' explore cos_data with Objective Functions
+  #'
+  #' Runs a Shiny App which can be used to get an overview of a cos_data time
+  #' series object.
+  #'
+  #' @param d_xts cos_data formatted as time series
+  #'
+  #' @import shiny
+  #' @import pasta
+  #' @import miniUI
+  #' @importFrom xts xts
+  #' @import dplyr
+  #' @import magrittr
+  #' @import dygraphs
+  #' @import hydroGOF
+  #' @importFrom purrr map_df
+  #'
+  #' @export
+  #'
+  #' @examples
+  #' # get example data,
+  #' # explore the model performance
+  #' cos_data <- get_cos_data_example()
+  #' explore_runoff(cos_data)
+explore_runoff2 <- function(cos_data,
+                            start_date = NULL,
+                            end_date = NULL) {
+  ## pre-sets
+  # (I) Defense
+  clean_cos_data <- cos_data %>% remove_leading_zeros
+  if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
+    clean_cos_data %<>% complete_dates
+  }
+  # (II)
+  d_xts <- runoff_as_xts(clean_cos_data)
+  # (III)
+  idx_names <- names(d_xts) %>%
+    tolower %>%
+    grepl(viscos_options("name_o"),.)
+  d_nums <- d_xts %>%
+      names() %>%
+      .[idx_names] %>%
+      gsub("\\D","",.) %>%
+      as.integer %>%
+      unique
+```
+
+The server-side of the shiny app is rather lengthy but not too difficult.
+The major readability problems occur because of the unusual formatting enforced
+by shinyApps.
+```{r}
+  server <- function(input, output, session) {
+    # (I) get strings used in the naming of clean_cos_data:
+    unique_data_names <- names(clean_cos_data) %>%
+      gsub("\\d","",.) %>%
+      tolower %>%
+      unique
+    x_string <- unique_data_names[ unique_data_names %>%
+                                     grep(viscos_options("name_o"),.) ]
+    y_string <- unique_data_names[ unique_data_names  %>%
+                                     grep(viscos_options("name_s"),.) ]
+    # (II) select data:
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
+    selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
+    selected_data <- reactive({
+      select(clean_cos_data,
+             matches( selector_x() ),
+             matches( selector_y() )
+             ) %>%
+        select(x = matches( selector_x() ),
+               y = matches( selector_y() ))
+    })
+    # (III) create xts-formated table for use in dygraphs:
+    xts_selected_data <- reactive ({
+      xts(selected_data(),
+          order.by = clean_cos_data[[viscos_options("name_COSposix")]])
+    })
+    # (IV) fit linear model
+    lin_model <- lm(x ~ index(xts_selected_data), data = coredata(xts_selected_data) %>% as.data.frame())
+    lin_data <- predict.lm(lin_model,index(xts_selected_data)) %>% xts
+    # (V) create plots:
+    output$hydrographs <- renderDygraph({
+      dygraph( xts_selected_data ) %>%
+        dySeries("x",
+                 label = visCOS::viscos_options("name_o"),
+                 color = viscos_options("color_o")) %>%
+        dySeries("y",
+                 label = visCOS::viscos_options("name_s"),
+                 color = viscos_options("color_s")) %>%
+      dygraph( lin_data ) %>% 
+        dySeries("lin_x",
+                 label = lin_obs,
+                 color = "magenta") %>% 
+        dyRangeSelector(height = 20, strokeColor = "") %>%
+        dyCrosshair(direction = "vertical") %>%
+        dyOptions(includeZero = TRUE)
+    })
+    # () get dygraph date bounds (switches):
+    selcted_from <- reactive({
+      if (!is.null(start_date)) {
+        start_date
+      } else if (!is.null(input$hydrographs_date_window)) {
+        input$hydrographs_date_window[[1]]
+      }
+    })
+    selcted_to <- reactive({
+      if (!is.null(end_date)) {
+        end_date
+      } else if (!is.null(input$hydrographs_date_window)) {
+        input$hydrographs_date_window[[2]]
+      }
+
+    })
+    # () extract time_window for the stats header:
+    output$selected_timewindow <- renderText({
+      if (!is.null(input$hydrographs_date_window))
+        paste(strftime(selcted_from(), format = "%d %b %Y"),
+              "-",
+              strftime(selcted_to(), format = "%d %b %Y"),
+              sep = " ")
+    })
+    # () calculate stats:
+    sub_slctd <- reactive({
+      if (!is.null(input$hydrographs_date_window))
+        xts_selected_data()[paste(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),
+                               strftime(selcted_to(), format = "%Y-%m-%d-%H-%M"),
+                               sep = "/")]
+    })
+    out_of <- reactive({
+      if (!is.null(input$hydrographs_date_window)) {
+          map_df(of_list, function(of_,x,y) of_(x,y),
+                 x = sub_slctd()$x,
+                 y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
+      }
+    })
+
+    output$slctd_OF <- renderTable(out_of())
+    # () exit when user clicks on done
+     # When the Done button is clicked, return a value
+    observeEvent(input$done, {
+      returnValue <- list(
+        selected_time = c(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),strftime(selcted_to(), format = "%Y-%m-%d-%H-%M")),
+        selected_data = data.frame(date = index(sub_slctd()),
+                                   coredata(sub_slctd())),
+        selected_of = out_of()
+      )
+      stopApp(returnValue)
+    })
+  }
+```
+
+The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `explore_runoff` .
+```{r}
+  ui <- miniPage(
+    miniButtonBlock(selectInput("basin_num",
+                                "# basin:",
+                                choices = d_nums,
+                                selected = 1,
+                                selectize = FALSE)),
+    miniContentPanel(
+      fillCol(
+        flex = c(4,1),
+        dygraphOutput("hydrographs", width = "100%", height = "100%"),
+        fillCol(
+          align = "center",
+          textOutput("selected_timewindow"),
+          tableOutput("slctd_OF")
+        )
+      )
+    ),
+    gadgetTitleBar("test")
+  )
+```
+
+```{r}
+dyCrosshair <- function(dygraph,
+                        direction = c("both", "horizontal", "vertical")) {
+  dyPlugin(
+    dygraph = dygraph,
+    name = "Crosshair",
+    path = system.file("examples/plugins/crosshair.js",
+                       package = "dygraphs"),
+    options = list(direction = match.arg(direction))
+  )
+}
+```
+
+
+```{r}
+  runGadget(ui,server)
+}
+```
