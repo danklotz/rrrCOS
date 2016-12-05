@@ -463,7 +463,7 @@ user.
 runoff_as_xts <- function(cos_data) {
   # pre
   assert_dataframe(cos_data)
-  assert_chunk(cos_data)
+  assert_junk(cos_data)
   assert_complete_date(cos_data)
   # everything is set to lower case
   cos_data <- remove_leading_zeros(cos_data) %>% 

@@ -55,7 +55,7 @@ This function fetches the number of basins from the provided data.frame
 get_basin_numbers <- function(cos_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(cos_data)
-  assert_chunk(cos_data)
+  assert_junk(cos_data)
   #
   d_names <- names(cos_data)
   d_nums <- d_names  %>% gsub('\\D','',.) %>% unique

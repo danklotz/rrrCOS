@@ -29,19 +29,19 @@ The subsequent functions are defined below
 
 function | exported
 ------------- | -------------
-`assert_chunk` | no
+`assert_junk` | no
 `assert_complete_date` | no
  `assert_dataframe` | no
 `assert_of` | no
 
-## `assert_chunk`
+## `assert_junk`
 This function tests if there are any columns in the data.frame `cos_data`,
 which are not named after one of the 8 allowed column-names of **visCOS**.
 **Note** however that the check is not case sensitive as all names in
 `cos_data` are set to lower cases with `tolower`.
 ```{r}
 #' @import magrittr
-assert_chunk <- function(cos_data) {
+assert_junk <- function(cos_data) {
   regEx <- get_regex_for_cos_data()
   assertChunk <- names(cos_data) %>% tolower %>% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
