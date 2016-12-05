@@ -28,13 +28,13 @@ following steps can be performed from within  **visCOS**_
 
 **Examples:**
 
-The function `get_runoff_example` can be used to get some exemplary data
+The function `get_cos_data_example` can be used to get some exemplary data
 from within **visCOS**:
 ```{r, purl=FALSE, eval=TRUE, message=3:5}
   library(visCOS)
   require(magrittr)
   options(width=80)
-  runoff_example_raw <- get_runoff_example()
+  runoff_example_raw <- get_cos_data_example()
   head(runoff_example_raw)
 ```
 
@@ -85,9 +85,9 @@ a hydrological year, so the period counter jumps to one.
 # Code
 This function defines the data cooking functions.
 
-## `get_runoff_example`
+## `get_cos_data_example`
 visCOS provides some exemplary data. All the available functions can be tested
-with it. `get_runoff_example` is a small wrapper function to get the data from
+with it. `get_cos_data_example` is a small wrapper function to get the data from
 within the package via `read.csv`
 
 **Note** at this stage, only a comparison between **numbered catchments**
@@ -98,7 +98,7 @@ number after the description (like "QObs_001" and "QSim_001")
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
-  get_runoff_example <- function() {
+  get_cos_data_example <- function() {
     file_path <- system.file("extdata",
                              "runoff_example.csv",
                              package = "visCOS")
@@ -493,11 +493,11 @@ require(magrittr)
 require(visCOS)
 # mark_periods example 1: Hydrological years (September till August)
 # note that the last year is not complete, so the counter jumps back to 0
-ex1 <- get_runoff_example() %>% mark_periods(.,start_month = 9, end_month = 8)
+ex1 <- get_cos_data_example() %>% mark_periods(.,start_month = 9, end_month = 8)
 plot(ex1$period, xlab="Timestep", ylab = "# of hydrological year")
 
 # mark_periods example 2: Summer Months (June till August)
-ex2 <- get_runoff_example() %>% mark_periods(.,start_month = 6, end_month = 8)
+ex2 <- get_cos_data_example() %>% mark_periods(.,start_month = 6, end_month = 8)
 plot(ex2$period, xlab="Timestep", ylab = "# year of summer months")
 
 ```
