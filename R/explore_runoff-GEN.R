@@ -19,8 +19,8 @@
   #' @examples
   #' # get example data,
   #' # explore the model performance
-  #' d_runoff <- get_runoff_example()
-  #' explore_runoff(d_runoff)
+  #' cos_data <- get_cos_data_example()
+  #' explore_runoff(cos_data)
 explore_runoff <- function(cos_data,
                                    of_list = list(
                                      nse = of_nse,

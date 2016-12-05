@@ -2,7 +2,7 @@
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
-  get_runoff_example <- function() {
+  get_cos_data_example <- function() {
     file_path <- system.file("extdata",
                              "runoff_example.csv",
                              package = "visCOS")
@@ -14,23 +14,20 @@
   #' Removes all columns which are not foreseen (see: viscos_options) from
   #' runoff data
   #'
+  #' @import magrittr
   #' @param cos_data The cos_data data.frame (see vignette for info)
   #' @return data.frame object without the chunk
-  #'
-  #' @import magrittr
-  #'
   #' @export
-
   remove_junk <- function(cos_data) {
-  assert_dataframe(cos_data)
-  #
-  names_in_data <- cos_data %>% names
-  regex_columns <- get_regex_for_cos_data() # see: helpers
-  #
-  idx <- regex_columns %>%
-    grep(.,names_in_data, ignore.case = TRUE)
-  no_junk_cos_data <- cos_data[ , idx]
-  return( only_observed_basins(no_junk_cos_data) )
+    assert_dataframe(cos_data)
+    #
+    names_in_data <- cos_data %>% names
+    regex_columns <- get_regex_for_cos_data() # see: helpers
+    #
+    idx <- regex_columns %>%
+      grep(.,names_in_data, ignore.case = TRUE)
+    no_junk_cos_data <- cos_data[ , idx]
+    return( only_observed_basins(no_junk_cos_data) )
   }
   # remove basins without observations
   #
@@ -42,35 +39,40 @@
   # @return data.frame without the observation-free basins
   #
   # @import magrittr
+  # @import pasta
   only_observed_basins <- function(cos_data) {
     require("magrittr")
+    require("pasta")
     assert_dataframe(cos_data)
+    # set NA values to viscos_options("missing_data") and check if there are 
+    # cloumns wihtouth observervation
     chosen_cols <- which( names(cos_data) != viscos_options("name_COSposix") )
-    chosen_rows <- is.na(cos_data[,chosen_cols])
-    data_no_posix <- cos_data[ ,chosen_cols]
-    data_no_posix[chosen_rows] <- viscos_options("missing_data")
-    colmax <- lapply(X = data_no_posix, FUN = max) # get max of any column
+    rows_with_na <- is.na(cos_data[,chosen_cols])
+    data_wihtouth_posix <- cos_data[ ,chosen_cols]
+    data_wihtouth_posix[rows_with_na] <- viscos_options("missing_data")
+    colmax <- sapply(X = data_wihtouth_posix, FUN = max) 
+    #
+    # if there are columns withouth observations remove them from the data:
     if ( any(colmax < 0.0) ){
-      idx_temp <- which(colmax < 0.0)
-      obs_regex <- paste(viscos_options("name_o"),".*", sep ="")
-      OnlyQobsSelected <- idx_temp %>%
+      name_o <- viscos_options("name_o")
+      neg_obs_names <- which(colmax < 0.0) %>% 
         names %>%
-        tolower %>%
-        grepl(obs_regex,.) %>%
-        any
-      if (!OnlyQobsSelected){
-        stop("There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first")
-      }
-      idx_slct <- c(idx_temp,idx_temp + 1) %>% sort()
-      d_onlyObserved <- cos_data[-idx_slct]
-      # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
-      colmin <- lapply(X = d_onlyObserved, FUN = min)
-      idx_temp <- which(colmin < 0.0)
-      d_onlyObserved[d_onlyObserved[idx_temp]<0, idx_temp] <- NA
-      return(d_onlyObserved)
+        grepl(name_o %.% "*",.,ignore.case = TRUE) %>%
+        idx_temp[.]
+      neg_s_names <- gsub(name_o,viscos_options("name_s"),neg_obs_names,ignore.case = TRUE )
+      data_selection <- neg_obs_names %|% neg_s_names %>% 
+        grepl(., names(cos_data), ignore.case = TRUE) %>% 
+        not(.)
+      data_only_observed <- cos_data[ ,data_selection]
+
     } else {
-      return(cos_data)
+      data_only_observed <- cos_data
     }
+    # set all missing data values to NA for use in hydroGOF
+    idx_NA <- data_only_observed %>% 
+      equals(viscos_options("missing_data"))
+    data_only_observed[idx_NA] <- NA
+    return(data_only_observed)
   }
   #' Complete the date-formats with POSIXct or COSdate
   #'

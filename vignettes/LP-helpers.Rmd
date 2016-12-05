@@ -1,6 +1,7 @@
 ---
 title: "helpers"
-author: "Daniel Klotz"
+author:
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "8 Juli 2016"
 output:
   html_document:
