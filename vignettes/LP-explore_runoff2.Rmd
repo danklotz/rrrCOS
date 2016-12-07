@@ -1,6 +1,7 @@
 ---
 title: "Code for Exploring Objective Functions"
-author: "Daniel Klotz"
+author:
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "13 Juli 2016"
 output:
   html_document:
@@ -55,7 +56,7 @@ explore_runoff2 <- function(cos_data,
     clean_cos_data %<>% complete_dates
   }
   # (II)
-  d_xts <- runoff_as_xts(clean_cos_data)
+  d_xts <- cos_data_as_xts(clean_cos_data)
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>%
@@ -82,42 +83,55 @@ by shinyApps.
                                      grep(viscos_options("name_o"),.) ]
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_s"),.) ]
-    # (II) select data:
-    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
-    selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
-    selected_data <- reactive({
+    # () select data:
+    selector_x <- reactive({x_string %&% input$basin_num %&% "$"}) # "$" terminates the searchstring; see regex
+    selector_y <- reactive({y_string %&% input$basin_num %&% "$"})
+    pre_selected_data <- reactive({
       select(clean_cos_data,
              matches( selector_x() ),
-             matches( selector_y() )
-             ) %>%
-        select(x = matches( selector_x() ),
-               y = matches( selector_y() ))
+             matches( selector_y() )) %>%
+      select(x = matches( selector_x() ),
+             y = matches( selector_y() ))
+      # %>% 
+      #   dplyr::mutate(integer_idx = 1:nrow(.), 
+      #                 posix = clean_cos_data[[viscos_options("name_COSposix")]]) 
     })
-    # (III) create xts-formated table for use in dygraphs:
-    xts_selected_data <- reactive ({
-      xts(selected_data(),
-          order.by = clean_cos_data[[viscos_options("name_COSposix")]])
-    })
-    # (IV) fit linear model
-    lin_model <- lm(x ~ index(xts_selected_data), data = coredata(xts_selected_data) %>% as.data.frame())
-    lin_data <- predict.lm(lin_model,index(xts_selected_data)) %>% xts
-    # (V) create plots:
-    output$hydrographs <- renderDygraph({
-      dygraph( xts_selected_data ) %>%
-        dySeries("x",
-                 label = visCOS::viscos_options("name_o"),
-                 color = viscos_options("color_o")) %>%
-        dySeries("y",
-                 label = visCOS::viscos_options("name_s"),
-                 color = viscos_options("color_s")) %>%
-      dygraph( lin_data ) %>% 
-        dySeries("lin_x",
-                 label = lin_obs,
-                 color = "magenta") %>% 
-        dyRangeSelector(height = 20, strokeColor = "") %>%
-        dyCrosshair(direction = "vertical") %>%
-        dyOptions(includeZero = TRUE)
-    })
+    # pre_selected_data_2 <- reactive({
+    #    data.frame( pre_selected_data() ) %>% 
+    #     mutate(lin_x = ifelse(posix > strftime(selcted_from(), format = "%Y-%m-%d-%H-%M") &
+    #                           posix < strftime(selcted_to(), format = "%Y-%m-%d-%H-%M"),
+    #                             predict.lm(
+    #                               lm(x ~ integer_idx, data = pre_selected_data()),
+    #                               newdata = pre_selected_data()),
+    #                             0)
+    #            )
+    #    })
+    # debug: 
+    output$debug <- renderText(head(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M")))
+    # 
+    # selected_data <- reactive({ subset(pre_selected_data_2(), select = -c(integer_idx,posix) ) })
+    # xts_selected_data <- reactive({
+    #   xts(selected_data(),
+    #       order.by = clean_cos_data[[viscos_options("name_COSposix")]])
+    # })
+    # # (V) create plots:
+    # output$hydrographs <- renderDygraph({
+    #   dygraph( xts_selected_data() ) %>%
+    #     dySeries("x",
+    #              label = visCOS::viscos_options("name_o"),
+    #              color = viscos_options("color_o")) %>%
+    #     dySeries("y",
+    #              label = visCOS::viscos_options("name_s"),
+    #              color = viscos_options("color_s")) %>%
+    #     dySeries("lin_x",
+    #               label = "lin_x",
+    #               color = "magenta") %>% 
+    #     dyRangeSelector(height = 20, strokeColor = "") %>%
+    #     dyCrosshair(direction = "vertical") %>%
+    #     dyOptions(includeZero = TRUE)
+    # })
+
+    
     # () get dygraph date bounds (switches):
     selcted_from <- reactive({
       if (!is.null(start_date)) {
@@ -134,30 +148,7 @@ by shinyApps.
       }
 
     })
-    # () extract time_window for the stats header:
-    output$selected_timewindow <- renderText({
-      if (!is.null(input$hydrographs_date_window))
-        paste(strftime(selcted_from(), format = "%d %b %Y"),
-              "-",
-              strftime(selcted_to(), format = "%d %b %Y"),
-              sep = " ")
-    })
-    # () calculate stats:
-    sub_slctd <- reactive({
-      if (!is.null(input$hydrographs_date_window))
-        xts_selected_data()[paste(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),
-                               strftime(selcted_to(), format = "%Y-%m-%d-%H-%M"),
-                               sep = "/")]
-    })
-    out_of <- reactive({
-      if (!is.null(input$hydrographs_date_window)) {
-          map_df(of_list, function(of_,x,y) of_(x,y),
-                 x = sub_slctd()$x,
-                 y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
-      }
-    })
-
-    output$slctd_OF <- renderTable(out_of())
+ 
     # () exit when user clicks on done
      # When the Done button is clicked, return a value
     observeEvent(input$done, {
@@ -182,16 +173,9 @@ for the interactive exploration of the $o$ and $s$ data. The formatted table (`s
                                 selected = 1,
                                 selectize = FALSE)),
     miniContentPanel(
-      fillCol(
-        flex = c(4,1),
-        dygraphOutput("hydrographs", width = "100%", height = "100%"),
-        fillCol(
-          align = "center",
-          textOutput("selected_timewindow"),
-          tableOutput("slctd_OF")
-        )
-      )
-    ),
+        textOutput("debug")
+        #dygraphOutput("hydrographs", width = "100%", height = "100%")
+      ),
     gadgetTitleBar("test")
   )
 ```
