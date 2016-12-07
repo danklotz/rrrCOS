@@ -1,6 +1,7 @@
 ---
 title: "Code for Exploring Objective Functions"
-author: "Daniel Klotz"
+author:
+- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
 date: "13 Juli 2016"
 output:
   html_document:
@@ -84,7 +85,7 @@ explore_runoff <- function(cos_data,
                                    of_list = list(
                                      nse = of_nse,
                                      kge = of_kge,
-                                     p_bias = of_pbias,
+                                     p_bias = of_p_bias,
                                      r = of_cor
                                    ),
                                    start_date = NULL,
@@ -99,7 +100,7 @@ explore_runoff <- function(cos_data,
     clean_cos_data %<>% complete_dates
   }
   # (II)
-  d_xts <- runoff_as_xts(clean_cos_data)
+  d_xts <- cos_data_as_xts(clean_cos_data)
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>%

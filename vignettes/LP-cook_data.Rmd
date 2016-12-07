@@ -437,7 +437,7 @@ plot(ex2$period, xlab="Timestep", ylab = "# year of summer months")
 ```
 
 
-## `runoff_as_xts`
+## `cos_data_as_xts`
 This function is actually just a small wrapper around the `xts::xts` function
 for the purposes of **visCOS**.
 
@@ -460,7 +460,7 @@ user.
   #' @importFrom xts xts
   #' @import magrittr
 
-runoff_as_xts <- function(cos_data) {
+cos_data_as_xts <- function(cos_data) {
   # pre
   assert_dataframe(cos_data)
   assert_junk(cos_data)
