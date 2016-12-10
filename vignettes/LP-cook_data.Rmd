@@ -459,7 +459,6 @@ user.
   #' @import zoo
   #' @importFrom xts xts
   #' @import magrittr
-
 cos_data_as_xts <- function(cos_data) {
   # pre
   assert_dataframe(cos_data)

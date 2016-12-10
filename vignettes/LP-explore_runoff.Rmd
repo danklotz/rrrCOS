@@ -72,6 +72,7 @@ made before the app as such is defined. They include:
   #' @import magrittr
   #' @import dygraphs
   #' @import hydroGOF
+  #' @import pasta
   #' @importFrom purrr map_df
   #'
   #' @export
@@ -128,7 +129,6 @@ by shinyApps.
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_s"),.) ]
     # (II) select data:
-    '%&%' <- function(a,b) paste(a,b,sep = "") # %&% as substitute for function
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
@@ -147,6 +147,8 @@ by shinyApps.
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
       dygraph( xts_selected_data() ) %>%
+        dyAxis("y", 
+               label = visCOS::viscos_options("data_unit")) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),
                  color = viscos_options("color_o")) %>%
