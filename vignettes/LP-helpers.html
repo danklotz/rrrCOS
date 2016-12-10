@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Daniel Klotz" />
+<meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger" />
 
 
 <title>helpers</title>
@@ -117,7 +117,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">helpers</h1>
-<h4 class="author"><em>Daniel Klotz</em></h4>
+<h4 class="author"><em>Daniel Klotz, Johannes Wesemann, Mathew Herrnegger</em></h4>
 <h4 class="date"><em>8 Juli 2016</em></h4>
 
 </div>
@@ -140,7 +140,7 @@ $(document).ready(function () {
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>get_regex_for_runoff_data</code></td>
+<td><code>get_regex_for_cos_data</code></td>
 <td>no</td>
 </tr>
 <tr class="even">
@@ -153,10 +153,10 @@ $(document).ready(function () {
 </tr>
 </tbody>
 </table>
-<div id="get_regex_for_runoff_data" class="section level2">
-<h2><span class="header-section-number">2.1</span> <code>get_regex_for_runoff_data</code></h2>
-<p>This function can be called to get the names of the 8 allowed column-names within <strong>visCOS</strong>. <code>get_regex_for_runoff_data</code> takes no input, as it gets the information directly from the global options (see: <em>viscos_options section</em>).</p>
-<pre class="r"><code>get_regex_for_runoff_data &lt;- function() {
+<div id="get_regex_for_cos_data" class="section level2">
+<h2><span class="header-section-number">2.1</span> <code>get_regex_for_cos_data</code></h2>
+<p>This function can be called to get the names of the 8 allowed column-names within <strong>visCOS</strong>. <code>get_regex_for_cos_data</code> takes no input, as it gets the information directly from the global options (see: <em>viscos_options section</em>).</p>
+<pre class="r"><code>get_regex_for_cos_data &lt;- function() {
   regex_pattern &lt;- paste(&quot;^&quot;,viscos_options(&quot;name_COSyear&quot;),&quot;$|&quot;,
                          &quot;^&quot;,viscos_options(&quot;name_COSmonth&quot;),&quot;$|&quot;,
                          &quot;^&quot;,viscos_options(&quot;name_COSday&quot;),&quot;$|&quot;,
@@ -172,42 +172,16 @@ $(document).ready(function () {
 </div>
 <div id="get_basin_numbers" class="section level2">
 <h2><span class="header-section-number">2.2</span> <code>get_basin_numbers</code></h2>
-<p>This function fetches the number of basins from the provided data.frame (<code>runoff_data</code>) by removing all the non-digits characters from the column names.</p>
-<pre class="r"><code>get_basin_numbers &lt;- function(runoff_data) {
+<p>This function fetches the number of basins from the provided data.frame (<code>cos_data</code>) by removing all the non-digits characters from the column names.</p>
+<pre class="r"><code>get_basin_numbers &lt;- function(cos_data) {
   require(&quot;magrittr&quot;, quietly = TRUE)
-  assert_dataframe(runoff_data)
-  assert_chunk(runoff_data)
+  assert_dataframe(cos_data)
+  assert_junk(cos_data)
   #
-  d_names &lt;- names(runoff_data)
+  d_names &lt;- names(cos_data)
   d_nums &lt;- d_names  %&gt;% gsub('\\D','',.) %&gt;% unique
   d_nums &lt;- d_nums[!(d_nums == &quot;&quot;)] %&gt;% as.integer
   return(d_nums)
-}</code></pre>
-</div>
-<div id="set_panel_size" class="section level2">
-<h2><span class="header-section-number">2.3</span> <code>set_panel_size</code></h2>
-<p>Klotz: I honestly forgot what this function does! But I think ti is a good helper I need to look it up, but am not ready yet! I roughly remember that setting graphical options with ggplot is a mess, and this is a function, which might solves a lot. However, I am not sure!</p>
-<pre class="r"><code>set_panel_size &lt;- function(p=NULL, g=ggplotGrob(p), file=NULL,
-                           margin = unit(1,&quot;mm&quot;),
-                           width=unit(3, &quot;cm&quot;),
-                           height=unit(2, &quot;cm&quot;)){
-
-  panels &lt;- g$layout$name==&quot;panel&quot;
-  panel_index_w&lt;- g$layout$l[panels]
-  panel_index_h&lt;- g$layout$t[panels]
-  nw &lt;- length(unique(panel_index_w))
-  nh &lt;- length(unique(panel_index_h))
-  g$widths[panel_index_w] &lt;- rep(list(width), nw)
-  g$heights[panel_index_h] &lt;- rep(list(height), nh)
-  class(g) &lt;- c(&quot;fixed&quot;, class(g), &quot;ggplot&quot;)
-  if(!is.null(file))
-    ggsave(file, 
-           g,
-           width = convertWidth(sum(g$widths) + margin,
-                                unitTo = &quot;in&quot;, valueOnly = TRUE),
-           height = convertHeight(sum(g$heights) + margin,
-                                  unitTo = &quot;in&quot;, valueOnly = TRUE))
-  g
 }</code></pre>
 </div>
 </div>

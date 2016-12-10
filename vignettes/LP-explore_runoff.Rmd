@@ -155,7 +155,7 @@ by shinyApps.
                  color = viscos_options("color_s")) %>%
         dyRangeSelector(height = 20, strokeColor = "") %>%
         dyCrosshair(direction = "vertical") %>%
-        dyOptions(includeZero = TRUE)
+         dyOptions(includeZero = TRUE, retainDateWindow = TRUE)
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({

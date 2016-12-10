@@ -123,17 +123,17 @@ $(document).ready(function () {
 </div>
 
 
-<p>Possibility to save plotlists into jpgs and create a linked html file.</p>
+<p>Possibility to save lists of plots into .jpgs and create a linked html file.</p>
 <div id="code" class="section level1">
 <h1>code</h1>
-<pre class="r"><code>#' Serve is still beta 
-#' 
-#' More description shall follow 
+<pre class="r"><code>#' Serve is still beta
+#'
+#' More description shall follow
 #' @export
-serve &lt;- function(plotlist,path = &quot;&quot;, fig_width = 800L, fig_height = 500L) {
+serve &lt;- function(plotlist, path = &quot;&quot;, fig_width = 800L, fig_height = 500L) {
   hmtl_filename &lt;- &quot;summary&quot;
   # establish html-file in chosen folder
-  '%&amp;%' &lt;- function(a,b) paste(a,b,sep = &quot;&quot;) # helper for easiser string concatenation
+  '%&amp;%' &lt;- function(a,b) paste(a,b,sep = &quot;&quot;) # helper for easier string concatenation
   fileConn &lt;- file(path %&amp;% hmtl_filename %&amp;% &quot;.html&quot; , &quot;w&quot;)
   # write html header
   #writeLines(text = '&lt;!DOCTYPE html&gt;',fileConn)
@@ -141,10 +141,10 @@ serve &lt;- function(plotlist,path = &quot;&quot;, fig_width = 800L, fig_height 
   writeLines(text = &quot;  &lt;STYLE type='text/css'&gt;&quot;,fileConn)
   writeLines(text = &quot;    H1 { text-align: center}&quot;,fileConn)
   writeLines(text = &quot;  &lt;/STYLE&gt;&quot;,fileConn)
- writeLines(text = &quot;&lt;/HEAD&gt;&quot;,fileConn) 
+ writeLines(text = &quot;&lt;/HEAD&gt;&quot;,fileConn)
   #writeLines(text = '&lt;html&gt;',fileConn)
   writeLines(text = '&lt;body&gt;',fileConn)
-  # check which kind of plotlsit we are dealing with: 
+  # check which kind of plotlsit we are dealing with:
   if ( all(names(plotlist) == c(&quot;NSE&quot;,&quot;KGE&quot;,&quot;p_bias&quot;,&quot;CORR&quot;)) ) {
     list_to_plot &lt;- plotlist
 
@@ -157,7 +157,7 @@ serve &lt;- function(plotlist,path = &quot;&quot;, fig_width = 800L, fig_height 
   figure_names &lt;- names(list_to_plot)
   ## save everything localy &amp; link it within the html file
   jpg_filenames &lt;- &quot;figure&quot;
-  
+
   for (i in 1:num_plots) {
     writeLines(text = &quot;&lt;H1&gt;&quot; %&amp;% figure_names[i] %&amp;% &quot;&lt;/H1&gt;&quot;,fileConn)
     plt_name &lt;- jpg_filenames %&amp;% i %&amp;% &quot;.jpg&quot;
