@@ -13,28 +13,25 @@ output:
 ```
 
 # Introduction
-This section defines the code of a [shiny app](http://shiny.rstudio.com/)
-that lets users explore the (hydro-) graphs for the different basins in
-conjunction with objective functions for the user-selected time-window. The
-calculation of the objective functions are independent of the code defined in
-the section about `main_of_compute`, since simpler constructions are preferable
-in the case at hand and more information is given to the user.
-
-The computations of the app are defined in the `server` part and the
-appearance in the `ui`.
+This section defines the code of a [shiny gadget](http://shiny.rstudio.com/). 
+It enables the interactive exploration of (hydro-) graphs for the different basins.
+The gadget shows always the corresponding objective function for the selected 
+graph. Furthermore, one can get the selected data by clicking on "done" at the 
+end of a session. The following examples provide a good overview of what the 
+function can do. 
 
 # Example
-In this chapter it is shown, how the function `explore_runoff` can be
-used to take a closer look at the data series you loaded. Only pre-requirements
-are properly loaded data and correctly addressed `viscos_options`. Additionally,
-you can adapt the *color_* options in the `viscos_options`. Information on
-the *objective functions* can be found [here](ex-OF_explanation.html)
+This chapter gives examples of `explore_cos_data`. For the pre-requirements take 
+a look at the [introduction](LP-Introduction). 
+Running the `explore_cos_data` function without any options opens a shiny gadget
+in the viewer:
+![example](figures/explore_cos_data.gif)
 
-Running the `explore_runoff` with your data as input, a shiny app is
-started in a new window (in this case an example .jpg with explanations):
+Information on the *objective functions* can be found 
+[here](ex-OF_explanation.html).
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_o = "green", color_s = "red")
-explore_runoff(runoff_example)
+explore_cos_data(runoff_example)
 ```
 
 ![](figures/eg_explore_basin.JPG)
@@ -48,8 +45,10 @@ chosen time window.
 
 # Code
 In the following paragraphs the code of the shiny app is defined.
+The computations of the app are defined in the `server` part and the
+appearance in the `ui`.
 
-## `explore_runoff`
+## `explore_cos_data`
 This function represents the main part of the shiny app.
 The current solution **forces** users to enumerate their basins with and the shiny app needs some pre-calculation, which need to be calculated before the app is started. These calculations are
 made before the app as such is defined. They include:
@@ -81,8 +80,8 @@ made before the app as such is defined. They include:
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_cos_data_example()
-  #' explore_runoff(cos_data)
-explore_runoff <- function(cos_data,
+  #' explore_cos_data(cos_data)
+explore_cos_data <- function(cos_data,
                                    of_list = list(
                                      nse = of_nse,
                                      kge = of_kge,
@@ -214,7 +213,7 @@ by shinyApps.
 ```
 
 The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
-for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `explore_runoff` .
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `explore_cos_data` .
 ```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",

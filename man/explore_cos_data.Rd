@@ -1,10 +1,10 @@
 % Please edit documentation in R/explore_runoff-GEN.R
-\name{explore_runoff}
-\alias{explore_runoff}
+\name{explore_cos_data}
+\alias{explore_cos_data}
 \title{explore cos_data with Objective Functions}
 \usage{
-explore_runoff(cos_data, of_list = list(nse = of_nse, kge = of_kge, p_bias = of_pbias, 
-    r = of_cor), start_date = NULL, end_date = NULL)
+explore_cos_data(cos_data, of_list = list(nse = of_nse, kge = of_kge, 
+    p_bias = of_p_bias, r = of_cor), start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{d_xts}{cos_data formatted as time series}
@@ -16,5 +16,5 @@ series object.
 \examples{
 # get example data, explore the model performance
 cos_data <- get_cos_data_example()
-explore_runoff(cos_data)
+explore_cos_data(cos_data)
 }

@@ -1,6 +1,5 @@
-% Please edit documentation in R/get_main_of-GEN.R, R/main_of-GEN.R, R/of-GEN.R
-\name{barplot_main_of}
-\alias{barplot_main_of}
+% Please edit documentation in R/main_of-GEN.R, R/of-GEN.R
+\name{main_of_barplot}
 \alias{main_of_barplot}
 \alias{main_of_rasterplot}
 \alias{of_cor}
@@ -13,13 +12,8 @@
 \alias{of_rmse}
 \alias{of_rsd}
 \alias{of_ve}
-\alias{rasterplot_main_of}
-\title{Barplot for the Main Objective Function Values}
+\title{Bar plot for the Main Objective Function Values}
 \usage{
-barplot_main_of(runoff_data)
-
-rasterplot_main_of(runoff_data)
-
 main_of_barplot(cos_data)
 
 main_of_rasterplot(cos_data)
@@ -48,10 +42,6 @@ of_ve(o, s)
 \item{s}{The created data or the simulations (s_data)}
 }
 \description{
-Barplot for the Main Objective Function Values
-
-Barplot for the Main Objective Function Values
-
 Bar plot for the Main Objective Function Values
 
 Bar plot for the Main Objective Function Values
