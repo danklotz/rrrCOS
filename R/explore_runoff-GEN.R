@@ -12,6 +12,7 @@
   #' @import magrittr
   #' @import dygraphs
   #' @import hydroGOF
+  #' @import pasta
   #' @importFrom purrr map_df
   #'
   #' @export
@@ -20,12 +21,12 @@
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_cos_data_example()
-  #' explore_runoff(cos_data)
-explore_runoff <- function(cos_data,
+  #' explore_cos_data(cos_data)
+explore_cos_data <- function(cos_data,
                                    of_list = list(
                                      nse = of_nse,
                                      kge = of_kge,
-                                     p_bias = of_pbias,
+                                     p_bias = of_p_bias,
                                      r = of_cor
                                    ),
                                    start_date = NULL,
@@ -40,7 +41,7 @@ explore_runoff <- function(cos_data,
     clean_cos_data %<>% complete_dates
   }
   # (II)
-  d_xts <- runoff_as_xts(clean_cos_data)
+  d_xts <- cos_data_as_xts(clean_cos_data)
   # (III)
   idx_names <- names(d_xts) %>%
     tolower %>%
@@ -62,7 +63,6 @@ explore_runoff <- function(cos_data,
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_s"),.) ]
     # (II) select data:
-    '%&%' <- function(a,b) paste(a,b,sep = "") # %&% as substitute for function
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
@@ -81,6 +81,8 @@ explore_runoff <- function(cos_data,
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
       dygraph( xts_selected_data() ) %>%
+        dyAxis("y", 
+               label = visCOS::viscos_options("data_unit")) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),
                  color = viscos_options("color_o")) %>%
@@ -89,7 +91,7 @@ explore_runoff <- function(cos_data,
                  color = viscos_options("color_s")) %>%
         dyRangeSelector(height = 20, strokeColor = "") %>%
         dyCrosshair(direction = "vertical") %>%
-        dyOptions(includeZero = TRUE)
+         dyOptions(includeZero = TRUE, retainDateWindow = TRUE)
     })
     # (IV) get dygraph date bounds (switches):
     selcted_from <- reactive({

@@ -3,7 +3,7 @@
 \alias{complete_dates}
 \title{Complete the date-formats with POSIXct or COSdate}
 \usage{
-complete_dates(cos_data = NULL, name_cosyear = "yyyy", name_posix = "POSIXdate")
+complete_dates(cos_data)
 }
 \arguments{
 \item{cos_data}{The data.frame, which contains the runoff information}

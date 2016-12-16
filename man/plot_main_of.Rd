@@ -1,13 +1,8 @@
-% Please edit documentation in R/get_main_of-GEN.R, R/main_of-GEN.R
+% Please edit documentation in R/main_of-GEN.R
 \name{plot_main_of}
 \alias{plot_main_of}
-\title{Plot main objective fucnction values}
+\title{Plot main objective function values}
 \description{
-Currently two options for plotting the main objectives are provided by 
-visCOS: Plotting the differnet objective functions values as a set of 
-barplots \code{barplot_of} and plotting a summary table in form of 
-a large raster of all the objective fucntion values \code{rasterplot_of}.
-
 Currently two options for plotting the main objectives are provided by
 visCOS: Plotting the different objective functions values as a set of
 bar plots \code{barplot_of} and plotting a summary table in form of

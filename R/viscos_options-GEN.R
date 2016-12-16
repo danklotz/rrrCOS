@@ -33,6 +33,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   # data.frame column names
   name_o = "qobs", 
   name_s = "qsim", 
+  data_unit = "(m^3/s)",
   name_COSyear = "yyyy",
   name_COSmonth = "mm",
   name_COSday = "dd",
@@ -46,4 +47,3 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   color_s = "orange",
   of_limits = c(0,1)
 )
-

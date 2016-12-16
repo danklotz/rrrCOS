@@ -1,5 +1,5 @@
 #' @import magrittr
-assert_chunk <- function(cos_data) {
+assert_junk <- function(cos_data) {
   regEx <- get_regex_for_cos_data()
   assertChunk <- names(cos_data) %>% tolower %>% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {

@@ -86,20 +86,29 @@
   #' @import magrittr
   #'
   #' @export
-complete_dates <- function(cos_data = NULL,
-                                  name_cosyear = "yyyy",
-                                  name_posix = "POSIXdate") {
+complete_dates <- function(cos_data) {
   # make sure that magrittr is loaded:
   assert_dataframe(cos_data)
   # check for COSdates and stop if non-logical expression are obtained
-  OK_COSdate <- any(names(cos_data)== viscos_options("name_COSyear"))
-  OK_POSIXdates <- any(names(cos_data)== viscos_options("name_COSposix"))
+  OK_COSdate <- any(
+    unlist(viscos_options("name_COSyear",
+                          "name_COSmonth",
+                          "name_COSmonth",
+                          "name_COShour",
+                          "name_COSmin")
+                           ) 
+    %in% 
+    names(cos_data)
+  )
+  OK_POSIXdates <- any(names(cos_data) == viscos_options("name_COSposix"))
   if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
-    stop("Something seems to be wrong with the date / time formats :(")
+    stop("Something is wrong :( \n 
+         some of the date-columns could not be processed!")
   }
   # choose function depending on which formats are available!
   if (!OK_COSdate & !OK_POSIXdates) {
-    stop("No COSdates and no POSIXct-dates in the data!")
+    stop("Something is wrong :( \n 
+         The 5 cosero date columns and the POSIXct colum could not be found")
   } else if (OK_COSdate & !OK_POSIXdates) {
     cos_data <- implode_cosdate(cos_data) # see following chapter
   } else if (!OK_COSdate & OK_POSIXdates) {
@@ -107,10 +116,6 @@ complete_dates <- function(cos_data = NULL,
   }
   return(cos_data)
 }
-# transform COSdate into the nicer POSIXct-date format
-#
-# Takes a data.frame, which contains the COSdate format (see: xxx) and
-# transforms it into a POSIXct series. Note that time is assumed to be in UTC
 implode_cosdate <- function(cos_data) {
   require("magrittr", quietly = TRUE)
   assert_dataframe(cos_data)
@@ -130,6 +135,7 @@ implode_cosdate <- function(cos_data) {
 remove_leading_zeros <- function(cos_data) {
   require("magrittr", quietly = TRUE)
   cos_data %<>% remove_junk
+  #
   runoff_names <- cos_data %>% names
   runoff_lowercase_names <- runoff_names %>% tolower
   #
@@ -147,7 +153,9 @@ remove_leading_zeros <- function(cos_data) {
   runoff_only_names <- runoff_names %>%
     gsub(paste0("[",searchterm,"]"),"",.) %>%
     gsub(separator,"",.)
-  runoff_new_numbers <- runoff_nums %>% as.numeric() %>% as.character()
+  runoff_new_numbers <- runoff_nums %>%
+    as.numeric() %>%
+    as.character()
   runoff_new_numbers[is.na(runoff_new_numbers)] <- ""
   #
   names(cos_data) <- runoff_new_numbers %>%
@@ -183,6 +191,7 @@ mark_periods <- function(cos_data, start_month = 10, end_month = 9) {
     period_range <- c(range_1,range_2)
     out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
   }
+
   # (II) mark periods:
     eval_diff <- function(a) {c(a[1],diff(a))}
     cos_data[[viscos_options("name_COSperiod")]] <-
@@ -213,17 +222,14 @@ mark_periods <- function(cos_data, start_month = 10, end_month = 9) {
   #' @import zoo
   #' @importFrom xts xts
   #' @import magrittr
-  #'
-  #' @export
-runoff_as_xts <- function(cos_data) {
+cos_data_as_xts <- function(cos_data) {
   # pre
   assert_dataframe(cos_data)
-  assert_chunk(cos_data)
+  assert_junk(cos_data)
   assert_complete_date(cos_data)
-  # everything is set tolower because we try to keep visCOS case insensitive
-  cos_data <- remove_leading_zeros(cos_data)
-
-  names(cos_data) <- names(cos_data) %>% tolower
+  # everything is set to lower case
+  cos_data <- remove_leading_zeros(cos_data) %>% 
+    magrittr::set_names(names(cos_data) %>% tolower)
   name_posix <- viscos_options("name_COSposix") %>% tolower
   cos_data_as_xts <- xts(x = cos_data[], # ,names(cos_data) != name_posix
                             order.by = cos_data[[name_posix]])
