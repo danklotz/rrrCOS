@@ -1,171 +1,74 @@
-  flow_duration_curve <- function(x, 
-                                  lQ.thr = 0.7,
-                                  hQ.thr = 0.2,
-                                  plot = TRUE,
-                                  log = "y",
-                                  main = "Flow Duration Curve",
-                                  xlab = "% Time flow equalled or exceeded", 
-                                  ylab = "Q, [m3/s]",
-                                  yat = c(0.01, 0.1, 1),
-                                  xat = c(0.01, 0.025, 0.05),
-                                  col = palette("default")[1:ncol(x)],
-                                  pch = 1:ncol(x),
-                                  lwd = rep(1, ncol(x)),
-                                  lty = 1:ncol(x),
-                                  cex = 0.4,
-                                  cex.axis = 1.2, 
-                                  cex.lab = 1.2,
-                                  leg.txt = NULL,
-                                  leg.cex = 1,
-                                  leg.pos = "topright",
-                                  verbose = TRUE,
-                                  thr.shw = TRUE,
-                                  new = TRUE,
-                                  ...) {
-  ylim <- range(x, na.rm = TRUE)
-  if (((log == "y") | (log == "xy") | (log == "yx")) & min(ylim) == 0) {
-    tmp <- unlist(x)
-    tmp[which(tmp == 0)] <- NA
-    ylim[1] <- min(tmp, na.rm = TRUE)
+  #' Plot Flow Duration Curves 
+  #' 
+  #' Flow duration flow flw :(
+  #' @export 
+  #' @import ggplot2 
+  #' @import magrittr
+  #' @import dplyr
+  #' @import purrr
+  #' @import pasta
+  #' @import ggplot2
+  fdc_plot <- function(cos_data,
+                       log_y = TRUE,
+                       log_x = FALSE,
+                       ...) {
+  # maybe we have to account certain limits for the logs
+  # if (log_y | log_x & min(ylim) == 0) {
+  #   ylim <- range(q, na.rm = TRUE)
+  #   tmp <- unlist(q)
+  #   tmp[which(tmp == 0)] <- NA
+  #   ylim[1] <- min(tmp, na.rm = TRUE)
+  # }
+  fdc_data <- fdc_compute(cos_data)
+  gplot <- ggplot(fdc_data)
+  if (log_x & log_y) {
+    gplot <- gplot + geom_line(aes(x = log(exceedence), y = log(value), color = obs_sim))
+  } else if (log_y) {
+    gplot <- gplot + geom_line(aes(x = exceedence, y = log(value), color = obs_sim))
+  } else if (log_x) {
+    gplot <- gplot + geom_line(aes(x = log(exceedence), y = value, color = obs_sim))
+  } else (
+    gplot <- gplot + geom_line(aes(x = exceedence, y = value, color = obs_sim))
+  )
+  gplot <- gplot + facet_wrap(~ basin_idx)
+  return(gplot)
   }
-  out <- apply(x, FUN = fdc.default, MARGIN = 2, plot = FALSE, log = "")
-  n <- ncol(x)
-  j <- 1
-  fdc(x = x[, 1], plot = plot, log = "xy", col = col[1], 
-      pch = pch[1], lwd = lwd[1], lty = lty[1], cex = cex, 
-      cex.axis = cex.axis, cex.lab = cex.lab, main = main, 
-      xlab = xlab, ylab = ylab, ylim = ylim, yat = yat, 
-      verbose = verbose, thr.shw = FALSE, new = TRUE, ...)
-  
-  if (plot) {
-    if (thr.shw == TRUE) {
-      message("[Note: 'thr.shw' was set to FALSE to avoid confusing legends...]")
-      thr.shw <- FALSE
-    }
-    n <- ncol(x)
-    j <- 1
-    
-        fdc(x = x[, 1], plot = plot, log = log, col = col[1], 
-        pch = pch[1], lwd = lwd[1], lty = lty[1], cex = cex, 
-        cex.axis = cex.axis, cex.lab = cex.lab, main = main, 
-        xlab = xlab, ylab = ylab, ylim = ylim, yat = yat, 
-        verbose = verbose, thr.shw = FALSE, new = TRUE, ...)
-    
-    if (verbose) 
-      message("[Column: ", format(j, width = 10, justify = "left"), 
-              " : ", format(j, width = 3, justify = "left"), 
-              "/", n, " => ", format(round(100 * j/n, 2), width = 6, 
-                                     justify = "left"), "% ]")
-    fdc(x = x[, 1], plot = plot, log = "y", col = col[1], 
-        pch = pch[1], lwd = lwd[1], lty = lty[1], cex = cex, 
-        cex.axis = cex.axis, cex.lab = cex.lab, main = main, 
-        xlab = xlab, ylab = ylab, ylim = ylim, yat = yat, 
-        verbose = verbose, thr.shw = FALSE, new = TRUE, ...)
-    
-      # quick solution in ggplot:
-     ggplot2::qplot(x = yval, y= log(tmp), geom="point")
-    
-    sapply(2:n, function(j) {
-
-      tmp <- sort(x[, j])
-      yval <- fdc(x = tmp, plot = FALSE, log = "", verbose = verbose)
-      points(yval, tmp, cex = cex, col = col[j], pch = pch[j], 
-             lwd = lwd[j], lty = lty[j], type = "o")
-    })
-    if (is.null(leg.txt)) {
-      if (!is.null(colnames(x))) {
-        leg.txt <- colnames(x)
-      }
-      else leg.txt <- paste("Q", 1:ncol(x), sep = "")
-    }
-    legend(x = leg.pos, legend = leg.txt, cex = leg.cex, 
-           col = col, pch = pch, lwd = lwd, lty = lty, bty = "n")
+  #' Compute Flow Duration Curves 
+  #' 
+  #' Flow duration flow flw :(
+  #' @import ggplot2 
+  #' @import magrittr
+  #' @import dplyr
+  #' @import purrr
+  #' @import pasta
+  #' @import ggplot2
+  #' @export 
+  fdc_compute <- function(cos_data) {
+   cos_data_only <- cos_data %>% 
+      dplyr::select(starts_with(viscos_options("name_o")), starts_with(viscos_options("name_s")))
+    cos_exceedences <- purrr::map_df(cos_data_only,calc_percent_exceedence)
+    fdc_data <- cos_data_only %>% tidyr::gather() %>% 
+      cbind.data.frame(exceedence = cos_exceedences %>% tidyr::gather() %>% magrittr::extract("value")) %>% 
+      magrittr::set_names(c("key","value","exceedence")) %>% 
+      dplyr::mutate(obs_sim = key %>%
+                      gsub(viscos_options("name_o") %&% ".*",viscos_options("name_o"),.,ignore.case = TRUE) %>%
+                      gsub(viscos_options("name_s") %&% ".*",viscos_options("name_s"),.,ignore.case = TRUE), 
+                    basin_idx = key %>%
+                      gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
+                      gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>% 
+                      gsub("\\D","",.) %>% as.numeric)
+    return(fdc_data)
   }
-  return(out)
-}
-fdc.default <- function (x, lQ.thr = 0.7, hQ.thr = 0.2, plot = TRUE, log = "y", 
-    main = "Flow Duration Curve", xlab = "% Time flow equalled or exceeded", 
-    ylab = "Q, [m3/s]", ylim = NULL, yat = c(0.01, 0.1, 1), xat = c(0.01, 
-        0.025, 0.05), col = "black", pch = 1, lwd = 1, lty = 1, 
-    cex = 0.4, cex.axis = 1.2, cex.lab = 1.2, leg.txt = NULL, 
-    leg.cex = 1, leg.pos = "topright", verbose = TRUE, thr.shw = TRUE, 
-    new = TRUE, ...) 
-{
-    Qposition <- function(x, Q) {
-        Q.dist <- abs(x - Q)
-        Q.index <- which.min(Q.dist)
-        return(Q.index)
-    }
-    x <- as.numeric(x)
-    x.old <- x
-    x <- sort(x)
-    x.zero.index <- which(x == 0)
-    nzeros <- length(x.zero.index)
-    ind <- match(x.old, x)
-    n <- length(x)
-    dc <- rep(NA, n)
-    dc[1:n] <- sapply(1:n, function(j, y) {
-        dc[j] <- length(which(y >= y[j]))
-    }, y = x)
-    dc <- dc/n
-    if (plot) {
-        dc.plot <- dc
-        if (log == "y") {
-            if (nzeros > 0) {
-                x <- x[-x.zero.index]
-                dc.plot <- dc.plot[-x.zero.index]
-                if (verbose) 
-                  message("[Note: all 'x' equal to zero (", nzeros, 
-                    ") will not be plotted ]")
-            }
-        }
-        if (is.null(ylim)) 
-            ylim <- range(x, na.rm = TRUE)
-        if (((log == "y") | (log == "xy") | (log == "yx")) & 
-            min(ylim) == 0) {
-            tmp <- x
-            tmp[which(tmp == 0)] <- NA
-            ylim[1] <- min(tmp, na.rm = TRUE)
-        }
-        if (new) {
-            plot(dc.plot, x, xaxt = "n", yaxt = "n", type = "o", 
-                col = col, pch = pch, lwd = lwd, lty = lty, cex = cex, 
-                cex.axis = cex.axis, cex.lab = cex.lab, main = main, 
-                xlab = xlab, ylab = ylab, ylim = ylim, log = log, 
-                ...)
-        }
-        else lines(dc.plot, x, xaxt = "n", type = "o", col = col, 
-            pch = pch, lwd = lwd, lty = lty, cex = cex)
-        ylabels <- pretty(ylim)
-        if ((log == "y") | (log == "xy") | (log == "yx")) {
-            ylabels <- union(yat, ylabels)
-        }
-        Axis(side = 2, at = ylabels, cex.axis = cex.axis, labels = ylabels)
-        xpos <- seq(0, 1, by = 0.05)
-        xlabels <- seq(0, 1, by = 0.1)
-        if ((log == "x") | (log == "xy") | (log == "yx")) {
-            xpos <- union(xat, xpos)
-            xlabels <- union(xat, xlabels)
-        }
-        Axis(side = 1, at = xpos, cex.axis = cex.axis, labels = FALSE)
-        Axis(side = 1, at = xlabels, cex.axis = cex.axis, labels = paste(100 * 
-            xlabels, "%", sep = ""))
-        if (!is.na(lQ.thr)) 
-            abline(v = lQ.thr, col = "grey", lty = 3, lwd = 2)
-        if (!is.na(hQ.thr)) 
-            abline(v = hQ.thr, col = "grey", lty = 3, lwd = 2)
-        if (!is.null(leg.txt)) 
-            legend(x = leg.pos, legend = leg.txt, cex = leg.cex, 
-                col = col, pch = pch, lwd = lwd, lty = lty, bty = "n")
-        if (thr.shw) {
-            x.lQ <- x[Qposition(dc.plot, lQ.thr)]
-            x.hQ <- x[Qposition(dc.plot, hQ.thr)]
-            legend("bottomleft", c(paste("Qhigh.thr=", round(x.hQ, 
-                2), sep = ""), paste("Qlow.thr=", round(x.lQ, 
-                2), sep = "")), cex = 0.8, bty = "n")
-        }
-    }
-    dc <- dc[ind]
-    return(dc)
-}
-
+# function to calculated the percent exceedence (x-axis) for the fdc 
+  calc_percent_exceedence <- function(q) {
+    q_sorted <- sort(q)
+    q_zero_index <- which(q_sorted == 0)
+    nzeros <- length(q_zero_index)
+    ind <- match(q, q_sorted)
+    n <- length(q)
+    percent_exeedence <- rep(NA, n)
+    percent_exeedence[1:n] <- sapply(1:n, function(j, y) {dc[j] <- length(which(y >= y[j]))},
+                      y = q)
+    percent_exeedence <- percent_exeedence/n
+    return(percent_exeedence)
+  }

@@ -13,36 +13,88 @@ output:
 ```
 
 Work in Progress -> flow duration curves!
+
 ```{r}
-  flow_duration_curve <- function(q, 
-                                  log_y = TRUE,
-                                  log_x = FALSE
-                                  ...) {
-  # a start for a single colum
-  ylim <- range(q, na.rm = TRUE)
-  n <- ncol(q)
-  j <- 1
-  # the log of zero cannot be taken, so hydroTSM implemented fail-saver
-  if (((logarithm == "y") | (logarithm == "xy") | (logarithm == "yx")) & min(ylim) == 0) {
-    tmp <- unlist(q)
-    tmp[which(tmp == 0)] <- NA
-    ylim[1] <- min(tmp, na.rm = TRUE)
-  }
-  tmp <- sort(q[, j])
-  x <- as.numeric(q$q)
-  x.old <- x
-  x <- sort(x)
-  x.zero.index <- which(x == 0)
-  nzeros <- length(x.zero.index)
-  ind <- match(x.old, x)
-  n <- length(x)
-  dc <- rep(NA, n)
-  dc[1:n] <- sapply(1:n, function(j, y) {
-      dc[j] <- length(which(y >= y[j]))
-  }, y = x)
-  dc <- dc/n
-  ggplot2::qplot(x = dc, y = log(tmp), geom="point")
+  #' Plot Flow Duration Curves 
+  #' 
+  #' Flow duration flow flw :(
+  #' @export 
+  #' @import ggplot2 
+  #' @import magrittr
+  #' @import dplyr
+  #' @import purrr
+  #' @import pasta
+  #' @import ggplot2
+  fdc_plot <- function(cos_data,
+                       log_y = TRUE,
+                       log_x = FALSE,
+                       ...) {
+  # maybe we have to account certain limits for the logs
+  # if (log_y | log_x & min(ylim) == 0) {
+  #   ylim <- range(q, na.rm = TRUE)
+  #   tmp <- unlist(q)
+  #   tmp[which(tmp == 0)] <- NA
+  #   ylim[1] <- min(tmp, na.rm = TRUE)
+  # }
+  fdc_data <- fdc_compute(cos_data)
+  gplot <- ggplot(fdc_data)
+  if (log_x & log_y) {
+    gplot <- gplot + geom_line(aes(x = log(exceedence), y = log(value), color = obs_sim))
+  } else if (log_y) {
+    gplot <- gplot + geom_line(aes(x = exceedence, y = log(value), color = obs_sim))
+  } else if (log_x) {
+    gplot <- gplot + geom_line(aes(x = log(exceedence), y = value, color = obs_sim))
+  } else (
+    gplot <- gplot + geom_line(aes(x = exceedence, y = value, color = obs_sim))
+  )
+  gplot <- gplot + facet_wrap(~ basin_idx)
+  return(gplot)
   }
 ```
 
+```{r}
+  #' Compute Flow Duration Curves 
+  #' 
+  #' Flow duration flow flw :(
+  #' @import ggplot2 
+  #' @import magrittr
+  #' @import dplyr
+  #' @import purrr
+  #' @import pasta
+  #' @import ggplot2
+  #' @export 
+  fdc_compute <- function(cos_data) {
+   cos_data_only <- cos_data %>% 
+      dplyr::select(starts_with(viscos_options("name_o")), starts_with(viscos_options("name_s")))
+    cos_exceedences <- purrr::map_df(cos_data_only,calc_percent_exceedence)
+    fdc_data <- cos_data_only %>% tidyr::gather() %>% 
+      cbind.data.frame(exceedence = cos_exceedences %>% tidyr::gather() %>% magrittr::extract("value")) %>% 
+      magrittr::set_names(c("key","value","exceedence")) %>% 
+      dplyr::mutate(obs_sim = key %>%
+                      gsub(viscos_options("name_o") %&% ".*",viscos_options("name_o"),.,ignore.case = TRUE) %>%
+                      gsub(viscos_options("name_s") %&% ".*",viscos_options("name_s"),.,ignore.case = TRUE), 
+                    basin_idx = key %>%
+                      gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
+                      gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>% 
+                      gsub("\\D","",.) %>% as.numeric)
+    return(fdc_data)
+  }
+```
+
+
+```{r}
+# function to calculated the percent exceedence (x-axis) for the fdc 
+  calc_percent_exceedence <- function(q) {
+    q_sorted <- sort(q)
+    q_zero_index <- which(q_sorted == 0)
+    nzeros <- length(q_zero_index)
+    ind <- match(q, q_sorted)
+    n <- length(q)
+    percent_exeedence <- rep(NA, n)
+    percent_exeedence[1:n] <- sapply(1:n, function(j, y) {dc[j] <- length(which(y >= y[j]))},
+                      y = q)
+    percent_exeedence <- percent_exeedence/n
+    return(percent_exeedence)
+  }
+```
 

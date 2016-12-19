@@ -5,9 +5,7 @@
 #' @import dplyr
 #' @import magrittr
 #' @importFrom tibble tibble
-peak_plot <- function(cos_data,
-                                 n_events= 10L,
-                                 window_size = 24L) {
+peak_plot <- function(cos_data,n_events= 10L, window_size = 24L) {
   # pre:
   assert_dataframe(cos_data)
   n_events_int <- as.integer(n_events)
