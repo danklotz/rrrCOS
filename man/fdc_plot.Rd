@@ -6,5 +6,8 @@
 fdc_plot(cos_data, log_y = TRUE, log_x = FALSE, ...)
 }
 \description{
-Flow duration flow flw :(
+Plots the flow duration curves (fdc) for `cos_data`. 
+The function uses `ggplot` to so and facets the different basins into 
+separate subplots. Each subplot shows the fdc of the \eqn{o}-data and 
+the \eqn{s}-data.
 }
