@@ -124,12 +124,21 @@ $(document).ready(function () {
 
 
 <p>visCOS is still under (heavy) development, so it is not recommended to use the package, yet. If you want to do it nevertheless…</p>
-<p>visCOS is an R-package that provides summaries and visualisation to support parameter estimation for conceptual rainfall-runoff models in general and COSERO in special. COSERO is a hbv-like model that was developed at the institue for water management, hydrology and hydraulic engineering (IWHW) at BOKU, Vienna. The name is an abreviation for “<strong>Co</strong>nceptual <strong>Se</strong>mi-Distributed <strong>R</strong>ainfall Run<strong>o</strong>ff Model”. This page provides a hub to access the differnet examples and the entire program code.</p>
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<p>visCOS is an R-package that provides summaries and visualisation to support parameter estimation for conceptual rainfall-runoff models in general and COSERO in special. COSERO is a hbv-like model that was developed at the institute for water management, hydrology and hydraulic engineering (IWHW) at BOKU, Vienna. The name is an abbreviation for “<strong>Co</strong>nceptual <strong>Se</strong>mi-Distributed <strong>R</strong>ainfall Run<strong>o</strong>ff Model”. This page provides a hub to access the different examples and the entire program code.</p>
+<div id="loading-raw-data" class="section level2">
+<h2>Loading raw data</h2>
+<p>From the point of view of <strong>visCOS</strong> raw-data are time-series of observations and model output. Usually raw data is saved in some simple file format, e.g. <em>.txt</em> or <em>.csv</em>. <code>R</code> already includes many option to read those files with the <code>read.table</code> functionalities. For larger unstructured files the read options of the <code>data.table</code> package is recommended. In our tests it was fastest and most flexible option. Alternatively the <code>readr</code> can be used if the data is more structured and large.</p>
+<p><strong>Note</strong> at this stage, only a comparison between <strong>numbered catchments</strong> for two parameters is possible. So the data must include an integer number after the description (like “QObs_001” and “QSim_001”).</p>
+</div>
+<div id="the-basic-data-structure" class="section level2">
+<h2>The basic data structure</h2>
+<p>Shall follow</p>
+</div>
+<div id="the-package" class="section level1">
+<h1>The Package</h1>
 <p><strong>1. Basics</strong></p>
 <ul>
-<li><a href="LP-cookd_data.html">The basic data structure</a></li>
+<li><a href="LP-cook_data.html">Cooking Data</a></li>
 <li><a href="LP-viscos_options.html">Set Options</a></li>
 </ul>
 <p><strong>2. Data Cooking</strong></p>

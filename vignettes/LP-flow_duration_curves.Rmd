@@ -13,6 +13,13 @@ output:
 ```
 
 # Introduction
+**visCOS** provides a functions to calculate the flow duration curve and one to 
+plot it. The former is (`fdc_compute`) computes the flow exceedence properties 
+and returns a data.frame. The calculation is adapted from the method used within the 
+[hydroTSM](https://CRAN.R-project.org/package=hydroTSM) 
+package. It is currently quite slow. The latter uses `fdc_compute` and makes a 
+facetted ggplot. 
+There, each basin is a facet and each sub-plot shows the $o$-data and $s$-data.
 
 # Examples
 ```{r, purl=FALSE, eval=TRUE}

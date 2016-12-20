@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Daniel Klotz, Johannes Wesemann" />
+<meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger" />
 
 
 <title>Cooking Data</title>
@@ -117,7 +117,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Cooking Data</h1>
-<h4 class="author"><em>Daniel Klotz, Johannes Wesemann</em></h4>
+<h4 class="author"><em>Daniel Klotz, Johannes Wesemann, Mathew Herrnegger</em></h4>
 <h4 class="date"><em>6 Juli 2016</em></h4>
 
 </div>
@@ -125,27 +125,20 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This section defines code of the <strong>visCOS</strong> functions used for “cooking data”. Within the scope of <strong>visCOS</strong> “cooking data” is defined as the process of transforming <em>raw data</em> into <em>cooked</em>, which can be used for the internal visualisations.</p>
-</div>
-<div id="examples" class="section level1">
-<h1><span class="header-section-number">2</span> Examples</h1>
-<p>In this chapter examples for <strong>visCOS</strong>-functions are given that deal with the process of transforming <em>raw data</em> into prepared data for <strong>visCOS</strong>. The data is then <em>cooked</em> and can be used for figures etc.</p>
-<p>The following steps can be performed:</p>
+<p>Within <strong>visCOS</strong> “cooking data” is is used as a synonym for the process of transforming <em>raw data</em> into <em>cooked data</em>, that is data in the <a href="Introduction.html">COSERO data.frame</a> format. The <em>cooked data</em> can then be used for figures and other things. The package already provides a set of basic functions for that task that were useful for the applications at the institute.</p>
+<p>This section defines these functions and explains their usage. Currently the following steps can be performed from within <strong>visCOS</strong>_</p>
 <ul>
-<li>Loading of raw data (always necessary if data is not loaded yet)</li>
-<li>Setting visCOS_options (if it doesn’t fit your data)</li>
-<li>Remove junk and prepare date format</li>
-<li>Define and Mark periods</li>
+<li>Provide example data</li>
+<li>Remove junk</li>
+<li>Prepare date formats</li>
+<li>Define periods</li>
 </ul>
-<div id="loading-raw-data" class="section level2">
-<h2><span class="header-section-number">2.1</span> Loading raw data</h2>
-<p>From the point of view of <strong>visCOS</strong> raw-data are time-series of observations and model output. Usually raw data is saved in some simple file format, e.g. <em>.txt</em> or <em>.csv</em>. <code>R</code> already includes many option to read those files with the <code>read.table</code> functionalities. For larger unstructured files the read options of the <code>data.table</code> package is recommended. In our tests it was fastest and most flexible option. Alternatively the <code>readr</code> can be used if the data is more structured and large.</p>
-<p><strong>Note</strong> at this stage, only a comparison between <strong>numbered catchments</strong> for two parameters is possible. So the data must include an integer number after the description (like “QObs_001” and “QSim_001”).</p>
-<p>The function <code>get_runoff_example</code> can be used to get some exemplary data from within <strong>visCOS</strong>:</p>
+<p><strong>Examples:</strong></p>
+<p>The function <code>get_cos_data_example</code> can be used to get some exemplary data from within <strong>visCOS</strong>:</p>
 <pre class="r"><code>  library(visCOS)
   require(magrittr)
   options(width=80)
-  runoff_example_raw &lt;- get_runoff_example()
+  runoff_example_raw &lt;- get_cos_data_example()
   head(runoff_example_raw)</code></pre>
 <pre><code>##   yyyy mm dd hh min QOBS_0001 QOSI_0001 QSIM_0001 QOBS_0002 QOSI_0002 QSIM_0002
 ## 1 2007  1  1  0   0      2.98      3.48      3.48      2.56      3.11      3.11
@@ -154,31 +147,19 @@ $(document).ready(function () {
 ## 4 2007  1  1  3   0      2.51      3.48      3.48      2.57      3.11      3.11
 ## 5 2007  1  1  4   0      2.42      3.48      3.48      2.57      3.11      3.11
 ## 6 2007  1  1  5   0      2.34      3.49      3.49      2.57      3.11      3.11</code></pre>
-</div>
-<div id="prepare-the-raw-data" class="section level2">
-<h2><span class="header-section-number">2.2</span> Prepare the raw data</h2>
-<div id="adapt-viscos_options" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Adapt <code>viscos_options</code></h3>
-<p>The next step would be to adapt the first part of the <code>viscos_options</code>. This can be done by copying the default settings from the help and adapt them. In this case they are already correct:</p>
-<pre class="r"><code>   viscos_options(
-   # data.frame column names
-      name_o = &quot;qobs&quot;,
-      name_s = &quot;qsim&quot;,
-      name_COSyear = &quot;yyyy&quot;,
-      name_COSmonth = &quot;mm&quot;,
-      name_COSday = &quot;dd&quot;,
-      name_COShour = &quot;hh&quot;,
-      name_COSmin = &quot;min&quot;,
-      name_COSposix = &quot;posixdate&quot;,
-      name_COSperiod = &quot;period&quot;)</code></pre>
-</div>
-<div id="remove-junk-and-prepare-date-format" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Remove junk and prepare date format</h3>
-<p>Now all the junk data (data columns not needed, unobserved basins) can be removed using the <code>remove_junk</code> function. Additionally, leading zeros in the column names can be deleted with <code>remove_leading_zeros</code> if necessary.</p>
-<p>In order to properly analyse the data with <strong>visCOS</strong>, the timesteps must be complete and in the right format. This can be done with <code>prepare_complete_date</code>. Within the data.frame the user has to provide either 5 columns with the <em>COSdate</em> format: <code>yyyy-mm-dd-hh-min</code> i.e.: year-month-day-hour-minute or an equivalent column in <code>POSIXct</code> format (see: <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html">link</a>) to do so.</p>
-<pre class="r"><code>  runoff_example &lt;- remove_junk(runoff_example_raw) %&gt;% 
-  prepare_complete_date()
-head(runoff_example)</code></pre>
+<p>The next step would be to adapt the options (<a href="LP-viscos_options.html"><code>viscos_options</code></a>, but in this case the options are already set as in the data:</p>
+<pre class="r"><code>   viscos_options() %&gt;% unlist()</code></pre>
+<pre><code>##         name_o         name_s      data_unit   name_COSyear  name_COSmonth 
+##         &quot;qobs&quot;         &quot;qsim&quot;      &quot;(m^3/s)&quot;         &quot;yyyy&quot;           &quot;mm&quot; 
+##    name_COSday   name_COShour    name_COSmin  name_COSposix name_COSperiod 
+##           &quot;dd&quot;           &quot;hh&quot;          &quot;min&quot;    &quot;posixdate&quot;       &quot;period&quot; 
+##   missing_data        color_o        color_s     of_limits1     of_limits2 
+##         &quot;-999&quot;    &quot;steelblue&quot;       &quot;orange&quot;            &quot;0&quot;            &quot;1&quot;</code></pre>
+<p>However, a glimpse of the data above shows that some of the columns (<code>QOSI_0001</code> and <code>QOSI_0002</code>) are not needed for the analysis. All the junk data, i.e. data columns that are not defined within the options and unobserved columns can be removed using the <code>remove_junk</code> function. Additionally <strong>visCOS</strong> needs to have two different ways to define the date of a given row (see: <a href="Introduction.html">Introduction</a>). In the runoff_example each part of the date definition is defined with a column: “yyyy” - year, “mm” - month, “hh” - hour, “min” - minute. The other needed format is the POSIXct<code>format (see: [link](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html)) format often used within R. Here all the information is saved within one column Given one date format is available in the data.frame the other can be generated by using</code>complete_dates`.</p>
+<pre class="r"><code>  runoff_example_raw %&gt;%
+    remove_junk() %&gt;%
+    complete_dates() %&gt;%
+    head()</code></pre>
 <pre><code>##   yyyy mm dd hh min QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002           posixdate
 ## 1 2007  1  1  0   0      2.98      3.48      2.56      3.11 2007-01-01 00:00:00
 ## 2 2007  1  1  1   0      2.89      3.48      2.56      3.11 2007-01-01 01:00:00
@@ -186,26 +167,30 @@ head(runoff_example)</code></pre>
 ## 4 2007  1  1  3   0      2.51      3.48      2.57      3.11 2007-01-01 03:00:00
 ## 5 2007  1  1  4   0      2.42      3.48      2.57      3.11 2007-01-01 04:00:00
 ## 6 2007  1  1  5   0      2.34      3.49      2.57      3.11 2007-01-01 05:00:00</code></pre>
-</div>
-<div id="define-and-mark-periods" class="section level3">
-<h3><span class="header-section-number">2.2.3</span> Define and Mark periods</h3>
-<p>If a seasonal or periodical analysis of the data wants to be done, these periods can be defined with the <code>mark_periods</code> function. In the example case, the hydrological years, going from September till August, will be defined:</p>
-<pre class="r"><code>  runoff_example &lt;- mark_periods(runoff_example, start_month = 9, end_month = 8)
+<p>Lastly, if a seasonal or periodical analysis of the data wants to be done, these periods can be defined with the <code>mark_periods</code> function. In the example case, the hydrological years, going from September till August, will be defined:</p>
+<pre class="r"><code>  cooked_runoff_example &lt;- runoff_example_raw %&gt;%
+    remove_junk() %&gt;%
+    complete_dates() %&gt;%
+    mark_periods(., start_month = 9, end_month = 8)
 # here is an example plot to visualise the periods
-  plot(runoff_example$period, xlab=&quot;Timestep&quot;, ylab=&quot;# of hydrological year&quot;)</code></pre>
+  plot(cooked_runoff_example$period,
+       xlab = &quot;Timestep&quot;,
+       ylab = &quot;# of hydrological year&quot;)</code></pre>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAAWlBMVEUAAAAAACsAAFUAKysAK4AAVYAAVaorAAArKwArgNRVAABVAFVVK4BVqv+AKwCAVQCAgNSA1NSA1P+qVQCq/6qq///UgCvU/9TU////qlX/1ID//6r//9T////Z4cXGAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO3dbWPaSJSgUdLbE68zY+9O2GYbJ/7/f3MlXowAkbUu5Spdcc6H7sRNaArZTyRUKq3eAQhZtX4BAFkJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBM07oCuAYsonqvgzFtT63QaWpXijSj/hhfXHK/8+/Q9/wV8YwMNKFtDNRf2nNlRAgXJSBfTt6Wr/+a9/Jj2DgALlZAro79fzYv760f3+73+nPIWAAuVkCuj2Kpd9Ul+mPIWAAuVkCuj6+oC92wmd9DGogALlJApot7v5fPXFzbRjeAEFykkU0G5v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" width="672" style="display: block; margin: auto;" /></p>
 <p>Note that the example data starts with beginning of September, so right with the first hydrological year. The end of the year 2010 is not completely inside a hydrological year, so the period counter jumps to one.</p>
 </div>
-</div>
-</div>
 <div id="code" class="section level1">
-<h1><span class="header-section-number">3</span> Code</h1>
-<p>The following functions are defined below. Exported functions can be seen by the user.</p>
-<div id="get_runoff_example" class="section level2">
-<h2><span class="header-section-number">3.1</span> <code>get_runoff_example</code></h2>
-<p>visCOS porvides some exemplary data. All the available functions can be tested with it. <code>get_runoff_example</code> is a small wrapper function to get the data from within the package via <code>read.csv</code></p>
+<h1><span class="header-section-number">2</span> Code</h1>
+<p>This function defines the data cooking functions.</p>
+<div id="get_cos_data_example" class="section level2">
+<h2><span class="header-section-number">2.1</span> <code>get_cos_data_example</code></h2>
+<p>visCOS provides some exemplary data. All the available functions can be tested with it. <code>get_cos_data_example</code> is a small wrapper function to get the data from within the package via <code>read.csv</code></p>
 <p><strong>Note</strong> at this stage, only a comparison between <strong>numbered catchments</strong> is possible for two parameters is possible. So the data must include an integer number after the description (like “QObs_001” and “QSim_001”)</p>
-<pre class="r"><code>  get_runoff_example &lt;- function() {
+<pre class="r"><code>  #' Get runoff example
+  #'
+  #' Get exemplary runoff data to test the different functions of visCOS
+  #' @export
+  get_cos_data_example &lt;- function() {
     file_path &lt;- system.file(&quot;extdata&quot;,
                              &quot;runoff_example.csv&quot;,
                              package = &quot;visCOS&quot;)
@@ -214,167 +199,219 @@ head(runoff_example)</code></pre>
   }</code></pre>
 </div>
 <div id="remove_junk" class="section level2">
-<h2><span class="header-section-number">3.2</span> <code>remove_junk</code></h2>
-<p>This function removes all columns not specified in the <code>viscos_options</code>, as well basins where no observations are available. The first part is done by identifying the names of the data_frame and searching for the idx of the names defined in the <code>viscos_options</code>. The second part is done via the function <code>prepare.only_observed</code> (see next subchapter). It is actually so pretty simple, but really useful. Since the solution is quite specific, the function tests if the input is a data.frame and returns an error if not.</p>
-<p><strong>Note</strong> that the routine is <strong>not</strong> case sensitive. It does not distinguish between small and capital letters!</p>
-<p>The first part of the code loads the dependencies and makes sure that the runoff_data variable is a data.frame (see: chapter about <em>defensive coding</em>):</p>
-<pre class="r"><code>  remove_junk &lt;- function(runoff_data) {</code></pre>
-<p>The body of <code>remove_junk</code> works as following: First, the names of the columns of the runoff_data are determined via <code>names</code> and all set to lower letters with <code>tolower</code>. This is the reason why the function is not case sensitive! Then helper function <code>get_regex_for_runoff_data</code> is called to get regular expressions that identify the wanted columns. Later, <code>grep</code> is used to get the index <code>idx</code> of the columns with the given names (<code>lowercase_names_in_data</code>). Finally, <code>idx</code>is then used to select the wanted columns.</p>
-<p>In the second part, the function <code>only_observed_basins</code> is being executed (see next chapter)</p>
-<pre class="r"><code>  assert_dataframe(runoff_data)
-  # 
-  lowercase_names_in_data &lt;- runoff_data %&gt;% names %&gt;% tolower
-  regex_columns &lt;- get_regex_for_runoff_data() %&gt;% tolower # see: helpers
-  # 
-  idx &lt;- regex_columns %&gt;%
-    grep(.,lowercase_names_in_data)
-  no_chunk_runoff_data &lt;- runoff_data[ , idx]
-  return( only_observed_basins(no_chunk_runoff_data) )
+<h2><span class="header-section-number">2.2</span> <code>remove_junk</code></h2>
+<p>This function removes all columns not specified in the <code>viscos_options</code>, as well basins where no <code>data_o</code> is available. <strong>Note</strong> that the routine is <strong>not</strong> case sensitive. It does not distinguish between small and capital letters!</p>
+<p>The first part of the code loads the dependencies and makes sure that the <code>cos_data</code> variable is a data.frame (see: chapter about <em>defensive coding</em>).</p>
+<p>The body of <code>remove_junk</code> works as following: First, the names of the columns of the <code>cos_data</code> are determined and <a href="LP-helpers.html">helper function</a> <code>get_regex_for_cos_data</code> is invoked to get regular expressions for the columns defined within <code>viscos_otopns</code>. Then the <code>idx</code> of the different wanted data is extracted and used to select the appropriate columns.</p>
+<p>Afterwards, the “sub” function <code>only_observed_basins</code> is being executed (see next chapter)</p>
+<pre class="r"><code>  #' removes junk in cos_data
+  #'
+  #' Removes all columns which are not foreseen (see: viscos_options) from
+  #' runoff data
+  #'
+  #' @import magrittr
+  #' @param cos_data The cos_data data.frame (see vignette for info)
+  #' @return data.frame object without the chunk
+  #' @export
+  remove_junk &lt;- function(cos_data) {
+    assert_dataframe(cos_data)
+    #
+    names_in_data &lt;- cos_data %&gt;% names
+    regex_columns &lt;- get_regex_for_cos_data() # see: helpers
+    #
+    idx &lt;- regex_columns %&gt;%
+      grep(.,names_in_data, ignore.case = TRUE)
+    no_junk_cos_data &lt;- cos_data[ , idx]
+    return( only_observed_basins(no_junk_cos_data) )
   }</code></pre>
 <div id="only_observed_basins" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> <code>only_observed_basins</code></h3>
-<p>This function removes basins for which no observations are available. No observation are interpreted as columns in which all the entries are either -999 or <code>NA's</code>.</p>
-<p>Initiation of function:</p>
-<pre class="r"><code>only_observed_basins &lt;- function(runoff_data) {
-  require(&quot;magrittr&quot;)
-  assert_dataframe(runoff_data)</code></pre>
-<p>In order to handle the <code>NA's</code> and -999 in the same way all <code>NA's</code> are replaced with -999. Then the <code>lapply</code> function is used to find the max of each column.</p>
-<pre class="r"><code>  chosen_cols &lt;- which( names(runoff_data) != viscos_options(&quot;name_COSposix&quot;) )
-  chosen_rows &lt;- is.na(runoff_data[,chosen_cols])
-  data_no_posix &lt;- runoff_data[ ,chosen_cols]
-  data_no_posix[chosen_rows] &lt;- -999
-  colmax &lt;- lapply(X = data_no_posix, FUN = max) # get max of any column</code></pre>
-<p>If any column has a max of -999 it is worth further investigation. Unfortunately the -999 columns could also mean, that something went wrong with the simulation, thus one has to make sure that only observation columns are selected. To do so we first identify the idx of the max == -999 cols and build a regular expression with the help of the <code>viscos_options</code>. We combine both information via <code>grepl</code> to check if only observed columns have been selected. If so everything is fine, but if <code>any</code> of the selected cols came from an simulation col the function stops the execution and gives a warning message. The next step involves a little trick in which +1 is added to the <code>idx</code> to obtain the indexes of the corresponding simulation. Here we assume that for each observation there is a corresponding simulation <strong>in next the next colum</strong>! This allows us then to select only the observed basins. But now all NA values are actually -999! Thus, we replace them again back to NA, via <code>lapply(...,min)</code> assuming that all negative values are NAs. This is not a strong assumption, because there should never be negative flows! In the end the resulting data.frame is returned.</p>
-<pre class="r"><code>  if ( any(colmax &lt; 0.0) ){
-    idx_temp &lt;- which(colmax &lt; 0.0)
-    obs_regex &lt;- paste(viscos_options(&quot;name_o&quot;),&quot;.*&quot;, sep =&quot;&quot;)
-    OnlyQobsSelected &lt;- idx_temp %&gt;%
-      names %&gt;%
-      tolower %&gt;%
-      grepl(obs_regex,.) %&gt;%
-      any
-    if (!OnlyQobsSelected){
-      stop(&quot;There are Qsim withouth simulation (i.e. only values smaller 0). Pls remove them first&quot;)
+<h3><span class="header-section-number">2.2.1</span> <code>only_observed_basins</code></h3>
+<p>This function removes basins for which no data in the <code>o_data</code> column. No observation are columns where all the entries are either as defined in <code>viscos_options(&quot;missing_data&quot;)</code> or <code>NA's</code>. At the end of the function the former are transformed into <code>NA's</code>.</p>
+<pre class="r"><code>  # remove basins without observations
+  #
+  # Removes basins without observation (-999/NA values) from the provided data.frame
+  #
+  # @param cos_data A raw cos_data data.frame, which may contains basins
+  # without observations.
+  # \strong{Note:} It is assumed that all available basins are simulated!
+  # @return data.frame without the observation-free basins
+  #
+  # @import magrittr
+  # @import pasta
+  only_observed_basins &lt;- function(cos_data) {
+    require(&quot;magrittr&quot;)
+    require(&quot;pasta&quot;)
+    assert_dataframe(cos_data)
+    # set NA values to viscos_options(&quot;missing_data&quot;) and check if there are 
+    # cloumns wihtouth observervation
+    chosen_cols &lt;- which( names(cos_data) != viscos_options(&quot;name_COSposix&quot;) )
+    rows_with_na &lt;- is.na(cos_data[,chosen_cols])
+    data_wihtouth_posix &lt;- cos_data[ ,chosen_cols]
+    data_wihtouth_posix[rows_with_na] &lt;- viscos_options(&quot;missing_data&quot;)
+    colmax &lt;- sapply(X = data_wihtouth_posix, FUN = max) 
+    #
+    # if there are columns withouth observations remove them from the data:
+    if ( any(colmax &lt; 0.0) ){
+      name_o &lt;- viscos_options(&quot;name_o&quot;)
+      neg_obs_names &lt;- which(colmax &lt; 0.0) %&gt;% 
+        names %&gt;%
+        grepl(name_o %.% &quot;*&quot;,.,ignore.case = TRUE) %&gt;%
+        idx_temp[.]
+      neg_s_names &lt;- gsub(name_o,viscos_options(&quot;name_s&quot;),neg_obs_names,ignore.case = TRUE )
+      data_selection &lt;- neg_obs_names %|% neg_s_names %&gt;% 
+        grepl(., names(cos_data), ignore.case = TRUE) %&gt;% 
+        not(.)
+      data_only_observed &lt;- cos_data[ ,data_selection]
+
+    } else {
+      data_only_observed &lt;- cos_data
     }
-    idx_slct &lt;- c(idx_temp,idx_temp + 1) %&gt;% sort()
-    d_onlyObserved &lt;- runoff_data[-idx_slct]
-    # set remaining negative Qobs to NA, so that HydroGOF can be used correctly, also ignoring NAs
-    colmin &lt;- lapply(X = d_onlyObserved, FUN = min)
-    idx_temp &lt;- which(colmin &lt; 0.0)
-    d_onlyObserved[d_onlyObserved[idx_temp]&lt;0, idx_temp] &lt;- NA
-    return(d_onlyObserved)
-  } else {
-    return(runoff_data)
-  }
-}</code></pre>
+    # set all missing data values to NA for use in hydroGOF
+    idx_NA &lt;- data_only_observed %&gt;% 
+      equals(viscos_options(&quot;missing_data&quot;))
+    data_only_observed[idx_NA] &lt;- NA
+    return(data_only_observed)
+  }</code></pre>
 </div>
 </div>
-<div id="prepare_complete_date" class="section level2">
-<h2><span class="header-section-number">3.3</span> <code>prepare_complete_date</code></h2>
-<p>This function is a wrapper. It is however not finished yet! The idea is the following. The idea is to provide a handy function to complete the date-columns. Within the data.frame the user has to provide either 5 columns with the <em>COSdate</em> format: <code>yyyy-mm-dd-hh-min</code> i.e.: year-month-day-hour-minute or an equivalent column in <code>POSIXct</code> format (see: <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html">link</a>).</p>
-<p><em>However</em>, it is currently only possible to convert <em>COSdate</em> into <code>POSIXct</code> dates via the <code>implode_cosdate</code> function.</p>
-<p>The function itself is basically a switch which calls different functions if <code>name_cosyear</code> and/or <code>name_posix</code> is found and returns an error if none of the two are found. If the user has not named his columns according to COSERO convention he can provide the names of the <em>COSdate</em> year via <code>name_cosyear</code> and the names of the POIXct column via <code>name_posix</code> within the <code>viscos_options</code>. The function returns an error if <code>runoff_data</code> is not a data frame and if <code>OK_COSdate</code> or <code>OK_POSIXdates</code> are not logical due to some problems with the dates/time-formats.</p>
-<p>A <em>caveat</em> with this method is that only the <code>name_cosyear</code> is checked to infer if the 5 <em>COSdate</em> columns are available. This can cause errors later if some other columns are missing. Sadly it is not apparent how to avoid that problem, without defining the names of all columns.</p>
-<p>Furthermore, we need to be aware that with <em>UTC</em> a fixed time-zone is assumed to avoid problems with leaps in time (summer/winter time).</p>
-<p>The function <code>implode_cosdate</code> is used to obtain the POSIXct date from the <em>COSdate</em> columns. The following chapter will show how this is done.</p>
+<div id="complete_dates" class="section level2">
+<h2><span class="header-section-number">2.3</span> <code>complete_dates</code></h2>
+<p>This function is not finished yet! Within cos_data data.frame (see: <a href="Introduction.html">introduction</a>) the date has to be defined in two formats: With 5 columns, where the columns are year-month-day-hour-minute and names as defined in <code>viscos_options()</code> and with one column in <code>POSIXct</code> format (see: <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html">link</a>), that is named as defined in <code>viscos_options(&quot;name_COSposix&quot;)</code>. The idea of the <code>complete_dates</code> fucntion is to provide a internal posibility to create the one format out of the ohter and thus <em>complete the dates</em>.</p>
+<p><strong>However</strong>, currently it is only possible to convert the 5-columns representation into <code>POSIXct</code> dates via the internally defined <code>implode_cosdate</code> function.</p>
+<p>Also by using <em>UTC</em> a <strong>fixed time-zone</strong> is assumed within visCOS to avoid problems with leaps in time (summer/winter time).</p>
 <pre class="r"><code>  #' Complete the date-formats with POSIXct or COSdate
   #'
   #' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
   #'
-  #' @param runoff_data The data.frame, which contains the runoff information
+  #' @param cos_data The data.frame, which contains the runoff information
   #' @param name_cosyear string with the name of the `COSdate` year column
   #' @param name_posix string with the name of the POSIXct column
   #' @return The new runoff data.frame with the added data-format.
-  #' 
+  #'
   #' @import magrittr
-  #' 
+  #'
   #' @export
-prepare_complete_date &lt;- function(runoff_data = NULL,
-                                  name_cosyear = &quot;yyyy&quot;,
-                                  name_posix = &quot;POSIXdate&quot;) {
+complete_dates &lt;- function(cos_data) {
   # make sure that magrittr is loaded:
-  assert_dataframe(runoff_data)
+  assert_dataframe(cos_data)
   # check for COSdates and stop if non-logical expression are obtained
-  OK_COSdate &lt;- any(names(runoff_data)== viscos_options(&quot;name_COSyear&quot;))
-  OK_POSIXdates &lt;- any(names(runoff_data)== viscos_options(&quot;name_COSposix&quot;))
+  OK_COSdate &lt;- any(
+    unlist(viscos_options(&quot;name_COSyear&quot;,
+                          &quot;name_COSmonth&quot;,
+                          &quot;name_COSmonth&quot;,
+                          &quot;name_COShour&quot;,
+                          &quot;name_COSmin&quot;)
+                           ) 
+    %in% 
+    names(cos_data)
+  )
+  OK_POSIXdates &lt;- any(names(cos_data) == viscos_options(&quot;name_COSposix&quot;))
   if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
-    stop(&quot;Something seems to be wrong with the date / time formats :(&quot;)
+    stop(&quot;Something is wrong :( \n 
+         some of the date-columns could not be processed!&quot;)
   }
   # choose function depending on which formats are available!
   if (!OK_COSdate &amp; !OK_POSIXdates) {
-    stop(&quot;No COSdates and no POSIXct-dates in the data!&quot;)
+    stop(&quot;Something is wrong :( \n 
+         The 5 cosero date columns and the POSIXct colum could not be found&quot;)
   } else if (OK_COSdate &amp; !OK_POSIXdates) {
-    runoff_data &lt;- implode_cosdate(runoff_data) # see following chapter
+    cos_data &lt;- implode_cosdate(cos_data) # see following chapter
   } else if (!OK_COSdate &amp; OK_POSIXdates) {
     stop(&quot;POSIXct to COSdates not yet supported :(&quot;)
   }
-  return(runoff_data)
+  return(cos_data)
 }</code></pre>
 <div id="implode_cosdate" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> <code>implode_cosdate</code></h3>
-<p>This function is used to transform the old-school <em>COSdate</em> format into the widely spread POSIXct format, used within R and in many packages. The function is called by the function above and not provided to the user! It takes a data frame (<code>runoff_data</code>) and uses <code>viscos_options</code> to transform the different <em>COSdate</em> columns into POSIXct dates via <code>paste</code>.</p>
-<p>The paste function is used to concatenate the different <em>COSdate</em> columns (i.e. year, month, day, hour and minute) to a POSIXct date format. The obtained series of strings is saved into the variable <code>POSIXdate</code> and added as the column <code>viscos_options(&quot;name_COSposix&quot;)</code> (see section about <code>viscos_options</code>) to the `runoff_data.</p>
-<pre class="r"><code>implode_cosdate &lt;- function(runoff_data) {
+<h3><span class="header-section-number">2.3.1</span> <code>implode_cosdate</code></h3>
+<p>This function is used to transform the “old-school” 5 column format into the widely spread POSIXct format. The function is not exported and should only be called from within <code>complete_date()</code>!. Also, thanks to Christoph SchÃ¼rz for his help with conception.</p>
+<pre class="r"><code>implode_cosdate &lt;- function(cos_data) {
   require(&quot;magrittr&quot;, quietly = TRUE)
-  assert_dataframe(runoff_data)
-  name_string &lt;-  runoff_data %&gt;% names %&gt;% tolower
+  assert_dataframe(cos_data)
+  name_string &lt;-  cos_data %&gt;% names %&gt;% tolower
   #
-  POSIXdate &lt;- paste(runoff_data[[viscos_options(&quot;name_COSyear&quot;)]],
-                     sprintf(&quot;%02d&quot;,runoff_data[[viscos_options(&quot;name_COSmonth&quot;)]]),
-                     sprintf(&quot;%02d&quot;,runoff_data[[viscos_options(&quot;name_COSday&quot;)]]),
-                     sprintf(&quot;%02d&quot;,runoff_data[[viscos_options(&quot;name_COShour&quot;)]]),
-                     sprintf(&quot;%02d&quot;,runoff_data[[viscos_options(&quot;name_COSmin&quot;)]]),
+  POSIXdate &lt;- paste(cos_data[[viscos_options(&quot;name_COSyear&quot;)]],
+                     sprintf(&quot;%02d&quot;,cos_data[[viscos_options(&quot;name_COSmonth&quot;)]]),
+                     sprintf(&quot;%02d&quot;,cos_data[[viscos_options(&quot;name_COSday&quot;)]]),
+                     sprintf(&quot;%02d&quot;,cos_data[[viscos_options(&quot;name_COShour&quot;)]]),
+                     sprintf(&quot;%02d&quot;,cos_data[[viscos_options(&quot;name_COSmin&quot;)]]),
                      sep= &quot;&quot; ) %&gt;%
     as.POSIXct(format = &quot;%Y%m%d%H%M&quot;, origin = .[1], scale = &quot;hourly&quot;, tz = &quot;UTC&quot;)
-  runoff_data[[viscos_options(&quot;name_COSposix&quot;)]] &lt;- POSIXdate
-  return(runoff_data)
+  cos_data[[viscos_options(&quot;name_COSposix&quot;)]] &lt;- POSIXdate
+  return(cos_data)
 }</code></pre>
 </div>
 </div>
 <div id="remove_leading_zeros" class="section level2">
-<h2><span class="header-section-number">3.4</span> <code>remove_leading_zeros</code></h2>
-<p>This function removes leading zeros from column names of the data.frame <code>runoff_data</code>.The function has no defensive coding, apart from the execution of <code>remove_junk</code> (see corresponding chapter) to be sure that no non-needed columns are within the data.frame.</p>
-<pre class="r"><code># remove leading zeros from the names of runoff_data (data.frame)
-remove_leading_zeros &lt;- function(runoff_data) {
+<h2><span class="header-section-number">2.4</span> <code>remove_leading_zeros</code></h2>
+<p>This internal function removes leading zeros from column names of the <code>cos_data</code> data.frame. The function has no defensive code but uses <code>remove_junk</code> (see: above). It should therefore be used with care!</p>
+<p><strong>Sad Note:</strong> The current solution is bit suboptimal as many operations are needed and different tricks are used (e.g. <code>as.numeric %&gt;% as.character</code>) to obtain the wanted result. We hope that better solutions can be found in the future.</p>
+<pre class="r"><code># remove leading zeros from the names of cos_data (data.frame)
+remove_leading_zeros &lt;- function(cos_data) {
   require(&quot;magrittr&quot;, quietly = TRUE)
-  runoff_data %&lt;&gt;% remove_junk</code></pre>
-<p>The body of the function works in the following way: The variables <code>runoff_names</code> is computed by obtaining the names of the columns of <code>runoff_data</code> with <code>names</code> and removing all the digits with <code>gsub(&quot;\\d&quot;,...)</code>. The basin digits, <code>runoff_nums</code> are computed by doing the oposite, i.e.: removing all the non digits via <code>gsub(&quot;\\D&quot;,...)</code>. Afterwards, the empty strings (“”) are replaced with a small trick: The characters are transformed into a numerics (induces <code>NA's</code>) and back again. In the last step the variables <code>runoff_names</code> and <code>runoff_nums</code> are simply put togehter again via the paste command. The result has no leading zeros as in the variable numeration.</p>
-<pre class="r"><code>  runoff_names &lt;- runoff_data %&gt;% names
-  runoff_lowercase_names &lt;- runoff_names %&gt;% tolower 
+  cos_data %&lt;&gt;% remove_junk
   #
-  separator &lt;- runoff_lowercase_names %&gt;% 
-    extract( grep(viscos_options()$name_o,.) ) %&gt;% 
+  runoff_names &lt;- cos_data %&gt;% names
+  runoff_lowercase_names &lt;- runoff_names %&gt;% tolower
+  #
+  separator &lt;- runoff_lowercase_names %&gt;%
+    extract( grep(viscos_options()$name_o,.) ) %&gt;%
     extract( 1 ) %&gt;%
-    gsub(viscos_options()$name_o,&quot;&quot;,.) %&gt;% 
+    gsub(viscos_options()$name_o,&quot;&quot;,.) %&gt;%
     gsub(&quot;\\d&quot;,&quot;&quot;,.)
   searchterm &lt;- paste0(viscos_options()$name_o,&quot;|&quot;, viscos_options()$name_s)
-  runoff_nums &lt;- runoff_lowercase_names %&gt;% 
-    gsub(searchterm,&quot;&quot;,.) %&gt;% 
-    gsub(separator,&quot;&quot;,.) %&gt;% 
+  runoff_nums &lt;- runoff_lowercase_names %&gt;%
+    gsub(searchterm,&quot;&quot;,.) %&gt;%
+    gsub(separator,&quot;&quot;,.) %&gt;%
     gsub(&quot;\\D&quot;,&quot;&quot;,.)
   searchterm &lt;- paste(runoff_nums, collapse = &quot;&quot;)
-  runoff_only_names &lt;- runoff_names %&gt;% 
-    gsub(paste0(&quot;[&quot;,searchterm,&quot;]&quot;),&quot;&quot;,.) %&gt;% 
+  runoff_only_names &lt;- runoff_names %&gt;%
+    gsub(paste0(&quot;[&quot;,searchterm,&quot;]&quot;),&quot;&quot;,.) %&gt;%
     gsub(separator,&quot;&quot;,.)
-  runoff_new_numbers &lt;- runoff_nums %&gt;% as.numeric() %&gt;% as.character()
+  runoff_new_numbers &lt;- runoff_nums %&gt;%
+    as.numeric() %&gt;%
+    as.character()
   runoff_new_numbers[is.na(runoff_new_numbers)] &lt;- &quot;&quot;
   #
-  names(runoff_data) &lt;- runoff_new_numbers %&gt;% 
-    gsub(&quot;\\d+&quot;,separator,.) %&gt;% 
+  names(cos_data) &lt;- runoff_new_numbers %&gt;%
+    gsub(&quot;\\d+&quot;,separator,.) %&gt;%
     paste0(runoff_only_names,.,runoff_new_numbers)
-  return(runoff_data)
+  return(cos_data)
 }</code></pre>
 </div>
 <div id="mark_periods" class="section level2">
-<h2><span class="header-section-number">3.5</span> <code>mark_periods</code></h2>
-<p>This function can be used to create a periods column in your data.frame. The period column is an integer vector, which is a multiple of 1 if the row is within a certain period and 0 if it is out of the period.</p>
-<p>Building it was actually quite tricky. The author himself (Klotz) is not sure if it is really a nice solution. But it is the best solution, in terms of speed and clearness, that we could come up so far. So take it as a challenge to build a better solution!</p>
-<p>As shown below the function takes the <code>runoff_data</code> data.frame and the two integers <code>start_month</code>and <code>end_month</code>. They allow the user to define the periods within the <code>runoff_data</code> on a monthly resolution. As the name suggests <code>start_month</code> defines the beginning of the period and <code>end_month</code> the end of the period. The function requires <code>dplyr</code> and <code>magrittr</code> and tests if <code>runoff_data</code> is a data.frame. An error is returned if it is not. Furthermore, if there is <em>chunk</em> in the data.frame it is removed by <code>remove_junk</code> and <code>prepare_complete_date</code> (see above)is used to ensure that the full time-information, i.e. both date formats, is available.</p>
-<pre class="r"><code>mark_periods &lt;- function(runoff_data, start_month = 10, end_month = 9) {
-  assert_dataframe(runoff_data)
-  runoff_data %&lt;&gt;% remove_junk %&gt;% prepare_complete_date()</code></pre>
-<p>The body of the function is split in two parts. In the <em>first part</em> the variable <code>period_range</code> is defined as a integer sequence from the <code>start_month</code> to the <code>end_month</code>. The solution distinguishes between two different cases: <code>start_month</code> &lt;= <code>end_month</code> and <code>start_month</code> &gt; <code>end_month</code>. The solution for the former is trivial, as <code>seq</code> can be used. In principle the solution for the latter is also simple as two ranges (<code>range_1</code> and <code>range_2</code>) can be constructed and concatenated. Note that both solutions additionally construct the integer-vector <code>out_of_period</code>. The vector contains information about the months which are not within the period_range. It would not be necessary for this case. But, since the current solution still seems to be suboptimal, it is needed for the second case, in order to mark the months which are out of the period later.</p>
-<pre class="r"><code>  # (I) get labels for the months
+<h2><span class="header-section-number">2.5</span> <code>mark_periods</code></h2>
+<p>This function can be used to create a <code>viscos_options(&quot;name_COSperiod&quot;)</code>. The period column is a vector of increasing integer that is set to 0 for rows that are out of the period.</p>
+<p>The current solution for defining this columns is not realy satisfying, but the problem seems to be non-trival… Life is short and it was the best that the authors could come out with so far.</p>
+<p>In its current iteration the function takes <code>cos_data</code> and the two integers <code>start_month</code> and <code>end_month</code> as inputs, that can be used to define the to-be marked periods. The function can be directly used on raw data since the <code>remove_junk</code> and <code>complete_dates</code> are internaly applied to. This does however also mean that it needs to be used with care!</p>
+<p>The computation is done in the following way: (I) Before starting the acutal marking the variable <code>period_range</code> and the <code>out_of_period</code> vector is defined. (II) With the help of the vectors the periods can be marked in two steps:</p>
+<ul>
+<li>First, all the starting months within cos_data are marked and the cumulative sum is used to count the periods within the data.frame. At the beginning of the first period, the counter is at “1” and becomes “2” with the beginning of the second period and so on.</li>
+<li>Secondly, the <code>out_of_period</code> of all years is set back to zero again by checking which months of the data are equal to the <code>out_of_period</code> entries.</li>
+</ul>
+<p>There are at least two apparent problems with that solution:</p>
+<ul>
+<li>One problem is that the last year is not extracted properly if <code>start_month</code> &gt; <code>end_month</code>. To compensate this problem the <code>dplyr</code> shenanigans are added at the end of the fucntion.</li>
+<li>The other problem is that that the first and last period are also included in the solution even if they are <strong>not</strong> complete!</li>
+</ul>
+<pre class="r"><code>  #' calculate periods
+  #'
+  #' Mark the periods within cos_data.
+  # The marking uses a monthly resolution, which are defined by the integers
+  #' `start_month` and `end_month`.  
+  #'
+  #' @param cos_data The data.frame, which contains the runoff information
+  #' @return The runoff data.frame reduced and ordered according to the
+  #' hydrological years within the data.
+  #' \strong{Note:} The periods columns are formatted as characters!
+  #'
+  #' @import dplyr
+  #' @import magrittr
+  #'
+  #' @export
+mark_periods &lt;- function(cos_data, start_month = 10, end_month = 9) {
+  assert_dataframe(cos_data)
+  cos_data %&lt;&gt;% remove_junk %&gt;% complete_dates()
+  # (I) get labels for the months
   if (start_month &lt;= end_month ) {
     period_range &lt;- seq(start_month,end_month)
     out_of_period &lt;- seq(1,12) %&gt;% extract( !(seq(1,12) %in% period_range) )
@@ -383,21 +420,19 @@ remove_leading_zeros &lt;- function(runoff_data) {
     range_2 &lt;- seq(1,end_month)
     period_range &lt;- c(range_1,range_2)
     out_of_period &lt;- seq(1,12) %&gt;% extract( !(seq(1,12) %in% period_range) )
-  }</code></pre>
-<p>The <em>second part</em> is a bit trickier.</p>
-<p>First, the function <code>eval_diff</code> is defined. It takes a vector <code>a</code> and calculates the differences for it, where the first entry of <code>a</code> is kept, e.g. <code>eval_diff( c(3,2,5,7,8) )</code> is <code>3 -1  3  2  1</code>. Then, <code>eval_diff</code> is used to to mark all the starting months of the runoff data and saves them into a <code>period</code> column. The <code>pmax(.,0)</code> operation guarantees that negative differencing (as above in 3 -&gt; 2) is not included and the cumulative sum is used to count the periods are within the data.frame. Therefore, at the beginning of the first period, the counter jumps to “1” and becomes “2” with the beginning of the second period and so on.</p>
-<p>Secondly, the <code>out_of_period</code> of all years is set back to zero again by simply checking which months of our data.frame are equal to the <code>out_of_period</code> entries. There are two problems with that solution. One is that the last year is not extracted properly if <code>start_month</code> &gt; <code>end_month</code>. For this case <code>dplyr::mutate</code> is used to set the out-of-period-dates from the last year to 0, if they are bigger then <code>end_month</code>. The second problem is that the first and last period are also included in the solution even if they are <strong>not</strong> complete! <em>Thus, if a user does not want these solutions to be “marked” he has to remove it himself!</em></p>
-<pre class="r"><code>  # (II) mark periods:
+  }
+
+  # (II) mark periods:
     eval_diff &lt;- function(a) {c(a[1],diff(a))}
-    runoff_data[[viscos_options(&quot;name_COSperiod&quot;)]] &lt;- 
-      runoff_data[[viscos_options(&quot;name_COSmonth&quot;)]] %in% c(start_month) %&gt;%
+    cos_data[[viscos_options(&quot;name_COSperiod&quot;)]] &lt;-
+      cos_data[[viscos_options(&quot;name_COSmonth&quot;)]] %in% c(start_month) %&gt;%
       eval_diff %&gt;%
       pmax(.,0) %&gt;%
       cumsum
-    runoff_data$period[runoff_data[[viscos_options(&quot;name_COSmonth&quot;)]] %in% out_of_period] &lt;- 0
+    cos_data$period[cos_data[[viscos_options(&quot;name_COSmonth&quot;)]] %in% out_of_period] &lt;- 0
     # corrections for last year
-    max_year &lt;- max(runoff_data[[viscos_options(&quot;name_COSyear&quot;)]])
-    runoff_data %&lt;&gt;% dplyr::mutate(
+    max_year &lt;- max(cos_data[[viscos_options(&quot;name_COSyear&quot;)]])
+    cos_data %&lt;&gt;% dplyr::mutate(
       period = ifelse(
         (  (.[[viscos_options(&quot;name_COSyear&quot;)]] == max_year) &amp;
            (.[[viscos_options(&quot;name_COSmonth&quot;)]] &gt; end_month)  ),
@@ -405,40 +440,49 @@ remove_leading_zeros &lt;- function(runoff_data) {
                       period
         )
       )
-    return(runoff_data)
+    return(cos_data)
 }</code></pre>
-<p>Here are two example plots to display the periods numbering:</p>
+<p>Here are two additonal examples that display the slected periods and the numbering:</p>
 <pre class="r"><code>require(magrittr)
 require(visCOS)
 # mark_periods example 1: Hydrological years (September till August)
 # note that the last year is not complete, so the counter jumps back to 0
-ex1 &lt;- get_runoff_example() %&gt;% mark_periods(.,start_month = 9, end_month = 8)
-plot(ex1$period, xlab=&quot;Timestep&quot;, ylab=&quot;# of hydrological year&quot;)</code></pre>
+ex1 &lt;- get_cos_data_example() %&gt;% mark_periods(.,start_month = 9, end_month = 8)
+plot(ex1$period, xlab=&quot;Timestep&quot;, ylab = &quot;# of hydrological year&quot;)</code></pre>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAAWlBMVEUAAAAAACsAAFUAKysAK4AAVYAAVaorAAArKwArgNRVAABVAFVVK4BVqv+AKwCAVQCAgNSA1NSA1P+qVQCq/6qq///UgCvU/9TU////qlX/1ID//6r//9T////Z4cXGAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO3dbWPaSJSgUdLbE68zY+9O2GYbJ/7/f3MlXowAkbUu5Spdcc6H7sRNaArZTyRUKq3eAQhZtX4BAFkJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBM07oCuAYsonqvgzFtT63QaWpXijSj/hhfXHK/8+/Q9/wV8YwMNKFtDNRf2nNlRAgXJSBfTt6Wr/+a9/Jj2DgALlZAro79fzYv760f3+73+nPIWAAuVkCuj2Kpd9Ul+mPIWAAuVkCuj6+oC92wmd9DGogALlJApot7v5fPXFzbRjeAEFykkU0G5v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" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># mark_periods example 2: Summer Months (June till August)
-ex2 &lt;- get_runoff_example() %&gt;% mark_periods(.,start_month = 6, end_month = 8)
-plot(ex2$period, xlab=&quot;Timestep&quot;, ylab=&quot;# year of summer months&quot;)</code></pre>
+ex2 &lt;- get_cos_data_example() %&gt;% mark_periods(.,start_month = 6, end_month = 8)
+plot(ex2$period, xlab=&quot;Timestep&quot;, ylab = &quot;# year of summer months&quot;)</code></pre>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAAXVBMVEUAAAAAACsAAFUAKysAK4AAVYAAVaorAAArKwArgNRVAABVAFVVK4BVqv+AKwCAVQCAgNSA1NSA1P+qVQCqgCuq/6qq///UgCvU/9TU////qlX/1ID//6r//9T///8Cg6MnAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO3d62LbxtaYYTrNZ9Vu7XaHbdhQtu//MkvwCB6kCIuLM1j08/zYtrUVBEMor3EcLH4BELLovQIAVQkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIECShAkIACBAkoQJCAAgQJKECQgAIEzTugC4A0+YlKX2Ki3p828FzSG5W9wAvL45p/nv4PP+AvDOC3VSygq4v6T22ogAJ5SgX09eVq//mPvyctQUCBPJUC+vP7eTF/fN38+c9/pixCQIE8lQK6vsrlkNRvUxYhoECeSgFdXh+wb3ZCJ50GFVAgT6GAbnY3v1x9cTXtGF5AgTyFArrZ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" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="runoff_as_xts" class="section level2">
-<h2><span class="header-section-number">3.6</span> <code>runoff_as_xts</code></h2>
-<p>This function is actually just a small wrapper around the <code>xts::xts</code> function for the purposes of <strong>visCOS</strong>. <code>runoff_as_xts</code> depends on <code>magrittr</code>, <code>xts</code> and <code>zoo</code> (where the last one is acutally a dependency of <code>xts</code>). The function takes the runoff_data as input and makes sure that the data is a data.frame (check: <code>assert_dataframe</code> in the <strong>defensive code</strong> chapter), has no “junk” inside (<code>assert_chunk</code>, see also: <code>remove_junk</code>) and has all the needed date/time columns (<code>assert_complete_date</code>, see also: <code>prepare_complete_date</code>).</p>
-<pre class="r"><code>runoff_as_xts &lt;- function(runoff_data) {
-  # pre
-  assert_dataframe(runoff_data)
-  assert_chunk(runoff_data)
-  assert_complete_date(runoff_data)</code></pre>
+<div id="cos_data_as_xts" class="section level2">
+<h2><span class="header-section-number">2.6</span> <code>cos_data_as_xts</code></h2>
+<p>This function is actually just a small wrapper around the <code>xts::xts</code> function for the purposes of <strong>visCOS</strong>.</p>
 <p>A notable quirk of the function is that the names of the header are put to lower cases via the <code>tolower</code> function and possible leading zeros in the enumeration of the basins are removed.</p>
 <p>Currently it is not exported as users can use <code>xts</code> themselves perfectly well, and it is felt that the function does not provide enough added value for the user.</p>
-<pre class="r"><code>  # everything is set tolower because we try to keep visCOS case insensitive
-  runoff_data &lt;- remove_leading_zeros(runoff_data)
-
-  names(runoff_data) &lt;- names(runoff_data) %&gt;% tolower
+<pre class="r"><code>  #' Convert cos_data to xts-format
+  #'
+  #' Converts the cos_data (class: data_frame) into an xts object
+  #'
+  #' @param cos_data data_frame of the cos_data (see: xxx)
+  #' @return xts object of the cos_data data.frame
+  #'
+  #' @import zoo
+  #' @importFrom xts xts
+  #' @import magrittr
+cos_data_as_xts &lt;- function(cos_data) {
+  # pre
+  assert_dataframe(cos_data)
+  assert_junk(cos_data)
+  assert_complete_date(cos_data)
+  # everything is set to lower case
+  cos_data &lt;- remove_leading_zeros(cos_data) %&gt;% 
+    magrittr::set_names(names(cos_data) %&gt;% tolower)
   name_posix &lt;- viscos_options(&quot;name_COSposix&quot;) %&gt;% tolower
-  runoff_data_as_xts &lt;- xts(x = runoff_data[], # ,names(runoff_data) != name_posix
-                            order.by = runoff_data[[name_posix]])
+  cos_data_as_xts &lt;- xts(x = cos_data[], # ,names(cos_data) != name_posix
+                            order.by = cos_data[[name_posix]])
   #
-  return(runoff_data_as_xts)
+  return(cos_data_as_xts)
 }</code></pre>
 </div>
 </div>

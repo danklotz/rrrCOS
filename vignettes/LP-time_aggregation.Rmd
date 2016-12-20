@@ -36,7 +36,7 @@ Daily runoff aggregation:
   ggplot(runoff_aggregate_dd) +
       geom_line(aes(x = idx, y = value, col = obs_sim)) +
       scale_colour_manual(values = c(viscos_options("color_o"),
-                                     viscos_options("color_a"))) +
+                                     viscos_options("color_s"))) +
       facet_wrap( ~ basin,ncol = 1) +
       theme_minimal()
 ```

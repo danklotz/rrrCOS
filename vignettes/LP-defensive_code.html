@@ -141,7 +141,7 @@ $(document).ready(function () {
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>assert_chunk</code></td>
+<td><code>assert_junk</code></td>
 <td>no</td>
 </tr>
 <tr class="even">
@@ -158,13 +158,13 @@ $(document).ready(function () {
 </tr>
 </tbody>
 </table>
-<div id="assert_chunk" class="section level2">
-<h2><span class="header-section-number">2.1</span> <code>assert_chunk</code></h2>
-<p>This function tests if there are any columns in the data.frame <code>runoff_data</code>, which are not named after one of the 8 allowed column-names of <strong>visCOS</strong>. <strong>Note</strong> however that the check is not case sensitive as all names in <code>runoff_data</code> are set to lower cases with <code>tolower</code>.</p>
+<div id="assert_junk" class="section level2">
+<h2><span class="header-section-number">2.1</span> <code>assert_junk</code></h2>
+<p>This function tests if there are any columns in the data.frame <code>cos_data</code>, which are not named after one of the 8 allowed column-names of <strong>visCOS</strong>. <strong>Note</strong> however that the check is not case sensitive as all names in <code>cos_data</code> are set to lower cases with <code>tolower</code>.</p>
 <pre class="r"><code>#' @import magrittr
-assert_chunk &lt;- function(runoff_data) {
-  regEx &lt;- get_regex_for_runoff_data()
-  assertChunk &lt;- names(runoff_data) %&gt;% tolower %&gt;% grepl(regEx,.)
+assert_junk &lt;- function(cos_data) {
+  regEx &lt;- get_regex_for_cos_data()
+  assertChunk &lt;- names(cos_data) %&gt;% tolower %&gt;% grepl(regEx,.)
   if (any(assertChunk == FALSE)) {
     stop(&quot;there is still unwanted columns in the data. Try: remove_junk&quot;)
   }
@@ -172,17 +172,17 @@ assert_chunk &lt;- function(runoff_data) {
 </div>
 <div id="assert_complete_date" class="section level2">
 <h2><span class="header-section-number">2.2</span> <code>assert_complete_date</code></h2>
-<p>Checks if all the date-/time- columns as defined within <code>viscos_options</code> are existent in <code>runoff_data</code>. This is done by checking if the names of the <em>COSdate</em> year column (as defined in <code>viscos_options</code>) and if the <em>POSIXct</em> column (as defined in <code>viscos_options</code>) are there.</p>
-<pre class="r"><code>assert_complete_date &lt;- function(runoff_data) {
-  OK_COSdate &lt;- any(names(runoff_data) == viscos_options(&quot;name_COSyear&quot;))
-  OK_POSIXdates &lt;- any(names(runoff_data) == viscos_options(&quot;name_COSposix&quot;))
+<p>Checks if all the date-/time- columns as defined within <code>viscos_options</code> are existent in <code>cos_data</code>. This is done by checking if the names of the <em>COSdate</em> year column (as defined in <code>viscos_options</code>) and if the <em>POSIXct</em> column (as defined in <code>viscos_options</code>) are there.</p>
+<pre class="r"><code>assert_complete_date &lt;- function(cos_data) {
+  OK_COSdate &lt;- any(names(cos_data) == viscos_options(&quot;name_COSyear&quot;))
+  OK_POSIXdates &lt;- any(names(cos_data) == viscos_options(&quot;name_COSposix&quot;))
   # choose error messag depending on which columns are missing!
   if (!OK_COSdate &amp; !OK_POSIXdates) {
     stop(&quot;No COSdates and no POSIXct-dates in the data!&quot;)
   } else if (OK_COSdate &amp; !OK_POSIXdates) {
-    stop(&quot;NO POSIXct fomrated column within the runoff_data!&quot;)
+    stop(&quot;NO POSIXct fomrated column within the cos_data!&quot;)
   } else if (!OK_COSdate &amp; OK_POSIXdates) {
-    stop(&quot;NO COSdate year within the runoff_data!&quot;)
+    stop(&quot;NO COSdate year within the cos_data!&quot;)
   }
 }</code></pre>
 </div>
