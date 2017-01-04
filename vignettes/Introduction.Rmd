@@ -6,12 +6,14 @@ date: "6 Juli 2016"
 output: html_document
 ---
 
-visCOS is still under (heavy) development, so it is not recommended to use the
-package, yet. If you want to do it nevertheless...
+visCOS is still under (heavy) development. It is thus not recommended to use the package, yet.
 
-visCOS is an R-package that provides summaries and visualisation to support
-parameter estimation for conceptual rainfall-runoff models in general and
-COSERO in special. COSERO is a hbv-like model that was developed at the
+---
+
+There exist many hydrological R-packages.
+
+Among them there are several that have the goal of providing aid to the calibration of hydrological models. In particular: The [`hydroGOF`](https://CRAN.R-project.org/package=hydroGOF) packages provides a set of commonly used (and disputed) objective functions. The [`hydroTSM`](https://CRAN.R-project.org/package=hydroTSM) package allows for the analysis, interpolation and plotting of hydrological time series. Topically, **visCOS** can be positioned between those two. In concrete, visCOS is an R-package that provides summaries and visualisation to aid the parameter estimation for conceptual rainfall-runoff models in general and COSERO in special.
+COSERO is a HBV-like model that was developed at the
 institute for water management, hydrology and hydraulic engineering (IWHW) at
 BOKU, Vienna. The name is an abbreviation for "**Co**nceptual
 **Se**mi-Distributed **R**ainfall Run**o**ff Model".
