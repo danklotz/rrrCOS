@@ -5,6 +5,10 @@
 \usage{
 fdc_compute(cos_data)
 }
+\arguments{
+\item{cos_data}{A data.frame with columns as used throughout visCOS}
+}
 \description{
-Flow duration flow flw :(
+Computes the flow duration curves (fdc) for the `cos_data` data.frame. 
+The calculations are adapted from the method used within the hydroTSM package.
 }
