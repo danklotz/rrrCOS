@@ -12,20 +12,14 @@ output:
 ```
 
 # Introduction
-This section defines the defensive programming part of **visCOS**.
-In this context, *defensive programing code* are all functions and scripts
-dedicated to ensure that **visCOS** is working nicely even in unforeseen
-circumstances. Often this means that the function has to return an error
-if certain criteria are not met!
-
-A useful example for such techniques is the `R` package
-[`assertthat`](https://cran.r-project.org/web/packages/assertthat/index.html)
-
-None of the functions are exported!
+This section defines the internaly used defensive programming part of **visCOS**.
+This are all functions dedicated to ensure that **visCOS** is working nicely 
+even if it is used wrongly for whatever reason. This often means that a given 
+function has to return an error if certain criteria are not met! 
+Useful examples for such methods can be found in Hadley Wickhams `R` package [`assertthat`](https://cran.r-project.org/web/packages/assertthat/index.html)
 
 # Code
-
-The subsequent functions are defined below
+The subsequent functions are defined in this section
 
 function | exported
 ------------- | -------------
@@ -35,15 +29,16 @@ function | exported
 `assert_of` | no
 
 ## `assert_junk`
-This function tests if there are any columns in the data.frame `cos_data`,
-which are not named after one of the 8 allowed column-names of **visCOS**.
-**Note** however that the check is not case sensitive as all names in
-`cos_data` are set to lower cases with `tolower`.
+Tests if the given data.frame (`cos_data`) contains only the 
+columns defined within `get_regex_for_cos_data` 
+(see: [helpers](LP-helpers.html) and [`viscos_options`](LP-viscos_options.html)).
+An exception throws an error.
+**Note** that the check is not case sensitive!
 ```{r}
 #' @import magrittr
 assert_junk <- function(cos_data) {
   regEx <- get_regex_for_cos_data()
-  assertChunk <- names(cos_data) %>% tolower %>% grepl(regEx,.)
+  assertChunk <- names(cos_data) %>% grepl(regEx, ., ignore.case = TRUE)
   if (any(assertChunk == FALSE)) {
     stop("there is still unwanted columns in the data. Try: remove_junk")
   }
@@ -51,10 +46,11 @@ assert_junk <- function(cos_data) {
 ```
 
 ## `assert_complete_date`
-Checks if all the date-/time- columns as defined within `viscos_options` are
-existent in `cos_data`. This is done by checking if the names of the
-*COSdate* year column (as defined in `viscos_options`) and if the
-*POSIXct* column (as defined in `viscos_options`) are there.
+A rough check for the needed date- and/or time-columns within the provided
+`cos_data`. The function is rahter basic. It only checks if the names of the 
+`viscos_options("name_COSyear")` column and `viscos_options("name_COSposix") ` 
+column exist (see: [`viscos_options`](LP-viscos_options.html)). An exceptions 
+throws an error.
 ```{r}
 assert_complete_date <- function(cos_data) {
   OK_COSdate <- any(names(cos_data) == viscos_options("name_COSyear"))
@@ -80,4 +76,5 @@ assert_dataframe <- function(data) {
 }
 ```
 
-
+# References 
+- Wickham, H. (2013). assertthat: Easy pre and post assertions. https://CRAN.R-project.org/package=assertthat

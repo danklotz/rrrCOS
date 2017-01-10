@@ -1,7 +1,7 @@
 #' @import magrittr
 assert_junk <- function(cos_data) {
   regEx <- get_regex_for_cos_data()
-  assertChunk <- names(cos_data) %>% tolower %>% grepl(regEx,.)
+  assertChunk <- names(cos_data) %>% grepl(regEx, ., ignore.case = TRUE)
   if (any(assertChunk == FALSE)) {
     stop("there is still unwanted columns in the data. Try: remove_junk")
   }

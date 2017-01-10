@@ -125,13 +125,11 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This section defines the defensive programming part of <strong>visCOS</strong>. In this context, <em>defensive programing code</em> are all functions and scripts dedicated to ensure that <strong>visCOS</strong> is working nicely even in unforeseen circumstances. Often this means that the function has to return an error if certain criteria are not met!</p>
-<p>A useful example for such techniques is the <code>R</code> package <a href="https://cran.r-project.org/web/packages/assertthat/index.html"><code>assertthat</code></a></p>
-<p>None of the functions are exported!</p>
+<p>This section defines the internaly used defensive programming part of <strong>visCOS</strong>. This are all functions dedicated to ensure that <strong>visCOS</strong> is working nicely even if it is used wrongly for whatever reason. This often means that a given function has to return an error if certain criteria are not met! Useful examples for such methods can be found in Hadley Wickhams <code>R</code> package <a href="https://cran.r-project.org/web/packages/assertthat/index.html"><code>assertthat</code></a></p>
 </div>
 <div id="code" class="section level1">
 <h1><span class="header-section-number">2</span> Code</h1>
-<p>The subsequent functions are defined below</p>
+<p>The subsequent functions are defined in this section</p>
 <table>
 <thead>
 <tr class="header">
@@ -160,11 +158,11 @@ $(document).ready(function () {
 </table>
 <div id="assert_junk" class="section level2">
 <h2><span class="header-section-number">2.1</span> <code>assert_junk</code></h2>
-<p>This function tests if there are any columns in the data.frame <code>cos_data</code>, which are not named after one of the 8 allowed column-names of <strong>visCOS</strong>. <strong>Note</strong> however that the check is not case sensitive as all names in <code>cos_data</code> are set to lower cases with <code>tolower</code>.</p>
+<p>Tests if the given data.frame (<code>cos_data</code>) contains only the columns defined within <code>get_regex_for_cos_data</code> (see: <a href="LP-helpers.html">helpers</a> and <a href="LP-viscos_options.html"><code>viscos_options</code></a>). An exception throws an error. <strong>Note</strong> that the check is not case sensitive!</p>
 <pre class="r"><code>#' @import magrittr
 assert_junk &lt;- function(cos_data) {
   regEx &lt;- get_regex_for_cos_data()
-  assertChunk &lt;- names(cos_data) %&gt;% tolower %&gt;% grepl(regEx,.)
+  assertChunk &lt;- names(cos_data) %&gt;% grepl(regEx, ., ignore.case = TRUE)
   if (any(assertChunk == FALSE)) {
     stop(&quot;there is still unwanted columns in the data. Try: remove_junk&quot;)
   }
@@ -172,7 +170,7 @@ assert_junk &lt;- function(cos_data) {
 </div>
 <div id="assert_complete_date" class="section level2">
 <h2><span class="header-section-number">2.2</span> <code>assert_complete_date</code></h2>
-<p>Checks if all the date-/time- columns as defined within <code>viscos_options</code> are existent in <code>cos_data</code>. This is done by checking if the names of the <em>COSdate</em> year column (as defined in <code>viscos_options</code>) and if the <em>POSIXct</em> column (as defined in <code>viscos_options</code>) are there.</p>
+<p>A rough check for the needed date- and/or time-columns within the provided <code>cos_data</code>. The function is rahter basic. It only checks if the names of the <code>viscos_options(&quot;name_COSyear&quot;)</code> column and <code>viscos_options(&quot;name_COSposix&quot;)</code> column exist (see: <a href="LP-viscos_options.html"><code>viscos_options</code></a>). An exceptions throws an error.</p>
 <pre class="r"><code>assert_complete_date &lt;- function(cos_data) {
   OK_COSdate &lt;- any(names(cos_data) == viscos_options(&quot;name_COSyear&quot;))
   OK_POSIXdates &lt;- any(names(cos_data) == viscos_options(&quot;name_COSposix&quot;))
@@ -195,6 +193,12 @@ assert_dataframe &lt;- function(data) {
   if ( !is.data.frame(data)&amp;!is.tibble(data) ) stop(&quot;data needs to be a data_frame!&quot;)
 }</code></pre>
 </div>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">3</span> References</h1>
+<ul>
+<li>Wickham, H. (2013). assertthat: Easy pre and post assertions. <a href="https://CRAN.R-project.org/package=assertthat" class="uri">https://CRAN.R-project.org/package=assertthat</a></li>
+</ul>
 </div>
 
 
