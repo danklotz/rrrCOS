@@ -1,19 +1,9 @@
----
-title: "Ojective Functions"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "14 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Ojective Functions
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup7, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-
-# Introduciton
 This chapter defines the objective functions that are used in **visCOS**.
 
 Objective functions, in short $of$, are an important part of the hydrological
@@ -26,7 +16,7 @@ over the time a many objective functions have been developed to either
 make the model-results better interpretable/comparable or to address specific
 problems of given objective functions.
 
-# Objective Functions
+## Code
 This section defines the code for different objective functions. If possible the
 calculation is done with the help of the `hydroGOF` package, if not an R-code
 solution is tried.
@@ -51,11 +41,11 @@ For the explanation and definition of the objective function it is assumed that
 NULL
 ```
 
-## Main Objective Functions
+### The "Main" Objective Functions
 Currently the main objective functions are the Nash-Sutcliffe Efficiency,
 the Kling-Gupta Efficiency, the percentage bias and the correlation.
 
-### Nash-Sutcliffe Efficiency
+#### Nash-Sutcliffe Efficiency
 The Nash-Sutcliffe Criterion $NSE$ is by far the most used efficiency criterion
 in hydrology. In the hydrological context $o$ usually represents a set of
 runoff-observation and $s$ a set of simulations. The $NSE$ is defined in the
@@ -84,7 +74,7 @@ of_nse <- function(o,s) {
 ```
 
 
-### Kling-Gupta Efficiency
+#### Kling-Gupta Efficiency
 The Kling-Gupta Efficiency $KGE$ was introduced by Gupta et al. (2009) to
 alleviate some of the shortcomings of the $NSE$. In their paper they argue
 why the $NSE$ tends to overate simulations with small variance
@@ -119,7 +109,7 @@ of_kge <- function(o,s) {
 }
 ```
 
-### Percentage Bias
+#### Percentage Bias
 The percentage of bias $p_{bias}$ is defined as the sum of the differences
 between $o$ and $s$ divided by the sum of $o$:
 
@@ -139,7 +129,7 @@ of_p_bias <- function(o,s) {
 }
 ```
 
-### Pearson's correlation coefficient
+#### Pearson's correlation coefficient
 Pearson's correlation coefficient, $r$ or $corr(o,s)$, is a measure of the
 linear relationship between $o$ and $s$. It is defined as:
 
@@ -162,11 +152,11 @@ of_cor <- function(o,s) {
 }
 ```
 
-## Ohter Objective Functions
+### Ohter Objective Functions
 
 Descriptions shall follow
 
-### Root Mean Sqaured Error
+#### Root Mean Sqaured Error
 
 $$ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
               {T} $$
@@ -181,7 +171,7 @@ of_rmse <- function(o,s) {
 }
 ```
 
-### Inverted Nash-Sutcliffe Efficiency
+#### Inverted Nash-Sutcliffe Efficiency
 
 $$ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
               {\sum_{t=1}^T \big( s(t)-\bar{s} \big)^2} $$
@@ -196,7 +186,7 @@ of_invert_nse <- function(o,s) {
 }
 ```
 
-### Ratio of the Standard Deviations
+#### Ratio of the Standard Deviations
 
 $$ rsd = \frac{\sigma_s}{ \sigma_o } $$
 ```{r}
@@ -210,7 +200,7 @@ of_rsd <- function(o,s) {
 }
 ```
 
-### Ratio of the Means
+#### Ratio of the Means
 
 $$ rmeans = \mu_s / \mu_o$$
 ```{r}
@@ -223,7 +213,7 @@ of_rmeans <- function(o,s) {
 }
 ```
 
-### Volumetric Efficiency
+#### Volumetric Efficiency
 The volumetric efficiency, $VE$, uses the absolute distance between observation and
 simulation instead of the quadratic and is bound between 0 to 1.
 
@@ -241,7 +231,7 @@ of_ve <- function(o,s) {
 }
 ```
 
-# References
+## References
 - **Percentage Bias:** Yapo P. O., Gupta H. V., Sorooshian S., 1996. Automatic calibration of conceptual rainfall-runoff models: sensitivity to calibration data. Journal of Hydrology. v181 i1-4. 23-48
 - **Nash-Sutcliffe Efficiency:** Nash, J. E. and J. V. Sutcliffe (1970), River flow forecasting through conceptual models part I -A discussion of principles, Journal of Hydrology, 10 (3), 282-290
 - **Kling-Gupta Efficiency:** Gupta, Hoshin V., Harald Kling, Koray K. Yilmaz, Guillermo F. Martinez. Decomposition of the mean squared error and NSE performance criteria: Implications for improving hydrological modelling. Journal of Hydrology, Volume 377, Issues 1-2, 20 October 2009, Pages 80-91. DOI: 10.1016/j.jhydrol.2009.08.003. ISSN 0022-1694

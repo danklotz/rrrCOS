@@ -1,0 +1,29 @@
+---
+title: "visCOS: documentation"
+author: "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+# Hello, traveler {-}
+
+```{r, fig.align = 'center', out.width = '25%', echo = FALSE}
+  knitr::include_graphics("figures/icon_viscos.jpg")
+```
+
+visCOS is still under (heavy) development. It is thus not recommended to use the package, yet.
+
+---
+
+There exist many hydrological R-packages.
+
+Among them there are several that have the goal of providing aid to the calibration of hydrological models. In particular: The [`hydroGOF`](https://CRAN.R-project.org/package=hydroGOF) packages provides a set of commonly used (and disputed) objective functions. The [`hydroTSM`](https://CRAN.R-project.org/package=hydroTSM) package allows for the analysis, interpolation and plotting of hydrological time series. Topically, **visCOS** can be positioned between those two. In concrete, visCOS is an R-package that provides summaries and visualisation to aid the parameter estimation for conceptual rainfall-runoff models in general and COSERO in special.
+COSERO is a HBV-like model that was developed at the
+institute for water management, hydrology and hydraulic engineering (IWHW) at
+BOKU, Vienna. The name is an abbreviation for "**Co**nceptual
+**Se**mi-Distributed **R**ainfall Run**o**ff Model".
+This page provides a hub to access the different examples and the entire program
+code.

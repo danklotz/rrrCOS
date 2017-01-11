@@ -1,26 +1,26 @@
-  #' Compute Flow Duration Curves 
-  #' 
-  #' Computes the flow duration curves (fdc) for the `cos_data` data.frame. 
+  #' Compute Flow Duration Curves
+  #'
+  #' Computes the flow duration curves (fdc) for the `cos_data` data.frame.
   #' The calculations are adapted from the method used within the hydroTSM package.
   #' @param cos_data A data.frame with columns as used throughout visCOS
   #' @import magrittr
   #' @import dplyr
   #' @importFrom purrr map_df
   #' @import pasta
-  #' @export 
+  #' @export
   fdc_compute <- function(cos_data) {
-    # defensive code: 
+    # defensive code:
     assert_dataframe(cos_data)
     # calculations:
-    cos_data_only <- cos_data %>% 
+    cos_data_only <- cos_data %>%
       select(starts_with(viscos_options("name_o")), starts_with(viscos_options("name_s")))
     cos_exceedances <- map_df(cos_data_only,calc_percent_exceedance)
-    fdc_data <- cos_data_only %>% tidyr::gather() %>% 
-      cbind.data.frame(exceedance = cos_exceedances %>% 
-                         tidyr::gather() %>% 
+    fdc_data <- cos_data_only %>% tidyr::gather() %>%
+      cbind.data.frame(exceedance = cos_exceedances %>%
+                         tidyr::gather() %>%
                          magrittr::extract("value")
-                       ) %>% 
-      magrittr::set_names(c("key","value","exceedance")) %>% 
+                       ) %>%
+      magrittr::set_names(c("key","value","exceedance")) %>%
       mutate(obs_sim = key %>%
                gsub( viscos_options("name_o") %&% ".*",
                      viscos_options("name_o"),
@@ -29,14 +29,14 @@
                gsub( viscos_options("name_s") %&% ".*",
                      viscos_options("name_s"),
                      .,
-                     ignore.case = TRUE ), 
+                     ignore.case = TRUE ),
              basin_idx = key %>%
                gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
-               gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>% 
+               gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>%
                gsub("\\D","",.) %>% as.numeric)
     return(fdc_data)
   }
-# function to calculated the percent exceedance (x-axis) for the fdc 
+# function to calculated the percent exceedance (x-axis) for the fdc
   calc_percent_exceedance <- function(q) {
     q_sorted <- sort(q)
     q_zero_index <- which(q_sorted == 0)
@@ -49,14 +49,14 @@
     percent_exeedence <- percent_exeedence/n
     return(percent_exeedence)
   }
-  #' Plot Flow Duration Curves 
-  #' 
-  #' Plots the flow duration curves (fdc) for `cos_data`. 
-  #' The function uses `ggplot` to so and facets the different basins into 
-  #' separate subplots. Each subplot shows the fdc of the \eqn{o}-data and 
+  #' Plot Flow Duration Curves
+  #'
+  #' Plots the flow duration curves (fdc) for `cos_data`.
+  #' The function uses `ggplot` to so and facets the different basins into
+  #' separate subplots. Each subplot shows the fdc of the \eqn{o}-data and
   #' the \eqn{s}-data.
-  #' @export 
-  #' @import ggplot2 
+  #' @export
+  #' @import ggplot2
   fdc_plot <- function(cos_data,
                        log_y = TRUE,
                        log_x = FALSE,

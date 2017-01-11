@@ -81,7 +81,7 @@ explore_cos_data <- function(cos_data,
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
       dygraph( xts_selected_data() ) %>%
-        dyAxis("y", 
+        dyAxis("y",
                label = visCOS::viscos_options("data_unit")) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),

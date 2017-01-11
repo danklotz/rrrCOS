@@ -44,24 +44,24 @@
     require("magrittr")
     require("pasta")
     assert_dataframe(cos_data)
-    # set NA values to viscos_options("missing_data") and check if there are 
+    # set NA values to viscos_options("missing_data") and check if there are
     # cloumns wihtouth observervation
     chosen_cols <- which( names(cos_data) != viscos_options("name_COSposix") )
     rows_with_na <- is.na(cos_data[,chosen_cols])
     data_wihtouth_posix <- cos_data[ ,chosen_cols]
     data_wihtouth_posix[rows_with_na] <- viscos_options("missing_data")
-    colmax <- sapply(X = data_wihtouth_posix, FUN = max) 
+    colmax <- sapply(X = data_wihtouth_posix, FUN = max)
     #
     # if there are columns withouth observations remove them from the data:
     if ( any(colmax < 0.0) ){
       name_o <- viscos_options("name_o")
-      neg_obs_names <- which(colmax < 0.0) %>% 
+      neg_obs_names <- which(colmax < 0.0) %>%
         names %>%
         grepl(name_o %.% "*",.,ignore.case = TRUE) %>%
         idx_temp[.]
       neg_s_names <- gsub(name_o,viscos_options("name_s"),neg_obs_names,ignore.case = TRUE )
-      data_selection <- neg_obs_names %|% neg_s_names %>% 
-        grepl(., names(cos_data), ignore.case = TRUE) %>% 
+      data_selection <- neg_obs_names %|% neg_s_names %>%
+        grepl(., names(cos_data), ignore.case = TRUE) %>%
         not(.)
       data_only_observed <- cos_data[ ,data_selection]
 
@@ -69,7 +69,7 @@
       data_only_observed <- cos_data
     }
     # set all missing data values to NA for use in hydroGOF
-    idx_NA <- data_only_observed %>% 
+    idx_NA <- data_only_observed %>%
       equals(viscos_options("missing_data"))
     data_only_observed[idx_NA] <- NA
     return(data_only_observed)
@@ -96,18 +96,18 @@ complete_dates <- function(cos_data) {
                           "name_COSmonth",
                           "name_COShour",
                           "name_COSmin")
-                           ) 
-    %in% 
+                           )
+    %in%
     names(cos_data)
   )
   OK_POSIXdates <- any(names(cos_data) == viscos_options("name_COSposix"))
   if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
-    stop("Something is wrong :( \n 
+    stop("Something is wrong :( \n
          some of the date-columns could not be processed!")
   }
   # choose function depending on which formats are available!
   if (!OK_COSdate & !OK_POSIXdates) {
-    stop("Something is wrong :( \n 
+    stop("Something is wrong :( \n
          The 5 cosero date columns and the POSIXct colum could not be found")
   } else if (OK_COSdate & !OK_POSIXdates) {
     cos_data <- implode_cosdate(cos_data) # see following chapter
@@ -228,7 +228,7 @@ cos_data_as_xts <- function(cos_data) {
   assert_junk(cos_data)
   assert_complete_date(cos_data)
   # everything is set to lower case
-  cos_data <- remove_leading_zeros(cos_data) %>% 
+  cos_data <- remove_leading_zeros(cos_data) %>%
     magrittr::set_names(names(cos_data) %>% tolower)
   name_posix <- viscos_options("name_COSposix") %>% tolower
   cos_data_as_xts <- xts(x = cos_data[], # ,names(cos_data) != name_posix

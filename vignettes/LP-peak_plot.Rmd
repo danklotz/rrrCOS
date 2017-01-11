@@ -1,18 +1,9 @@
----
-title: "Plotting Runoff Peaks Plots"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "22 September 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Plotting Runoff Peaks Plots
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup8, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
 ```
 
-# Introduction
 The function `peak_plot` lets users explore the highest events in
 among the available basins. It provides a list of [ggplot2](http://ggplot2.org/)
 plots, containing an overview plot (`overview`), a scatter plot (`scatter`)
@@ -62,7 +53,7 @@ objects. Here an example:
 ```
 
 
-# Code
+## Code
 This part of the document defines the code of `peak_plot`
 ```{r}
 #' Plot List for Runoff Peaks
@@ -106,7 +97,7 @@ peak_plot <- function(cos_data,n_events= 10L, window_size = 24L) {
 }
 ```
 
-## Generating the Plots for one basin.
+### Generating the Plots for one basin.
 This is the function for generating the different plots for one basin.
 At first the provided time series are grouped into a `tibble`, then the
 peaks of the observations are obtained via the peak_finder function and
@@ -144,7 +135,7 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
 }
 ```
 
-## Function to find peaks
+### Function to find peaks
 The function for finding the peaks was proposed and developed by the cross validated user "stas g" in [this](http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data)
 thread.  
 This is by far not the only option/possibility to approach the peak finding task.
@@ -168,7 +159,7 @@ cross validated thread.
   }
 ```
 
-## Subplot Function
+### Subplot Function
 This function is a wrapper around `ggplot`, which is used to generate the
 individual event plots.
 ```{r}
@@ -187,3 +178,6 @@ individual event plots.
     return(plot_sub)
   }
 ```
+## References
+- http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data (checked 12/2016)
+- http://stats.stackexchange.com/questions/36309/how-do-i-find-peaks-in-a-dataset (checked 12/2016)

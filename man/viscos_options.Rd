@@ -11,7 +11,7 @@ viscos_options
 Get and set the global options of visCOS
 }
 \details{
-These are the options you can adapt by executing the function 
+These are the options you can adapt by executing the function
 (default values)
 \preformatted{
   viscos_options(

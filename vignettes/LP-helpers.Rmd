@@ -1,24 +1,15 @@
----
-title: "helpers"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "8 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Helpers
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup5, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction
 This section collects small and helpful functions/scripts that are used
 throughout **visCOS**.
 
 None of the functions is exported!
 
-# Code
+## Code
 The subsequent functions are defined below
 
 function | exported
@@ -27,7 +18,7 @@ function | exported
 `get_basin_numbers` | no
 `set_panel_size`| no
 
-## `get_regex_for_cos_data`
+### Get a Regular Expression String for the needed columns
 This function can be called to get the names of the 8 allowed column-names
 within **visCOS**. `get_regex_for_cos_data` takes no input, as it gets the
 information directly from the global options (see: *viscos_options section*).
@@ -48,7 +39,7 @@ get_regex_for_cos_data <- function() {
 ```
 
 
-## `get_basin_numbers`
+### Extract the numeration of the basins
 This function fetches the number of basins from the provided data.frame
 (`cos_data`) by removing all the non-digits characters from the column names.
 ```{r}
@@ -62,6 +53,4 @@ get_basin_numbers <- function(cos_data) {
   d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)
 }
-
-
 ```

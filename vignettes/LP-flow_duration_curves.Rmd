@@ -1,68 +1,59 @@
----
-title: "Flow Duration Curves"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "13 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Flow Duration Curves
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup4, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction
-Flow-duration curves represent the relationship between the magnitue and the 
-frequency of a streamflow. They provide an estimate of the percentage of time 
+Flow-duration curves represent the relationship between the magnitue and the
+frequency of a streamflow. They provide an estimate of the percentage of time
 a given streamflow was exceeded within the evaluated time frame. Foster [1934]
 attributes the first use of flow duration curves to Clemens Herschel around 1880.
 Since they have been used for a wide array of applications.
 **visCOS** provides a function to compute the data for flow-duration curves and
 a function to plot them directly.
-The former function is called `fdc_compute`. It computes the flow exceedance 
+The former function is called `fdc_compute`. It computes the flow exceedance
 properties and returns a data.frame. The calculations are adapted from the
-method used within the [hydroTSM](https://CRAN.R-project.org/package=hydroTSM) 
-package. It is currently rather slow. 
+method used within the [hydroTSM](https://CRAN.R-project.org/package=hydroTSM)
+package. It is currently rather slow.
 The plot-function is called `fdc_plot`. Internally it uses `fdc_compute` for the
-data preparation and generates a facetted `ggplot` object from it. In the plot 
-each basin is a facet and each sub-plot shows the $o$-data and $s$-data (see: 
+data preparation and generates a facetted `ggplot` object from it. In the plot
+each basin is a facet and each sub-plot shows the $o$-data and $s$-data (see:
 [Introduction](Introduction.html)).
 
-# Example
+## Example
 Flow duration curves can be plotted in **visCOS** in the following way:
 ```{r example, purl=FALSE, eval=TRUE}
   library(visCOS)
   cos_data <- get_cos_data_example()
-  fdc_plot(cos_data) 
+  fdc_plot(cos_data)
 ```
 
-# Code
-## Computing the data for the flow duration curves
+## Code
+### Computing the data for the flow duration curves
 ```{r}
-  #' Compute Flow Duration Curves 
-  #' 
-  #' Computes the flow duration curves (fdc) for the `cos_data` data.frame. 
+  #' Compute Flow Duration Curves
+  #'
+  #' Computes the flow duration curves (fdc) for the `cos_data` data.frame.
   #' The calculations are adapted from the method used within the hydroTSM package.
   #' @param cos_data A data.frame with columns as used throughout visCOS
   #' @import magrittr
   #' @import dplyr
   #' @importFrom purrr map_df
   #' @import pasta
-  #' @export 
+  #' @export
   fdc_compute <- function(cos_data) {
-    # defensive code: 
+    # defensive code:
     assert_dataframe(cos_data)
     # calculations:
-    cos_data_only <- cos_data %>% 
+    cos_data_only <- cos_data %>%
       select(starts_with(viscos_options("name_o")), starts_with(viscos_options("name_s")))
     cos_exceedances <- map_df(cos_data_only,calc_percent_exceedance)
-    fdc_data <- cos_data_only %>% tidyr::gather() %>% 
-      cbind.data.frame(exceedance = cos_exceedances %>% 
-                         tidyr::gather() %>% 
+    fdc_data <- cos_data_only %>% tidyr::gather() %>%
+      cbind.data.frame(exceedance = cos_exceedances %>%
+                         tidyr::gather() %>%
                          magrittr::extract("value")
-                       ) %>% 
-      magrittr::set_names(c("key","value","exceedance")) %>% 
+                       ) %>%
+      magrittr::set_names(c("key","value","exceedance")) %>%
       mutate(obs_sim = key %>%
                gsub( viscos_options("name_o") %&% ".*",
                      viscos_options("name_o"),
@@ -71,17 +62,17 @@ Flow duration curves can be plotted in **visCOS** in the following way:
                gsub( viscos_options("name_s") %&% ".*",
                      viscos_options("name_s"),
                      .,
-                     ignore.case = TRUE ), 
+                     ignore.case = TRUE ),
              basin_idx = key %>%
                gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
-               gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>% 
+               gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>%
                gsub("\\D","",.) %>% as.numeric)
     return(fdc_data)
   }
 ```
 
 ```{r}
-# function to calculated the percent exceedance (x-axis) for the fdc 
+# function to calculated the percent exceedance (x-axis) for the fdc
   calc_percent_exceedance <- function(q) {
     q_sorted <- sort(q)
     q_zero_index <- which(q_sorted == 0)
@@ -96,16 +87,16 @@ Flow duration curves can be plotted in **visCOS** in the following way:
   }
 ```
 
-## Plotting the Flow duration curves
+### Plotting the Flow duration curves
 ```{r}
-  #' Plot Flow Duration Curves 
-  #' 
-  #' Plots the flow duration curves (fdc) for `cos_data`. 
-  #' The function uses `ggplot` to so and facets the different basins into 
-  #' separate subplots. Each subplot shows the fdc of the \eqn{o}-data and 
+  #' Plot Flow Duration Curves
+  #'
+  #' Plots the flow duration curves (fdc) for `cos_data`.
+  #' The function uses `ggplot` to so and facets the different basins into
+  #' separate subplots. Each subplot shows the fdc of the \eqn{o}-data and
   #' the \eqn{s}-data.
-  #' @export 
-  #' @import ggplot2 
+  #' @export
+  #' @import ggplot2
   fdc_plot <- function(cos_data,
                        log_y = TRUE,
                        log_x = FALSE,
@@ -133,7 +124,7 @@ Flow duration curves can be plotted in **visCOS** in the following way:
   }
 ```
 
-# References 
+## References
 - Foster, H.A. (1934): Duration curves. ASCE Trans., 99, 1213-1267
-- Vogel, R. M.; Fennessy, N. M. (1994): Flow-Duration Curves. I: New Interpretation 
-and Confidence Intervals. JWRMD 120, No. 4 
+- Vogel, R. M.; Fennessy, N. M. (1994): Flow-Duration Curves. I: New Interpretation
+and Confidence Intervals. JWRMD 120, No. 4

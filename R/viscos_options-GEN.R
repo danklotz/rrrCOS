@@ -1,8 +1,8 @@
 #' visCOS global options
-#' 
+#'
 #' Get and set the global options of visCOS
-#' 
-#' These are the options you can adapt by executing the function 
+#'
+#' These are the options you can adapt by executing the function
 #' (default values)
 #' \preformatted{
 #'   viscos_options(
@@ -29,10 +29,10 @@
 #' viscos_options(name_o = "OtherData")
 #' viscos_options("name_o")
 #' @export
-viscos_options <- GlobalOptions::setGlobalOptions( 
+viscos_options <- GlobalOptions::setGlobalOptions(
   # data.frame column names
-  name_o = "qobs", 
-  name_s = "qsim", 
+  name_o = "qobs",
+  name_s = "qsim",
   data_unit = "(m^3/s)",
   name_COSyear = "yyyy",
   name_COSmonth = "mm",
@@ -43,7 +43,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSperiod = "period",
   missing_data = -999,
  # plot options
-  color_o = "steelblue", 
+  color_o = "steelblue",
   color_s = "orange",
   of_limits = c(0,1)
 )

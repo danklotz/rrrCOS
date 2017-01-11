@@ -1,24 +1,16 @@
----
-title: "Defensive Code"
-author: "Daniel Klotz"
-date: "8 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Defensive Code
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup2, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction
 This section defines the internaly used defensive programming part of **visCOS**.
-This are all functions dedicated to ensure that **visCOS** is working nicely 
-even if it is used wrongly for whatever reason. This often means that a given 
-function has to return an error if certain criteria are not met! 
+This are all functions dedicated to ensure that **visCOS** is working nicely
+even if it is used wrongly for whatever reason. This often means that a given
+function has to return an error if certain criteria are not met!
 Useful examples for such methods can be found in Hadley Wickhams `R` package [`assertthat`](https://cran.r-project.org/web/packages/assertthat/index.html)
 
-# Code
+## Code
 The subsequent functions are defined in this section
 
 function | exported
@@ -28,9 +20,9 @@ function | exported
  `assert_dataframe` | no
 `assert_of` | no
 
-## `assert_junk`
-Tests if the given data.frame (`cos_data`) contains only the 
-columns defined within `get_regex_for_cos_data` 
+### Check if `cos_data` is "clean"
+Tests if the given data.frame (`cos_data`) contains only the
+columns defined within `get_regex_for_cos_data`
 (see: [helpers](LP-helpers.html) and [`viscos_options`](LP-viscos_options.html)).
 An exception throws an error.
 **Note** that the check is not case sensitive!
@@ -45,11 +37,11 @@ assert_junk <- function(cos_data) {
 }
 ```
 
-## `assert_complete_date`
+### Check date completeness
 A rough check for the needed date- and/or time-columns within the provided
-`cos_data`. The function is rahter basic. It only checks if the names of the 
-`viscos_options("name_COSyear")` column and `viscos_options("name_COSposix") ` 
-column exist (see: [`viscos_options`](LP-viscos_options.html)). An exceptions 
+`cos_data`. The function is rahter basic. It only checks if the names of the
+`viscos_options("name_COSyear")` column and `viscos_options("name_COSposix") `
+column exist (see: [`viscos_options`](LP-viscos_options.html)). An exceptions
 throws an error.
 ```{r}
 assert_complete_date <- function(cos_data) {
@@ -66,7 +58,7 @@ assert_complete_date <- function(cos_data) {
 }
 ```
 
-## `assert_dataframe`
+### Check if the data is a `data.frame`
 Tests if `data` is a data.frame and returns an error if not.
 ```{r}
 # uses stop if the input: "data" is not of class "data.frame"
@@ -76,5 +68,5 @@ assert_dataframe <- function(data) {
 }
 ```
 
-# References 
+## References
 - Wickham, H. (2013). assertthat: Easy pre and post assertions. https://CRAN.R-project.org/package=assertthat

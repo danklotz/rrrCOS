@@ -1,40 +1,36 @@
----
-title: "Code for Exploring Objective Functions"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "13 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Exploring Objective Functions
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup3, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction
-This section defines the code of a [shiny gadget](http://shiny.rstudio.com/). 
+This section defines the code of a [shiny gadget](http://shiny.rstudio.com/).
 It enables the interactive exploration of (hydro-) graphs for the different basins.
-The gadget shows always the corresponding objective function for the selected 
-graph. Furthermore, one can get the selected data by clicking on "done" at the 
-end of a session. The following examples provide a good overview of what the 
-function can do. 
+The gadget shows always the corresponding objective function for the selected
+graph. Furthermore, one can get the selected data by clicking on "done" at the
+end of a session. The following examples provide a good overview of what the
+function can do.
 
-# Example
-This chapter gives examples of `explore_cos_data`. For the pre-requirements take 
-a look at the [introduction](LP-Introduction). 
+## Example
+This chapter gives examples of `explore_cos_data`. For the pre-requirements take
+a look at the [introduction](LP-Introduction).
 Running the `explore_cos_data` function without any options opens a shiny gadget
 in the viewer:
-![example](figures/explore_cos_data.gif)
 
-Information on the *objective functions* can be found 
+```{r, eval=TRUE, echo=FALSE}
+if (knitr:::is_latex_output()) {
+  knitr::include_graphics('figures/explore_cos_data.jpg')
+} else {
+  knitr::include_graphics("figures/explore_cos_data.gif")
+}
+```
+
+Information on the *objective functions* can be found
 [here](ex-OF_explanation.html).
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_o = "green", color_s = "red")
 explore_cos_data(runoff_example)
 ```
-
-![](figures/eg_explore_basin.JPG)
 
 Users can select different basins via the selection box (*# basins:*) on the
 top-left and interactively zoom and move the graph in the center by clicking
@@ -43,12 +39,12 @@ objective functions (presented in the table below) are re-calculated for the
 chosen time window.
 
 
-# Code
+## Code
 In the following paragraphs the code of the shiny app is defined.
 The computations of the app are defined in the `server` part and the
 appearance in the `ui`.
 
-## `explore_cos_data`
+### Explore the data
 This function represents the main part of the shiny app.
 The current solution **forces** users to enumerate their basins with and the shiny app needs some pre-calculation, which need to be calculated before the app is started. These calculations are
 made before the app as such is defined. They include:
@@ -146,7 +142,7 @@ by shinyApps.
     # (IV) create plots:
     output$hydrographs <- renderDygraph({
       dygraph( xts_selected_data() ) %>%
-        dyAxis("y", 
+        dyAxis("y",
                label = visCOS::viscos_options("data_unit")) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),

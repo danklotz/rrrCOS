@@ -1,20 +1,9 @@
----
-title: "Time Aggregates"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "22 September 2016"
-output:
-  html_document:
-    number_sections: yes
----
+# Time Aggregates
 
-
-
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup10, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
 ```
 
-# Introduction
 In hydrology it is often useful to summarise the data respect to a
 given time dimension. In **visCOS** this can be done by using the
 `aggregate_time` function. The function takes
@@ -83,7 +72,7 @@ Yearly and monthly runoff aggregation:
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-# Code
+## Code
 This section defines the code for the `aggregate_time` function.
 The time aggregation is done by cutting the needed information out of the
 date-string. This is a rough, but works nicely and seems to be more

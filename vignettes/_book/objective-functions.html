@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>visCOS doc</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta name="description" content="visCOS doc">
+  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="visCOS doc" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="visCOS doc" />
+  
+  
+  
+
+<meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="ojective-functions.html">
+<link rel="next" href="references.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">visCOS documentation</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#the-basic-data-structure"><i class="fa fa-check"></i><b>1.1</b> The basic data structure</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#loading-raw-data"><i class="fa fa-check"></i><b>1.2</b> Loading raw data</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="cook-data.html"><a href="cook-data.html"><i class="fa fa-check"></i><b>2</b> Cook Data</a><ul>
+<li class="chapter" data-level="2.1" data-path="cook-data.html"><a href="cook-data.html#examples"><i class="fa fa-check"></i><b>2.1</b> Examples</a></li>
+<li class="chapter" data-level="2.2" data-path="cook-data.html"><a href="cook-data.html#code"><i class="fa fa-check"></i><b>2.2</b> Code</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="cook-data.html"><a href="cook-data.html#get-example-data"><i class="fa fa-check"></i><b>2.2.1</b> Get Example Data</a></li>
+<li class="chapter" data-level="2.2.2" data-path="cook-data.html"><a href="cook-data.html#remove-not-needed-columns"><i class="fa fa-check"></i><b>2.2.2</b> Remove not needed columns</a></li>
+<li class="chapter" data-level="2.2.3" data-path="cook-data.html"><a href="cook-data.html#complete-the-date-formats"><i class="fa fa-check"></i><b>2.2.3</b> Complete the date formats</a></li>
+<li class="chapter" data-level="2.2.4" data-path="cook-data.html"><a href="cook-data.html#remove-leading-zeros-in-column-names"><i class="fa fa-check"></i><b>2.2.4</b> Remove leading zeros in column names</a></li>
+<li class="chapter" data-level="2.2.5" data-path="cook-data.html"><a href="cook-data.html#mark-the-needed-periods"><i class="fa fa-check"></i><b>2.2.5</b> Mark the needed periods</a></li>
+<li class="chapter" data-level="2.2.6" data-path="cook-data.html"><a href="cook-data.html#transform-the-cos_data-into-xts"><i class="fa fa-check"></i><b>2.2.6</b> Transform the <code>cos_data</code> into <code>xts</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="options.html"><a href="options.html"><i class="fa fa-check"></i><b>3</b> Options</a></li>
+<li class="chapter" data-level="4" data-path="ojective-functions.html"><a href="ojective-functions.html"><i class="fa fa-check"></i><b>4</b> Ojective Functions</a></li>
+<li class="chapter" data-level="5" data-path="objective-functions.html"><a href="objective-functions.html"><i class="fa fa-check"></i><b>5</b> Objective Functions</a><ul>
+<li class="chapter" data-level="5.1" data-path="objective-functions.html"><a href="objective-functions.html#main-objective-functions"><i class="fa fa-check"></i><b>5.1</b> Main Objective Functions</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="objective-functions.html"><a href="objective-functions.html#nash-sutcliffe-efficiency"><i class="fa fa-check"></i><b>5.1.1</b> Nash-Sutcliffe Efficiency</a></li>
+<li class="chapter" data-level="5.1.2" data-path="objective-functions.html"><a href="objective-functions.html#kling-gupta-efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Kling-Gupta Efficiency</a></li>
+<li class="chapter" data-level="5.1.3" data-path="objective-functions.html"><a href="objective-functions.html#percentage-bias"><i class="fa fa-check"></i><b>5.1.3</b> Percentage Bias</a></li>
+<li class="chapter" data-level="5.1.4" data-path="objective-functions.html"><a href="objective-functions.html#pearsons-correlation-coefficient"><i class="fa fa-check"></i><b>5.1.4</b> Pearson’s correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="objective-functions.html"><a href="objective-functions.html#ohter-objective-functions"><i class="fa fa-check"></i><b>5.2</b> Ohter Objective Functions</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="objective-functions.html"><a href="objective-functions.html#root-mean-sqaured-error"><i class="fa fa-check"></i><b>5.2.1</b> Root Mean Sqaured Error</a></li>
+<li class="chapter" data-level="5.2.2" data-path="objective-functions.html"><a href="objective-functions.html#inverted-nash-sutcliffe-efficiency"><i class="fa fa-check"></i><b>5.2.2</b> Inverted Nash-Sutcliffe Efficiency</a></li>
+<li class="chapter" data-level="5.2.3" data-path="objective-functions.html"><a href="objective-functions.html#ratio-of-the-standard-deviations"><i class="fa fa-check"></i><b>5.2.3</b> Ratio of the Standard Deviations</a></li>
+<li class="chapter" data-level="5.2.4" data-path="objective-functions.html"><a href="objective-functions.html#ratio-of-the-means"><i class="fa fa-check"></i><b>5.2.4</b> Ratio of the Means</a></li>
+<li class="chapter" data-level="5.2.5" data-path="objective-functions.html"><a href="objective-functions.html#volumetric-efficiency"><i class="fa fa-check"></i><b>5.2.5</b> Volumetric Efficiency</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
+<li class="chapter" data-level="7" data-path="time-aggregates.html"><a href="time-aggregates.html"><i class="fa fa-check"></i><b>7</b> Time Aggregates</a><ul>
+<li class="chapter" data-level="7.1" data-path="time-aggregates.html"><a href="time-aggregates.html#examples-1"><i class="fa fa-check"></i><b>7.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="code-1.html"><a href="code-1.html"><i class="fa fa-check"></i><b>8</b> Code</a></li>
+<li class="chapter" data-level="9" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html"><i class="fa fa-check"></i><b>9</b> Summaries of important objective functions</a></li>
+<li class="chapter" data-level="10" data-path="code-2.html"><a href="code-2.html"><i class="fa fa-check"></i><b>10</b> Code</a><ul>
+<li class="chapter" data-level="10.1" data-path="code-2.html"><a href="code-2.html#compute-the-main-objective-functions"><i class="fa fa-check"></i><b>10.1</b> Compute the Main Objective Functions</a></li>
+<li class="chapter" data-level="10.2" data-path="code-2.html"><a href="code-2.html#plotting"><i class="fa fa-check"></i><b>10.2</b> Plotting</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="code-2.html"><a href="code-2.html#bar-plot"><i class="fa fa-check"></i><b>10.2.1</b> Bar Plot</a></li>
+<li class="chapter" data-level="10.2.2" data-path="code-2.html"><a href="code-2.html#raster-plot"><i class="fa fa-check"></i><b>10.2.2</b> Raster-Plot</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html"><i class="fa fa-check"></i><b>11</b> Flow Duration Curves</a><ul>
+<li class="chapter" data-level="11.1" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#example"><i class="fa fa-check"></i><b>11.1</b> Example</a></li>
+<li class="chapter" data-level="11.2" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#code-3"><i class="fa fa-check"></i><b>11.2</b> Code</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#computing-the-data-for-the-flow-duration-curves"><i class="fa fa-check"></i><b>11.2.1</b> Computing the data for the flow duration curves</a></li>
+<li class="chapter" data-level="11.2.2" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#plotting-the-flow-duration-curves"><i class="fa fa-check"></i><b>11.2.2</b> Plotting the Flow duration curves</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#references-1"><i class="fa fa-check"></i><b>11.3</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html"><i class="fa fa-check"></i><b>12</b> Plotting Runoff Peaks Plots</a><ul>
+<li class="chapter" data-level="12.1" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#examples-2"><i class="fa fa-check"></i><b>12.1</b> Examples:</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="code-4.html"><a href="code-4.html"><i class="fa fa-check"></i><b>13</b> Code</a><ul>
+<li class="chapter" data-level="13.1" data-path="code-4.html"><a href="code-4.html#generating-the-plots-for-one-basin."><i class="fa fa-check"></i><b>13.1</b> Generating the Plots for one basin.</a></li>
+<li class="chapter" data-level="13.2" data-path="code-4.html"><a href="code-4.html#function-to-find-peaks"><i class="fa fa-check"></i><b>13.2</b> Function to find peaks</a></li>
+<li class="chapter" data-level="13.3" data-path="code-4.html"><a href="code-4.html#subplot-function"><i class="fa fa-check"></i><b>13.3</b> Subplot Function</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html"><i class="fa fa-check"></i><b>14</b> Exploring Objective Functions</a><ul>
+<li class="chapter" data-level="14.1" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#example-1"><i class="fa fa-check"></i><b>14.1</b> Example</a></li>
+<li class="chapter" data-level="14.2" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#code-5"><i class="fa fa-check"></i><b>14.2</b> Code</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#explore-teh-data"><i class="fa fa-check"></i><b>14.2.1</b> Explore teh data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="making-previews.html"><a href="making-previews.html"><i class="fa fa-check"></i><b>15</b> Making Previews</a></li>
+<li class="chapter" data-level="16" data-path="code-6.html"><a href="code-6.html"><i class="fa fa-check"></i><b>16</b> code</a></li>
+<li class="chapter" data-level="17" data-path="defensive-code.html"><a href="defensive-code.html"><i class="fa fa-check"></i><b>17</b> Defensive Code</a><ul>
+<li class="chapter" data-level="17.1" data-path="defensive-code.html"><a href="defensive-code.html#code-7"><i class="fa fa-check"></i><b>17.1</b> Code</a><ul>
+<li class="chapter" data-level="17.1.1" data-path="defensive-code.html"><a href="defensive-code.html#check-if-cos_data-is-clean"><i class="fa fa-check"></i><b>17.1.1</b> Check if <code>cos_data</code> is “clean”</a></li>
+<li class="chapter" data-level="17.1.2" data-path="defensive-code.html"><a href="defensive-code.html#check-date-completeness"><i class="fa fa-check"></i><b>17.1.2</b> Check date completeness</a></li>
+<li class="chapter" data-level="17.1.3" data-path="defensive-code.html"><a href="defensive-code.html#check-if-the-data-is-a-data.frame"><i class="fa fa-check"></i><b>17.1.3</b> Check if the data is a <code>data.frame</code></a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="defensive-code.html"><a href="defensive-code.html#references-2"><i class="fa fa-check"></i><b>17.2</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="helpers.html"><a href="helpers.html"><i class="fa fa-check"></i><b>18</b> Helpers</a></li>
+<li class="chapter" data-level="19" data-path="code-8.html"><a href="code-8.html"><i class="fa fa-check"></i><b>19</b> Code</a><ul>
+<li class="chapter" data-level="19.1" data-path="code-8.html"><a href="code-8.html#get_regex_for_cos_data"><i class="fa fa-check"></i><b>19.1</b> <code>get_regex_for_cos_data</code></a></li>
+<li class="chapter" data-level="19.2" data-path="code-8.html"><a href="code-8.html#get_basin_numbers"><i class="fa fa-check"></i><b>19.2</b> <code>get_basin_numbers</code></a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">visCOS doc</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="objective-functions" class="section level1">
+<h1><span class="header-section-number">5</span> Objective Functions</h1>
+<p>This section defines the code for different objective functions. If possible the calculation is done with the help of the <code>hydroGOF</code> package, if not an R-code solution is tried. Currently 4 main objective functions are provided in <strong>visCOS</strong>. They can be directly extracted from the <code>cos_data</code> data.frame via the <a href="LP-main_of.html"><code>main_of_</code></a> functions. Other objective functions are provided to, but no special extraction and visualisation functions are provided for them.</p>
+<p>For the explanation and definition of the objective function it is assumed that <span class="math inline">\(o\)</span> are the observations (defined by <code>name_o</code> in visCOS) and <span class="math inline">\(s\)</span> are the simulation(defined by <code>name_s</code> in visCOS).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Objective Functions</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; Different objective Functions, provided by visCOS. A detailed description</span>
+<span class="co">#&#39; of each of the provided objective function is provided in the respective</span>
+<span class="co">#&#39; vignette</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param o The reference data or observations (o_data)</span>
+<span class="co">#&#39; @param s The created data or the simulations (s_data)</span>
+<span class="co">#&#39; @name of_overview</span>
+<span class="ot">NULL</span></code></pre></div>
+<div id="main-objective-functions" class="section level2">
+<h2><span class="header-section-number">5.1</span> Main Objective Functions</h2>
+<p>Currently the main objective functions are the Nash-Sutcliffe Efficiency, the Kling-Gupta Efficiency, the percentage bias and the correlation.</p>
+<div id="nash-sutcliffe-efficiency" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Nash-Sutcliffe Efficiency</h3>
+<p>The Nash-Sutcliffe Criterion <span class="math inline">\(NSE\)</span> is by far the most used efficiency criterion in hydrology. In the hydrological context <span class="math inline">\(o\)</span> usually represents a set of runoff-observation and <span class="math inline">\(s\)</span> a set of simulations. The <span class="math inline">\(NSE\)</span> is defined in the same way as the general definition of the coefficient of determination <span class="math inline">\(R^2\)</span>:</p>
+<p><span class="math display">\[ NSE = \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
+              {\sum_{t=1}^T \big( o(t)-\bar{o} \big)^2} . \]</span></p>
+<p>The variable <span class="math inline">\(\bar{o}\)</span> represents the average of <span class="math inline">\(o\)</span>. The <span class="math inline">\(NSE\)</span> can be seen as the relational the estimator <span class="math inline">\(s\)</span> and the estimator resulting form the average of the data. It can can have values between minus infinity and 1 with 1 being the perfect fit, 0 when the mean of <span class="math inline">\(s\)</span> is as good as the mean of <span class="math inline">\(o\)</span> and negative values are even worse.</p>
+<p>The code for the <span class="math inline">\(NSE\)</span> computation is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Nash-Sutcliffe Efficiency</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_nse &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">NSE</span>(s,o) )
+}</code></pre></div>
+</div>
+<div id="kling-gupta-efficiency" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Kling-Gupta Efficiency</h3>
+<p>The Kling-Gupta Efficiency <span class="math inline">\(KGE\)</span> was introduced by Gupta et al. (2009) to alleviate some of the shortcomings of the <span class="math inline">\(NSE\)</span>. In their paper they argue why the <span class="math inline">\(NSE\)</span> tends to overate simulations with small variance (note: in the context of the paper <span class="math inline">\(\textrm{simulations} = s\)</span>) and propose their efficiency criterion instead.</p>
+<p>The <span class="math inline">\(KGE\)</span> is defined as:</p>
+<p><span class="math display">\[ KGE = 1 - ED, \]</span></p>
+<p>with</p>
+<p><span class="math display">\[ ED = \sqrt{\big(corr(o,s)-1 \big)^2 +
+              \big(\alpha(o,s)-1 \big)^2 +
+              \big(\beta(o,s)-1 \big)^2 }. \]</span></p>
+<p>In which <span class="math inline">\(\alpha(o,s) = \frac{\sigma_s}{ \sigma_o }\)</span> is the standard deviation <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(s\)</span> divided by the <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(o\)</span>, <span class="math inline">\(\beta(o,s) = \mu_s / \mu_o\)</span> with<span class="math inline">\(\mu\)</span> being the arithmetic mean and <span class="math inline">\(corr(o,s)\)</span> as the Pearson’s correlation coefficient (see below). The value range and the quality is similar to the <span class="math inline">\(NSE\)</span>.</p>
+<p>The code for the <span class="math inline">\(KGE\)</span> computation is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Kling-Gupta Efficiency</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_kge &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">KGE</span>(s,o) )
+}</code></pre></div>
+</div>
+<div id="percentage-bias" class="section level3">
+<h3><span class="header-section-number">5.1.3</span> Percentage Bias</h3>
+<p>The percentage of bias <span class="math inline">\(p_{bias}\)</span> is defined as the sum of the differences between <span class="math inline">\(o\)</span> and <span class="math inline">\(s\)</span> divided by the sum of <span class="math inline">\(o\)</span>:</p>
+<p><span class="math display">\[ p_{bias} = 100*\frac{\sum_{t=1}^T [ o(t)-s(t) ] }{\sum_{t=1}^T o(t)}. \]</span></p>
+<p>The <span class="math inline">\(100*\)</span> is just a scaling factor applied to express <span class="math inline">\(p_{bias}\)</span> as a percentage.</p>
+<p>The code for the <span class="math inline">\(p_{bias}\)</span> computation is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Percentage Bias</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_p_bias &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">pbias</span>(s,o) )
+}</code></pre></div>
+</div>
+<div id="pearsons-correlation-coefficient" class="section level3">
+<h3><span class="header-section-number">5.1.4</span> Pearson’s correlation coefficient</h3>
+<p>Pearson’s correlation coefficient, <span class="math inline">\(r\)</span> or <span class="math inline">\(corr(o,s)\)</span>, is a measure of the linear relationship between <span class="math inline">\(o\)</span> and <span class="math inline">\(s\)</span>. It is defined as:</p>
+<p><span class="math display">\[ r \equiv corr(o,s) = \frac{cov(o,s)}{\sigma_s*\sigma_o}, \]</span></p>
+<p>where <span class="math inline">\(cov(...)\)</span> denotes the covariance. The correlation coefficient can take on values between -1 and 1. The former corresponds to an inverse and the latter to a direct relationship and the closer the values is to zero the weaker is the implied correlation.</p>
+<p>The code for the correlation is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Correlation</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_cor &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">diag</span>( <span class="kw">cor</span>(o,s) )
+}</code></pre></div>
+</div>
+</div>
+<div id="ohter-objective-functions" class="section level2">
+<h2><span class="header-section-number">5.2</span> Ohter Objective Functions</h2>
+<p>Descriptions shall follow</p>
+<div id="root-mean-sqaured-error" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Root Mean Sqaured Error</h3>
+<p><span class="math display">\[ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
+              {T} \]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Root Mean Sqaured Error</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_rmse &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">rmse</span>(s,o) )
+}</code></pre></div>
+</div>
+<div id="inverted-nash-sutcliffe-efficiency" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Inverted Nash-Sutcliffe Efficiency</h3>
+<p><span class="math display">\[ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
+              {\sum_{t=1}^T \big( s(t)-\bar{s} \big)^2} \]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Inverted Nash-Sutcliffe Efficiency</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_invert_nse &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">NSE</span>(o,s) )
+}</code></pre></div>
+</div>
+<div id="ratio-of-the-standard-deviations" class="section level3">
+<h3><span class="header-section-number">5.2.3</span> Ratio of the Standard Deviations</h3>
+<p><span class="math display">\[ rsd = \frac{\sigma_s}{ \sigma_o } \]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Ratio of Standard Deviations</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_rsd &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">rSD</span>(s,o) )
+}</code></pre></div>
+</div>
+<div id="ratio-of-the-means" class="section level3">
+<h3><span class="header-section-number">5.2.4</span> Ratio of the Means</h3>
+<p><span class="math display">\[ rmeans = \mu_s / \mu_o\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Ratio of Means</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @export</span>
+of_rmeans &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">mean</span>(s)/<span class="kw">mean</span>(o) )
+}</code></pre></div>
+</div>
+<div id="volumetric-efficiency" class="section level3">
+<h3><span class="header-section-number">5.2.5</span> Volumetric Efficiency</h3>
+<p>The volumetric efficiency, <span class="math inline">\(VE\)</span>, uses the absolute distance between observation and simulation instead of the quadratic and is bound between 0 to 1.</p>
+<p><span class="math display">\[ VE = 1- \frac{\sum_{t=1}^T abs\big( s(t)-o(t) \big)}
+                {\sum_{t=1}^T o(t) } \]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Volumetric Efficiency</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @rdname of_overview</span>
+<span class="co">#&#39; @import hydroGOF</span>
+<span class="co">#&#39; @export</span>
+of_ve &lt;-<span class="st"> </span>function(o,s) {
+  <span class="kw">as.numeric</span>( <span class="kw">VE</span>(s,o) )
+}</code></pre></div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ojective-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

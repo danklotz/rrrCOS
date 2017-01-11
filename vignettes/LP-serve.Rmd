@@ -1,17 +1,12 @@
----
-title: "serve"
-author: "Daniel Klotz"
-date: "07 Oktober 2016"
-output: html_document
----
+# Generate Previews
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup9, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
 ```
 
 Possibility to save lists of plots into .jpgs and create a linked html file.
 
-# code
+## Code
 ```{r}
 #' Serve is still beta
 #'

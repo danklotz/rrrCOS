@@ -1,20 +1,9 @@
----
-title: "Calculation of Objective Functions"
-author:
-- "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
-date: "12 Juli 2016"
-output:
-  html_document:
-    number_sections: yes
-  pdf_document:
-    number_sections: yes
----
+# Summaries of important objective functions
 
-```{r setup, include=FALSE, purl=FALSE}
+```{r setup6, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-# Introduction
 This chapter explains the code to calculate the main objective functions $of$
 used in visCOS. As explained in [respective section](LP-of.html) objective
 functions are a pivotal part of model calibration. As of now, **visCOS** focuses
@@ -60,10 +49,10 @@ of_values <- get_cos_data_example() %>%
   plot()
 ```
 
-# Code
+## Code
 In this section the code for the `main_of` function family is defined
 
-## Compute the Main Objective Functions
+### Compute the Main Objective Functions
 The purpose of this function is to extract a the main of objective functions
 from the `COSERO` data.frame. The objective functions are extracted for each
 basin separately and computed for the entire length of the data, as well as
@@ -170,7 +159,7 @@ Finally, a period-wise a repetition of the previous step is done to get the
 }
 ```
 
-## Plotting
+### Plotting
 In this section the code for plotting the main_of is defined. There is no
 wrapper function, but a central explanation for the plotting of the main
 values is provided:
@@ -195,7 +184,7 @@ selections all names are set to lower case (`tolower`), because **visCOS** works
 case-insensitive. The basin enumeration `num_basins` is obtained with
 the function [`get_basin_numbers`](LP-helpers.html).  
 
-### Bar Plot
+#### Bar Plot
 ```{r}
 #' Bar plot for the Main Objective Function Values
 #'
@@ -242,7 +231,7 @@ main_of_barplot <- function(cos_data) {
 }
 ```
 
-### Raster-Plot
+#### Raster-Plot
 ```{r}
 #' Bar plot for the Main Objective Function Values
 #'
