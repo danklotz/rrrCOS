@@ -21,5 +21,3 @@ get_basin_numbers <- function(cos_data) {
   d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)
 }
-
-

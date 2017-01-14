@@ -11,17 +11,10 @@
   fdc_compute <- function(cos_data) {
     # defensive code:
     assert_dataframe(cos_data)
-    # calculations:
-    cos_data_only <- cos_data %>%
-      select(starts_with(viscos_options("name_o")), starts_with(viscos_options("name_s")))
-    cos_exceedances <- map_df(cos_data_only,calc_percent_exceedance)
-    fdc_data <- cos_data_only %>% tidyr::gather() %>%
-      cbind.data.frame(exceedance = cos_exceedances %>%
-                         tidyr::gather() %>%
-                         magrittr::extract("value")
-                       ) %>%
-      magrittr::set_names(c("key","value","exceedance")) %>%
-      mutate(obs_sim = key %>%
+    # def:
+    order_bound_data <- function(bound_data) {
+      ordred_fdc_data <- bound_data %>% 
+        mutate(obs_sim = key %>%
                gsub( viscos_options("name_o") %&% ".*",
                      viscos_options("name_o"),
                      .,
@@ -34,6 +27,19 @@
                gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
                gsub(viscos_options("name_s"),"",.,ignore.case = TRUE) %>%
                gsub("\\D","",.) %>% as.numeric)
+      return(ordred_fdc_data)
+    }
+    # computation:
+    cos_data_only <- cos_data %>%
+      select(starts_with(viscos_options("name_o")), starts_with(viscos_options("name_s")))
+    exceedance_values <- map_df(cos_data_only,calc_percent_exceedance) %>%
+                         tidyr::gather() %>%
+                         magrittr::extract("value")
+    fdc_data <- cos_data_only %>% 
+      tidyr::gather() %>%
+      cbind.data.frame(exceedance = exceedance_values) %>%
+      magrittr::set_names(c("key","value","exceedance")) %>%
+      order_bound_data(.)
     return(fdc_data)
   }
 # function to calculated the percent exceedance (x-axis) for the fdc
@@ -61,24 +67,35 @@
                        log_y = TRUE,
                        log_x = FALSE,
                        ...) {
-  # maybe we have to account certain limits for the logs
-  # if (log_y | log_x & min(ylim) == 0) {
-  #   ylim <- range(q, na.rm = TRUE)
-  #   tmp <- unlist(q)
-  #   tmp[which(tmp == 0)] <- NA
-  #   ylim[1] <- min(tmp, na.rm = TRUE)
-  # }
-  fdc_data <- fdc_compute(cos_data)
-  gplot <- ggplot(fdc_data)
-  if (log_x & log_y) {
-    gplot <- gplot + geom_line(aes(x = log(exceedance), y = log(value), color = obs_sim))
-  } else if (log_y) {
-    gplot <- gplot + geom_line(aes(x = exceedance, y = log(value), color = obs_sim))
-  } else if (log_x) {
-    gplot <- gplot + geom_line(aes(x = log(exceedance), y = value, color = obs_sim))
-  } else (
-    gplot <- gplot + geom_line(aes(x = exceedance, y = value, color = obs_sim))
-  )
-  gplot <- gplot + facet_wrap(~ basin_idx)
-  return(gplot)
+    # def
+    # maybe we have to account certain limits for the logs, e.g: 
+    # if (log_y | log_x & min(ylim) == 0) {
+    #   ylim <- range(q, na.rm = TRUE)
+    #   tmp <- unlist(q)
+    #   tmp[which(tmp == 0)] <- NA
+    #   ylim[1] <- min(tmp, na.rm = TRUE)
+    # }
+    logfun <- function(data,take_log){
+      if(take_log){
+        return(log(data))
+      } else (
+        return(data)
+      )
+    }
+    # computation:
+    fdc_data <- fdc_compute(cos_data)
+    gplot <- ggplot(fdc_data) + 
+      geom_line(aes(x = logfun(exceedance,log_x), y = logfun(value,log_y), color = obs_sim)) +
+      facet_wrap(~ basin_idx)
+    # if (log_x & log_y) {
+    #   gplot <- gplot + geom_line(aes(x = log(exceedance), y = log(value), color = obs_sim))
+    # } else if (log_y) {
+    #   gplot <- gplot + geom_line(aes(x = exceedance, y = log(value), color = obs_sim))
+    # } else if (log_x) {
+    #   gplot <- gplot + geom_line(aes(x = log(exceedance), y = value, color = obs_sim))
+    # } else (
+    #   gplot <- gplot + geom_line(aes(x = exceedance, y = value, color = obs_sim))
+    # )
+    # gplot <- gplot + facet_wrap(~ basin_idx)
+    return(gplot)
   }
