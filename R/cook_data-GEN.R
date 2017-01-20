@@ -55,12 +55,13 @@
     # if there are columns withouth observations remove them from the data:
     if ( any(colmax < 0.0) ){
       name_o <- viscos_options("name_o")
-      neg_obs_names <- which(colmax < 0.0) %>%
-        names %>%
-        grepl(name_o %.% "*",.,ignore.case = TRUE) %>%
-        idx_temp[.]
-      neg_s_names <- gsub(name_o,viscos_options("name_s"),neg_obs_names,ignore.case = TRUE )
-      data_selection <- neg_obs_names %|% neg_s_names %>%
+      neg_o_names <- which(colmax < 0.0) %>%
+        names# %>%
+        # grepl(name_o %.% "*",.,ignore.case = TRUE) #%>%
+        #idx_temp[.]
+      neg_s_names <- gsub(name_o,viscos_options("name_s"),neg_o_names,ignore.case = TRUE )
+      data_selection <- neg_o_names %|% neg_s_names %>%
+        paste(.,collapse = "|") %>% 
         grepl(., names(cos_data), ignore.case = TRUE) %>%
         not(.)
       data_only_observed <- cos_data[ ,data_selection]

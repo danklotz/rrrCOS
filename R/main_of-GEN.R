@@ -16,8 +16,8 @@ main_of_compute <- function(cos_data) {
   if( !exists(viscos_options("name_COSperiod"), where = cos_data) ) {
     stop("Error! Period-Column missing in cos_data, use `mark_periods`")
   }
-  evaluation_data <-
-    cos_data[ cos_data[[viscos_options("name_COSperiod")]] > 0, ]
+  evaluation_data <- 
+    cos_data[cos_data[[viscos_options("name_COSperiod")]] > 0, ]
   number_of_basins <- evaluation_data %>%
     names %>%
     unique %>%
@@ -27,35 +27,41 @@ main_of_compute <- function(cos_data) {
     magrittr::extract2(viscos_options("name_COSperiod")) %>%
     unique
   number_of_periods <- periods_in_data %>% length
-  temp_x <- dplyr::select(evaluation_data,starts_with(viscos_options("name_o"))) %>%
+  # compute main-of for entire data: ----------------------------------------
+  selected_o <- dplyr::select(evaluation_data,
+                              starts_with(viscos_options("name_o"))
+                              ) %>% 
     unname
-  temp_y <- dplyr::select(evaluation_data,starts_with(viscos_options("name_s"))) %>%
+  selected_s <- dplyr::select(evaluation_data,
+                              starts_with(viscos_options("name_s"))
+                              ) %>%
     unname
-  nse_ <- hydroGOF::NSE(temp_y,temp_x)
-  kge_ <- hydroGOF::KGE(temp_y,temp_x)
-  p_bias_ <- hydroGOF::pbias(temp_y,temp_x)
-  corr_ <- cor(temp_y,temp_x) %>% diag(.)
-
-  # Calculated period-vise objective functions
-    # pre allocation of periodic variables:
-    NSE_period <- matrix(nrow = number_of_periods, ncol = as.integer(number_of_basins), data = NA)
-    KGE_period <- NSE_period
-    p_bias_period <- NSE_period
-    CORR_period <- NSE_period
-    # calculation loop # proabbly slow
-    for (k in 1:number_of_periods) {
-      temp_x <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dplyr::select(.,starts_with(viscos_options("name_o"))) %>%
-        unname
-      temp_y <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
-        dplyr::select(.,starts_with(viscos_options("name_s"))) %>%
-        unname
-      NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(temp_y,temp_x)
-      KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(temp_y,temp_x)
-      p_bias_period[k,1:number_of_basins] <- hydroGOF::pbias(temp_y,temp_x)
-      CORR_period[k,1:number_of_basins] <- cor(temp_y,temp_x) %>% diag(.)
-    }
-  #
+  nse_ <- hydroGOF::NSE(selected_s,selected_o)
+  kge_ <- hydroGOF::KGE(selected_s,selected_o)
+  p_bias_ <- hydroGOF::pbias(selected_s,selected_o)
+  corr_ <- cor(selected_s,selected_o) %>% diag(.)
+  # compute periodwise main-of: ---------------------------------------------
+  # pre allocations
+  NSE_period <- matrix(nrow = number_of_periods,
+                       ncol = as.integer(number_of_basins),
+                       data = NA)
+  KGE_period <- NSE_period
+  p_bias_period <- NSE_period
+  CORR_period <- NSE_period
+  # calculation loop, proabbly slow :( 
+  for (k in 1:number_of_periods) {
+    selected_o <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
+      dplyr::select(.,starts_with(viscos_options("name_o"))) %>%
+      unname
+    selected_s <- dplyr::filter(evaluation_data,period == periods_in_data[k]) %>%
+      dplyr::select(.,starts_with(viscos_options("name_s"))) %>%
+      unname
+    NSE_period[k,1:number_of_basins] <- hydroGOF::NSE(selected_s,selected_o)
+    KGE_period[k,1:number_of_basins] <- hydroGOF::KGE(selected_s,selected_o)
+    p_bias_period[k,1:number_of_basins] <- hydroGOF::pbias(selected_s,selected_o)
+    CORR_period[k,1:number_of_basins] <- cor(selected_s,selected_o) %>% diag(.)
+  }
+  # clean up: ---------------------------------------------------------------
   obj_names <- c("NSE","KGE","p_bias","CORR",
                     paste("NSE_period",1:number_of_periods,sep="."),
                     paste("KGE_period",1:number_of_periods,sep="."),
@@ -141,45 +147,68 @@ main_of_rasterplot <- function(cos_data) {
     set_names(main_of_names)
   return(plot_list)
 }
-  plot_fun_raster <- function(regex_single_of,of) {
-    if (regex_single_of == "p_bias.*") {
-      gglimits <- c(-viscos_options("of_limits")[2]*100,
-                    viscos_options("of_limits")[2]*100)
-    } else {
-      gglimits <- viscos_options("of_limits")
-    }
-    #
-    plot_data <- of %>%
-      extract(grep(regex_single_of,.$of), ) %>%
-      cbind(.,facets = c("overall", rep("period",(nrow(.) - 1)))) %>%
-      reshape2::melt(., id.vars = c("of","facets")) %>%
-      reverse_basin_levels %>%
-      reverse_facetting_levels %>%
-      dplyr::mutate(value = pmax(value,gglimits[1])) %>%
-      dplyr::mutate(value = pmin(value,gglimits[2])) %>%
-      dplyr::mutate(value = round(value,2))
-    #
-    plt_out <- ggplot(plot_data, aes(of,variable, fill = value), environmnet = environment()) +
-      geom_raster(position = "identity") +
-      coord_fixed(ratio = 5)  +
-      facet_grid(~ facets,  scales = "free_x", space = "free") +
-      theme( legend.position = "none")  +
-      geom_tile(color = "white", size = 0.25 ) +
-      geom_text(aes(of,variable, label = as.character(value,2)), color= "black")
-    return(plt_out)
+plot_fun_raster <- function(regex_single_of,of) {
+  # function definitions ----------------------------------------------------
+  extract_single_of <- function(of){
+    idx <- grep(regex_single_of,of$of)
+    return(of[idx, ])
   }
-
+  add_facet_info <- function(of) {
+    facet_column <- nrow(of) %>% 
+      magrittr::subtract(1) %>% 
+      rep("period",.) %>% 
+      c("overall",.)
+    return( cbind(of,facets = facet_column) )
+  }
   reverse_basin_levels <- function(plot_data) {
     plot_data$variable <- factor(plot_data$variable,
                                  levels = plot_data$variable %>%
                                    levels() %>%
-                                   rev() )
+                                   rev()
+                                 )
     return(plot_data)
   }
   reverse_facetting_levels <- function(plot_data) {
     plot_data$facets <- factor(plot_data$facets,
-                                 levels = plot_data$facets %>%
-                                   levels() %>%
-                                   rev() )
+                               levels = plot_data$facets %>%
+                                 levels() %>%
+                                 rev()
+                               )
     return(plot_data)
   }
+  bind_and_round_value <- function(of,gglimits,digits) {
+    dplyr::mutate(of,
+                  value = pmax(value,gglimits[1]) %>% 
+                    pmin(.,gglimits[2]) %>% 
+                    round(.,digits)
+                  )
+  }
+  # computation -------------------------------------------------------------
+  if (regex_single_of == "p_bias.*") {
+    # pbias has different limits :(
+    gglimits <- c(-viscos_options("of_limits")[2]*100,
+                  viscos_options("of_limits")[2]*100)
+  } else {
+    gglimits <- viscos_options("of_limits")
+  }
+  #
+  plot_data <- of %>%
+    extract_single_of() %>%
+    add_facet_info() %>%
+    reshape2::melt(., id.vars = c("of","facets")) %>%
+    reverse_basin_levels() %>%
+    reverse_facetting_levels() %>%
+    bind_and_round_value(.,gglimits,2)
+  # ggplot ------------------------------------------------------------------
+  plt_out <- ggplot(plot_data,
+                    aes(of,variable, fill = value),
+                    environmnet = environment()) +
+    geom_raster(position = "identity") +
+    coord_fixed(ratio = 5)  +
+    facet_grid(~ facets,  scales = "free_x", space = "free") +
+    theme( legend.position = "none")  +
+    geom_tile(color = "white", size = 0.25 ) +
+    geom_text(aes(of,variable, label = as.character(value,2)),
+              color = "black")
+  return(plt_out)
+}

@@ -1,3 +1,8 @@
+if (knitr:::is_latex_output()) {
+  knitr::include_graphics('figures/explore_cos_data.jpg')
+} else {
+  knitr::include_graphics("figures/explore_cos_data.gif")
+}
   #' explore cos_data with Objective Functions
   #'
   #' Runs a Shiny App which can be used to get an overview of a cos_data time

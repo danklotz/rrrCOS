@@ -67,7 +67,7 @@
                        log_y = TRUE,
                        log_x = FALSE,
                        ...) {
-    # def
+    # def:
     # maybe we have to account certain limits for the logs, e.g: 
     # if (log_y | log_x & min(ylim) == 0) {
     #   ylim <- range(q, na.rm = TRUE)
@@ -87,15 +87,5 @@
     gplot <- ggplot(fdc_data) + 
       geom_line(aes(x = logfun(exceedance,log_x), y = logfun(value,log_y), color = obs_sim)) +
       facet_wrap(~ basin_idx)
-    # if (log_x & log_y) {
-    #   gplot <- gplot + geom_line(aes(x = log(exceedance), y = log(value), color = obs_sim))
-    # } else if (log_y) {
-    #   gplot <- gplot + geom_line(aes(x = exceedance, y = log(value), color = obs_sim))
-    # } else if (log_x) {
-    #   gplot <- gplot + geom_line(aes(x = log(exceedance), y = value, color = obs_sim))
-    # } else (
-    #   gplot <- gplot + geom_line(aes(x = exceedance, y = value, color = obs_sim))
-    # )
-    # gplot <- gplot + facet_wrap(~ basin_idx)
     return(gplot)
   }
