@@ -56,9 +56,7 @@
     if ( any(colmax < 0.0) ){
       name_o <- viscos_options("name_o")
       neg_o_names <- which(colmax < 0.0) %>%
-        names# %>%
-        # grepl(name_o %.% "*",.,ignore.case = TRUE) #%>%
-        #idx_temp[.]
+        names
       neg_s_names <- gsub(name_o,viscos_options("name_s"),neg_o_names,ignore.case = TRUE )
       data_selection <- neg_o_names %|% neg_s_names %>%
         paste(.,collapse = "|") %>% 
