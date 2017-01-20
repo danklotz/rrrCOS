@@ -228,17 +228,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   fdc_compute &lt;-<span class="st"> </span>function(cos_data) {
     <span class="co"># defensive code:</span>
     <span class="kw">assert_dataframe</span>(cos_data)
-    <span class="co"># calculations:</span>
-    cos_data_only &lt;-<span class="st"> </span>cos_data %&gt;%
-<span class="st">      </span><span class="kw">select</span>(<span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>)), <span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>)))
-    cos_exceedances &lt;-<span class="st"> </span><span class="kw">map_df</span>(cos_data_only,calc_percent_exceedance)
-    fdc_data &lt;-<span class="st"> </span>cos_data_only %&gt;%<span class="st"> </span>tidyr::<span class="kw">gather</span>() %&gt;%
-<span class="st">      </span><span class="kw">cbind.data.frame</span>(<span class="dt">exceedance =</span> cos_exceedances %&gt;%
-<span class="st">                         </span>tidyr::<span class="kw">gather</span>() %&gt;%
-<span class="st">                         </span>magrittr::<span class="kw">extract</span>(<span class="st">&quot;value&quot;</span>)
-                       ) %&gt;%
-<span class="st">      </span>magrittr::<span class="kw">set_names</span>(<span class="kw">c</span>(<span class="st">&quot;key&quot;</span>,<span class="st">&quot;value&quot;</span>,<span class="st">&quot;exceedance&quot;</span>)) %&gt;%
-<span class="st">      </span><span class="kw">mutate</span>(<span class="dt">obs_sim =</span> key %&gt;%
+    <span class="co"># def:</span>
+    order_bound_data &lt;-<span class="st"> </span>function(bound_data) {
+      ordred_fdc_data &lt;-<span class="st"> </span>bound_data %&gt;%<span class="st"> </span>
+<span class="st">        </span><span class="kw">mutate</span>(<span class="dt">obs_sim =</span> key %&gt;%
 <span class="st">               </span><span class="kw">gsub</span>( <span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>) %&amp;%<span class="st"> &quot;.*&quot;</span>,
                      <span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),
                      .,
@@ -251,6 +244,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">               </span><span class="kw">gsub</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),<span class="st">&quot;&quot;</span>,.,<span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%
 <span class="st">               </span><span class="kw">gsub</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>),<span class="st">&quot;&quot;</span>,.,<span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%
 <span class="st">               </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">D&quot;</span>,<span class="st">&quot;&quot;</span>,.) %&gt;%<span class="st"> </span>as.numeric)
+      <span class="kw">return</span>(ordred_fdc_data)
+    }
+    <span class="co"># computation:</span>
+    cos_data_only &lt;-<span class="st"> </span>cos_data %&gt;%
+<span class="st">      </span><span class="kw">select</span>(<span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>)), <span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>)))
+    exceedance_values &lt;-<span class="st"> </span><span class="kw">map_df</span>(cos_data_only,calc_percent_exceedance) %&gt;%
+<span class="st">                         </span>tidyr::<span class="kw">gather</span>() %&gt;%
+<span class="st">                         </span>magrittr::<span class="kw">extract</span>(<span class="st">&quot;value&quot;</span>)
+    fdc_data &lt;-<span class="st"> </span>cos_data_only %&gt;%<span class="st"> </span>
+<span class="st">      </span>tidyr::<span class="kw">gather</span>() %&gt;%
+<span class="st">      </span><span class="kw">cbind.data.frame</span>(<span class="dt">exceedance =</span> exceedance_values) %&gt;%
+<span class="st">      </span>magrittr::<span class="kw">set_names</span>(<span class="kw">c</span>(<span class="st">&quot;key&quot;</span>,<span class="st">&quot;value&quot;</span>,<span class="st">&quot;exceedance&quot;</span>)) %&gt;%
+<span class="st">      </span><span class="kw">order_bound_data</span>(.)
     <span class="kw">return</span>(fdc_data)
   }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># function to calculated the percent exceedance (x-axis) for the fdc</span>
@@ -281,26 +287,27 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
                        <span class="dt">log_y =</span> <span class="ot">TRUE</span>,
                        <span class="dt">log_x =</span> <span class="ot">FALSE</span>,
                        ...) {
-  <span class="co"># maybe we have to account certain limits for the logs</span>
-  <span class="co"># if (log_y | log_x &amp; min(ylim) == 0) {</span>
-  <span class="co">#   ylim &lt;- range(q, na.rm = TRUE)</span>
-  <span class="co">#   tmp &lt;- unlist(q)</span>
-  <span class="co">#   tmp[which(tmp == 0)] &lt;- NA</span>
-  <span class="co">#   ylim[1] &lt;- min(tmp, na.rm = TRUE)</span>
-  <span class="co"># }</span>
-  fdc_data &lt;-<span class="st"> </span><span class="kw">fdc_compute</span>(cos_data)
-  gplot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fdc_data)
-  if (log_x &amp;<span class="st"> </span>log_y) {
-    gplot &lt;-<span class="st"> </span>gplot +<span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log</span>(exceedance), <span class="dt">y =</span> <span class="kw">log</span>(value), <span class="dt">color =</span> obs_sim))
-  } else if (log_y) {
-    gplot &lt;-<span class="st"> </span>gplot +<span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> exceedance, <span class="dt">y =</span> <span class="kw">log</span>(value), <span class="dt">color =</span> obs_sim))
-  } else if (log_x) {
-    gplot &lt;-<span class="st"> </span>gplot +<span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log</span>(exceedance), <span class="dt">y =</span> value, <span class="dt">color =</span> obs_sim))
-  } else (
-    gplot &lt;-<span class="st"> </span>gplot +<span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> exceedance, <span class="dt">y =</span> value, <span class="dt">color =</span> obs_sim))
-  )
-  gplot &lt;-<span class="st"> </span>gplot +<span class="st"> </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>basin_idx)
-  <span class="kw">return</span>(gplot)
+    <span class="co"># def:</span>
+    <span class="co"># maybe we have to account certain limits for the logs, e.g: </span>
+    <span class="co"># if (log_y | log_x &amp; min(ylim) == 0) {</span>
+    <span class="co">#   ylim &lt;- range(q, na.rm = TRUE)</span>
+    <span class="co">#   tmp &lt;- unlist(q)</span>
+    <span class="co">#   tmp[which(tmp == 0)] &lt;- NA</span>
+    <span class="co">#   ylim[1] &lt;- min(tmp, na.rm = TRUE)</span>
+    <span class="co"># }</span>
+    logfun &lt;-<span class="st"> </span>function(data,take_log){
+      if(take_log){
+        <span class="kw">return</span>(<span class="kw">log</span>(data))
+      } else (
+        <span class="kw">return</span>(data)
+      )
+    }
+    <span class="co"># computation:</span>
+    fdc_data &lt;-<span class="st"> </span><span class="kw">fdc_compute</span>(cos_data)
+    gplot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fdc_data) +<span class="st"> </span>
+<span class="st">      </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">logfun</span>(exceedance,log_x), <span class="dt">y =</span> <span class="kw">logfun</span>(value,log_y), <span class="dt">color =</span> obs_sim)) +
+<span class="st">      </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>basin_idx)
+    <span class="kw">return</span>(gplot)
   }</code></pre></div>
 </div>
 </div>

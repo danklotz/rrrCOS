@@ -241,11 +241,17 @@ of_values</code></pre></div>
 <p><img src="visdoc_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="code-3" class="section level2">
 <h2><span class="header-section-number">5.1</span> Code</h2>
-<p>In this section the code for the <code>main_of</code> function family is defined</p>
+<p>This section defines the code for the <code>main_of</code>-function-family.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ---------------------------------------------------------------------------</span>
+<span class="co"># Code for the Main Objective Functions (main_of)</span>
+<span class="co"># authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger</span>
+<span class="co"># !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span></code></pre></div>
 <div id="compute-the-main-objective-functions" class="section level3">
 <h3><span class="header-section-number">5.1.1</span> Compute the Main Objective Functions</h3>
 <p>The purpose of this function is to extract a the main of objective functions from the <code>COSERO</code> data.frame. The objective functions are extracted for each basin separately and computed for the entire length of the data, as well as for each period separately.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Get basic objective function for cos_data</span>
+<p>The computational part of the function works as follows. In step (I) the non-marked periods of <code>cos_data</code> (columns of <code>viscos_options(&quot;name_COSperiod&quot;)</code> which are smaller then 0) are excluded from further calculations. The thereby obtained data.frame is named <code>evaluation_data</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ---------------------------------------------------------------------------</span>
+<span class="co">#&#39; Get basic objective function for cos_data</span>
 <span class="co">#&#39;</span>
 <span class="co">#&#39; Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation)</span>
 <span class="co">#&#39; for every basin and the chosen periods.</span>
@@ -259,76 +265,76 @@ of_values</code></pre></div>
 <span class="co">#&#39;</span>
 <span class="co">#&#39; @export</span>
 main_of_compute &lt;-<span class="st"> </span>function(cos_data) {
+  <span class="co"># def: ====================================================================</span>
   <span class="kw">assert_dataframe</span>(cos_data)
-  if( !<span class="kw">exists</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>), <span class="dt">where =</span> cos_data) ) {
+  name_o &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>)
+  name_s &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>)
+  name_period &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>)
+  if (!<span class="kw">exists</span>(name_period, <span class="dt">where =</span> cos_data)) {
     <span class="kw">stop</span>(<span class="st">&quot;Error! Period-Column missing in cos_data, use `mark_periods`&quot;</span>)
-  }</code></pre></div>
-<p>The computational part of the function works as follows. In step (I) the non-marked periods of <code>cos_data</code> (columns of <code>viscos_options(&quot;name_COSperiod&quot;)</code> which are smaller then 0) are excluded from further calculations. The thereby obtained data.frame is named <code>evaluation_data</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  evaluation_data &lt;-
-<span class="st">    </span>cos_data[ cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>)]] &gt;<span class="st"> </span><span class="dv">0</span>, ]</code></pre></div>
-<p>Extract the important information for the calculations:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  number_of_basins &lt;-<span class="st"> </span>evaluation_data %&gt;%
-<span class="st">    </span>names %&gt;%
-<span class="st">    </span>unique %&gt;%
-<span class="st">    </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>), ., <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%
-<span class="st">    </span>sum
-  periods_in_data &lt;-<span class="st"> </span>evaluation_data %&gt;%
-<span class="st">    </span>magrittr::<span class="kw">extract2</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>)) %&gt;%
-<span class="st">    </span>unique
-  number_of_periods &lt;-<span class="st"> </span>periods_in_data %&gt;%<span class="st"> </span>length</code></pre></div>
-<p>Next, compute the overall objective functions. This is done by copying all <code>viscos_options(&quot;name_o&quot;)</code> columns into the <code>temp_x</code> variable and all <code>viscos_options(&quot;name_s&quot;)</code> into the <code>temp_y</code> variable.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  temp_x &lt;-<span class="st"> </span>dplyr::<span class="kw">select</span>(evaluation_data,<span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>))) %&gt;%
-<span class="st">    </span>unname
-  temp_y &lt;-<span class="st"> </span>dplyr::<span class="kw">select</span>(evaluation_data,<span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>))) %&gt;%
-<span class="st">    </span>unname
-  nse_ &lt;-<span class="st"> </span>hydroGOF::<span class="kw">NSE</span>(temp_y,temp_x)
-  kge_ &lt;-<span class="st"> </span>hydroGOF::<span class="kw">KGE</span>(temp_y,temp_x)
-  p_bias_ &lt;-<span class="st"> </span>hydroGOF::<span class="kw">pbias</span>(temp_y,temp_x)
-  corr_ &lt;-<span class="st"> </span><span class="kw">cor</span>(temp_y,temp_x) %&gt;%<span class="st"> </span><span class="kw">diag</span>(.)</code></pre></div>
-<p>Finally, a period-wise a repetition of the previous step is done to get the <code>main_of</code> for each marked period (see: <code>mark_periods</code>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># Calculated period-vise objective functions</span>
-    <span class="co"># pre allocation of periodic variables:</span>
-    NSE_period &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">nrow =</span> number_of_periods, <span class="dt">ncol =</span> <span class="kw">as.integer</span>(number_of_basins), <span class="dt">data =</span> <span class="ot">NA</span>)
-    KGE_period &lt;-<span class="st"> </span>NSE_period
-    p_bias_period &lt;-<span class="st"> </span>NSE_period
-    CORR_period &lt;-<span class="st"> </span>NSE_period
-    <span class="co"># calculation loop # proabbly slow</span>
-    for (k in <span class="dv">1</span>:number_of_periods) {
-      temp_x &lt;-<span class="st"> </span>dplyr::<span class="kw">filter</span>(evaluation_data,period ==<span class="st"> </span>periods_in_data[k]) %&gt;%
-<span class="st">        </span>dplyr::<span class="kw">select</span>(.,<span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>))) %&gt;%
-<span class="st">        </span>unname
-      temp_y &lt;-<span class="st"> </span>dplyr::<span class="kw">filter</span>(evaluation_data,period ==<span class="st"> </span>periods_in_data[k]) %&gt;%
-<span class="st">        </span>dplyr::<span class="kw">select</span>(.,<span class="kw">starts_with</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>))) %&gt;%
-<span class="st">        </span>unname
-      NSE_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span>hydroGOF::<span class="kw">NSE</span>(temp_y,temp_x)
-      KGE_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span>hydroGOF::<span class="kw">KGE</span>(temp_y,temp_x)
-      p_bias_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span>hydroGOF::<span class="kw">pbias</span>(temp_y,temp_x)
-      CORR_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span><span class="kw">cor</span>(temp_y,temp_x) %&gt;%<span class="st"> </span><span class="kw">diag</span>(.)
-    }
-  <span class="co">#</span>
+  }
+  evaluation_data &lt;-<span class="st"> </span>cos_data[cos_data[[name_period]] &gt;<span class="st"> </span><span class="dv">0</span>, ]
+  number_of_basins &lt;-<span class="st"> </span>evaluation_data %&gt;%
+<span class="st">    </span><span class="kw">names</span>() %&gt;%
+<span class="st">    </span><span class="kw">unique</span>() %&gt;%
+<span class="st">    </span><span class="kw">grepl</span>(name_o, ., <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%
+<span class="st">    </span><span class="kw">sum</span>()
+  data_periods &lt;-<span class="st"> </span>evaluation_data %&gt;%
+<span class="st">    </span>magrittr::<span class="kw">extract2</span>(name_period) %&gt;%
+<span class="st">    </span><span class="kw">unique</span>()
+  number_of_periods &lt;-<span class="st"> </span>data_periods %&gt;%<span class="st"> </span>length
+  <span class="co"># compute main-of for entire data: ========================================</span>
+  o_pick &lt;-<span class="st"> </span>dplyr::<span class="kw">select</span>(evaluation_data,<span class="kw">starts_with</span>(name_o)) %&gt;%<span class="st"> </span><span class="kw">unname</span>()
+  s_pick &lt;-<span class="st"> </span>dplyr::<span class="kw">select</span>(evaluation_data,<span class="kw">starts_with</span>(name_s)) %&gt;%<span class="st"> </span><span class="kw">unname</span>()
+  nse_all &lt;-<span class="st"> </span>hydroGOF::<span class="kw">NSE</span>(s_pick,o_pick)
+  kge_all &lt;-<span class="st"> </span>hydroGOF::<span class="kw">KGE</span>(s_pick,o_pick)
+  p_bias_all &lt;-<span class="st"> </span>hydroGOF::<span class="kw">pbias</span>(s_pick,o_pick)
+  corr_all &lt;-<span class="st"> </span><span class="kw">cor</span>(s_pick,o_pick) %&gt;%<span class="st"> </span><span class="kw">diag</span>()
+  <span class="co"># compute periodwise main-of: =============================================</span>
+  <span class="co"># pre allocations: ########################################################</span>
+  NSE_period &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">nrow =</span> number_of_periods,
+                       <span class="dt">ncol =</span> <span class="kw">as.integer</span>(number_of_basins),
+                       <span class="dt">data =</span> <span class="ot">NA</span>)
+  KGE_period &lt;-<span class="st"> </span>NSE_period
+  p_bias_period &lt;-<span class="st"> </span>NSE_period
+  CORR_period &lt;-<span class="st"> </span>NSE_period
+  <span class="co"># calculation loop, proabbly slow :( ######################################</span>
+  for (k in <span class="dv">1</span>:number_of_periods) {
+    o_pick &lt;-<span class="st"> </span>dplyr::<span class="kw">filter</span>(evaluation_data,period ==<span class="st"> </span>data_periods[k]) %&gt;%
+<span class="st">      </span>dplyr::<span class="kw">select</span>(<span class="kw">starts_with</span>(name_o)) %&gt;%
+<span class="st">      </span><span class="kw">unname</span>()
+    s_pick &lt;-<span class="st"> </span>dplyr::<span class="kw">filter</span>(evaluation_data,period ==<span class="st"> </span>data_periods[k]) %&gt;%
+<span class="st">      </span>dplyr::<span class="kw">select</span>(<span class="kw">starts_with</span>(name_s)) %&gt;%
+<span class="st">      </span><span class="kw">unname</span>()
+    NSE_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span>hydroGOF::<span class="kw">NSE</span>(s_pick,o_pick)
+    KGE_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span>hydroGOF::<span class="kw">KGE</span>(s_pick,o_pick)
+    p_bias_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span>hydroGOF::<span class="kw">pbias</span>(s_pick,o_pick)
+    CORR_period[k,<span class="dv">1</span>:number_of_basins] &lt;-<span class="st"> </span><span class="kw">cor</span>(s_pick,o_pick) %&gt;%<span class="st"> </span><span class="kw">diag</span>(.)
+  }
+  <span class="co"># clean up: ===============================================================</span>
   obj_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NSE&quot;</span>,<span class="st">&quot;KGE&quot;</span>,<span class="st">&quot;p_bias&quot;</span>,<span class="st">&quot;CORR&quot;</span>,
-                    <span class="kw">paste</span>(<span class="st">&quot;NSE_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep=</span><span class="st">&quot;.&quot;</span>),
-                    <span class="kw">paste</span>(<span class="st">&quot;KGE_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep=</span><span class="st">&quot;.&quot;</span>),
-                    <span class="kw">paste</span>(<span class="st">&quot;p_bias_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep=</span><span class="st">&quot;.&quot;</span>),
-                    <span class="kw">paste</span>(<span class="st">&quot;CORR_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep=</span><span class="st">&quot;.&quot;</span>)
-  )
+                 <span class="kw">paste</span>(<span class="st">&quot;NSE_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>),
+                 <span class="kw">paste</span>(<span class="st">&quot;KGE_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>),
+                 <span class="kw">paste</span>(<span class="st">&quot;p_bias_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>),
+                 <span class="kw">paste</span>(<span class="st">&quot;CORR_period&quot;</span>,<span class="dv">1</span>:number_of_periods,<span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)
+                 )
   obj_fun &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">of =</span> obj_names,
-                        <span class="dt">basin =</span> <span class="kw">rbind</span>(nse_,
-                                      kge_,
-                                      p_bias_,
-                                      corr_,
+                        <span class="dt">basin =</span> <span class="kw">rbind</span>(nse_all,
+                                      kge_all,
+                                      p_bias_all,
+                                      corr_all,
                                       NSE_period,
                                       KGE_period,
                                       p_bias_period,
                                       CORR_period),
                         <span class="dt">row.names =</span> <span class="ot">NULL</span>)
   <span class="kw">return</span>(obj_fun)
-<span class="er">}</span></code></pre></div>
+}</code></pre></div>
 </div>
 <div id="plotting" class="section level3">
 <h3><span class="header-section-number">5.1.2</span> Plotting</h3>
-<p>In this section the code for plotting the main_of is defined. There is no wrapper function, but a central explanation for the plotting of the main values is provided:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Plot main objective function values</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ---------------------------------------------------------------------------</span>
+<span class="co">#&#39; Plot main objective function values</span>
 <span class="co">#&#39;</span>
 <span class="co">#&#39; Currently two options for plotting the main objectives are provided by</span>
 <span class="co">#&#39; visCOS: Plotting the different objective functions values as a set of</span>
@@ -337,51 +343,53 @@ main_of_compute &lt;-<span class="st"> </span>function(cos_data) {
 <span class="co">#&#39;</span>
 <span class="co">#&#39; @name plot_main_of</span>
 <span class="ot">NULL</span></code></pre></div>
-<p>One can define the to-be plotted objective function with the character <code>of_name</code>.</p>
-<p>Then some housekeeping needs to be undertaken. For the computations and selections all names are set to lower case (<code>tolower</code>), because <strong>visCOS</strong> works case-insensitive. The basin enumeration <code>num_basins</code> is obtained with the function <a href="LP-helpers.html"><code>get_basin_numbers</code></a>.</p>
 <div id="bar-plot" class="section level4">
 <h4><span class="header-section-number">5.1.2.1</span> Bar Plot</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; Bar plot for the Main Objective Function Values</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ---------------------------------------------------------------------------</span>
+<span class="co">#&#39; Bar plot for the Main Objective Function Values</span>
 <span class="co">#&#39;</span>
 <span class="co">#&#39; @rdname of_overview</span>
 <span class="co">#&#39; @export</span>
 main_of_barplot &lt;-<span class="st"> </span>function(cos_data) {
-  main_of_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NSE&quot;</span>,<span class="st">&quot;KGE&quot;</span>,<span class="st">&quot;CORR&quot;</span>,<span class="st">&quot;p_bias&quot;</span>)
+  <span class="co"># def: ====================================================================</span>
   <span class="kw">assert_dataframe</span>(cos_data)
-  of &lt;-<span class="st"> </span><span class="kw">main_of_compute</span>(cos_data)
-  <span class="co"># calculate objective functions</span>
-  num_basins &lt;-<span class="st"> </span><span class="kw">ncol</span>(of) -<span class="st"> </span><span class="dv">1</span>
-  <span class="co"># melt the of:</span>
-  <span class="co"># a bit of a mess, and there is probably a better solution...</span>
-  melted_of &lt;-<span class="st"> </span><span class="kw">suppressMessages</span>( reshape2::<span class="kw">melt</span>(of) ) %&gt;%
-<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">of_group =</span> <span class="kw">ifelse</span>(of %&gt;%<span class="st"> </span>as.character %&gt;%<span class="st"> </span><span class="kw">startsWith</span>(.,main_of_names[<span class="dv">1</span>]),main_of_names[<span class="dv">1</span>],
-                             <span class="kw">ifelse</span>(of %&gt;%<span class="st"> </span>as.character %&gt;%<span class="st"> </span><span class="kw">startsWith</span>(.,main_of_names[<span class="dv">2</span>]),main_of_names[<span class="dv">2</span>],
-                                    <span class="kw">ifelse</span>(of %&gt;%<span class="st"> </span>as.character %&gt;%<span class="st"> </span><span class="kw">startsWith</span>(.,main_of_names[<span class="dv">3</span>]),main_of_names[<span class="dv">3</span>],
-                                           <span class="kw">ifelse</span>(of %&gt;%<span class="st"> </span>as.character %&gt;%<span class="st"> </span><span class="kw">startsWith</span>(.,main_of_names[<span class="dv">4</span>]),main_of_names[<span class="dv">4</span>],<span class="ot">NA</span>)))))
-  <span class="co"># define plot-list function</span>
-  plotlist_fun_barplot &lt;-<span class="st"> </span>function(of_name) {
-    of_to_plot &lt;-<span class="st"> </span>melted_of %&gt;%<span class="st"> </span><span class="kw">filter</span>( of_group ==<span class="st"> </span>of_name)
+  <span class="co"># functions: ==============================================================</span>
+  assign_ofgroups &lt;-<span class="st"> </span>function(of_melted,mof_names) {
+    of_string &lt;-<span class="st"> </span><span class="kw">as.character</span>(of_melted$of)
+    of_melted$of_group &lt;-<span class="st"> </span>of_string %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">replace</span>(.,<span class="kw">startsWith</span>(of_string,mof_names[<span class="dv">1</span>]),mof_names[<span class="dv">1</span>]) %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">replace</span>(.,<span class="kw">startsWith</span>(of_string,mof_names[<span class="dv">2</span>]),mof_names[<span class="dv">2</span>]) %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">replace</span>(.,<span class="kw">startsWith</span>(of_string,mof_names[<span class="dv">3</span>]),mof_names[<span class="dv">3</span>]) %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">replace</span>(.,<span class="kw">startsWith</span>(of_string,mof_names[<span class="dv">4</span>]),mof_names[<span class="dv">4</span>])
+    <span class="kw">return</span>(of_melted)
+  }
+  <span class="co"># plot-list function:</span>
+  barplot_fun &lt;-<span class="st"> </span>function(of_name,of_melted) {
+    of_to_plot &lt;-<span class="st"> </span>of_melted %&gt;%<span class="st"> </span><span class="kw">filter</span>( of_group ==<span class="st"> </span>of_name)
     if (of_name ==<span class="st"> &quot;p_bias&quot;</span>) {
       gglimits &lt;-<span class="st"> </span><span class="kw">c</span>(-<span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)[<span class="dv">2</span>]*<span class="dv">100</span>,
                    <span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)[<span class="dv">2</span>]*<span class="dv">100</span>)
-
     } else {
       gglimits &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)
     }
     plt_out &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> of_to_plot) +
 <span class="st">      </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,
                <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>,
-               <span class="kw">aes</span>(<span class="dt">x =</span> of,
-                   <span class="dt">y =</span> value,
-                   <span class="dt">fill =</span> value)) +
+               <span class="kw">aes</span>(<span class="dt">x =</span> of, <span class="dt">y =</span> value, <span class="dt">fill =</span> value)) +
 <span class="st">      </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>variable, <span class="dt">ncol =</span> <span class="dv">1</span>) +
 <span class="st">      </span><span class="kw">ggtitle</span>(of_name) +
 <span class="st">      </span><span class="kw">ylim</span>(gglimits)
     <span class="kw">return</span>(plt_out)
   }
-  <span class="co"># apply plot.list function to the different groupings</span>
-  plot_list &lt;-<span class="st"> </span><span class="kw">lapply</span>(main_of_names, plotlist_fun_barplot)
-  <span class="kw">names</span>(plot_list) &lt;-<span class="st"> </span>main_of_names
+  <span class="co"># computations: ===========================================================</span>
+  mof_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NSE&quot;</span>,<span class="st">&quot;KGE&quot;</span>,<span class="st">&quot;CORR&quot;</span>,<span class="st">&quot;p_bias&quot;</span>)
+  of &lt;-<span class="st"> </span><span class="kw">main_of_compute</span>(cos_data)
+  num_basins &lt;-<span class="st"> </span><span class="kw">ncol</span>(of) -<span class="st"> </span><span class="dv">1</span>
+  of_melted &lt;-<span class="st"> </span><span class="kw">suppressMessages</span>( reshape2::<span class="kw">melt</span>(of) ) %&gt;%
+<span class="st">    </span><span class="kw">assign_ofgroups</span>(.,mof_names)
+  <span class="co"># plotting ================================================================</span>
+  plot_list &lt;-<span class="st"> </span><span class="kw">lapply</span>(mof_names, function(x) <span class="kw">barplot_fun</span>(x,of_melted)) %&gt;%<span class="st"> </span>
+<span class="st">    </span>magrittr::<span class="kw">set_names</span>(mof_names)
   <span class="kw">return</span>(plot_list)
 }</code></pre></div>
 </div>
@@ -393,58 +401,82 @@ main_of_barplot &lt;-<span class="st"> </span>function(cos_data) {
 <span class="co">#&#39; @import pasta</span>
 <span class="co">#&#39; @export</span>
 main_of_rasterplot &lt;-<span class="st"> </span>function(cos_data) {
-  main_of_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NSE&quot;</span>,<span class="st">&quot;KGE&quot;</span>,<span class="st">&quot;CORR&quot;</span>,<span class="st">&quot;p_bias&quot;</span>)
-  regex_main_of &lt;-<span class="st"> </span>main_of_names %&amp;%<span class="st"> &quot;.*&quot;</span>
+  mof_names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NSE&quot;</span>,<span class="st">&quot;KGE&quot;</span>,<span class="st">&quot;CORR&quot;</span>,<span class="st">&quot;p_bias&quot;</span>)
+  regex_main_of &lt;-<span class="st"> </span>mof_names %.%<span class="st"> &quot;*&quot;</span>
   <span class="kw">assert_dataframe</span>(cos_data)
   of &lt;-<span class="st"> </span><span class="kw">main_of_compute</span>(cos_data)
   <span class="co">#</span>
   plot_list &lt;-<span class="st"> </span><span class="kw">lapply</span>(regex_main_of,function(x) <span class="kw">plot_fun_raster</span>(x,of)) %&gt;%
-<span class="st">    </span><span class="kw">set_names</span>(main_of_names)
+<span class="st">    </span><span class="kw">set_names</span>(mof_names)
   <span class="kw">return</span>(plot_list)
-}</code></pre></div>
-<p><strong>Raster-Plot for one Basin</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  plot_fun_raster &lt;-<span class="st"> </span>function(regex_single_of,of) {
-    if (regex_single_of ==<span class="st"> &quot;p_bias.*&quot;</span>) {
-      gglimits &lt;-<span class="st"> </span><span class="kw">c</span>(-<span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)[<span class="dv">2</span>]*<span class="dv">100</span>,
-                    <span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)[<span class="dv">2</span>]*<span class="dv">100</span>)
-    } else {
-      gglimits &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)
-    }
-    <span class="co">#</span>
-    plot_data &lt;-<span class="st"> </span>of %&gt;%
-<span class="st">      </span><span class="kw">extract</span>(<span class="kw">grep</span>(regex_single_of,.$of), ) %&gt;%
-<span class="st">      </span><span class="kw">cbind</span>(.,<span class="dt">facets =</span> <span class="kw">c</span>(<span class="st">&quot;overall&quot;</span>, <span class="kw">rep</span>(<span class="st">&quot;period&quot;</span>,(<span class="kw">nrow</span>(.) -<span class="st"> </span><span class="dv">1</span>)))) %&gt;%
-<span class="st">      </span>reshape2::<span class="kw">melt</span>(., <span class="dt">id.vars =</span> <span class="kw">c</span>(<span class="st">&quot;of&quot;</span>,<span class="st">&quot;facets&quot;</span>)) %&gt;%
-<span class="st">      </span>reverse_basin_levels %&gt;%
-<span class="st">      </span>reverse_facetting_levels %&gt;%
-<span class="st">      </span>dplyr::<span class="kw">mutate</span>(<span class="dt">value =</span> <span class="kw">pmax</span>(value,gglimits[<span class="dv">1</span>])) %&gt;%
-<span class="st">      </span>dplyr::<span class="kw">mutate</span>(<span class="dt">value =</span> <span class="kw">pmin</span>(value,gglimits[<span class="dv">2</span>])) %&gt;%
-<span class="st">      </span>dplyr::<span class="kw">mutate</span>(<span class="dt">value =</span> <span class="kw">round</span>(value,<span class="dv">2</span>))
-    <span class="co">#</span>
-    plt_out &lt;-<span class="st"> </span><span class="kw">ggplot</span>(plot_data, <span class="kw">aes</span>(of,variable, <span class="dt">fill =</span> value), <span class="dt">environmnet =</span> <span class="kw">environment</span>()) +
-<span class="st">      </span><span class="kw">geom_raster</span>(<span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>) +
-<span class="st">      </span><span class="kw">coord_fixed</span>(<span class="dt">ratio =</span> <span class="dv">5</span>)  +
-<span class="st">      </span><span class="kw">facet_grid</span>(~<span class="st"> </span>facets,  <span class="dt">scales =</span> <span class="st">&quot;free_x&quot;</span>, <span class="dt">space =</span> <span class="st">&quot;free&quot;</span>) +
-<span class="st">      </span><span class="kw">theme</span>( <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)  +
-<span class="st">      </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">size =</span> <span class="fl">0.25</span> ) +
-<span class="st">      </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(of,variable, <span class="dt">label =</span> <span class="kw">as.character</span>(value,<span class="dv">2</span>)), <span class="dt">color=</span> <span class="st">&quot;black&quot;</span>)
-    <span class="kw">return</span>(plt_out)
-  }
+}
 
-  reverse_basin_levels &lt;-<span class="st"> </span>function(plot_data) {
-    plot_data$variable &lt;-<span class="st"> </span><span class="kw">factor</span>(plot_data$variable,
-                                 <span class="dt">levels =</span> plot_data$variable %&gt;%
-<span class="st">                                   </span><span class="kw">levels</span>() %&gt;%
-<span class="st">                                   </span><span class="kw">rev</span>() )
-    <span class="kw">return</span>(plot_data)
+<span class="co"># plot function -------------------------------------------------------------</span>
+plot_fun_raster &lt;-<span class="st"> </span>function(regex_single_of,of) {
+  <span class="co"># function definitions ====================================================</span>
+  extract_single_of &lt;-<span class="st"> </span>function(of){
+    idx &lt;-<span class="st"> </span><span class="kw">grep</span>(regex_single_of,of$of)
+    <span class="kw">return</span>(of[idx, ])
   }
-  reverse_facetting_levels &lt;-<span class="st"> </span>function(plot_data) {
-    plot_data$facets &lt;-<span class="st"> </span><span class="kw">factor</span>(plot_data$facets,
-                                 <span class="dt">levels =</span> plot_data$facets %&gt;%
+  add_facet_info &lt;-<span class="st"> </span>function(of) {
+    facet_column &lt;-<span class="st"> </span><span class="kw">nrow</span>(of) %&gt;%<span class="st"> </span>
+<span class="st">      </span>magrittr::<span class="kw">subtract</span>(<span class="dv">1</span>) %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">rep</span>(<span class="st">&quot;period&quot;</span>,.) %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">c</span>(<span class="st">&quot;overall&quot;</span>,.)
+    <span class="kw">return</span>( <span class="kw">cbind</span>(of,<span class="dt">facets =</span> facet_column) )
+  }
+  reverse_basin_levels &lt;-<span class="st"> </span>function(prepared_data) {
+    prepared_data$variable &lt;-<span class="st"> </span><span class="kw">factor</span>(prepared_data$variable,
+                                 <span class="dt">levels =</span> prepared_data$variable %&gt;%
 <span class="st">                                   </span><span class="kw">levels</span>() %&gt;%
-<span class="st">                                   </span><span class="kw">rev</span>() )
-    <span class="kw">return</span>(plot_data)
-  }</code></pre></div>
+<span class="st">                                   </span><span class="kw">rev</span>()
+                                 )
+    <span class="kw">return</span>(prepared_data)
+  }
+  reverse_facetting_levels &lt;-<span class="st"> </span>function(prepared_data) {
+    prepared_data$facets &lt;-<span class="st"> </span><span class="kw">factor</span>(prepared_data$facets,
+                               <span class="dt">levels =</span> prepared_data$facets %&gt;%
+<span class="st">                                 </span><span class="kw">levels</span>() %&gt;%
+<span class="st">                                 </span><span class="kw">rev</span>()
+                               )
+    <span class="kw">return</span>(prepared_data)
+  }
+  bind_and_round_value &lt;-<span class="st"> </span>function(of,gglimits,digits) {
+    dplyr::<span class="kw">mutate</span>(of,
+                  <span class="dt">value =</span> <span class="kw">pmax</span>(value,gglimits[<span class="dv">1</span>]) %&gt;%<span class="st"> </span>
+<span class="st">                    </span><span class="kw">pmin</span>(.,gglimits[<span class="dv">2</span>]) %&gt;%<span class="st"> </span>
+<span class="st">                    </span><span class="kw">round</span>(.,digits)
+                  )
+  }
+  <span class="co"># computation =============================================================</span>
+  if (regex_single_of ==<span class="st"> &quot;p_bias.*&quot;</span>) {
+    <span class="co"># pbias has different limits :(</span>
+    gglimits &lt;-<span class="st"> </span><span class="kw">c</span>(-<span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)[<span class="dv">2</span>]*<span class="dv">100</span>,
+                  <span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)[<span class="dv">2</span>]*<span class="dv">100</span>)
+  } else {
+    gglimits &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;of_limits&quot;</span>)
+  }
+  <span class="co">#</span>
+  prepared_data &lt;-<span class="st"> </span>of %&gt;%
+<span class="st">    </span><span class="kw">extract_single_of</span>() %&gt;%
+<span class="st">    </span><span class="kw">add_facet_info</span>() %&gt;%
+<span class="st">    </span>reshape2::<span class="kw">melt</span>(., <span class="dt">id.vars =</span> <span class="kw">c</span>(<span class="st">&quot;of&quot;</span>,<span class="st">&quot;facets&quot;</span>)) %&gt;%
+<span class="st">    </span><span class="kw">reverse_basin_levels</span>() %&gt;%
+<span class="st">    </span><span class="kw">reverse_facetting_levels</span>() %&gt;%
+<span class="st">    </span><span class="kw">bind_and_round_value</span>(.,gglimits,<span class="dv">2</span>)
+  <span class="co"># ggplot ==================================================================</span>
+  plt_out &lt;-<span class="st"> </span><span class="kw">ggplot</span>(prepared_data,
+                    <span class="kw">aes</span>(of,variable, <span class="dt">fill =</span> value),
+                    <span class="dt">environmnet =</span> <span class="kw">environment</span>()) +
+<span class="st">    </span><span class="kw">geom_raster</span>(<span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">    </span><span class="kw">coord_fixed</span>(<span class="dt">ratio =</span> <span class="dv">5</span>)  +
+<span class="st">    </span><span class="kw">facet_grid</span>(~<span class="st"> </span>facets,  <span class="dt">scales =</span> <span class="st">&quot;free_x&quot;</span>, <span class="dt">space =</span> <span class="st">&quot;free&quot;</span>) +
+<span class="st">    </span><span class="kw">theme</span>( <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)  +
+<span class="st">    </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">size =</span> <span class="fl">0.25</span> ) +
+<span class="st">    </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(of,variable, <span class="dt">label =</span> <span class="kw">as.character</span>(value,<span class="dv">2</span>)),
+              <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>)
+  <span class="kw">return</span>(plt_out)
+}</code></pre></div>
 
 </div>
 </div>
