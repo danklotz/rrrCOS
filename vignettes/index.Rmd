@@ -10,11 +10,11 @@ output:
 
 # Hello, traveler {-}
 
-```{r, fig.align = 'center', out.width = '25%', echo = FALSE}
-  knitr::include_graphics("figures/icon_viscos.jpg")
+```{r, fig.align = 'center', out.width = '50%', echo = FALSE}
+  knitr::include_graphics("figures/icon_viscos.png")
 ```
 
-visCOS is still under (heavy) development. It is thus not recommended to use the package, yet.
+visCOS (*vis*ual *c*omparison of *o*bservations and *s*imulations) is still under (heavy) development. It is thus not recommended to use the package, yet.
 
 ---
 
