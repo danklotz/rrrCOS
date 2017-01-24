@@ -1,44 +1,35 @@
-# Cook Data
+# Cooking Data
 
 ```{r setup1, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
 ```
 
 Within **visCOS** "cooking data" is is used as a synonym for the process of
-transforming *raw data* into *cooked data*, that is data in the
-[COSERO data.frame](Introduction.html) format. The *cooked data* can then be
-used for figures and other things. The package already provides a set of basic
-functions for that task that were useful for the applications at the institute.
+transforming *raw data* into *cooked data*. Here, *cooked data* is data in the
+[COSERO data.frame](Introduction.html) format. *Cooked data* can be eaten or 
+served. That is, is can be used for the furhter analysis and to generate figures. 
+The package provides a set of basic functions cooking data. 
 
-This section defines these functions and explains their usage. Currently the
-following steps can be performed from within  **visCOS**_
+## Raw Data
+Raw-data are time-series of observations $o$ and model simulations $s$.
+Usually raw data is saved in some simple file format, e.g. *.txt* or *.csv*.
+`R` natively includes many options to read those files, e.g. with the 
+`read.table` functions (simply enter `?read.table` in your `R` terminalto 
+get an overview). For larger (unstructured) files we recommend the read options 
+of the `data.table` package. In our tests it was fastest and most flexible 
+alternative. If the data is better structured (and large) you might also want 
+to try the `readr` package.
 
-- Provide example data
-- Remove junk
-- Prepare date formats
-- Define periods
+## Cooked Data
+In order to learn how to cook data it is usefull to know what cooked data is. 
+This section will describe the basic data structure used to enable 
+visualizations in **visCOS** 
 
+Currently **visCOS** only allows to compare between *numbered catchments*! The
+data **must** include an integer number at the end of its name, e.g.
+`QObs_001` and `QSim_001`).
 
-## The basic data structure
-Shall follow
-
-## Loading raw data
-From the point of view of **visCOS** raw-data are time-series of observations
-and model output. Usually raw data is saved in some simple file format,
-e.g. *.txt* or *.csv*. `R` already includes many option to read those files
-with the `read.table` functionalities.
-For larger unstructured files the read options of the `data.table` package is
-recommended. In our tests it was fastest and most flexible option.
-Alternatively the `readr` can be used if the data is more structured and large.
-
-**Note** at this stage, only a comparison between **numbered catchments**
- for two parameters is possible. So the data must include an integer
-number after the description (like "QObs_001" and "QSim_001").
-
-
-
-## Examples
-
+## Examples 
 The function `get_cos_data_example` can be used to get some exemplary data
 from within **visCOS**:
 ```{r, purl=FALSE, eval=TRUE, message=3:5}
@@ -94,16 +85,19 @@ the first hydrological year. The end of the year 2010 is not completely inside
 a hydrological year, so the period counter jumps to one.
 
 ## Code
-This function defines the data cooking functions.
+This section defines these functions and explains their usage. Currently the
+following steps can be performed from within **visCOS**:
+
+- Provide example data
+- Remove junk
+- Prepare date formats
+- Define periods
 
 ### Get Example Data
 visCOS provides some exemplary data. All the available functions can be tested
 with it. `get_cos_data_example` is a small wrapper function to get the data from
 within the package via `read.csv`
 
-**Note** at this stage, only a comparison between **numbered catchments**
-is possible for two parameters is possible. So the data must include an integer
-number after the description (like "QObs_001" and "QSim_001")
 ```{r}
   #' Get runoff example
   #'
