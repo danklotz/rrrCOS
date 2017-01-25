@@ -30,13 +30,13 @@ data **must** include an integer number at the end of its name, e.g.
 `QObs_001` and `QSim_001`).
 
 ## Examples 
-The function `get_cos_data_example` can be used to get some exemplary data
+The function `get_viscos_example` can be used to get some exemplary data
 from within **visCOS**:
 ```{r, purl=FALSE, eval=TRUE, message=3:5}
   library(visCOS)
   require(magrittr)
   options(width=80)
-  runoff_example_raw <- get_cos_data_example()
+  runoff_example_raw <- get_viscos_example()
   head(runoff_example_raw)
 ```
 
@@ -74,17 +74,24 @@ hydrological years, going from September till August, will be defined:
     remove_junk() %>%
     complete_dates() %>%
     mark_periods(., start_month = 9, end_month = 8)
-# here is an example plot to visualise the periods
+  # here is an example plot to visualise the periods
   plot(cooked_runoff_example$period,
        xlab = "Timestep",
        ylab = "# of hydrological year")
 ```
 
-Note that the example data starts with beginning of September, so right with
+The example data starts with beginning of September, so right with
 the first hydrological year. The end of the year 2010 is not completely inside
 a hydrological year, so the period counter jumps to one.
 
 ## Code
+```{r}
+# ---------------------------------------------------------------------------
+# Code for data cooking
+# authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+```
 This section defines these functions and explains their usage. Currently the
 following steps can be performed from within **visCOS**:
 
@@ -95,21 +102,23 @@ following steps can be performed from within **visCOS**:
 
 ### Get Example Data
 visCOS provides some exemplary data. All the available functions can be tested
-with it. `get_cos_data_example` is a small wrapper function to get the data from
+with it. `get_viscos_example` is a small wrapper function to get the data from
 within the package via `read.csv`
 
 ```{r}
+  # --------------------------------------------------------------------------
   #' Get runoff example
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
-  get_cos_data_example <- function() {
+  get_viscos_example <- function() {
     file_path <- system.file("extdata",
                              "runoff_example.csv",
                              package = "visCOS")
     runoff_example <- read.csv(file_path)
     return(runoff_example)
   }
+
 ```
 
 ### Remove not needed columns
@@ -130,6 +139,7 @@ data is extracted and used to select the appropriate columns.
 Afterwards, the "sub" function `only_observed_basins` is being executed (see
 next chapter)
 ```{r}
+  # --------------------------------------------------------------------------
   #' removes junk in cos_data
   #'
   #' Removes all columns which are not foreseen (see: viscos_options) from
@@ -150,6 +160,7 @@ next chapter)
     no_junk_cos_data <- cos_data[ , idx]
     return( only_observed_basins(no_junk_cos_data) )
   }
+
 ```
 
 
@@ -159,6 +170,7 @@ No observation are columns where all the entries are either as
 defined in `viscos_options("missing_data")` or `NA's`. At the end of the
 function the former are transformed into `NA's`.
 ```{r}
+  # ---------------------------------------------------------------------------
   # remove basins without observations
   #
   # Removes basins without observation (-999/NA values) from the provided data.frame
@@ -203,6 +215,7 @@ function the former are transformed into `NA's`.
     data_only_observed[idx_NA] <- NA
     return(data_only_observed)
   }
+
 ```
 
 ### Complete the date formats
@@ -223,6 +236,7 @@ representation into `POSIXct` dates via the internally defined
 Also by using *UTC* a **fixed time-zone** is assumed within visCOS to avoid
 problems with leaps in time (summer/winter time).
 ```{r}
+  # ---------------------------------------------------------------------------
   #' Complete the date-formats with POSIXct or COSdate
   #'
   #' Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
@@ -235,36 +249,37 @@ problems with leaps in time (summer/winter time).
   #' @import magrittr
   #'
   #' @export
-complete_dates <- function(cos_data) {
-  # make sure that magrittr is loaded:
-  assert_dataframe(cos_data)
-  # check for COSdates and stop if non-logical expression are obtained
-  OK_COSdate <- any(
-    unlist(viscos_options("name_COSyear",
-                          "name_COSmonth",
-                          "name_COSmonth",
-                          "name_COShour",
-                          "name_COSmin")
-                           )
-    %in%
-    names(cos_data)
-  )
-  OK_POSIXdates <- any(names(cos_data) == viscos_options("name_COSposix"))
-  if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
-    stop("Something is wrong :( \n
-         some of the date-columns could not be processed!")
+  complete_dates <- function(cos_data) {
+    # make sure that magrittr is loaded:
+    assert_dataframe(cos_data)
+    # check for COSdates and stop if non-logical expression are obtained
+    OK_COSdate <- any(
+      unlist(viscos_options("name_COSyear",
+                            "name_COSmonth",
+                            "name_COSmonth",
+                            "name_COShour",
+                            "name_COSmin")
+                             )
+      %in%
+      names(cos_data)
+    )
+    OK_POSIXdates <- any(names(cos_data) == viscos_options("name_COSposix"))
+    if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
+      stop("Something is wrong :( \n
+           some of the date-columns could not be processed!")
+    }
+    # choose function depending on which formats are available!
+    if (!OK_COSdate & !OK_POSIXdates) {
+      stop("Something is wrong :( \n
+           The 5 cosero date columns and the POSIXct colum could not be found")
+    } else if (OK_COSdate & !OK_POSIXdates) {
+      cos_data <- implode_cosdate(cos_data) # see following chapter
+    } else if (!OK_COSdate & OK_POSIXdates) {
+      stop("POSIXct to COSdates not yet supported :(")
+    }
+    return(cos_data)
   }
-  # choose function depending on which formats are available!
-  if (!OK_COSdate & !OK_POSIXdates) {
-    stop("Something is wrong :( \n
-         The 5 cosero date columns and the POSIXct colum could not be found")
-  } else if (OK_COSdate & !OK_POSIXdates) {
-    cos_data <- implode_cosdate(cos_data) # see following chapter
-  } else if (!OK_COSdate & OK_POSIXdates) {
-    stop("POSIXct to COSdates not yet supported :(")
-  }
-  return(cos_data)
-}
+
 ```
 
 #### Implode  cosdate
@@ -273,21 +288,23 @@ widely spread POSIXct format. The function is not exported and should only
 be called from within `complete_date()`!.
 Also, thanks to Christoph Schürz for his help with conception.  
 ```{r}
-implode_cosdate <- function(cos_data) {
-  require("magrittr", quietly = TRUE)
-  assert_dataframe(cos_data)
-  name_string <-  cos_data %>% names %>% tolower
-  #
-  POSIXdate <- paste(cos_data[[viscos_options("name_COSyear")]],
-                     sprintf("%02d",cos_data[[viscos_options("name_COSmonth")]]),
-                     sprintf("%02d",cos_data[[viscos_options("name_COSday")]]),
-                     sprintf("%02d",cos_data[[viscos_options("name_COShour")]]),
-                     sprintf("%02d",cos_data[[viscos_options("name_COSmin")]]),
-                     sep= "" ) %>%
-    as.POSIXct(format = "%Y%m%d%H%M", origin = .[1], scale = "hourly", tz = "UTC")
-  cos_data[[viscos_options("name_COSposix")]] <- POSIXdate
-  return(cos_data)
-}
+  # ---------------------------------------------------------------------------
+  implode_cosdate <- function(cos_data) {
+    require("magrittr", quietly = TRUE)
+    assert_dataframe(cos_data)
+    name_string <-  cos_data %>% names %>% tolower
+    #
+    POSIXdate <- paste(cos_data[[viscos_options("name_COSyear")]],
+                       sprintf("%02d",cos_data[[viscos_options("name_COSmonth")]]),
+                       sprintf("%02d",cos_data[[viscos_options("name_COSday")]]),
+                       sprintf("%02d",cos_data[[viscos_options("name_COShour")]]),
+                       sprintf("%02d",cos_data[[viscos_options("name_COSmin")]]),
+                       sep= "" ) %>%
+      as.POSIXct(format = "%Y%m%d%H%M", origin = .[1], scale = "hourly", tz = "UTC")
+    cos_data[[viscos_options("name_COSposix")]] <- POSIXdate
+    return(cos_data)
+  }
+
 ```
 
 ### Remove leading zeros in column names
@@ -296,72 +313,74 @@ This internal function removes leading zeros from column names of the
 The function has no defensive code but uses `remove_junk` (see: above).
 It should therefore be used with care!
 
-**Sad Note:** The current solution is bit suboptimal as many operations are
+**Sadly**, the current solution is bit suboptimal as many operations are
 needed and different tricks are used (e.g. `as.numeric %>% as.character`) to
 obtain the wanted result. We hope that better solutions can be found in the
 future.
 
 ```{r}
-# remove leading zeros from the names of cos_data (data.frame)
-remove_leading_zeros <- function(cos_data) {
-  require("magrittr", quietly = TRUE)
-  cos_data %<>% remove_junk
-  #
-  runoff_names <- cos_data %>% names
-  runoff_lowercase_names <- runoff_names %>% tolower
-  #
-  separator <- runoff_lowercase_names %>%
-    extract( grep(viscos_options()$name_o,.) ) %>%
-    extract( 1 ) %>%
-    gsub(viscos_options()$name_o,"",.) %>%
-    gsub("\\d","",.)
-  searchterm <- paste0(viscos_options()$name_o,"|", viscos_options()$name_s)
-  runoff_nums <- runoff_lowercase_names %>%
-    gsub(searchterm,"",.) %>%
-    gsub(separator,"",.) %>%
-    gsub("\\D","",.)
-  searchterm <- paste(runoff_nums, collapse = "")
-  runoff_only_names <- runoff_names %>%
-    gsub(paste0("[",searchterm,"]"),"",.) %>%
-    gsub(separator,"",.)
-  runoff_new_numbers <- runoff_nums %>%
-    as.numeric() %>%
-    as.character()
-  runoff_new_numbers[is.na(runoff_new_numbers)] <- ""
-  #
-  names(cos_data) <- runoff_new_numbers %>%
-    gsub("\\d+",separator,.) %>%
-    paste0(runoff_only_names,.,runoff_new_numbers)
-  return(cos_data)
-}
+  # ---------------------------------------------------------------------------
+  # remove leading zeros from the names of cos_data (data.frame)
+  remove_leading_zeros <- function(cos_data) {
+    require("magrittr", quietly = TRUE)
+    cos_data %<>% remove_junk
+    #
+    runoff_names <- cos_data %>% names
+    runoff_lowercase_names <- runoff_names %>% tolower
+    #
+    separator <- runoff_lowercase_names %>%
+      extract( grep(viscos_options()$name_o,.) ) %>%
+      extract( 1 ) %>%
+      gsub(viscos_options()$name_o,"",.) %>%
+      gsub("\\d","",.)
+    searchterm <- paste0(viscos_options()$name_o,"|", viscos_options()$name_s)
+    runoff_nums <- runoff_lowercase_names %>%
+      gsub(searchterm,"",.) %>%
+      gsub(separator,"",.) %>%
+      gsub("\\D","",.)
+    searchterm <- paste(runoff_nums, collapse = "")
+    runoff_only_names <- runoff_names %>%
+      gsub(paste0("[",searchterm,"]"),"",.) %>%
+      gsub(separator,"",.)
+    runoff_new_numbers <- runoff_nums %>%
+      as.numeric() %>%
+      as.character()
+    runoff_new_numbers[is.na(runoff_new_numbers)] <- ""
+    #
+    names(cos_data) <- runoff_new_numbers %>%
+      gsub("\\d+",separator,.) %>%
+      paste0(runoff_only_names,.,runoff_new_numbers)
+    return(cos_data)
+  }
+
 ```
 
 
 ### Mark the needed periods
-This function can be used to create a `viscos_options("name_COSperiod")`. The
-period column is a vector of increasing integer that is set to 0 for rows that
-are out of the period.
+This function creates a period column. The period column consists of
+increasing integers for each period. Rows with zeros are considered to be 
+out-of-period. The names of the period column is defined with 
+`viscos_options("name_COSperiod")`. 
 
-The current solution for defining this columns is not realy satisfying, but the
-problem seems to be non-trival... Life is short and it was the best that the
-authors could come out with so far.
+The current solution for defining this columns is not realy satisfying. But 
+life is short and it at the time of creation it seemed to be the best that the
+authors could come out with. Suggestions for improvements are welcome!
 
-In its current iteration the function takes `cos_data` and the two integers
-`start_month` and `end_month` as inputs, that can be used to define the
-to-be marked periods. The function can be directly used on raw data since the
-`remove_junk` and `complete_dates` are internaly applied to.
-This does however also mean that it needs to be used with care!
+Currently function has three inputs: The data.frame `cos_data` and the two 
+integers `start_month` and `end_month`. The latter define the to-be monhts that 
+are within the period. Everything between `start_month` and `end_month` is 
+consideren to be in-period. 
 
 The computation is done in the following way:
-(I) Before starting the acutal marking the  variable `period_range` and the
-`out_of_period` vector is defined.
- (II) With the help of the vectors the periods can be marked in two steps:
+Before starting the acutal marking the variable `period_range` and the
+`out_of_period` vector is defined. With the help of the vectors the periods can
+be marked in two steps:
 
-- First, all the starting months within cos_data are marked and the cumulative
+1. all the starting months within cos_data are marked and the cumulative
 sum is used to count the periods within the data.frame. At the
 beginning of the first period, the counter is at "1" and becomes "2" with the
 beginning of the second period and so on.
-- Secondly, the `out_of_period` of all years is set back to zero again by
+2. the `out_of_period` of all years is set back to zero again by
 checking which months of the data are equal to the `out_of_period` entries.
 
 There are at least two apparent problems with that solution:
@@ -372,6 +391,7 @@ are added at the end of the fucntion.
 - The other problem is that that the first and last period are also included
 in the solution even if they are **not** complete!
 ```{r}
+  # ---------------------------------------------------------------------------
   #' calculate periods
   #'
   #' Mark the periods within cos_data.
@@ -387,21 +407,20 @@ in the solution even if they are **not** complete!
   #' @import magrittr
   #'
   #' @export
-mark_periods <- function(cos_data, start_month = 10, end_month = 9) {
-  assert_dataframe(cos_data)
-  cos_data %<>% remove_junk %>% complete_dates()
-  # (I) get labels for the months
-  if (start_month <= end_month ) {
-    period_range <- seq(start_month,end_month)
-    out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
-  } else if (start_month > end_month) {
-    range_1 <- seq(start_month,12)
-    range_2 <- seq(1,end_month)
-    period_range <- c(range_1,range_2)
-    out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
-  }
-
-  # (II) mark periods:
+  mark_periods <- function(cos_data, start_month = 10, end_month = 9) {
+    assert_dataframe(cos_data)
+    cos_data %<>% remove_junk %>% complete_dates()
+    # (I) get labels for the months ===========================================
+    if (start_month <= end_month ) {
+      period_range <- seq(start_month,end_month)
+      out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+    } else if (start_month > end_month) {
+      range_1 <- seq(start_month,12)
+      range_2 <- seq(1,end_month)
+      period_range <- c(range_1,range_2)
+      out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+    }
+    # (II) mark periods: ======================================================
     eval_diff <- function(a) {c(a[1],diff(a))}
     cos_data[[viscos_options("name_COSperiod")]] <-
       cos_data[[viscos_options("name_COSmonth")]] %in% c(start_month) %>%
@@ -420,37 +439,33 @@ mark_periods <- function(cos_data, start_month = 10, end_month = 9) {
         )
       )
     return(cos_data)
-}
+  }
+
 ```
 
 Here are two additonal examples that display the slected periods and the
 numbering:
 ```{r, eval=TRUE, purl=FALSE}
-require(magrittr)
-require(visCOS)
-# mark_periods example 1: Hydrological years (September till August)
-# note that the last year is not complete, so the counter jumps back to 0
-ex1 <- get_cos_data_example() %>% mark_periods(.,start_month = 9, end_month = 8)
-plot(ex1$period, xlab="Timestep", ylab = "# of hydrological year")
-
-# mark_periods example 2: Summer Months (June till August)
-ex2 <- get_cos_data_example() %>% mark_periods(.,start_month = 6, end_month = 8)
-plot(ex2$period, xlab="Timestep", ylab = "# year of summer months")
-
+  require(magrittr)
+  require(visCOS)
+  # mark_periods example 1: Hydrological years (September till August)
+  # note that the last year is not complete, so the counter jumps back to 0
+  ex1 <- get_viscos_example() %>% mark_periods(.,start_month = 9, end_month = 8)
+  plot(ex1$period, xlab="Timestep", ylab = "# of hydrological year")
+  
+  # mark_periods example 2: Summer Months (June till August)
+  ex2 <- get_viscos_example() %>% mark_periods(.,start_month = 6, end_month = 8)
+  plot(ex2$period, xlab="Timestep", ylab = "# year of summer months")
 ```
 
 ### Transform the `cos_data` into `xts`
-This function is actually just a small wrapper around the `xts::xts` function
-for the purposes of **visCOS**.
+This function is just a small wrapper around the `xts()` function for internal 
+use in **viCOS**. 
 
-A notable quirk of the function is that the names of the header are put to lower
-cases via the `tolower` function and possible leading zeros in the enumeration
-of the basins are removed.
-
-Currently it is not exported as users can use `xts` themselves perfectly well,
-and it is felt that the function does not provide enough added value for the
-user.
+A notable quirk of the function is it puts all column-names to lower cases and 
+removes leading zeros in their enumeration.
 ```{r}
+  # ---------------------------------------------------------------------------
   #' Convert cos_data to xts-format
   #'
   #' Converts the cos_data (class: data_frame) into an xts object
@@ -461,18 +476,18 @@ user.
   #' @import zoo
   #' @importFrom xts xts
   #' @import magrittr
-cos_data_as_xts <- function(cos_data) {
-  # pre
-  assert_dataframe(cos_data)
-  assert_junk(cos_data)
-  assert_complete_date(cos_data)
-  # everything is set to lower case
-  cos_data <- remove_leading_zeros(cos_data) %>%
-    magrittr::set_names(names(cos_data) %>% tolower)
-  name_posix <- viscos_options("name_COSposix") %>% tolower
-  cos_data_as_xts <- xts(x = cos_data[], # ,names(cos_data) != name_posix
-                            order.by = cos_data[[name_posix]])
-  #
-  return(cos_data_as_xts)
-}
+  cos_data_as_xts <- function(cos_data) {
+    # pre: ====================================================================
+    assert_dataframe(cos_data)
+    assert_junk(cos_data)
+    assert_complete_date(cos_data)
+    # calc: ===================================================================
+    # set every- name to lover capitals and generate xts frame
+    new_names <- names(cos_data) %>% tolower
+    name_posix <- viscos_options("name_COSposix") %>% tolower
+    cos_data <- remove_leading_zeros(cos_data) %>%
+      magrittr::set_names(new_names)
+    cos_data_as_xts <- xts(x = cos_data[], order.by = cos_data[[name_posix]])
+    return(cos_data_as_xts)
+  }
 ```

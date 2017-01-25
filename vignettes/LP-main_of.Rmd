@@ -25,7 +25,7 @@ Computing the main objective functions
 ```{r, message=3, purl=FALSE, eval=TRUE}
 require(visCOS)
 require(magrittr)
-of_values <- get_cos_data_example() %>%
+of_values <- get_viscos_example() %>%
   mark_periods() %>%
   main_of_compute()
 of_values
@@ -33,7 +33,7 @@ of_values
 
 Plotting the results of main objective function with bar plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
-of_values <- get_cos_data_example() %>%
+of_values <- get_viscos_example() %>%
   mark_periods() %>%
   main_of_barplot() %>%
   extract2(1) %>%
@@ -42,7 +42,7 @@ of_values <- get_cos_data_example() %>%
 
 Plotting the results of main objective function with a raster:
 ```{r, message=3, purl=FALSE, eval=TRUE}
-of_values <- get_cos_data_example() %>%
+of_values <- get_viscos_example() %>%
   mark_periods() %>%
   main_of_rasterplot() %>%
   extract2(2) %>%

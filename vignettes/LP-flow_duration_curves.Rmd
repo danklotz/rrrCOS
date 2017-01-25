@@ -24,7 +24,7 @@ each basin is a facet and each sub-plot shows the $o$-data and $s$-data (see:
 Flow duration curves can be plotted in **visCOS** in the following way:
 ```{r example, purl=FALSE, eval=TRUE}
   library(visCOS)
-  cos_data <- get_cos_data_example()
+  cos_data <- get_viscos_example()
   fdc_plot(cos_data)
 ```
 
