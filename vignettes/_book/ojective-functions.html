@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,7 +196,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="ojective-functions" class="section level1">
-<h1><span class="header-section-number">3</span> Ojective Functions</h1>
+<h1><span class="header-section-number">Chapter 3</span> Ojective Functions</h1>
 <p>This chapter defines the objective functions that are used in <strong>visCOS</strong>.</p>
 <p>Objective functions, in short <span class="math inline">\(of\)</span>, are an important part of the hydrological model calibration. Their importance arises from the approximate nature of the models and the large uncertainties of the process. Hydrological models are not only imperfect, in the sense that they simplify nature, but in most cases structurally different than the reality so that different models or their respective parametrisations approximate the hydrograph equally well. Thus, over the time a many objective functions have been developed to either make the model-results better interpretable/comparable or to address specific problems of given objective functions.</p>
 <div id="code-1" class="section level2">
@@ -386,6 +381,7 @@ of_ve &lt;-<span class="st"> </span>function(o,s) {
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

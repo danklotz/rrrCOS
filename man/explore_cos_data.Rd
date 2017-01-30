@@ -15,6 +15,6 @@ series object.
 }
 \examples{
 # get example data, explore the model performance
-cos_data <- get_cos_data_example()
+cos_data <- get_viscos_example()
 explore_cos_data(cos_data)
 }

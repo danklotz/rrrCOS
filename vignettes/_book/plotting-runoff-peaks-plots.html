@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,13 +196,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="plotting-runoff-peaks-plots" class="section level1">
-<h1><span class="header-section-number">7</span> Plotting Runoff Peaks Plots</h1>
+<h1><span class="header-section-number">Chapter 7</span> Plotting Runoff Peaks Plots</h1>
 <p>The function <code>peak_plot</code> lets users explore the highest events in among the available basins. It provides a list of <a href="http://ggplot2.org/">ggplot2</a> plots, containing an overview plot (<code>overview</code>), a scatter plot (<code>scatter</code>) and detail plots of the individual events (<code>event_plot</code>). Instead of explaining the properties of each plot in detail it is best to get an intuition of the function by looking at some examples.</p>
 <div id="examples-2" class="section level2">
 <h2><span class="header-section-number">7.1</span> Examples:</h2>
 <p>For the examples 10 events are extracted from a runoff example</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">require</span>(visCOS)
-  cos_data &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>()
+  cos_data &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>()
   peakplots &lt;-<span class="st"> </span><span class="kw">peak_plot</span>(cos_data, <span class="dt">n_events =</span> 10L)</code></pre></div>
 <p>The <code>peakplots</code> list does now contain plots for each basin within the <code>cos_data</code> data.frame:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">names</span>(peakplots)</code></pre></div>
@@ -219,13 +214,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## [11] &quot;event_plot9&quot;  &quot;event_plot10&quot;</code></pre>
 <p>The <code>overview</code> plot shows the entire time series of <code>data1</code> and <code>data2</code> of the basin. The found events are marked with black dots. The <code>overview</code> plot for basin 1 is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  peakplots$basin0001$overview</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The <code>scatter</code> plot shows the found events within a scatter plot, where <code>data1</code> is the x-axis and <code>data2</code> on the y-axis. In the following an example for basin 1 is given.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  peakplots$basin0001$scatter</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Detail plots for each of the found events are given in form of the <code>event_plot</code> objects. Here an example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  peakplots$basin0001$event_plot5</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="code-5" class="section level2">
 <h2><span class="header-section-number">7.2</span> Code</h2>
@@ -369,6 +364,7 @@ This is by far not the only option/possibility to approach the peak finding task
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

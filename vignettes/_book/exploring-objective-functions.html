@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,7 +196,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="exploring-objective-functions" class="section level1">
-<h1><span class="header-section-number">8</span> Exploring Objective Functions</h1>
+<h1><span class="header-section-number">Chapter 8</span> Exploring Objective Functions</h1>
 <p>This section defines the code of a <a href="http://shiny.rstudio.com/">shiny gadget</a>. It enables the interactive exploration of (hydro-) graphs for the different basins. The gadget shows always the corresponding objective function for the selected graph. Furthermore, one can get the selected data by clicking on “done” at the end of a session. The following examples provide a good overview of what the function can do.</p>
 <div id="example-1" class="section level2">
 <h2><span class="header-section-number">8.1</span> Example</h2>
@@ -251,7 +246,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   <span class="co">#&#39; @examples</span>
   <span class="co">#&#39; # get example data,</span>
   <span class="co">#&#39; # explore the model performance</span>
-  <span class="co">#&#39; cos_data &lt;- get_cos_data_example()</span>
+  <span class="co">#&#39; cos_data &lt;- get_viscos_example()</span>
   <span class="co">#&#39; explore_cos_data(cos_data)</span>
 explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
                                    <span class="dt">of_list =</span> <span class="kw">list</span>(
@@ -432,6 +427,7 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

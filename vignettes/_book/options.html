@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,7 +196,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="options" class="section level1">
-<h1><span class="header-section-number">2</span> Options</h1>
+<h1><span class="header-section-number">Chapter 2</span> Options</h1>
 <p>visCOS provides a set of global options for controlling the package. They are implemented with the help of the <code>GlobalOptions</code> package. This section defines the code for the global options and explains the individual options:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; visCOS global options</span>
 <span class="co">#&#39;</span>
@@ -273,6 +268,7 @@ viscos_options &lt;-<span class="st"> </span>GlobalOptions::<span class="kw">set
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

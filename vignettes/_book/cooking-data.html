@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,11 +196,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="cooking-data" class="section level1">
-<h1><span class="header-section-number">1</span> Cooking Data</h1>
+<h1><span class="header-section-number">Chapter 1</span> Cooking Data</h1>
 <p>Within <strong>visCOS</strong> “cooking data” is is used as a synonym for the process of transforming <em>raw data</em> into <em>cooked data</em>. Here, <em>cooked data</em> is data in the <a href="Introduction.html">COSERO data.frame</a> format. <em>Cooked data</em> can be eaten or served. That is, is can be used for the furhter analysis and to generate figures. The package provides a set of basic functions cooking data.</p>
 <div id="raw-data" class="section level2">
 <h2><span class="header-section-number">1.1</span> Raw Data</h2>
-<p>Raw-data are time-series of observations <span class="math inline">\(o\)</span> and model simulations <span class="math inline">\(s\)</span>. Usually raw data is saved in some simple file format, e.g. <em>.txt</em> or <em>.csv</em>. <code>R</code> natively includes many options to read those files, e.g. with the <code>read.table</code> functions (simply enter <code>?read.table</code> in your <code>R</code> terminalto get an overview). For larger (unstructured) files we recommend the read options of the <code>data.table</code> package. In our tests it was fastest and most flexible alternative. If the data is better structured (and large) you might also want to try the <code>reader</code> package.</p>
+<p>Raw-data are time-series of observations <span class="math inline">\(o\)</span> and model simulations <span class="math inline">\(s\)</span>. Usually raw data is saved in some simple file format, e.g. <em>.txt</em> or <em>.csv</em>. <code>R</code> natively includes many options to read those files, e.g. with the <code>read.table</code> functions (simply enter <code>?read.table</code> in your <code>R</code> terminalto get an overview). For larger (unstructured) files we recommend the read options of the <code>data.table</code> package. In our tests it was fastest and most flexible alternative. If the data is better structured (and large) you might also want to try the <code>readr</code> package.</p>
 </div>
 <div id="cooked-data" class="section level2">
 <h2><span class="header-section-number">1.2</span> Cooked Data</h2>
@@ -214,11 +209,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="examples" class="section level2">
 <h2><span class="header-section-number">1.3</span> Examples</h2>
-<p>The function <code>get_cos_data_example</code> can be used to get some exemplary data from within <strong>visCOS</strong>:</p>
+<p>The function <code>get_viscos_example</code> can be used to get some exemplary data from within <strong>visCOS</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">library</span>(visCOS)
   <span class="kw">require</span>(magrittr)
   <span class="kw">options</span>(<span class="dt">width=</span><span class="dv">80</span>)
-  runoff_example_raw &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>()
+  runoff_example_raw &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>()
   <span class="kw">head</span>(runoff_example_raw)</code></pre></div>
 <pre><code>##   yyyy mm dd hh min QOBS_0001 QOSI_0001 QSIM_0001 QOBS_0002 QOSI_0002 QSIM_0002
 ## 1 2007  1  1  0   0      2.98      3.48      3.48      2.56      3.11      3.11
@@ -252,15 +247,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">    </span><span class="kw">remove_junk</span>() %&gt;%
 <span class="st">    </span><span class="kw">complete_dates</span>() %&gt;%
 <span class="st">    </span><span class="kw">mark_periods</span>(., <span class="dt">start_month =</span> <span class="dv">9</span>, <span class="dt">end_month =</span> <span class="dv">8</span>)
-<span class="co"># here is an example plot to visualise the periods</span>
+  <span class="co"># here is an example plot to visualise the periods</span>
   <span class="kw">plot</span>(cooked_runoff_example$period,
        <span class="dt">xlab =</span> <span class="st">&quot;Timestep&quot;</span>,
        <span class="dt">ylab =</span> <span class="st">&quot;# of hydrological year&quot;</span>)</code></pre></div>
 <p><img src="visdoc_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Note that the example data starts with beginning of September, so right with the first hydrological year. The end of the year 2010 is not completely inside a hydrological year, so the period counter jumps to one.</p>
+<p>The example data starts with beginning of September, so right with the first hydrological year. The end of the year 2010 is not completely inside a hydrological year, so the period counter jumps to one.</p>
 </div>
 <div id="code" class="section level2">
 <h2><span class="header-section-number">1.4</span> Code</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ---------------------------------------------------------------------------</span>
+<span class="co"># Code for data cooking</span>
+<span class="co"># authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger</span>
+<span class="co"># !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span></code></pre></div>
 <p>This section defines these functions and explains their usage. Currently the following steps can be performed from within <strong>visCOS</strong>:</p>
 <ul>
 <li>Provide example data</li>
@@ -270,12 +269,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 <div id="get-example-data" class="section level3">
 <h3><span class="header-section-number">1.4.1</span> Get Example Data</h3>
-<p>visCOS provides some exemplary data. All the available functions can be tested with it. <code>get_cos_data_example</code> is a small wrapper function to get the data from within the package via <code>read.csv</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#&#39; Get runoff example</span>
+<p>visCOS provides some exemplary data. All the available functions can be tested with it. <code>get_viscos_example</code> is a small wrapper function to get the data from within the package via <code>read.csv</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># --------------------------------------------------------------------------</span>
+  <span class="co">#&#39; Get runoff example</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; Get exemplary runoff data to test the different functions of visCOS</span>
   <span class="co">#&#39; @export</span>
-  get_cos_data_example &lt;-<span class="st"> </span>function() {
+  get_viscos_example &lt;-<span class="st"> </span>function() {
     file_path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,
                              <span class="st">&quot;runoff_example.csv&quot;</span>,
                              <span class="dt">package =</span> <span class="st">&quot;visCOS&quot;</span>)
@@ -289,7 +289,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The first part of the code loads the dependencies and makes sure that the <code>cos_data</code> variable is a data.frame (see: chapter about <em>defensive coding</em>).</p>
 <p>The body of <code>remove_junk</code> works as following: First, the names of the columns of the <code>cos_data</code> are determined and <a href="LP-helpers.html">helper function</a> <code>get_regex_for_cos_data</code> is invoked to get regular expressions for the columns defined within <code>viscos_otopns</code>. Then the <code>idx</code> of the different wanted data is extracted and used to select the appropriate columns.</p>
 <p>Afterwards, the “sub” function <code>only_observed_basins</code> is being executed (see next chapter)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#&#39; removes junk in cos_data</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># --------------------------------------------------------------------------</span>
+  <span class="co">#&#39; removes junk in cos_data</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; Removes all columns which are not foreseen (see: viscos_options) from</span>
   <span class="co">#&#39; runoff data</span>
@@ -312,7 +313,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="get-only-observed-basins" class="section level4">
 <h4><span class="header-section-number">1.4.2.1</span> Get only observed basins</h4>
 <p>This function removes basins for which no data in the <code>o_data</code> column. No observation are columns where all the entries are either as defined in <code>viscos_options(&quot;missing_data&quot;)</code> or <code>NA's</code>. At the end of the function the former are transformed into <code>NA's</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># remove basins without observations</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># ---------------------------------------------------------------------------</span>
+  <span class="co"># remove basins without observations</span>
   <span class="co">#</span>
   <span class="co"># Removes basins without observation (-999/NA values) from the provided data.frame</span>
   <span class="co">#</span>
@@ -363,7 +365,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This function is not finished yet! Within cos_data data.frame (see: <a href="Introduction.html">introduction</a>) the date has to be defined in two formats: With 5 columns, where the columns are year-month-day-hour-minute and names as defined in <code>viscos_options()</code> and with one column in <code>POSIXct</code> format (see: <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html">link</a>), that is named as defined in <code>viscos_options(&quot;name_COSposix&quot;)</code>. The idea of the <code>complete_dates</code> fucntion is to provide a internal posibility to create the one format out of the ohter and thus <em>complete the dates</em>.</p>
 <p><strong>However</strong>, currently it is only possible to convert the 5-columns representation into <code>POSIXct</code> dates via the internally defined <code>implode_cosdate</code> function.</p>
 <p>Also by using <em>UTC</em> a <strong>fixed time-zone</strong> is assumed within visCOS to avoid problems with leaps in time (summer/winter time).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#&#39; Complete the date-formats with POSIXct or COSdate</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># ---------------------------------------------------------------------------</span>
+  <span class="co">#&#39; Complete the date-formats with POSIXct or COSdate</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`</span>
   <span class="co">#&#39;</span>
@@ -375,109 +378,123 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   <span class="co">#&#39; @import magrittr</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; @export</span>
-complete_dates &lt;-<span class="st"> </span>function(cos_data) {
-  <span class="co"># make sure that magrittr is loaded:</span>
-  <span class="kw">assert_dataframe</span>(cos_data)
-  <span class="co"># check for COSdates and stop if non-logical expression are obtained</span>
-  OK_COSdate &lt;-<span class="st"> </span><span class="kw">any</span>(
-    <span class="kw">unlist</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>,
-                          <span class="st">&quot;name_COSmonth&quot;</span>,
-                          <span class="st">&quot;name_COSmonth&quot;</span>,
-                          <span class="st">&quot;name_COShour&quot;</span>,
-                          <span class="st">&quot;name_COSmin&quot;</span>)
-                           )
-    %in%
-<span class="st">    </span><span class="kw">names</span>(cos_data)
-  )
-  OK_POSIXdates &lt;-<span class="st"> </span><span class="kw">any</span>(<span class="kw">names</span>(cos_data) ==<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>))
-  if ( !<span class="kw">is.logical</span>(OK_COSdate) |<span class="st"> </span>!<span class="kw">is.logical</span>(OK_POSIXdates) ) {
-    <span class="kw">stop</span>(<span class="st">&quot;Something is wrong :( </span><span class="ch">\n</span>
-<span class="st">         some of the date-columns could not be processed!&quot;</span>)
-  }
-  <span class="co"># choose function depending on which formats are available!</span>
-  if (!OK_COSdate &amp;<span class="st"> </span>!OK_POSIXdates) {
-    <span class="kw">stop</span>(<span class="st">&quot;Something is wrong :( </span><span class="ch">\n</span>
-<span class="st">         The 5 cosero date columns and the POSIXct colum could not be found&quot;</span>)
-  } else if (OK_COSdate &amp;<span class="st"> </span>!OK_POSIXdates) {
-    cos_data &lt;-<span class="st"> </span><span class="kw">implode_cosdate</span>(cos_data) <span class="co"># see following chapter</span>
-  } else if (!OK_COSdate &amp;<span class="st"> </span>OK_POSIXdates) {
-    <span class="kw">stop</span>(<span class="st">&quot;POSIXct to COSdates not yet supported :(&quot;</span>)
-  }
-  <span class="kw">return</span>(cos_data)
-}</code></pre></div>
+  complete_dates &lt;-<span class="st"> </span>function(cos_data) {
+    <span class="co"># make sure that magrittr is loaded:</span>
+    <span class="kw">assert_dataframe</span>(cos_data)
+    <span class="co"># check for COSdates and stop if non-logical expression are obtained</span>
+    OK_COSdate &lt;-<span class="st"> </span><span class="kw">any</span>(
+      <span class="kw">unlist</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>,
+                            <span class="st">&quot;name_COSmonth&quot;</span>,
+                            <span class="st">&quot;name_COSmonth&quot;</span>,
+                            <span class="st">&quot;name_COShour&quot;</span>,
+                            <span class="st">&quot;name_COSmin&quot;</span>)
+                             )
+      %in%
+<span class="st">      </span><span class="kw">names</span>(cos_data)
+    )
+    OK_POSIXdates &lt;-<span class="st"> </span><span class="kw">any</span>(<span class="kw">names</span>(cos_data) ==<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>))
+    if ( !<span class="kw">is.logical</span>(OK_COSdate) |<span class="st"> </span>!<span class="kw">is.logical</span>(OK_POSIXdates) ) {
+      <span class="kw">stop</span>(<span class="st">&quot;Something is wrong :( </span><span class="ch">\n</span>
+<span class="st">           some of the date-columns could not be processed!&quot;</span>)
+    }
+    <span class="co"># choose function depending on which formats are available!</span>
+    if (!OK_COSdate &amp;<span class="st"> </span>!OK_POSIXdates) {
+      <span class="kw">stop</span>(<span class="st">&quot;Something is wrong :( </span><span class="ch">\n</span>
+<span class="st">           The 5 cosero date columns and the POSIXct colum could not be found&quot;</span>)
+    } else if (OK_COSdate &amp;<span class="st"> </span>!OK_POSIXdates) {
+      cos_data &lt;-<span class="st"> </span><span class="kw">implode_cosdate</span>(cos_data) <span class="co"># see following chapter</span>
+    } else if (!OK_COSdate &amp;<span class="st"> </span>OK_POSIXdates) {
+      <span class="kw">stop</span>(<span class="st">&quot;POSIXct to COSdates not yet supported :(&quot;</span>)
+    }
+    <span class="kw">return</span>(cos_data)
+  }</code></pre></div>
 <div id="implode-cosdate" class="section level4">
 <h4><span class="header-section-number">1.4.3.1</span> Implode cosdate</h4>
-<p>This function is used to transform the “old-school” 5 column format into the widely spread POSIXct format. The function is not exported and should only be called from within <code>complete_date()</code>!. Also, thanks to Christoph Schürz for his help with conception.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">implode_cosdate &lt;-<span class="st"> </span>function(cos_data) {
-  <span class="kw">require</span>(<span class="st">&quot;magrittr&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)
-  <span class="kw">assert_dataframe</span>(cos_data)
-  name_string &lt;-<span class="st">  </span>cos_data %&gt;%<span class="st"> </span>names %&gt;%<span class="st"> </span>tolower
-  <span class="co">#</span>
-  POSIXdate &lt;-<span class="st"> </span><span class="kw">paste</span>(cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>)]],
-                     <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>)]]),
-                     <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSday&quot;</span>)]]),
-                     <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COShour&quot;</span>)]]),
-                     <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmin&quot;</span>)]]),
-                     <span class="dt">sep=</span> <span class="st">&quot;&quot;</span> ) %&gt;%
-<span class="st">    </span><span class="kw">as.POSIXct</span>(<span class="dt">format =</span> <span class="st">&quot;%Y%m%d%H%M&quot;</span>, <span class="dt">origin =</span> .[<span class="dv">1</span>], <span class="dt">scale =</span> <span class="st">&quot;hourly&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>)
-  cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>)]] &lt;-<span class="st"> </span>POSIXdate
-  <span class="kw">return</span>(cos_data)
-}</code></pre></div>
+<p>This function is used to transform the “old-school” 5 column format into the widely spread POSIXct format. The function is not exported and should only be called from within <code>complete_date()</code>!.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># ---------------------------------------------------------------------------</span>
+  implode_cosdate &lt;-<span class="st"> </span>function(cos_data) {
+    <span class="kw">require</span>(<span class="st">&quot;magrittr&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)
+    <span class="kw">assert_dataframe</span>(cos_data)
+    name_string &lt;-<span class="st">  </span>cos_data %&gt;%<span class="st"> </span>names %&gt;%<span class="st"> </span>tolower
+    <span class="co">#</span>
+    POSIXdate &lt;-<span class="st"> </span><span class="kw">paste</span>(cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>)]],
+                       <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>)]]),
+                       <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSday&quot;</span>)]]),
+                       <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COShour&quot;</span>)]]),
+                       <span class="kw">sprintf</span>(<span class="st">&quot;%02d&quot;</span>,cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmin&quot;</span>)]]),
+                       <span class="dt">sep=</span> <span class="st">&quot;&quot;</span> ) %&gt;%
+<span class="st">      </span><span class="kw">as.POSIXct</span>(<span class="dt">format =</span> <span class="st">&quot;%Y%m%d%H%M&quot;</span>, <span class="dt">origin =</span> .[<span class="dv">1</span>], <span class="dt">scale =</span> <span class="st">&quot;hourly&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>)
+    cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>)]] &lt;-<span class="st"> </span>POSIXdate
+    <span class="kw">return</span>(cos_data)
+  }</code></pre></div>
 </div>
 </div>
 <div id="remove-leading-zeros-in-column-names" class="section level3">
 <h3><span class="header-section-number">1.4.4</span> Remove leading zeros in column names</h3>
 <p>This internal function removes leading zeros from column names of the <code>cos_data</code> data.frame. The function has no defensive code but uses <code>remove_junk</code> (see: above). It should therefore be used with care!</p>
-<p><strong>Sad Note:</strong> The current solution is bit suboptimal as many operations are needed and different tricks are used (e.g. <code>as.numeric %&gt;% as.character</code>) to obtain the wanted result. We hope that better solutions can be found in the future.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove leading zeros from the names of cos_data (data.frame)</span>
-remove_leading_zeros &lt;-<span class="st"> </span>function(cos_data) {
-  <span class="kw">require</span>(<span class="st">&quot;magrittr&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)
-  cos_data %&lt;&gt;%<span class="st"> </span>remove_junk
-  <span class="co">#</span>
-  runoff_names &lt;-<span class="st"> </span>cos_data %&gt;%<span class="st"> </span>names
-  runoff_lowercase_names &lt;-<span class="st"> </span>runoff_names %&gt;%<span class="st"> </span>tolower
-  <span class="co">#</span>
-  separator &lt;-<span class="st"> </span>runoff_lowercase_names %&gt;%
-<span class="st">    </span><span class="kw">extract</span>( <span class="kw">grep</span>(<span class="kw">viscos_options</span>()$name_o,.) ) %&gt;%
-<span class="st">    </span><span class="kw">extract</span>( <span class="dv">1</span> ) %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(<span class="kw">viscos_options</span>()$name_o,<span class="st">&quot;&quot;</span>,.) %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">d&quot;</span>,<span class="st">&quot;&quot;</span>,.)
-  searchterm &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">viscos_options</span>()$name_o,<span class="st">&quot;|&quot;</span>, <span class="kw">viscos_options</span>()$name_s)
-  runoff_nums &lt;-<span class="st"> </span>runoff_lowercase_names %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(searchterm,<span class="st">&quot;&quot;</span>,.) %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(separator,<span class="st">&quot;&quot;</span>,.) %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">D&quot;</span>,<span class="st">&quot;&quot;</span>,.)
-  searchterm &lt;-<span class="st"> </span><span class="kw">paste</span>(runoff_nums, <span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)
-  runoff_only_names &lt;-<span class="st"> </span>runoff_names %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(<span class="kw">paste0</span>(<span class="st">&quot;[&quot;</span>,searchterm,<span class="st">&quot;]&quot;</span>),<span class="st">&quot;&quot;</span>,.) %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(separator,<span class="st">&quot;&quot;</span>,.)
-  runoff_new_numbers &lt;-<span class="st"> </span>runoff_nums %&gt;%
-<span class="st">    </span><span class="kw">as.numeric</span>() %&gt;%
-<span class="st">    </span><span class="kw">as.character</span>()
-  runoff_new_numbers[<span class="kw">is.na</span>(runoff_new_numbers)] &lt;-<span class="st"> &quot;&quot;</span>
-  <span class="co">#</span>
-  <span class="kw">names</span>(cos_data) &lt;-<span class="st"> </span>runoff_new_numbers %&gt;%
-<span class="st">    </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">d+&quot;</span>,separator,.) %&gt;%
-<span class="st">    </span><span class="kw">paste0</span>(runoff_only_names,.,runoff_new_numbers)
-  <span class="kw">return</span>(cos_data)
-}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># ---------------------------------------------------------------------------</span>
+  <span class="co"># remove leading zeros from the names of cos_data (data.frame)</span>
+  remove_leading_zeros &lt;-<span class="st"> </span>function(cos_data) {
+    <span class="co"># pre: ====================================================================</span>
+    <span class="kw">require</span>(<span class="st">&quot;magrittr&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)
+    <span class="kw">require</span>(<span class="st">&quot;pasta&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)
+    cos_data %&lt;&gt;%<span class="st"> </span>remove_junk
+    name_o &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>)
+    search_o_or_s &lt;-<span class="st"> </span><span class="kw">paste0</span>(name_o,<span class="st">&quot;|&quot;</span>, <span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>))
+    <span class="co">#</span>
+    runoff_names &lt;-<span class="st"> </span>cos_data %&gt;%<span class="st"> </span>names
+    runoff_lowercase_names &lt;-<span class="st"> </span>runoff_names %&gt;%<span class="st"> </span>tolower
+    del_leading_zeros &lt;-<span class="st"> </span>function(string) <span class="kw">sub</span>(<span class="st">&quot;^[0]+&quot;</span>, <span class="st">&quot;&quot;</span>,string)
+    <span class="co"># calc: ===================================================================</span>
+    idx_o &lt;-<span class="st"> </span><span class="kw">grep</span>(name_o , runoff_lowercase_names)
+    separator &lt;-<span class="st"> </span>runoff_lowercase_names %&gt;%
+<span class="st">      </span><span class="kw">extract</span>( idx_o[<span class="dv">1</span>] ) %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(name_o, <span class="st">&quot;&quot;</span>, .) %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">d&quot;</span>, <span class="st">&quot;&quot;</span>, .)
+    runoff_nums &lt;-<span class="st"> </span>runoff_lowercase_names %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(search_o_or_s, <span class="st">&quot;&quot;</span>,.) %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(separator, <span class="st">&quot;&quot;</span>, .) %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">D&quot;</span>, <span class="st">&quot;&quot;</span>, .)
+    search_runoff_nums &lt;-<span class="st"> &quot;[&quot;</span> %&amp;%<span class="st"> </span><span class="kw">paste</span>(runoff_nums, <span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>) %&amp;%<span class="st"> &quot;]&quot;</span>
+    runoff_only_names &lt;-<span class="st"> </span>runoff_names %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(search_runoff_nums, <span class="st">&quot;&quot;</span>, .) %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(separator,<span class="st">&quot;&quot;</span>,.)
+    runoff_new_numbers &lt;-<span class="st"> </span><span class="kw">del_leading_zeros</span>(runoff_nums)
+    <span class="co">#</span>
+    new_names &lt;-<span class="st"> </span>runoff_new_numbers %&gt;%
+<span class="st">      </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">d+&quot;</span>, separator,.) %&gt;%
+<span class="st">      </span><span class="kw">paste0</span>(runoff_only_names, ., runoff_new_numbers)
+    <span class="kw">names</span>(cos_data) &lt;-<span class="st"> </span>new_names
+    <span class="kw">return</span>(cos_data)
+  }</code></pre></div>
 </div>
 <div id="mark-the-needed-periods" class="section level3">
 <h3><span class="header-section-number">1.4.5</span> Mark the needed periods</h3>
-<p>This function can be used to create a <code>viscos_options(&quot;name_COSperiod&quot;)</code>. The period column is a vector of increasing integer that is set to 0 for rows that are out of the period.</p>
-<p>The current solution for defining this columns is not realy satisfying, but the problem seems to be non-trival… Life is short and it was the best that the authors could come out with so far.</p>
-<p>In its current iteration the function takes <code>cos_data</code> and the two integers <code>start_month</code> and <code>end_month</code> as inputs, that can be used to define the to-be marked periods. The function can be directly used on raw data since the <code>remove_junk</code> and <code>complete_dates</code> are internaly applied to. This does however also mean that it needs to be used with care!</p>
-<p>The computation is done in the following way: (I) Before starting the acutal marking the variable <code>period_range</code> and the <code>out_of_period</code> vector is defined. (II) With the help of the vectors the periods can be marked in two steps:</p>
-<ul>
-<li>First, all the starting months within cos_data are marked and the cumulative sum is used to count the periods within the data.frame. At the beginning of the first period, the counter is at “1” and becomes “2” with the beginning of the second period and so on.</li>
-<li>Secondly, the <code>out_of_period</code> of all years is set back to zero again by checking which months of the data are equal to the <code>out_of_period</code> entries.</li>
-</ul>
-<p>There are at least two apparent problems with that solution:</p>
-<ul>
-<li>One problem is that the last year is not extracted properly if <code>start_month</code> &gt; <code>end_month</code>. To compensate this problem the <code>dplyr</code> shenanigans are added at the end of the fucntion.</li>
-<li>The other problem is that that the first and last period are also included in the solution even if they are <strong>not</strong> complete!</li>
-</ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#&#39; calculate periods</span>
+<p>This function creates a period column. The period column consists of increasing integers for each period. Rows with zeros are considered to be out-of-period. The names of the period column is defined with <code>viscos_options(&quot;name_COSperiod&quot;)</code>.</p>
+<p>The function has three inputs: The data.frame <code>cos_data</code> and the two integers <code>start_month</code> and <code>end_month</code>. The latter define the to-be monhts that are within the period. Everything between <code>start_month</code> and <code>end_month</code> is consideren to be in-period.</p>
+<p>Here are two examples that display the slected periods and the numbering:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">require</span>(magrittr)
+  <span class="kw">require</span>(visCOS)
+  <span class="co"># example 1: hydrological years (september till august)</span>
+  ex1 &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>() %&gt;%<span class="st"> </span><span class="kw">mark_periods</span>(<span class="dt">start_month =</span> <span class="dv">9</span>, <span class="dt">end_month =</span> <span class="dv">8</span>)
+  <span class="kw">plot</span>(ex1$period, <span class="dt">xlab =</span> <span class="st">&quot;Timestep&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;# of hydrological year&quot;</span>)</code></pre></div>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># note that the last year is not complete, so the counter jumps back to 0</span>
+  
+  <span class="co"># example 2: summer months (june till august)</span>
+  ex2 &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>() %&gt;%<span class="st"> </span><span class="kw">mark_periods</span>(<span class="dt">start_month =</span> <span class="dv">6</span>, <span class="dt">end_month =</span> <span class="dv">8</span>)
+  <span class="kw">plot</span>(ex2$period, <span class="dt">xlab =</span> <span class="st">&quot;Timestep&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;# year of summer months&quot;</span>)</code></pre></div>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This is currently computed in the following way:</p>
+<p>Before starting the acutal computation the variables <code>period_range</code> and <code>out_of_period</code> are defined. The <code>period_range</code> are the months ordered in the given range. The <code>out_of_period</code> variable marks all months which are not within the chosen period. With these variables the periods can be “marked” in two steps:</p>
+<ol style="list-style-type: decimal">
+<li>All the starting months within cos_data are marked and the cumulative sum is used to count the periods within the data.frame. At the beginning of the first period, the counter is at “1” and becomes “2” with the beginning of the second period and so on.</li>
+<li>The <code>out_of_period</code> of all years is set back to zero again by checking which months of the data are equal to the <code>out_of_period</code> entries.</li>
+</ol>
+<p>One problem with this solution is that the last year is not extracted properly if the <code>start_month</code>is higher than the <code>end_month</code>. To compensate this problem the <code>dplyr</code> shenanigans are added as an inofficial third step. Another quirk is, that with this solution the the first and last period are included, even if they are not complete.</p>
+<p>This solution is not realy satisfying. But, life is short and it at the time it seemed to be the best that the authors could come out with. Suggestions for improvements are welcome!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># ---------------------------------------------------------------------------</span>
+  <span class="co">#&#39; calculate periods</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; Mark the periods within cos_data.</span>
   <span class="co"># The marking uses a monthly resolution, which are defined by the integers</span>
@@ -492,59 +509,50 @@ remove_leading_zeros &lt;-<span class="st"> </span>function(cos_data) {
   <span class="co">#&#39; @import magrittr</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; @export</span>
-mark_periods &lt;-<span class="st"> </span>function(cos_data, <span class="dt">start_month =</span> <span class="dv">10</span>, <span class="dt">end_month =</span> <span class="dv">9</span>) {
-  <span class="kw">assert_dataframe</span>(cos_data)
-  cos_data %&lt;&gt;%<span class="st"> </span>remove_junk %&gt;%<span class="st"> </span><span class="kw">complete_dates</span>()
-  <span class="co"># (I) get labels for the months</span>
-  if (start_month &lt;=<span class="st"> </span>end_month ) {
-    period_range &lt;-<span class="st"> </span><span class="kw">seq</span>(start_month,end_month)
-    out_of_period &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %&gt;%<span class="st"> </span><span class="kw">extract</span>( !(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %in%<span class="st"> </span>period_range) )
-  } else if (start_month &gt;<span class="st"> </span>end_month) {
-    range_1 &lt;-<span class="st"> </span><span class="kw">seq</span>(start_month,<span class="dv">12</span>)
-    range_2 &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,end_month)
-    period_range &lt;-<span class="st"> </span><span class="kw">c</span>(range_1,range_2)
-    out_of_period &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %&gt;%<span class="st"> </span><span class="kw">extract</span>( !(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %in%<span class="st"> </span>period_range) )
-  }
-
-  <span class="co"># (II) mark periods:</span>
+  mark_periods &lt;-<span class="st"> </span>function(cos_data, <span class="dt">start_month =</span> <span class="dv">10</span>, <span class="dt">end_month =</span> <span class="dv">9</span>) {
+    <span class="co"># pre: ====================================================================</span>
+    <span class="kw">assert_dataframe</span>(cos_data)
+    name_year &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>)
+    name_month &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>)
+    cos_data %&lt;&gt;%<span class="st"> </span>remove_junk %&gt;%<span class="st"> </span><span class="kw">complete_dates</span>()
     eval_diff &lt;-<span class="st"> </span>function(a) {<span class="kw">c</span>(a[<span class="dv">1</span>],<span class="kw">diff</span>(a))}
-    cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>)]] &lt;-
-<span class="st">      </span>cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>)]] %in%<span class="st"> </span><span class="kw">c</span>(start_month) %&gt;%
-<span class="st">      </span>eval_diff %&gt;%
+    <span class="co"># calc: ===================================================================</span>
+    <span class="co"># (I) get labels for the months: </span>
+    if (start_month &lt;=<span class="st"> </span>end_month ) {
+      period_range &lt;-<span class="st"> </span><span class="kw">seq</span>(start_month,end_month)
+      out_of_period &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %&gt;%<span class="st"> </span><span class="kw">extract</span>( !(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %in%<span class="st"> </span>period_range) )
+    } else if (start_month &gt;<span class="st"> </span>end_month) {
+      range_1 &lt;-<span class="st"> </span><span class="kw">seq</span>(start_month,<span class="dv">12</span>)
+      range_2 &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,end_month)
+      period_range &lt;-<span class="st"> </span><span class="kw">c</span>(range_1,range_2)
+      out_of_period &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %&gt;%<span class="st"> </span><span class="kw">extract</span>( !(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>) %in%<span class="st"> </span>period_range) )
+    }
+    <span class="co"># (II) mark periods: </span>
+    start_months_in_data &lt;-<span class="st"> </span>cos_data[[name_month]] %in%<span class="st"> </span><span class="kw">c</span>(start_month)
+    cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>)]] &lt;-<span class="st"> </span>start_months_in_data %&gt;%
+<span class="st">      </span><span class="kw">eval_diff</span>() %&gt;%
 <span class="st">      </span><span class="kw">pmax</span>(.,<span class="dv">0</span>) %&gt;%
 <span class="st">      </span>cumsum
-    cos_data$period[cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>)]] %in%<span class="st"> </span>out_of_period] &lt;-<span class="st"> </span><span class="dv">0</span>
-    <span class="co"># corrections for last year</span>
-    max_year &lt;-<span class="st"> </span><span class="kw">max</span>(cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>)]])
-    cos_data %&lt;&gt;%<span class="st"> </span>dplyr::<span class="kw">mutate</span>(
-      <span class="dt">period =</span> <span class="kw">ifelse</span>(
-        (  (.[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>)]] ==<span class="st"> </span>max_year) &amp;
-<span class="st">           </span>(.[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>)]] &gt;<span class="st"> </span>end_month)  ),
-                      <span class="dv">0</span>,
-                      period
-        )
+    out_period_in_data &lt;-<span class="st"> </span>cos_data[[name_month]] %in%<span class="st"> </span>out_of_period
+    cos_data$period[out_period_in_data] &lt;-<span class="st"> </span><span class="dv">0</span>
+    <span class="co"># (III) corrections for last year </span>
+    max_year &lt;-<span class="st"> </span><span class="kw">max</span>(cos_data[[name_year]])
+    marked_cos_data &lt;-<span class="st"> </span>cos_data %&gt;%<span class="st"> </span>
+<span class="st">      </span>dplyr::<span class="kw">mutate</span>(
+        <span class="dt">period =</span> <span class="kw">ifelse</span>(
+          ((.[[name_year]] ==<span class="st"> </span>max_year) &amp;<span class="st">  </span>(.[[name_month]] &gt;<span class="st"> </span>end_month)),
+          <span class="dv">0</span>,
+          period)
       )
-    <span class="kw">return</span>(cos_data)
-}</code></pre></div>
-<p>Here are two additonal examples that display the slected periods and the numbering:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(magrittr)
-<span class="kw">require</span>(visCOS)
-<span class="co"># mark_periods example 1: Hydrological years (September till August)</span>
-<span class="co"># note that the last year is not complete, so the counter jumps back to 0</span>
-ex1 &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>() %&gt;%<span class="st"> </span><span class="kw">mark_periods</span>(.,<span class="dt">start_month =</span> <span class="dv">9</span>, <span class="dt">end_month =</span> <span class="dv">8</span>)
-<span class="kw">plot</span>(ex1$period, <span class="dt">xlab=</span><span class="st">&quot;Timestep&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;# of hydrological year&quot;</span>)</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># mark_periods example 2: Summer Months (June till August)</span>
-ex2 &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>() %&gt;%<span class="st"> </span><span class="kw">mark_periods</span>(.,<span class="dt">start_month =</span> <span class="dv">6</span>, <span class="dt">end_month =</span> <span class="dv">8</span>)
-<span class="kw">plot</span>(ex2$period, <span class="dt">xlab=</span><span class="st">&quot;Timestep&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;# year of summer months&quot;</span>)</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+    <span class="kw">return</span>(marked_cos_data)
+  }</code></pre></div>
 </div>
 <div id="transform-the-cos_data-into-xts" class="section level3">
 <h3><span class="header-section-number">1.4.6</span> Transform the <code>cos_data</code> into <code>xts</code></h3>
-<p>This function is actually just a small wrapper around the <code>xts::xts</code> function for the purposes of <strong>visCOS</strong>.</p>
-<p>A notable quirk of the function is that the names of the header are put to lower cases via the <code>tolower</code> function and possible leading zeros in the enumeration of the basins are removed.</p>
-<p>Currently it is not exported as users can use <code>xts</code> themselves perfectly well, and it is felt that the function does not provide enough added value for the user.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#&#39; Convert cos_data to xts-format</span>
+<p>This function is just a small wrapper around the <code>xts()</code> function for internal use in <strong>viCOS</strong>.</p>
+<p>A notable quirk of the function is it puts all column-names to lower cases and removes leading zeros in their enumeration.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># ---------------------------------------------------------------------------</span>
+  <span class="co">#&#39; Convert cos_data to xts-format</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; Converts the cos_data (class: data_frame) into an xts object</span>
   <span class="co">#&#39;</span>
@@ -554,20 +562,20 @@ ex2 &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>()
   <span class="co">#&#39; @import zoo</span>
   <span class="co">#&#39; @importFrom xts xts</span>
   <span class="co">#&#39; @import magrittr</span>
-cos_data_as_xts &lt;-<span class="st"> </span>function(cos_data) {
-  <span class="co"># pre</span>
-  <span class="kw">assert_dataframe</span>(cos_data)
-  <span class="kw">assert_junk</span>(cos_data)
-  <span class="kw">assert_complete_date</span>(cos_data)
-  <span class="co"># everything is set to lower case</span>
-  cos_data &lt;-<span class="st"> </span><span class="kw">remove_leading_zeros</span>(cos_data) %&gt;%
-<span class="st">    </span>magrittr::<span class="kw">set_names</span>(<span class="kw">names</span>(cos_data) %&gt;%<span class="st"> </span>tolower)
-  name_posix &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>) %&gt;%<span class="st"> </span>tolower
-  cos_data_as_xts &lt;-<span class="st"> </span><span class="kw">xts</span>(<span class="dt">x =</span> cos_data[], <span class="co"># ,names(cos_data) != name_posix</span>
-                            <span class="dt">order.by =</span> cos_data[[name_posix]])
-  <span class="co">#</span>
-  <span class="kw">return</span>(cos_data_as_xts)
-}</code></pre></div>
+  cos_data_as_xts &lt;-<span class="st"> </span>function(cos_data) {
+    <span class="co"># pre: ====================================================================</span>
+    <span class="kw">assert_dataframe</span>(cos_data)
+    <span class="kw">assert_junk</span>(cos_data)
+    <span class="kw">assert_complete_date</span>(cos_data)
+    <span class="co"># calc: ===================================================================</span>
+    <span class="co"># set every- name to lover capitals and generate xts frame</span>
+    new_names &lt;-<span class="st"> </span><span class="kw">names</span>(cos_data) %&gt;%<span class="st"> </span>tolower
+    name_posix &lt;-<span class="st"> </span><span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>) %&gt;%<span class="st"> </span>tolower
+    cos_data &lt;-<span class="st"> </span><span class="kw">remove_leading_zeros</span>(cos_data) %&gt;%
+<span class="st">      </span>magrittr::<span class="kw">set_names</span>(new_names)
+    cos_data_as_xts &lt;-<span class="st"> </span><span class="kw">xts</span>(<span class="dt">x =</span> cos_data[], <span class="dt">order.by =</span> cos_data[[name_posix]])
+    <span class="kw">return</span>(cos_data_as_xts)
+  }</code></pre></div>
 
 </div>
 </div>
@@ -591,6 +599,7 @@ cos_data_as_xts &lt;-<span class="st"> </span>function(cos_data) {
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

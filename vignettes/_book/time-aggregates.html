@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,15 +196,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="time-aggregates" class="section level1">
-<h1><span class="header-section-number">4</span> Time Aggregates</h1>
+<h1><span class="header-section-number">Chapter 4</span> Time Aggregates</h1>
 <p>In hydrology it is often useful to summarise the data respect to a given time dimension. In <strong>visCOS</strong> this can be done by using the <code>aggregate_time</code> function. The function takes <a href="cook_data.html">COSERO data.frame</a> and aggregates them according to a chosen time dimension. Note, that the name of the dimension can be specified via the <a href="LP-viscos_options.html">options</a>.</p>
 <div id="examples-1" class="section level2">
 <h2><span class="header-section-number">4.1</span> Examples</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">require</span>(ggplot2, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.3.2</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">require</span>(visCOS, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">require</span>(ggplot2, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)
+  <span class="kw">require</span>(visCOS, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>Daily runoff aggregation:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  cos_data &lt;-<span class="st"> </span>visCOS::<span class="kw">get_cos_data_example</span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  cos_data &lt;-<span class="st"> </span>visCOS::<span class="kw">get_viscos_example</span>()
   runoff_aggregate_dd &lt;-<span class="st"> </span><span class="kw">aggregate_time</span>(cos_data, <span class="st">&quot;dd&quot;</span>)
   <span class="co"># plot data:</span>
   <span class="kw">ggplot</span>(runoff_aggregate_dd) +
@@ -218,7 +212,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
                                      <span class="kw">viscos_options</span>(<span class="st">&quot;color_s&quot;</span>))) +
 <span class="st">      </span><span class="kw">facet_wrap</span>( ~<span class="st"> </span>basin,<span class="dt">ncol =</span> <span class="dv">1</span>) +
 <span class="st">      </span><span class="kw">theme_minimal</span>()</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Monthly runoff aggregation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  runoff_aggregate_mm &lt;-<span class="st"> </span><span class="kw">aggregate_time</span>(cos_data, <span class="st">&quot;mm&quot;</span>)
   <span class="co"># plot data:</span>
@@ -229,7 +223,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">      </span><span class="kw">scale_x_discrete</span>(<span class="dt">limits =</span> runoff_aggregate_mm$time_aggregate) +
 <span class="st">      </span><span class="kw">facet_wrap</span>( ~<span class="st"> </span>basin, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">      </span><span class="kw">theme_minimal</span>()</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Yearly runoff aggregation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  runoff_aggregate_yyyy &lt;-<span class="st"> </span><span class="kw">aggregate_time</span>(cos_data, <span class="st">&quot;yyyy&quot;</span>)
   <span class="co"># plot data:</span>
@@ -241,7 +235,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">limits =</span> runoff_aggregate_yyyy$time_aggregate,  
                     <span class="dt">labels =</span> abbreviate) +
 <span class="st">    </span><span class="kw">theme_minimal</span>()</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Yearly and monthly runoff aggregation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  runoff_aggregate_yyyymm &lt;-<span class="st"> </span><span class="kw">aggregate_time</span>(cos_data, <span class="st">&quot;yyyy-mm&quot;</span>)
   <span class="co"># plot data:</span>
@@ -254,7 +248,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">    </span><span class="kw">facet_wrap</span>( ~<span class="st"> </span>basin,<span class="dt">ncol =</span> <span class="dv">1</span>) +
 <span class="st">    </span><span class="kw">theme_minimal</span>() +
 <span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="code-2" class="section level2">
 <h2><span class="header-section-number">4.2</span> Code</h2>
@@ -356,6 +350,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

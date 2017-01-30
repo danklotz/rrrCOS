@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,14 +196,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="summaries-of-important-objective-functions" class="section level1">
-<h1><span class="header-section-number">5</span> Summaries of important objective functions</h1>
+<h1><span class="header-section-number">Chapter 5</span> Summaries of important objective functions</h1>
 <p>This chapter explains the code to calculate the main objective functions <span class="math inline">\(of\)</span> used in visCOS. As explained in <a href="LP-of.html">respective section</a> objective functions are a pivotal part of model calibration. As of now, <strong>visCOS</strong> focuses on 4 main objective function: NSE, KGE, Pearson’s Correlation and the Percentage bias (the respective definitions are given <a href="LP-of.html">here</a>).</p>
 <p>The main objective functions for the overall data and the marked periods can be computed through the function <code>main_of_compute</code>. In order to run the function the period have to be marked first, e.g. through the <code>mark_periods</code> function. Additionally, <strong>visCOS</strong> already provides two different options to create plots for the main objective functions: <code>main_of_rasterplot</code> and <code>main_of_barplot</code>. Both functions create a list with 4 <code>ggplot</code> figures. Each entry in the list corresponds to one of the main objective functions and both lists can be saved to html embedded .jpgs with the <a href="LP-serve.html"><code>serve</code> function</a>.</p>
 <p><strong>Examples:</strong></p>
 <p>Computing the main objective functions</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(visCOS)
 <span class="kw">require</span>(magrittr)
-of_values &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>() %&gt;%
+of_values &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>() %&gt;%
 <span class="st">  </span><span class="kw">mark_periods</span>() %&gt;%
 <span class="st">  </span><span class="kw">main_of_compute</span>()
 of_values</code></pre></div>
@@ -226,19 +221,19 @@ of_values</code></pre></div>
 ## 11   CORR_period.1  0.8243198   0.8806770
 ## 12   CORR_period.2  0.8577983   0.9385221</code></pre>
 <p>Plotting the results of main objective function with bar plots:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">of_values &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>() %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">of_values &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>() %&gt;%
 <span class="st">  </span><span class="kw">mark_periods</span>() %&gt;%
 <span class="st">  </span><span class="kw">main_of_barplot</span>() %&gt;%
 <span class="st">  </span><span class="kw">extract2</span>(<span class="dv">1</span>) %&gt;%
 <span class="st">  </span><span class="kw">plot</span>()</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Plotting the results of main objective function with a raster:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">of_values &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>() %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">of_values &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>() %&gt;%
 <span class="st">  </span><span class="kw">mark_periods</span>() %&gt;%
 <span class="st">  </span><span class="kw">main_of_rasterplot</span>() %&gt;%
 <span class="st">  </span><span class="kw">extract2</span>(<span class="dv">2</span>) %&gt;%
 <span class="st">  </span><span class="kw">plot</span>()</code></pre></div>
-<p><img src="visdoc_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="visdoc_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="code-3" class="section level2">
 <h2><span class="header-section-number">5.1</span> Code</h2>
 <p>This section defines the code for the <code>main_of</code>-function-family.</p>
@@ -501,6 +496,7 @@ plot_fun_raster &lt;-<span class="st"> </span>function(regex_single_of,of) {
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

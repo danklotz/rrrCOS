@@ -25,7 +25,7 @@ if (knitr:::is_latex_output()) {
   #' @examples
   #' # get example data,
   #' # explore the model performance
-  #' cos_data <- get_cos_data_example()
+  #' cos_data <- get_viscos_example()
   #' explore_cos_data(cos_data)
 explore_cos_data <- function(cos_data,
                                    of_list = list(

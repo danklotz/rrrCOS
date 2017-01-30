@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,13 +196,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="flow-duration-curves" class="section level1">
-<h1><span class="header-section-number">6</span> Flow Duration Curves</h1>
+<h1><span class="header-section-number">Chapter 6</span> Flow Duration Curves</h1>
 <p>Flow-duration curves represent the relationship between the magnitue and the frequency of a streamflow. They provide an estimate of the percentage of time a given streamflow was exceeded within the evaluated time frame. Foster [1934] attributes the first use of flow duration curves to Clemens Herschel around 1880. Since they have been used for a wide array of applications. <strong>visCOS</strong> provides a function to compute the data for flow-duration curves and a function to plot them directly. The former function is called <code>fdc_compute</code>. It computes the flow exceedance properties and returns a data.frame. The calculations are adapted from the method used within the <a href="https://CRAN.R-project.org/package=hydroTSM">hydroTSM</a> package. It is currently rather slow. The plot-function is called <code>fdc_plot</code>. Internally it uses <code>fdc_compute</code> for the data preparation and generates a facetted <code>ggplot</code> object from it. In the plot each basin is a facet and each sub-plot shows the <span class="math inline">\(o\)</span>-data and <span class="math inline">\(s\)</span>-data (see: <a href="Introduction.html">Introduction</a>).</p>
 <div id="example" class="section level2">
 <h2><span class="header-section-number">6.1</span> Example</h2>
 <p>Flow duration curves can be plotted in <strong>visCOS</strong> in the following way:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">library</span>(visCOS)
-  cos_data &lt;-<span class="st"> </span><span class="kw">get_cos_data_example</span>()
+  cos_data &lt;-<span class="st"> </span><span class="kw">get_viscos_example</span>()
   <span class="kw">fdc_plot</span>(cos_data)</code></pre></div>
 <p><img src="visdoc_files/figure-html/example-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -339,6 +334,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,

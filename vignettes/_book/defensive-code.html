@@ -8,7 +8,7 @@
   <title>visCOS: documentation</title>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.1.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="visCOS: documentation" />
   <meta property="og:type" content="book" />
@@ -26,11 +26,6 @@
 <meta name="author" content="Daniel Klotz, Johannes Wesemann, Mathew Herrnegger">
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -201,7 +196,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="defensive-code" class="section level1">
-<h1><span class="header-section-number">10</span> Defensive Code</h1>
+<h1><span class="header-section-number">Chapter 10</span> Defensive Code</h1>
 <p>This section defines the internaly used defensive programming part of <strong>visCOS</strong>. This are all functions dedicated to ensure that <strong>visCOS</strong> is working nicely even if it is used wrongly for whatever reason. This often means that a given function has to return an error if certain criteria are not met! Useful examples for such methods can be found in Hadley Wickhams <code>R</code> package <a href="https://cran.r-project.org/web/packages/assertthat/index.html"><code>assertthat</code></a></p>
 <div id="code-8" class="section level2">
 <h2><span class="header-section-number">10.1</span> Code</h2>
@@ -297,6 +292,7 @@ assert_dataframe &lt;-<span class="st"> </span>function(data) {
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "google": false,
