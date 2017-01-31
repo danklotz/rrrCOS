@@ -67,16 +67,27 @@ explore_cos_data <- function(cos_data,
                                      grep(viscos_options("name_o"),.) ]
     y_string <- unique_data_names[ unique_data_names  %>%
                                      grep(viscos_options("name_s"),.) ]
+    lb_string <-  unique_data_names[ unique_data_names  %>%
+                                     grep(viscos_options("name_lb"),.) ]
+    ub_string <-  unique_data_names[ unique_data_names  %>%
+                                     grep(viscos_options("name_ub"),.) ]
     # (II) select data:
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
+    selector_lb <- reactive({ lb_string %&% input$basin_num %&% "$" })
+    selector_ub <- reactive({ ub_string %&% input$basin_num %&% "$" })
     selected_data <- reactive({
       select(clean_cos_data,
              matches( selector_x() ),
-             matches( selector_y() )
+             matches( selector_y() ), 
+             matches( selector_lb() ),
+             matches( selector_ub() )
              ) %>%
         select(x = matches( selector_x() ),
-               y = matches( selector_y() ))
+               y = matches( selector_y() ), 
+               lb = matches( selector_lb() ),
+               ub = matches( selector_ub() )
+               )
     })
     # (III) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
@@ -91,7 +102,7 @@ explore_cos_data <- function(cos_data,
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),
                  color = viscos_options("color_o")) %>%
-        dySeries("y",
+        dySeries(c("lb","y","ub"),
                  label = visCOS::viscos_options("name_s"),
                  color = viscos_options("color_s")) %>%
         dyRangeSelector(height = 20, strokeColor = "") %>%

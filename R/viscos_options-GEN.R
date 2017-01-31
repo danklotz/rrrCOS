@@ -7,8 +7,10 @@
 #' \preformatted{
 #'   viscos_options(
 #'    # data.frame column names
-#'       name_o = "qobs", # name of the first time-series data (observations)  
-#'       name_s = "qsim", # name of the second time-series data (simulations)  
+#'       name_o = "qobs", # name of the first time-series data, i.e. the observations  
+#'       name_s = "qsim", # name of the second time-series data, i.e. the simulations  
+#'       name_lb = "lb", # lower bound information of the simulations 
+#'       name_ub = "ub", # upper bound information of the simulations 
 #'       name_COSyear = "yyyy", # name of year-column
 #'       name_COSmonth = "mm",  # name of month-column
 #'       name_COSday = "dd",  # name of day-column
@@ -16,6 +18,7 @@
 #'       name_COSmin = "min", # name of minute-column
 #'       name_COSposix = "posixdate", # name of the complete-date-column
 #'       name_COSperiod = "period", # name of the marked-period column
+#'      data_unit = "(m^3/s)", # unit-tag o the simulation and observation data
 #'       missing_data = -999, # marker for missing data in the o_columns
 #'    # plot options
 #'       color_o = "steelblue", # color associated with the first o time-series data
@@ -33,7 +36,8 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   # data.frame column names
   name_o = "qobs",
   name_s = "qsim",
-  data_unit = "(m^3/s)",
+  name_lb = "lb",
+  name_ub = "ub",
   name_COSyear = "yyyy",
   name_COSmonth = "mm",
   name_COSday = "dd",
@@ -41,6 +45,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   name_COSmin = "min",
   name_COSposix = "posixdate",
   name_COSperiod = "period",
+  data_unit = "(m^3/s)",
   missing_data = -999,
  # plot options
   color_o = "steelblue",

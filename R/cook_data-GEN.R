@@ -9,8 +9,8 @@
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
   get_viscos_example <- function() {
-    file_path <- system.file("extdata",
-                             "runoff_example.csv",
+    file_path <- system.file("extdata", 
+                             "runoff_example.csv", 
                              package = "visCOS")
     runoff_example <- read.csv(file_path)
     return(runoff_example)
@@ -30,7 +30,7 @@
     # pre: ====================================================================
     assert_dataframe(cos_data) # see: defensive code
     # determine names of cos_data and get regex: ==============================
-    names_in_data <- cos_data %>% names
+    names_in_data <- cos_data %>% names(.)
     regex_columns <- get_regex_for_cos_data() # see: helpers
     # get idx and make clean data: ============================================
     idx <- grep(regex_columns,names_in_data, ignore.case = TRUE)
@@ -55,33 +55,34 @@
     require("magrittr")
     require("pasta")
     assert_dataframe(cos_data)
+    missing_data_marker <- viscos_options("missing_data")
     # check for missing obs: ==================================================
     # set NA values to viscos_options("missing_data") and check if there are
     # cloumns wihtouth observervation:
     chosen_cols <- which( names(cos_data) != viscos_options("name_COSposix") )
     rows_with_na <- is.na(cos_data[ ,chosen_cols])
     data_wihtouth_posix <- cos_data[ ,chosen_cols]
-    data_wihtouth_posix[rows_with_na] <- viscos_options("missing_data")
+    data_wihtouth_posix[rows_with_na] <- missing_data_marker
     colmax <- sapply(X = data_wihtouth_posix, FUN = max)
-    #
-    # if there are columns withouth observations remove them from the data:
+    # remove unobserved pairs: ================================================
     if ( any(colmax < 0.0) ){
       name_o <- viscos_options("name_o")
-      neg_o_names <- which(colmax < 0.0) %>%
-        names
-      neg_s_names <- gsub(name_o,viscos_options("name_s"),neg_o_names,ignore.case = TRUE )
-      data_selection <- neg_o_names %|% neg_s_names %>%
-        paste(.,collapse = "|") %>% 
-        grepl(., names(cos_data), ignore.case = TRUE) %>%
+      neg_o_names <- which(colmax < 0.0) %>% names(.)
+      neg_s_names <- gsub(name_o,viscos_options("name_s"), 
+                          neg_o_names, 
+                          ignore.case = TRUE)
+      data_selection <-  paste(neg_o_names, 
+                               neg_s_names, 
+                               sep = "|", 
+                               collapse = "|") %>% 
+        grepl(names(cos_data), ignore.case = TRUE) %>%
         not(.)
       data_only_observed <- cos_data[ ,data_selection]
-
     } else {
       data_only_observed <- cos_data
     }
-    # set all missing data values to NA for use in hydroGOF
-    idx_NA <- data_only_observed %>%
-      equals(viscos_options("missing_data"))
+    # bonus: change missing_data to NA (useful for of computation) ============
+    idx_NA <- data_only_observed %>% equals(missing_data_marker)
     data_only_observed[idx_NA] <- NA
     return(data_only_observed)
   }
@@ -100,31 +101,29 @@
   #'
   #' @export
   complete_dates <- function(cos_data) {
-    # make sure that magrittr is loaded:
-    assert_dataframe(cos_data)
-    # check for COSdates and stop if non-logical expression are obtained
-    OK_COSdate <- any(
-      unlist(viscos_options("name_COSyear",
-                            "name_COSmonth",
-                            "name_COSmonth",
-                            "name_COShour",
-                            "name_COSmin")
-                             )
-      %in%
-      names(cos_data)
-    )
-    OK_POSIXdates <- any(names(cos_data) == viscos_options("name_COSposix"))
-    if ( !is.logical(OK_COSdate) | !is.logical(OK_POSIXdates) ) {
+    # pre: ==================================================================== 
+    assert_dataframe(cos_data) 
+    date_names <- unlist(viscos_options("name_COSyear", 
+                                        "name_COSmonth", 
+                                        "name_COSmonth", 
+                                        "name_COShour", 
+                                        "name_COSmin")
+                        )
+    # check dates: ============================================================
+    # stop if non-logical expression are obtained
+    all_dates_in_cosdata <- any( date_names %in% names(cos_data) )
+    posix_cosdata <- any(viscos_options("name_COSposix") == names(cos_data))
+    if ( !is.logical(all_dates_in_cosdata) | !is.logical(posix_cosdata) ) {
       stop("Something is wrong :( \n
-           some of the date-columns could not be processed!")
+            Some of the date-columns could not be processed!")
     }
-    # choose function depending on which formats are available!
-    if (!OK_COSdate & !OK_POSIXdates) {
+    # execute function for the available format: ==============================
+    if (!all_dates_in_cosdata & !posix_cosdata) {
       stop("Something is wrong :( \n
            The 5 cosero date columns and the POSIXct colum could not be found")
-    } else if (OK_COSdate & !OK_POSIXdates) {
-      cos_data <- implode_cosdate(cos_data) # see following chapter
-    } else if (!OK_COSdate & OK_POSIXdates) {
+    } else if (all_dates_in_cosdata & !posix_cosdata) {
+      cos_data <- implode_cosdate(cos_data) # see: sub-chapter Implode date
+    } else if (!all_dates_in_cosdata & posix_cosdata) {
       stop("POSIXct to COSdates not yet supported :(")
     }
     return(cos_data)
@@ -132,18 +131,26 @@
 
   # ---------------------------------------------------------------------------
   implode_cosdate <- function(cos_data) {
+    # pre: ==================================================================== 
     require("magrittr", quietly = TRUE)
+    require("pasta", quietly = TRUE)
     assert_dataframe(cos_data)
-    name_string <-  cos_data %>% names %>% tolower
-    #
-    POSIXdate <- paste(cos_data[[viscos_options("name_COSyear")]],
-                       sprintf("%02d",cos_data[[viscos_options("name_COSmonth")]]),
-                       sprintf("%02d",cos_data[[viscos_options("name_COSday")]]),
-                       sprintf("%02d",cos_data[[viscos_options("name_COShour")]]),
-                       sprintf("%02d",cos_data[[viscos_options("name_COSmin")]]),
-                       sep= "" ) %>%
-      as.POSIXct(format = "%Y%m%d%H%M", origin = .[1], scale = "hourly", tz = "UTC")
-    cos_data[[viscos_options("name_COSposix")]] <- POSIXdate
+    name_string <- cos_data %>% names(.) %>% tolower(.)
+    # create posix_date column: ===============================================
+    month_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSmonth")]])
+    day_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSday")]])
+    hour_digits <- sprintf("%02d",cos_data[[viscos_options("name_COShour")]])
+    minute_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSmin")]])
+    posix_date <- cos_data[[viscos_options("name_COSyear")]] %&% 
+        month_digits %&% 
+        day_digits %&% 
+        hour_digits %&% 
+        minute_digits %>%
+      as.POSIXct(format = "%Y%m%d%H%M",
+                 origin = .[1],
+                 scale = "hourly",
+                 tz = "UTC")
+    cos_data[[viscos_options("name_COSposix")]] <- posix_date
     return(cos_data)
   }
 
@@ -156,8 +163,8 @@
     cos_data %<>% remove_junk
     name_o <- viscos_options("name_o")
     search_o_or_s <- paste0(name_o,"|", viscos_options("name_s"))
-    runoff_names <- cos_data %>% names
-    runoff_lowercase_names <- runoff_names %>% tolower
+    runoff_names <- cos_data %>% names(.)
+    runoff_lowercase_names <- runoff_names %>% tolower(.)
     del_leading_zeros <- function(string) sub("^[0]+", "",string)
     # calc: ===================================================================
     idx_o <- grep(name_o , runoff_lowercase_names)
@@ -173,8 +180,8 @@
     runoff_only_names <- runoff_names %>%
       gsub(search_runoff_nums, "", .) %>%
       gsub(separator,"",.)
+    # clean up: ===============================================================
     runoff_new_numbers <- del_leading_zeros(runoff_nums)
-    #
     new_names <- runoff_new_numbers %>%
       gsub("\\d+", separator,.) %>%
       paste0(runoff_only_names, ., runoff_new_numbers)

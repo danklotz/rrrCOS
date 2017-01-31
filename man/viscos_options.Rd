@@ -16,8 +16,10 @@ These are the options you can adapt by executing the function
 \preformatted{
   viscos_options(
    # data.frame column names
-      name_o = "qobs", # name of the first time-series data (observations)  
-      name_s = "qsim", # name of the second time-series data (simulations)  
+      name_o = "qobs", # name of the first time-series data, i.e. the observations  
+      name_s = "qsim", # name of the second time-series data, i.e. the simulations  
+      name_lb = "lb", # lower bound information of the simulations 
+      name_ub = "ub", # upper bound information of the simulations 
       name_COSyear = "yyyy", # name of year-column
       name_COSmonth = "mm",  # name of month-column
       name_COSday = "dd",  # name of day-column
@@ -25,6 +27,7 @@ These are the options you can adapt by executing the function
       name_COSmin = "min", # name of minute-column
       name_COSposix = "posixdate", # name of the complete-date-column
       name_COSperiod = "period", # name of the marked-period column
+     data_unit = "(m^3/s)", # unit-tag o the simulation and observation data
       missing_data = -999, # marker for missing data in the o_columns
    # plot options
       color_o = "steelblue", # color associated with the first o time-series data
