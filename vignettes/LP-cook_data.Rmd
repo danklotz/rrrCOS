@@ -252,7 +252,7 @@ the 5-columns representation into `POSIXct` dates via the internally defined
     # stop if non-logical expression are obtained
     all_dates_in_cosdata <- any( date_names %in% names(cos_data) )
     posix_cosdata <- any(viscos_options("name_COSposix") == names(cos_data))
-    if ( !is.logical(any_dates_in_cosdata) | !is.logical(posix_cosdata) ) {
+    if ( !is.logical(all_dates_in_cosdata) | !is.logical(posix_cosdata) ) {
       stop("Something is wrong :( \n
             Some of the date-columns could not be processed!")
     }
