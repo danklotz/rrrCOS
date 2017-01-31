@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Code for data cooking
+# Code for cooking data 
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -27,15 +27,15 @@
   #' @return data.frame object without the chunk
   #' @export
   remove_junk <- function(cos_data) {
-    assert_dataframe(cos_data)
-    #
+    # pre: ====================================================================
+    assert_dataframe(cos_data) # see: defensive code
+    # determine names of cos_data and get regex: ==============================
     names_in_data <- cos_data %>% names
     regex_columns <- get_regex_for_cos_data() # see: helpers
-    #
-    idx <- regex_columns %>%
-      grep(.,names_in_data, ignore.case = TRUE)
-    no_junk_cos_data <- cos_data[ , idx]
-    return( only_observed_basins(no_junk_cos_data) )
+    # get idx and make clean data: ============================================
+    idx <- grep(regex_columns,names_in_data, ignore.case = TRUE)
+    clean_cos_data <- only_observed_basins(cos_data[ ,idx])
+    return( clean_cos_data )
   }
 
   # ---------------------------------------------------------------------------
@@ -51,13 +51,15 @@
   # @import magrittr
   # @import pasta
   only_observed_basins <- function(cos_data) {
+    # pre: ====================================================================
     require("magrittr")
     require("pasta")
     assert_dataframe(cos_data)
+    # check for missing obs: ==================================================
     # set NA values to viscos_options("missing_data") and check if there are
-    # cloumns wihtouth observervation
+    # cloumns wihtouth observervation:
     chosen_cols <- which( names(cos_data) != viscos_options("name_COSposix") )
-    rows_with_na <- is.na(cos_data[,chosen_cols])
+    rows_with_na <- is.na(cos_data[ ,chosen_cols])
     data_wihtouth_posix <- cos_data[ ,chosen_cols]
     data_wihtouth_posix[rows_with_na] <- viscos_options("missing_data")
     colmax <- sapply(X = data_wihtouth_posix, FUN = max)
@@ -154,7 +156,6 @@
     cos_data %<>% remove_junk
     name_o <- viscos_options("name_o")
     search_o_or_s <- paste0(name_o,"|", viscos_options("name_s"))
-    #
     runoff_names <- cos_data %>% names
     runoff_lowercase_names <- runoff_names %>% tolower
     del_leading_zeros <- function(string) sub("^[0]+", "",string)
