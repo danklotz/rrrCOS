@@ -50,8 +50,6 @@ of_values <- get_viscos_example() %>%
 ```
 
 ## Code
-This section defines the code for the `main_of`-function-family. 
-
 ```{r}
 # ---------------------------------------------------------------------------
 # Code for the Main Objective Functions (main_of)
