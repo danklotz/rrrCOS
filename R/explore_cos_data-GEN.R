@@ -3,9 +3,10 @@ if (knitr:::is_latex_output()) {
 } else {
   knitr::include_graphics("figures/explore_cos_data.gif")
 }
-  #' explore cos_data with Objective Functions
+  # --------------------------------------------------------------------------
+  #' Explore with Objective Functions
   #'
-  #' Runs a Shiny App which can be used to get an overview of a cos_data time
+  #' Runs a Shiny Gadget which can be used to get an overview of a cos_data time
   #' series object.
   #'
   #' @param d_xts cos_data formatted as time series
@@ -28,16 +29,15 @@ if (knitr:::is_latex_output()) {
   #' cos_data <- get_viscos_example()
   #' explore_cos_data(cos_data)
 explore_cos_data <- function(cos_data,
-                                   of_list = list(
-                                     nse = of_nse,
-                                     kge = of_kge,
-                                     p_bias = of_p_bias,
-                                     r = of_cor
-                                   ),
-                                   start_date = NULL,
-                                   end_date = NULL) {
-  # pre-sets
-  # (I) Defense
+                             of_list = list(
+                               nse = of_nse,
+                               kge = of_kge,
+                               p_bias = of_p_bias,
+                               r = of_cor
+                               ),
+                             start_date = NULL,
+                             end_date = NULL) {
+  # (I) pre-sets: ============================================================
   if (is.null(names(of_list))){
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
@@ -45,71 +45,142 @@ explore_cos_data <- function(cos_data,
   if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
     clean_cos_data %<>% complete_dates
   }
-  # (II)
+  names_data <- names(clean_cos_data) %>% tolower(.)
+  number_lb <- grepl(viscos_options("name_lb"), 
+                     names_data, 
+                     ignore.case = TRUE) %>% sum(.)
+  number_ub <- grepl(viscos_options("name_ub"), 
+                     names_data, 
+                     ignore.case = TRUE) %>% sum(.)
+  plot_bounds <- FALSE 
+  if( (number_lb > 0) & (number_ub > 0)) {
+    number_obs <- grepl(viscos_options("name_o"), 
+                        names_data, 
+                        ignore.case = TRUE) %>%sum(.)
+    number_sim <- grepl(viscos_options("name_s"), 
+                        names_data, 
+                        ignore.case = TRUE) %>% sum(.)
+    if (number_lb != number_ub) {
+      stop("number of available bounds is not the same!" %&&% 
+             "#lb=" %&% number_lb %&&% 
+             "#ub=" %&% number_ub)
+    } else if ((number_lb != number_obs) | (number_lb != number_sim)) {
+      stop("Number of bounds is not the same as the o/s data!" %&&%
+            "#bounds=" %&% number_lb %&&% 
+             "#obs=" %&% number_obs %&&%
+             "#sim=" %&% number_sim)
+    } else {
+      plot_bounds <- TRUE # switch: plot bounds
+    }
+  }
+  # (II) =====================================================================
   d_xts <- cos_data_as_xts(clean_cos_data)
-  # (III)
-  idx_names <- names(d_xts) %>%
-    tolower %>%
-    grepl(viscos_options("name_o"),.)
-  d_nums <- d_xts %>%
-      names() %>%
+  # (III) ====================================================================
+  idx_names <- grepl(viscos_options("name_o"), 
+                     names_data, 
+                     ignore.case = TRUE)
+  d_nums <- names_data %>%
       .[idx_names] %>%
       gsub("\\D","",.) %>%
-      as.integer %>%
-      unique
+      as.integer(.) %>%
+      unique(.)
+  # (V) Define App: =========================================================
   server <- function(input, output, session) {
-    # (I) get strings used in the naming of clean_cos_data:
-    unique_data_names <- names(clean_cos_data) %>%
-      gsub("\\d","",.) %>%
-      tolower %>%
-      unique
-    x_string <- unique_data_names[ unique_data_names %>%
-                                     grep(viscos_options("name_o"),.) ]
-    y_string <- unique_data_names[ unique_data_names  %>%
-                                     grep(viscos_options("name_s"),.) ]
-    lb_string <-  unique_data_names[ unique_data_names  %>%
-                                     grep(viscos_options("name_lb"),.) ]
-    ub_string <-  unique_data_names[ unique_data_names  %>%
-                                     grep(viscos_options("name_ub"),.) ]
-    # (II) select data:
+    # (a) get needed strings: ###############################################
+    unique_data_names <- gsub("\\d","",names_data) %>%
+      unique(.)
+    x_string <- unique_data_names[ grep(viscos_options("name_o"),
+                                        unique_data_names) ]
+    y_string <- unique_data_names[ grep(viscos_options("name_s"),
+                                        unique_data_names) ]
+    if (plot_bounds) {
+      lb_string <-  unique_data_names[ grep(viscos_options("name_lb"),
+                                            unique_data_names) ]
+      ub_string <-  unique_data_names[ grep(viscos_options("name_ub"),
+                                            unique_data_names) ]
+    }
+    # (b) select data:
     selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
-    selector_lb <- reactive({ lb_string %&% input$basin_num %&% "$" })
-    selector_ub <- reactive({ ub_string %&% input$basin_num %&% "$" })
-    selected_data <- reactive({
-      select(clean_cos_data,
-             matches( selector_x() ),
-             matches( selector_y() ), 
-             matches( selector_lb() ),
-             matches( selector_ub() )
-             ) %>%
-        select(x = matches( selector_x() ),
-               y = matches( selector_y() ), 
-               lb = matches( selector_lb() ),
-               ub = matches( selector_ub() )
-               )
+    selector_lb <- reactive({ 
+      if(plot_bounds){
+        lb_string %&% input$basin_num %&% "$" 
+      } else {
+        selector_y
+      }
     })
-    # (III) create xts-formated table for use in dygraphs:
+    selector_ub <- reactive({ 
+      if(plot_bounds){
+        ub_string %&% input$basin_num %&% "$"
+      } else {
+        selector_y
+      }
+    })
+    selected_data <- reactive({
+      if(plot_bounds) {
+        clean_cos_data %>% 
+          select(matches( selector_x() ),
+                 matches( selector_y() ),
+                 matches( selector_lb() ),
+                 matches( selector_ub() )
+                 ) %>% 
+          select(x = matches( selector_x() ),
+                 y = matches( selector_y() ), 
+                 lb = matches( selector_lb() ),
+                 ub = matches( selector_ub() ))
+      } else {
+        clean_cos_data %>% 
+          select(matches( selector_x() ),
+                 matches( selector_y() )
+                 ) %>% 
+          select(x = matches( selector_x() ),
+                 y = matches( selector_y() ))
+      }
+    })
+    # (c) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
           order.by = clean_cos_data[[viscos_options("name_COSposix")]])
     })
-    # (IV) create plots:
-    output$hydrographs <- renderDygraph({
-      dygraph( xts_selected_data() ) %>%
+    # (d) create plots:
+    base_graph <- reactive({
+      if(plot_bounds) {
+        dygraph( xts_selected_data() ) %>%
         dyAxis("y",
                label = visCOS::viscos_options("data_unit")) %>%
         dySeries("x",
                  label = visCOS::viscos_options("name_o"),
                  color = viscos_options("color_o")) %>%
-        dySeries(c("lb","y","ub"),
+        dySeries("y",
                  label = visCOS::viscos_options("name_s"),
                  color = viscos_options("color_s")) %>%
+        dySeries("lb", 
+                 label = visCOS::viscos_options("name_lb"),
+                 color = "grey80") %>% 
+        dySeries("ub", 
+                 label = visCOS::viscos_options("name_ub"),
+                 color = "grey80")
+      } else {
+        dygraph( xts_selected_data() ) %>%
+        dyAxis("y",
+               label = visCOS::viscos_options("data_unit")) %>%
+        dySeries("x",
+                 label = visCOS::viscos_options("name_o"),
+                 color = viscos_options("color_o")) %>%
+        dySeries("y",
+                 label = visCOS::viscos_options("name_s"),
+                 color = viscos_options("color_s"))
+      }
+    })
+    output$hydrographs <- renderDygraph({
+      base_graph() %>%
         dyRangeSelector(height = 20, strokeColor = "") %>%
         dyCrosshair(direction = "vertical") %>%
-         dyOptions(includeZero = TRUE, retainDateWindow = TRUE)
+        dyOptions(includeZero = TRUE,
+                  retainDateWindow = TRUE,
+                  animatedZooms = TRUE)
     })
-    # (IV) get dygraph date bounds (switches):
+    # (e) get dygraph date bounds (switches):
     selcted_from <- reactive({
       if (!is.null(start_date)) {
         start_date
@@ -125,7 +196,7 @@ explore_cos_data <- function(cos_data,
       }
 
     })
-    # (V) extract time_window for the stats header:
+    # (f) extract time_window for the stats header:
     output$selected_timewindow <- renderText({
       if (!is.null(input$hydrographs_date_window))
         paste(strftime(selcted_from(), format = "%d %b %Y"),
@@ -133,7 +204,7 @@ explore_cos_data <- function(cos_data,
               strftime(selcted_to(), format = "%d %b %Y"),
               sep = " ")
     })
-    # (VI) calculate stats:
+    # (g) calculate stats:
     sub_slctd <- reactive({
       if (!is.null(input$hydrographs_date_window))
         xts_selected_data()[paste(strftime(selcted_from(), format = "%Y-%m-%d-%H-%M"),
@@ -149,7 +220,7 @@ explore_cos_data <- function(cos_data,
     })
 
     output$slctd_OF <- renderTable(out_of())
-    # (VII) exit when user clicks on done
+    # (h) exit when user clicks on done
      # When the Done button is clicked, return a value
     observeEvent(input$done, {
       returnValue <- list(

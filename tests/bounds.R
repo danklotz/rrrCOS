@@ -64,3 +64,5 @@ if (test) {
   stop("junk removing did not work properly!")
 }
 
+# 2. test if remove_junk works on loess_data ===============================
+# 2- test visually if explore_cos_data works with loess & cos_data =========
