@@ -59,7 +59,7 @@ viscos_options <- GlobalOptions::setGlobalOptions(
   data_unit = "(m^3/s)",
   missing_data = -999,
  # plot options
-  color_o = "steelblue",
+  color_o = "dodgerblue",
   color_s = "orange",
   of_limits = c(0,1)
 )
