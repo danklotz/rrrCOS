@@ -100,20 +100,21 @@ explore_cos_data <- function(cos_data,
                                             unique_data_names) ]
     }
     # (b) select data:
-    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) # "$" terminates the searchstring; see regex
+    # note: the regular expressions "$" terminates the searchstring
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) 
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
     selector_lb <- reactive({ 
       if(plot_bounds){
         lb_string %&% input$basin_num %&% "$" 
       } else {
-        selector_y
+        NA
       }
     })
     selector_ub <- reactive({ 
       if(plot_bounds){
         ub_string %&% input$basin_num %&% "$"
       } else {
-        selector_y
+        NA
       }
     })
     selected_data <- reactive({
@@ -256,7 +257,7 @@ dyCrosshair <- function(dygraph,
   dyPlugin(
     dygraph = dygraph,
     name = "Crosshair",
-    path = system.file("examples/plugins/crosshair.js",
+    path = system.file("plugins/crosshair.js",
                        package = "dygraphs"),
     options = list(direction = match.arg(direction))
   )

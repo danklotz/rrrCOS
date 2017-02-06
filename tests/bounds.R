@@ -66,3 +66,4 @@ if (test) {
 
 # 2. test if remove_junk works on loess_data ===============================
 # 2- test visually if explore_cos_data works with loess & cos_data =========
+explore_cos_data(loess_data)

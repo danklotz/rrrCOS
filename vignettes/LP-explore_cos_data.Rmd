@@ -315,7 +315,7 @@ dyCrosshair <- function(dygraph,
   dyPlugin(
     dygraph = dygraph,
     name = "Crosshair",
-    path = system.file("examples/plugins/crosshair.js",
+    path = system.file("plugins/crosshair.js",
                        package = "dygraphs"),
     options = list(direction = match.arg(direction))
   )
