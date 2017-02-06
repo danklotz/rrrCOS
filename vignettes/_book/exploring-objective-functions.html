@@ -114,7 +114,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.4.3" data-path="cooking-data.html"><a href="cooking-data.html#complete-the-date-formats"><i class="fa fa-check"></i><b>1.4.3</b> Complete the date formats</a></li>
 <li class="chapter" data-level="1.4.4" data-path="cooking-data.html"><a href="cooking-data.html#remove-leading-zeros-in-column-names"><i class="fa fa-check"></i><b>1.4.4</b> Remove leading zeros in column names</a></li>
 <li class="chapter" data-level="1.4.5" data-path="cooking-data.html"><a href="cooking-data.html#mark-the-needed-periods"><i class="fa fa-check"></i><b>1.4.5</b> Mark the needed periods</a></li>
-<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-the-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform the <code>cos_data</code> into <code>xts</code></a></li>
+<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform <code>cos_data</code> into <code>xts</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="options.html"><a href="options.html"><i class="fa fa-check"></i><b>2</b> Options</a></li>
@@ -224,9 +224,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Save numeration of basins within the variable <code>d_nums</code>.</li>
 </ol></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#&#39; explore cos_data with Objective Functions</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># --------------------------------------------------------------------------</span>
+  <span class="co">#&#39; Explore with Objective Functions</span>
   <span class="co">#&#39;</span>
-  <span class="co">#&#39; Runs a Shiny App which can be used to get an overview of a cos_data time</span>
+  <span class="co">#&#39; Runs a Shiny Gadget which can be used to get an overview of a cos_data time</span>
   <span class="co">#&#39; series object.</span>
   <span class="co">#&#39;</span>
   <span class="co">#&#39; @param d_xts cos_data formatted as time series</span>
@@ -249,16 +250,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   <span class="co">#&#39; cos_data &lt;- get_viscos_example()</span>
   <span class="co">#&#39; explore_cos_data(cos_data)</span>
 explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
-                                   <span class="dt">of_list =</span> <span class="kw">list</span>(
-                                     <span class="dt">nse =</span> of_nse,
-                                     <span class="dt">kge =</span> of_kge,
-                                     <span class="dt">p_bias =</span> of_p_bias,
-                                     <span class="dt">r =</span> of_cor
-                                   ),
-                                   <span class="dt">start_date =</span> <span class="ot">NULL</span>,
-                                   <span class="dt">end_date =</span> <span class="ot">NULL</span>) {
-  <span class="co"># pre-sets</span>
-  <span class="co"># (I) Defense</span>
+                             <span class="dt">of_list =</span> <span class="kw">list</span>(
+                               <span class="dt">nse =</span> of_nse,
+                               <span class="dt">kge =</span> of_kge,
+                               <span class="dt">p_bias =</span> of_p_bias,
+                               <span class="dt">r =</span> of_cor
+                               ),
+                             <span class="dt">start_date =</span> <span class="ot">NULL</span>,
+                             <span class="dt">end_date =</span> <span class="ot">NULL</span>) {
+  <span class="co"># (I) pre-sets: ============================================================</span>
   if (<span class="kw">is.null</span>(<span class="kw">names</span>(of_list))){
     <span class="kw">names</span>(of_list) &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;of&quot;</span>, <span class="dv">1</span>:<span class="kw">length</span>(of_list), <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)
   }
@@ -266,48 +266,108 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
   if ( !<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>) %in%<span class="st"> </span><span class="kw">names</span>(clean_cos_data) ) {
     clean_cos_data %&lt;&gt;%<span class="st"> </span>complete_dates
   }
-  <span class="co"># (II)</span>
+  names_data &lt;-<span class="st"> </span><span class="kw">names</span>(clean_cos_data) %&gt;%<span class="st"> </span><span class="kw">tolower</span>(.)
+  number_lb &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_lb&quot;</span>), 
+                     names_data, 
+                     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%<span class="st"> </span><span class="kw">sum</span>(.)
+  number_ub &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_ub&quot;</span>), 
+                     names_data, 
+                     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%<span class="st"> </span><span class="kw">sum</span>(.)
+  plot_bounds &lt;-<span class="st"> </span><span class="ot">FALSE</span> 
+  if( (number_lb &gt;<span class="st"> </span><span class="dv">0</span>) &amp;<span class="st"> </span>(number_ub &gt;<span class="st"> </span><span class="dv">0</span>)) {
+    number_obs &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>), 
+                        names_data, 
+                        <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%<span class="kw">sum</span>(.)
+    number_sim &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>), 
+                        names_data, 
+                        <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>) %&gt;%<span class="st"> </span><span class="kw">sum</span>(.)
+    if (number_lb !=<span class="st"> </span>number_ub) {
+      <span class="kw">stop</span>(<span class="st">&quot;number of available bounds is not the same!&quot;</span> %&amp;&amp;%<span class="st"> </span>
+<span class="st">             &quot;#lb=&quot;</span> %&amp;%<span class="st"> </span>number_lb %&amp;&amp;%<span class="st"> </span>
+<span class="st">             &quot;#ub=&quot;</span> %&amp;%<span class="st"> </span>number_ub)
+    } else if ((number_lb !=<span class="st"> </span>number_obs) |<span class="st"> </span>(number_lb !=<span class="st"> </span>number_sim)) {
+      <span class="kw">stop</span>(<span class="st">&quot;Number of bounds is not the same as the o/s data!&quot;</span> %&amp;&amp;%
+<span class="st">            &quot;#bounds=&quot;</span> %&amp;%<span class="st"> </span>number_lb %&amp;&amp;%<span class="st"> </span>
+<span class="st">             &quot;#obs=&quot;</span> %&amp;%<span class="st"> </span>number_obs %&amp;&amp;%
+<span class="st">             &quot;#sim=&quot;</span> %&amp;%<span class="st"> </span>number_sim)
+    } else {
+      plot_bounds &lt;-<span class="st"> </span><span class="ot">TRUE</span> <span class="co"># switch: plot bounds</span>
+    }
+  }
+  <span class="co"># (II) =====================================================================</span>
   d_xts &lt;-<span class="st"> </span><span class="kw">cos_data_as_xts</span>(clean_cos_data)
-  <span class="co"># (III)</span>
-  idx_names &lt;-<span class="st"> </span><span class="kw">names</span>(d_xts) %&gt;%
-<span class="st">    </span>tolower %&gt;%
-<span class="st">    </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),.)
-  d_nums &lt;-<span class="st"> </span>d_xts %&gt;%
-<span class="st">      </span><span class="kw">names</span>() %&gt;%
+  <span class="co"># (III) ====================================================================</span>
+  idx_names &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>), 
+                     names_data, 
+                     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>)
+  d_nums &lt;-<span class="st"> </span>names_data %&gt;%
 <span class="st">      </span>.[idx_names] %&gt;%
 <span class="st">      </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">D&quot;</span>,<span class="st">&quot;&quot;</span>,.) %&gt;%
-<span class="st">      </span>as.integer %&gt;%
-<span class="st">      </span>unique</code></pre></div>
-<p>The server-side of the shiny app is rather lengthy but not too difficult. The major readability problems occur because of the unusual formatting enforced by shinyApps.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  server &lt;-<span class="st"> </span>function(input, output, session) {
-    <span class="co"># (I) get strings used in the naming of clean_cos_data:</span>
-    unique_data_names &lt;-<span class="st"> </span><span class="kw">names</span>(clean_cos_data) %&gt;%
-<span class="st">      </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">d&quot;</span>,<span class="st">&quot;&quot;</span>,.) %&gt;%
-<span class="st">      </span>tolower %&gt;%
-<span class="st">      </span>unique
-    x_string &lt;-<span class="st"> </span>unique_data_names[ unique_data_names %&gt;%
-<span class="st">                                     </span><span class="kw">grep</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),.) ]
-    y_string &lt;-<span class="st"> </span>unique_data_names[ unique_data_names  %&gt;%
-<span class="st">                                     </span><span class="kw">grep</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>),.) ]
-    <span class="co"># (II) select data:</span>
-    selector_x &lt;-<span class="st"> </span><span class="kw">reactive</span>({ x_string %&amp;%<span class="st"> </span>input$basin_num %&amp;%<span class="st"> &quot;$&quot;</span> }) <span class="co"># &quot;$&quot; terminates the searchstring; see regex</span>
+<span class="st">      </span><span class="kw">as.integer</span>(.) %&gt;%
+<span class="st">      </span><span class="kw">unique</span>(.)
+  <span class="co"># (V) Define App: =========================================================</span>
+  server &lt;-<span class="st"> </span>function(input, output, session) {
+    <span class="co"># (a) get needed strings: ###############################################</span>
+    unique_data_names &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">d&quot;</span>,<span class="st">&quot;&quot;</span>,names_data) %&gt;%
+<span class="st">      </span><span class="kw">unique</span>(.)
+    x_string &lt;-<span class="st"> </span>unique_data_names[ <span class="kw">grep</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),
+                                        unique_data_names) ]
+    y_string &lt;-<span class="st"> </span>unique_data_names[ <span class="kw">grep</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>),
+                                        unique_data_names) ]
+    if (plot_bounds) {
+      lb_string &lt;-<span class="st">  </span>unique_data_names[ <span class="kw">grep</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_lb&quot;</span>),
+                                            unique_data_names) ]
+      ub_string &lt;-<span class="st">  </span>unique_data_names[ <span class="kw">grep</span>(<span class="kw">viscos_options</span>(<span class="st">&quot;name_ub&quot;</span>),
+                                            unique_data_names) ]
+    }
+    <span class="co"># (b) select data:</span>
+    <span class="co"># note: the regular expressions &quot;$&quot; terminates the searchstring</span>
+    selector_x &lt;-<span class="st"> </span><span class="kw">reactive</span>({ x_string %&amp;%<span class="st"> </span>input$basin_num %&amp;%<span class="st"> &quot;$&quot;</span> }) 
     selector_y &lt;-<span class="st"> </span><span class="kw">reactive</span>({ y_string %&amp;%<span class="st"> </span>input$basin_num %&amp;%<span class="st"> &quot;$&quot;</span> })
-    selected_data &lt;-<span class="st"> </span><span class="kw">reactive</span>({
-      <span class="kw">select</span>(clean_cos_data,
-             <span class="kw">matches</span>( <span class="kw">selector_x</span>() ),
-             <span class="kw">matches</span>( <span class="kw">selector_y</span>() )
-             ) %&gt;%
-<span class="st">        </span><span class="kw">select</span>(<span class="dt">x =</span> <span class="kw">matches</span>( <span class="kw">selector_x</span>() ),
-               <span class="dt">y =</span> <span class="kw">matches</span>( <span class="kw">selector_y</span>() ))
+    selector_lb &lt;-<span class="st"> </span><span class="kw">reactive</span>({ 
+      if(plot_bounds){
+        lb_string %&amp;%<span class="st"> </span>input$basin_num %&amp;%<span class="st"> &quot;$&quot;</span> 
+      } else {
+        <span class="ot">NA</span>
+      }
     })
-    <span class="co"># (III) create xts-formated table for use in dygraphs:</span>
+    selector_ub &lt;-<span class="st"> </span><span class="kw">reactive</span>({ 
+      if(plot_bounds){
+        ub_string %&amp;%<span class="st"> </span>input$basin_num %&amp;%<span class="st"> &quot;$&quot;</span>
+      } else {
+        <span class="ot">NA</span>
+      }
+    })
+    selected_data &lt;-<span class="st"> </span><span class="kw">reactive</span>({
+      if(plot_bounds) {
+        clean_cos_data %&gt;%<span class="st"> </span>
+<span class="st">          </span><span class="kw">select</span>(<span class="kw">matches</span>( <span class="kw">selector_x</span>() ),
+                 <span class="kw">matches</span>( <span class="kw">selector_y</span>() ),
+                 <span class="kw">matches</span>( <span class="kw">selector_lb</span>() ),
+                 <span class="kw">matches</span>( <span class="kw">selector_ub</span>() )
+                 ) %&gt;%<span class="st"> </span>
+<span class="st">          </span><span class="kw">select</span>(<span class="dt">x =</span> <span class="kw">matches</span>( <span class="kw">selector_x</span>() ),
+                 <span class="dt">y =</span> <span class="kw">matches</span>( <span class="kw">selector_y</span>() ), 
+                 <span class="dt">lb =</span> <span class="kw">matches</span>( <span class="kw">selector_lb</span>() ),
+                 <span class="dt">ub =</span> <span class="kw">matches</span>( <span class="kw">selector_ub</span>() ))
+      } else {
+        clean_cos_data %&gt;%<span class="st"> </span>
+<span class="st">          </span><span class="kw">select</span>(<span class="kw">matches</span>( <span class="kw">selector_x</span>() ),
+                 <span class="kw">matches</span>( <span class="kw">selector_y</span>() )
+                 ) %&gt;%<span class="st"> </span>
+<span class="st">          </span><span class="kw">select</span>(<span class="dt">x =</span> <span class="kw">matches</span>( <span class="kw">selector_x</span>() ),
+                 <span class="dt">y =</span> <span class="kw">matches</span>( <span class="kw">selector_y</span>() ))
+      }
+    })
+    <span class="co"># (c) create xts-formated table for use in dygraphs:</span>
     xts_selected_data &lt;-<span class="st"> </span><span class="kw">reactive</span> ({
       <span class="kw">xts</span>(<span class="kw">selected_data</span>(),
           <span class="dt">order.by =</span> clean_cos_data[[<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>)]])
     })
-    <span class="co"># (IV) create plots:</span>
-    output$hydrographs &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({
-      <span class="kw">dygraph</span>( <span class="kw">xts_selected_data</span>() ) %&gt;%
+    <span class="co"># (d) create plots:</span>
+    base_graph &lt;-<span class="st"> </span><span class="kw">reactive</span>({
+      if(plot_bounds) {
+        <span class="kw">dygraph</span>( <span class="kw">xts_selected_data</span>() ) %&gt;%
 <span class="st">        </span><span class="kw">dyAxis</span>(<span class="st">&quot;y&quot;</span>,
                <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;data_unit&quot;</span>)) %&gt;%
 <span class="st">        </span><span class="kw">dySeries</span>(<span class="st">&quot;x&quot;</span>,
@@ -316,11 +376,33 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
 <span class="st">        </span><span class="kw">dySeries</span>(<span class="st">&quot;y&quot;</span>,
                  <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>),
                  <span class="dt">color =</span> <span class="kw">viscos_options</span>(<span class="st">&quot;color_s&quot;</span>)) %&gt;%
+<span class="st">        </span><span class="kw">dySeries</span>(<span class="st">&quot;lb&quot;</span>, 
+                 <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;name_lb&quot;</span>),
+                 <span class="dt">color =</span> <span class="st">&quot;grey80&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">        </span><span class="kw">dySeries</span>(<span class="st">&quot;ub&quot;</span>, 
+                 <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;name_ub&quot;</span>),
+                 <span class="dt">color =</span> <span class="st">&quot;grey80&quot;</span>)
+      } else {
+        <span class="kw">dygraph</span>( <span class="kw">xts_selected_data</span>() ) %&gt;%
+<span class="st">        </span><span class="kw">dyAxis</span>(<span class="st">&quot;y&quot;</span>,
+               <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;data_unit&quot;</span>)) %&gt;%
+<span class="st">        </span><span class="kw">dySeries</span>(<span class="st">&quot;x&quot;</span>,
+                 <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),
+                 <span class="dt">color =</span> <span class="kw">viscos_options</span>(<span class="st">&quot;color_o&quot;</span>)) %&gt;%
+<span class="st">        </span><span class="kw">dySeries</span>(<span class="st">&quot;y&quot;</span>,
+                 <span class="dt">label =</span> visCOS::<span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>),
+                 <span class="dt">color =</span> <span class="kw">viscos_options</span>(<span class="st">&quot;color_s&quot;</span>))
+      }
+    })
+    output$hydrographs &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({
+      <span class="kw">base_graph</span>() %&gt;%
 <span class="st">        </span><span class="kw">dyRangeSelector</span>(<span class="dt">height =</span> <span class="dv">20</span>, <span class="dt">strokeColor =</span> <span class="st">&quot;&quot;</span>) %&gt;%
 <span class="st">        </span><span class="kw">dyCrosshair</span>(<span class="dt">direction =</span> <span class="st">&quot;vertical&quot;</span>) %&gt;%
-<span class="st">         </span><span class="kw">dyOptions</span>(<span class="dt">includeZero =</span> <span class="ot">TRUE</span>, <span class="dt">retainDateWindow =</span> <span class="ot">TRUE</span>)
+<span class="st">        </span><span class="kw">dyOptions</span>(<span class="dt">includeZero =</span> <span class="ot">TRUE</span>,
+                  <span class="dt">retainDateWindow =</span> <span class="ot">TRUE</span>,
+                  <span class="dt">animatedZooms =</span> <span class="ot">TRUE</span>)
     })
-    <span class="co"># (IV) get dygraph date bounds (switches):</span>
+    <span class="co"># (e) get dygraph date bounds (switches):</span>
     selcted_from &lt;-<span class="st"> </span><span class="kw">reactive</span>({
       if (!<span class="kw">is.null</span>(start_date)) {
         start_date
@@ -336,7 +418,7 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
       }
 
     })
-    <span class="co"># (V) extract time_window for the stats header:</span>
+    <span class="co"># (f) extract time_window for the stats header:</span>
     output$selected_timewindow &lt;-<span class="st"> </span><span class="kw">renderText</span>({
       if (!<span class="kw">is.null</span>(input$hydrographs_date_window))
         <span class="kw">paste</span>(<span class="kw">strftime</span>(<span class="kw">selcted_from</span>(), <span class="dt">format =</span> <span class="st">&quot;%d %b %Y&quot;</span>),
@@ -344,7 +426,7 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
               <span class="kw">strftime</span>(<span class="kw">selcted_to</span>(), <span class="dt">format =</span> <span class="st">&quot;%d %b %Y&quot;</span>),
               <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)
     })
-    <span class="co"># (VI) calculate stats:</span>
+    <span class="co"># (g) calculate stats:</span>
     sub_slctd &lt;-<span class="st"> </span><span class="kw">reactive</span>({
       if (!<span class="kw">is.null</span>(input$hydrographs_date_window))
         <span class="kw">xts_selected_data</span>()[<span class="kw">paste</span>(<span class="kw">strftime</span>(<span class="kw">selcted_from</span>(), <span class="dt">format =</span> <span class="st">&quot;%Y-%m-%d-%H-%M&quot;</span>),
@@ -360,7 +442,7 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
     })
 
     output$slctd_OF &lt;-<span class="st"> </span><span class="kw">renderTable</span>(<span class="kw">out_of</span>())
-    <span class="co"># (VII) exit when user clicks on done</span>
+    <span class="co"># (h) exit when user clicks on done</span>
      <span class="co"># When the Done button is clicked, return a value</span>
     <span class="kw">observeEvent</span>(input$done, {
       returnValue &lt;-<span class="st"> </span><span class="kw">list</span>(

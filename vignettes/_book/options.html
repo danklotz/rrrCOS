@@ -114,7 +114,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.4.3" data-path="cooking-data.html"><a href="cooking-data.html#complete-the-date-formats"><i class="fa fa-check"></i><b>1.4.3</b> Complete the date formats</a></li>
 <li class="chapter" data-level="1.4.4" data-path="cooking-data.html"><a href="cooking-data.html#remove-leading-zeros-in-column-names"><i class="fa fa-check"></i><b>1.4.4</b> Remove leading zeros in column names</a></li>
 <li class="chapter" data-level="1.4.5" data-path="cooking-data.html"><a href="cooking-data.html#mark-the-needed-periods"><i class="fa fa-check"></i><b>1.4.5</b> Mark the needed periods</a></li>
-<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-the-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform the <code>cos_data</code> into <code>xts</code></a></li>
+<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform <code>cos_data</code> into <code>xts</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="options.html"><a href="options.html"><i class="fa fa-check"></i><b>2</b> Options</a></li>
@@ -207,8 +207,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co">#&#39; \preformatted{</span>
 <span class="co">#&#39;   viscos_options(</span>
 <span class="co">#&#39;    # data.frame column names</span>
-<span class="co">#&#39;       name_o = &quot;qobs&quot;, # name of the first time-series data (observations)  </span>
-<span class="co">#&#39;       name_s = &quot;qsim&quot;, # name of the second time-series data (simulations)  </span>
+<span class="co">#&#39;       name_o = &quot;qobs&quot;, # name of the first time-series data, i.e. the observations  </span>
+<span class="co">#&#39;       name_s = &quot;qsim&quot;, # name of the second time-series data, i.e. the simulations  </span>
+<span class="co">#&#39;       name_lb = &quot;lb&quot;, # lower bound information of the simulations </span>
+<span class="co">#&#39;       name_ub = &quot;ub&quot;, # upper bound information of the simulations </span>
 <span class="co">#&#39;       name_COSyear = &quot;yyyy&quot;, # name of year-column</span>
 <span class="co">#&#39;       name_COSmonth = &quot;mm&quot;,  # name of month-column</span>
 <span class="co">#&#39;       name_COSday = &quot;dd&quot;,  # name of day-column</span>
@@ -216,6 +218,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co">#&#39;       name_COSmin = &quot;min&quot;, # name of minute-column</span>
 <span class="co">#&#39;       name_COSposix = &quot;posixdate&quot;, # name of the complete-date-column</span>
 <span class="co">#&#39;       name_COSperiod = &quot;period&quot;, # name of the marked-period column</span>
+<span class="co">#&#39;      data_unit = &quot;(m^3/s)&quot;, # unit-tag o the simulation and observation data</span>
 <span class="co">#&#39;       missing_data = -999, # marker for missing data in the o_columns</span>
 <span class="co">#&#39;    # plot options</span>
 <span class="co">#&#39;       color_o = &quot;steelblue&quot;, # color associated with the first o time-series data</span>
@@ -233,7 +236,8 @@ viscos_options &lt;-<span class="st"> </span>GlobalOptions::<span class="kw">set
   <span class="co"># data.frame column names</span>
   <span class="dt">name_o =</span> <span class="st">&quot;qobs&quot;</span>,
   <span class="dt">name_s =</span> <span class="st">&quot;qsim&quot;</span>,
-  <span class="dt">data_unit =</span> <span class="st">&quot;(m^3/s)&quot;</span>,
+  <span class="dt">name_lb =</span> <span class="st">&quot;lb&quot;</span>,
+  <span class="dt">name_ub =</span> <span class="st">&quot;ub&quot;</span>,
   <span class="dt">name_COSyear =</span> <span class="st">&quot;yyyy&quot;</span>,
   <span class="dt">name_COSmonth =</span> <span class="st">&quot;mm&quot;</span>,
   <span class="dt">name_COSday =</span> <span class="st">&quot;dd&quot;</span>,
@@ -241,9 +245,10 @@ viscos_options &lt;-<span class="st"> </span>GlobalOptions::<span class="kw">set
   <span class="dt">name_COSmin =</span> <span class="st">&quot;min&quot;</span>,
   <span class="dt">name_COSposix =</span> <span class="st">&quot;posixdate&quot;</span>,
   <span class="dt">name_COSperiod =</span> <span class="st">&quot;period&quot;</span>,
+  <span class="dt">data_unit =</span> <span class="st">&quot;(m^3/s)&quot;</span>,
   <span class="dt">missing_data =</span> -<span class="dv">999</span>,
  <span class="co"># plot options</span>
-  <span class="dt">color_o =</span> <span class="st">&quot;steelblue&quot;</span>,
+  <span class="dt">color_o =</span> <span class="st">&quot;dodgerblue&quot;</span>,
   <span class="dt">color_s =</span> <span class="st">&quot;orange&quot;</span>,
   <span class="dt">of_limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)
 )</code></pre></div>

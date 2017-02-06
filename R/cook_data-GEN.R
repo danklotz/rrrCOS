@@ -137,9 +137,9 @@
     assert_dataframe(cos_data)
     name_string <- cos_data %>% names(.) %>% tolower(.)
     # create posix_date column: ===============================================
-    month_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSmonth")]])
-    day_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSday")]])
-    hour_digits <- sprintf("%02d",cos_data[[viscos_options("name_COShour")]])
+    month_digits  <- sprintf("%02d",cos_data[[viscos_options("name_COSmonth")]])
+    day_digits    <- sprintf("%02d",cos_data[[viscos_options("name_COSday")]])
+    hour_digits   <- sprintf("%02d",cos_data[[viscos_options("name_COShour")]])
     minute_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSmin")]])
     posix_date <- cos_data[[viscos_options("name_COSyear")]] %&% 
         month_digits %&% 
@@ -190,16 +190,14 @@
   }
 
   # ---------------------------------------------------------------------------
-  #' calculate periods
+  #' Mark Periods
   #'
-  #' Mark the periods within cos_data.
-  # The marking uses a monthly resolution, which are defined by the integers
-  #' `start_month` and `end_month`.  
+  #' Compute/Mark the periods within cos_data. The marking uses a monthly 
+  #' resolution, which are defined by the integers `start_month` and 
+  #' `end_month`.  
   #'
-  #' @param cos_data The data.frame, which contains the runoff information
-  #' @return The runoff data.frame reduced and ordered according to the
-  #' hydrological years within the data.
-  #' \strong{Note:} The periods columns are formatted as characters!
+  #' @param cos_data a data.frame that contains the runoff information.
+  #' @return  `cos_data` with an aditonal column with the marked periods.
   #'
   #' @import dplyr
   #' @import magrittr
@@ -212,9 +210,16 @@
     name_month <- viscos_options("name_COSmonth")
     cos_data %<>% remove_junk %>% complete_dates()
     eval_diff <- function(a) {c(a[1],diff(a))}
+    period_correction <- function(cos_data,period) {
+      # tests:
+      year_is_max <- cos_data[[name_year]] == max_year
+      month_after_end <- cos_data[[name_month]] > end_month
+      # assigmnet:
+      ifelse((year_is_max & month_after_end), 0, period)
+    }
     # calc: ===================================================================
-    # (I) get labels for the months: 
-    if (start_month <= end_month ) {
+    # (I) get labels for the months: ##########################################
+    if (start_month <= end_month) {
       period_range <- seq(start_month,end_month)
       out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
     } else if (start_month > end_month) {
@@ -223,22 +228,18 @@
       period_range <- c(range_1,range_2)
       out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
     }
-    # (II) mark periods: 
+    # (II) mark periods: ######################################################
     start_months_in_data <- cos_data[[name_month]] %in% c(start_month)
     cos_data[[viscos_options("name_COSperiod")]] <- start_months_in_data %>%
-      eval_diff() %>%
+      eval_diff(.) %>%
       pmax(.,0) %>%
-      cumsum
+      cumsum(.)
     out_period_in_data <- cos_data[[name_month]] %in% out_of_period
     cos_data$period[out_period_in_data] <- 0
-    # (III) corrections for last year 
+    # (III) corrections for last year #########################################
     max_year <- max(cos_data[[name_year]])
-    marked_cos_data <- cos_data %>% 
-      dplyr::mutate(
-        period = ifelse(
-          ((.[[name_year]] == max_year) &  (.[[name_month]] > end_month)),
-          0,
-          period)
+    marked_cos_data <- dplyr::mutate(cos_data,
+                              period = period_correction(cos_data, period)
       )
     return(marked_cos_data)
   }
@@ -248,9 +249,7 @@
   #'
   #' Converts the cos_data (class: data_frame) into an xts object
   #'
-  #' @param cos_data data_frame of the cos_data (see: xxx)
   #' @return xts object of the cos_data data.frame
-  #'
   #' @import zoo
   #' @importFrom xts xts
   #' @import magrittr
@@ -261,9 +260,10 @@
     assert_complete_date(cos_data)
     # calc: ===================================================================
     # set every- name to lover capitals and generate xts frame
-    new_names <- names(cos_data) %>% tolower
-    name_posix <- viscos_options("name_COSposix") %>% tolower
-    cos_data <- remove_leading_zeros(cos_data) %>%
+    new_names <- cos_data %>% names(.) %>% tolower(.)
+    name_posix <- viscos_options("name_COSposix") %>% tolower(.)
+    cos_data <- cos_data %>% 
+      remove_leading_zeros(.) %>%
       magrittr::set_names(new_names)
     cos_data_as_xts <- xts(x = cos_data[], order.by = cos_data[[name_posix]])
     return(cos_data_as_xts)

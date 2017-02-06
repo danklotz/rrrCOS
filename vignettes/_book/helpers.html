@@ -114,7 +114,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.4.3" data-path="cooking-data.html"><a href="cooking-data.html#complete-the-date-formats"><i class="fa fa-check"></i><b>1.4.3</b> Complete the date formats</a></li>
 <li class="chapter" data-level="1.4.4" data-path="cooking-data.html"><a href="cooking-data.html#remove-leading-zeros-in-column-names"><i class="fa fa-check"></i><b>1.4.4</b> Remove leading zeros in column names</a></li>
 <li class="chapter" data-level="1.4.5" data-path="cooking-data.html"><a href="cooking-data.html#mark-the-needed-periods"><i class="fa fa-check"></i><b>1.4.5</b> Mark the needed periods</a></li>
-<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-the-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform the <code>cos_data</code> into <code>xts</code></a></li>
+<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform <code>cos_data</code> into <code>xts</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="options.html"><a href="options.html"><i class="fa fa-check"></i><b>2</b> Options</a></li>
@@ -227,7 +227,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="get-a-regular-expression-string-for-the-needed-columns" class="section level3">
 <h3><span class="header-section-number">11.1.1</span> Get a Regular Expression String for the needed columns</h3>
 <p>This function can be called to get the names of the 8 allowed column-names within <strong>visCOS</strong>. <code>get_regex_for_cos_data</code> takes no input, as it gets the information directly from the global options (see: <em>viscos_options section</em>).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">get_regex_for_cos_data &lt;-<span class="st"> </span>function() {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">get_regex_for_cos_data &lt;-<span class="st"> </span>function() 
+  {
   regex_pattern &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;^&quot;</span>,<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSyear&quot;</span>),<span class="st">&quot;$|&quot;</span>,
                          <span class="st">&quot;^&quot;</span>,<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmonth&quot;</span>),<span class="st">&quot;$|&quot;</span>,
                          <span class="st">&quot;^&quot;</span>,<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSday&quot;</span>),<span class="st">&quot;$|&quot;</span>,
@@ -235,6 +236,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
                          <span class="st">&quot;^&quot;</span>,<span class="kw">viscos_options</span>(<span class="st">&quot;name_COSmin&quot;</span>),<span class="st">&quot;$|&quot;</span>,
                          <span class="kw">viscos_options</span>(<span class="st">&quot;name_o&quot;</span>),<span class="st">&quot;.*|&quot;</span>,
                          <span class="kw">viscos_options</span>(<span class="st">&quot;name_s&quot;</span>),<span class="st">&quot;.*|&quot;</span>,
+                         <span class="kw">viscos_options</span>(<span class="st">&quot;name_lb&quot;</span>),<span class="st">&quot;.*|&quot;</span>,
+                         <span class="kw">viscos_options</span>(<span class="st">&quot;name_ub&quot;</span>),<span class="st">&quot;.*|&quot;</span>,
                          <span class="kw">viscos_options</span>(<span class="st">&quot;name_COSposix&quot;</span>),<span class="st">&quot;|&quot;</span>,
                          <span class="kw">viscos_options</span>(<span class="st">&quot;name_COSperiod&quot;</span>),
                          <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
