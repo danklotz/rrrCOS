@@ -4,7 +4,7 @@
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This section defines the internaly used defensive programming part of **visCOS**.
+This section defines the internally used defensive programming part of **visCOS**.
 This are all functions dedicated to ensure that **visCOS** is working nicely
 even if it is used wrongly for whatever reason. This often means that a given
 function has to return an error if certain criteria are not met!
@@ -29,7 +29,7 @@ An exception throws an error.
 ```{r}
 #' @import magrittr
 assert_junk <- function(cos_data) {
-  regEx <- get_regex_for_cos_data()
+  regEx <- get_regex_for_cos_data( )
   assertChunk <- names(cos_data) %>% grepl(regEx, ., ignore.case = TRUE)
   if (any(assertChunk == FALSE)) {
     stop("there is still unwanted columns in the data. Try: remove_junk")
