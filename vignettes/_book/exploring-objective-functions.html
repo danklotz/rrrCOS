@@ -5,12 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>visCOS: documentation</title>
-  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-  <meta name="description" content="visCOS: documentation">
-  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
+  <title>visCOS</title>
+  <meta name="description" content="visCOS">
+  <meta name="generator" content="bookdown 0.3.9 and GitBook 2.6.7">
 
-  <meta property="og:title" content="visCOS: documentation" />
+  <meta property="og:title" content="visCOS" />
   <meta property="og:type" content="book" />
   
   
@@ -18,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="visCOS: documentation" />
+  <meta name="twitter:title" content="visCOS" />
   
   
   
@@ -34,7 +33,6 @@
   
 <link rel="prev" href="plotting-runoff-peaks-plots.html">
 <link rel="next" href="generate-previews.html">
-
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -94,85 +92,88 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <body>
 
 
+
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./index.html">visCOS: documentation</a></li>
+<li><a href="./index.html">visCOS</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Hello, traveler</a></li>
-<li class="chapter" data-level="1" data-path="cooking-data.html"><a href="cooking-data.html"><i class="fa fa-check"></i><b>1</b> Cooking Data</a><ul>
-<li class="chapter" data-level="1.1" data-path="cooking-data.html"><a href="cooking-data.html#raw-data"><i class="fa fa-check"></i><b>1.1</b> Raw Data</a></li>
-<li class="chapter" data-level="1.2" data-path="cooking-data.html"><a href="cooking-data.html#cooked-data"><i class="fa fa-check"></i><b>1.2</b> Cooked Data</a></li>
-<li class="chapter" data-level="1.3" data-path="cooking-data.html"><a href="cooking-data.html#examples"><i class="fa fa-check"></i><b>1.3</b> Examples</a></li>
-<li class="chapter" data-level="1.4" data-path="cooking-data.html"><a href="cooking-data.html#code"><i class="fa fa-check"></i><b>1.4</b> Code</a><ul>
-<li class="chapter" data-level="1.4.1" data-path="cooking-data.html"><a href="cooking-data.html#get-example-data"><i class="fa fa-check"></i><b>1.4.1</b> Get Example Data</a></li>
-<li class="chapter" data-level="1.4.2" data-path="cooking-data.html"><a href="cooking-data.html#remove-not-needed-columns"><i class="fa fa-check"></i><b>1.4.2</b> Remove not needed columns</a></li>
-<li class="chapter" data-level="1.4.3" data-path="cooking-data.html"><a href="cooking-data.html#complete-the-date-formats"><i class="fa fa-check"></i><b>1.4.3</b> Complete the date formats</a></li>
-<li class="chapter" data-level="1.4.4" data-path="cooking-data.html"><a href="cooking-data.html#remove-leading-zeros-in-column-names"><i class="fa fa-check"></i><b>1.4.4</b> Remove leading zeros in column names</a></li>
-<li class="chapter" data-level="1.4.5" data-path="cooking-data.html"><a href="cooking-data.html#mark-the-needed-periods"><i class="fa fa-check"></i><b>1.4.5</b> Mark the needed periods</a></li>
-<li class="chapter" data-level="1.4.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-cos_data-into-xts"><i class="fa fa-check"></i><b>1.4.6</b> Transform <code>cos_data</code> into <code>xts</code></a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#raw-data"><i class="fa fa-check"></i><b>1.1</b> Raw Data</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#cooked-data"><i class="fa fa-check"></i><b>1.2</b> Cooked Data</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="cooking-data.html"><a href="cooking-data.html"><i class="fa fa-check"></i><b>2</b> Cooking Data</a><ul>
+<li class="chapter" data-level="2.1" data-path="cooking-data.html"><a href="cooking-data.html#examples"><i class="fa fa-check"></i><b>2.1</b> Examples</a></li>
+<li class="chapter" data-level="2.2" data-path="cooking-data.html"><a href="cooking-data.html#code"><i class="fa fa-check"></i><b>2.2</b> Code</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="cooking-data.html"><a href="cooking-data.html#get-example-data"><i class="fa fa-check"></i><b>2.2.1</b> Get Example Data</a></li>
+<li class="chapter" data-level="2.2.2" data-path="cooking-data.html"><a href="cooking-data.html#remove-not-needed-columns"><i class="fa fa-check"></i><b>2.2.2</b> Remove not needed columns</a></li>
+<li class="chapter" data-level="2.2.3" data-path="cooking-data.html"><a href="cooking-data.html#complete-the-date-formats"><i class="fa fa-check"></i><b>2.2.3</b> Complete the date formats</a></li>
+<li class="chapter" data-level="2.2.4" data-path="cooking-data.html"><a href="cooking-data.html#remove-leading-zeros-in-column-names"><i class="fa fa-check"></i><b>2.2.4</b> Remove leading zeros in column names</a></li>
+<li class="chapter" data-level="2.2.5" data-path="cooking-data.html"><a href="cooking-data.html#mark-the-needed-periods"><i class="fa fa-check"></i><b>2.2.5</b> Mark the needed periods</a></li>
+<li class="chapter" data-level="2.2.6" data-path="cooking-data.html"><a href="cooking-data.html#transform-cos_data-into-xts"><i class="fa fa-check"></i><b>2.2.6</b> Transform <code>cos_data</code> into <code>xts</code></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="options.html"><a href="options.html"><i class="fa fa-check"></i><b>2</b> Options</a></li>
-<li class="chapter" data-level="3" data-path="ojective-functions.html"><a href="ojective-functions.html"><i class="fa fa-check"></i><b>3</b> Ojective Functions</a><ul>
-<li class="chapter" data-level="3.1" data-path="ojective-functions.html"><a href="ojective-functions.html#code-1"><i class="fa fa-check"></i><b>3.1</b> Code</a><ul>
-<li class="chapter" data-level="3.1.1" data-path="ojective-functions.html"><a href="ojective-functions.html#the-main-objective-functions"><i class="fa fa-check"></i><b>3.1.1</b> The “Main” Objective Functions</a></li>
-<li class="chapter" data-level="3.1.2" data-path="ojective-functions.html"><a href="ojective-functions.html#ohter-objective-functions"><i class="fa fa-check"></i><b>3.1.2</b> Ohter Objective Functions</a></li>
+<li class="chapter" data-level="3" data-path="options.html"><a href="options.html"><i class="fa fa-check"></i><b>3</b> Options</a></li>
+<li class="chapter" data-level="4" data-path="ojective-functions.html"><a href="ojective-functions.html"><i class="fa fa-check"></i><b>4</b> Ojective Functions</a><ul>
+<li class="chapter" data-level="4.1" data-path="ojective-functions.html"><a href="ojective-functions.html#code-1"><i class="fa fa-check"></i><b>4.1</b> Code</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="ojective-functions.html"><a href="ojective-functions.html#the-main-objective-functions"><i class="fa fa-check"></i><b>4.1.1</b> The “Main” Objective Functions</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ojective-functions.html"><a href="ojective-functions.html#ohter-objective-functions"><i class="fa fa-check"></i><b>4.1.2</b> Ohter Objective Functions</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="ojective-functions.html"><a href="ojective-functions.html#references"><i class="fa fa-check"></i><b>3.2</b> References</a></li>
+<li class="chapter" data-level="4.2" data-path="ojective-functions.html"><a href="ojective-functions.html#references"><i class="fa fa-check"></i><b>4.2</b> References</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="time-aggregates.html"><a href="time-aggregates.html"><i class="fa fa-check"></i><b>4</b> Time Aggregates</a><ul>
-<li class="chapter" data-level="4.1" data-path="time-aggregates.html"><a href="time-aggregates.html#examples-1"><i class="fa fa-check"></i><b>4.1</b> Examples</a></li>
-<li class="chapter" data-level="4.2" data-path="time-aggregates.html"><a href="time-aggregates.html#code-2"><i class="fa fa-check"></i><b>4.2</b> Code</a></li>
+<li class="chapter" data-level="5" data-path="time-aggregates.html"><a href="time-aggregates.html"><i class="fa fa-check"></i><b>5</b> Time Aggregates</a><ul>
+<li class="chapter" data-level="5.1" data-path="time-aggregates.html"><a href="time-aggregates.html#examples-1"><i class="fa fa-check"></i><b>5.1</b> Examples</a></li>
+<li class="chapter" data-level="5.2" data-path="time-aggregates.html"><a href="time-aggregates.html#code-2"><i class="fa fa-check"></i><b>5.2</b> Code</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html"><i class="fa fa-check"></i><b>5</b> Summaries of important objective functions</a><ul>
-<li class="chapter" data-level="5.1" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html#code-3"><i class="fa fa-check"></i><b>5.1</b> Code</a><ul>
-<li class="chapter" data-level="5.1.1" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html#compute-the-main-objective-functions"><i class="fa fa-check"></i><b>5.1.1</b> Compute the Main Objective Functions</a></li>
-<li class="chapter" data-level="5.1.2" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html#plotting"><i class="fa fa-check"></i><b>5.1.2</b> Plotting</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html"><i class="fa fa-check"></i><b>6</b> Flow Duration Curves</a><ul>
-<li class="chapter" data-level="6.1" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#example"><i class="fa fa-check"></i><b>6.1</b> Example</a></li>
-<li class="chapter" data-level="6.2" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#code-4"><i class="fa fa-check"></i><b>6.2</b> Code</a><ul>
-<li class="chapter" data-level="6.2.1" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#computing-the-data-for-the-flow-duration-curves"><i class="fa fa-check"></i><b>6.2.1</b> Computing the data for the flow duration curves</a></li>
-<li class="chapter" data-level="6.2.2" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#plotting-the-flow-duration-curves"><i class="fa fa-check"></i><b>6.2.2</b> Plotting the Flow duration curves</a></li>
-</ul></li>
-<li class="chapter" data-level="6.3" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#references-1"><i class="fa fa-check"></i><b>6.3</b> References</a></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html"><i class="fa fa-check"></i><b>7</b> Plotting Runoff Peaks Plots</a><ul>
-<li class="chapter" data-level="7.1" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#examples-2"><i class="fa fa-check"></i><b>7.1</b> Examples:</a></li>
-<li class="chapter" data-level="7.2" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#code-5"><i class="fa fa-check"></i><b>7.2</b> Code</a><ul>
-<li class="chapter" data-level="7.2.1" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#generating-the-plots-for-one-basin."><i class="fa fa-check"></i><b>7.2.1</b> Generating the Plots for one basin.</a></li>
-<li class="chapter" data-level="7.2.2" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#function-to-find-peaks"><i class="fa fa-check"></i><b>7.2.2</b> Function to find peaks</a></li>
-<li class="chapter" data-level="7.2.3" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#subplot-function"><i class="fa fa-check"></i><b>7.2.3</b> Subplot Function</a></li>
-</ul></li>
-<li class="chapter" data-level="7.3" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#references-2"><i class="fa fa-check"></i><b>7.3</b> References</a></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html"><i class="fa fa-check"></i><b>8</b> Exploring Objective Functions</a><ul>
-<li class="chapter" data-level="8.1" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#example-1"><i class="fa fa-check"></i><b>8.1</b> Example</a></li>
-<li class="chapter" data-level="8.2" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#code-6"><i class="fa fa-check"></i><b>8.2</b> Code</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#explore-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Explore the data</a></li>
+<li class="chapter" data-level="6" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html"><i class="fa fa-check"></i><b>6</b> Summaries of important objective functions</a><ul>
+<li class="chapter" data-level="6.1" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html#code-3"><i class="fa fa-check"></i><b>6.1</b> Code</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html#compute-the-main-objective-functions"><i class="fa fa-check"></i><b>6.1.1</b> Compute the Main Objective Functions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="summaries-of-important-objective-functions.html"><a href="summaries-of-important-objective-functions.html#plotting"><i class="fa fa-check"></i><b>6.1.2</b> Plotting</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="generate-previews.html"><a href="generate-previews.html"><i class="fa fa-check"></i><b>9</b> Generate Previews</a><ul>
-<li class="chapter" data-level="9.1" data-path="generate-previews.html"><a href="generate-previews.html#code-7"><i class="fa fa-check"></i><b>9.1</b> Code</a></li>
+<li class="chapter" data-level="7" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html"><i class="fa fa-check"></i><b>7</b> Flow Duration Curves</a><ul>
+<li class="chapter" data-level="7.1" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#example"><i class="fa fa-check"></i><b>7.1</b> Example</a></li>
+<li class="chapter" data-level="7.2" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#code-4"><i class="fa fa-check"></i><b>7.2</b> Code</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#computing-the-data-for-the-flow-duration-curves"><i class="fa fa-check"></i><b>7.2.1</b> Computing the data for the flow duration curves</a></li>
+<li class="chapter" data-level="7.2.2" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#plotting-the-flow-duration-curves"><i class="fa fa-check"></i><b>7.2.2</b> Plotting the Flow duration curves</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="defensive-code.html"><a href="defensive-code.html"><i class="fa fa-check"></i><b>10</b> Defensive Code</a><ul>
-<li class="chapter" data-level="10.1" data-path="defensive-code.html"><a href="defensive-code.html#code-8"><i class="fa fa-check"></i><b>10.1</b> Code</a><ul>
-<li class="chapter" data-level="10.1.1" data-path="defensive-code.html"><a href="defensive-code.html#check-if-cos_data-is-clean"><i class="fa fa-check"></i><b>10.1.1</b> Check if <code>cos_data</code> is “clean”</a></li>
-<li class="chapter" data-level="10.1.2" data-path="defensive-code.html"><a href="defensive-code.html#check-date-completeness"><i class="fa fa-check"></i><b>10.1.2</b> Check date completeness</a></li>
-<li class="chapter" data-level="10.1.3" data-path="defensive-code.html"><a href="defensive-code.html#check-if-the-data-is-a-data.frame"><i class="fa fa-check"></i><b>10.1.3</b> Check if the data is a <code>data.frame</code></a></li>
+<li class="chapter" data-level="7.3" data-path="flow-duration-curves.html"><a href="flow-duration-curves.html#references-1"><i class="fa fa-check"></i><b>7.3</b> References</a></li>
 </ul></li>
-<li class="chapter" data-level="10.2" data-path="defensive-code.html"><a href="defensive-code.html#references-3"><i class="fa fa-check"></i><b>10.2</b> References</a></li>
+<li class="chapter" data-level="8" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html"><i class="fa fa-check"></i><b>8</b> Plotting Runoff Peaks Plots</a><ul>
+<li class="chapter" data-level="8.1" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#examples-2"><i class="fa fa-check"></i><b>8.1</b> Examples:</a></li>
+<li class="chapter" data-level="8.2" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#code-5"><i class="fa fa-check"></i><b>8.2</b> Code</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#generating-the-plots-for-one-basin."><i class="fa fa-check"></i><b>8.2.1</b> Generating the Plots for one basin.</a></li>
+<li class="chapter" data-level="8.2.2" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#function-to-find-peaks"><i class="fa fa-check"></i><b>8.2.2</b> Function to find peaks</a></li>
+<li class="chapter" data-level="8.2.3" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#subplot-function"><i class="fa fa-check"></i><b>8.2.3</b> Subplot Function</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="helpers.html"><a href="helpers.html"><i class="fa fa-check"></i><b>11</b> Helpers</a><ul>
-<li class="chapter" data-level="11.1" data-path="helpers.html"><a href="helpers.html#code-9"><i class="fa fa-check"></i><b>11.1</b> Code</a><ul>
-<li class="chapter" data-level="11.1.1" data-path="helpers.html"><a href="helpers.html#get-a-regular-expression-string-for-the-needed-columns"><i class="fa fa-check"></i><b>11.1.1</b> Get a Regular Expression String for the needed columns</a></li>
-<li class="chapter" data-level="11.1.2" data-path="helpers.html"><a href="helpers.html#extract-the-numeration-of-the-basins"><i class="fa fa-check"></i><b>11.1.2</b> Extract the numeration of the basins</a></li>
+<li class="chapter" data-level="8.3" data-path="plotting-runoff-peaks-plots.html"><a href="plotting-runoff-peaks-plots.html#references-2"><i class="fa fa-check"></i><b>8.3</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html"><i class="fa fa-check"></i><b>9</b> Exploring Objective Functions</a><ul>
+<li class="chapter" data-level="9.1" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#example-1"><i class="fa fa-check"></i><b>9.1</b> Example</a></li>
+<li class="chapter" data-level="9.2" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#code-6"><i class="fa fa-check"></i><b>9.2</b> Code</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="exploring-objective-functions.html"><a href="exploring-objective-functions.html#explore-the-data"><i class="fa fa-check"></i><b>9.2.1</b> Explore the data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="generate-previews.html"><a href="generate-previews.html"><i class="fa fa-check"></i><b>10</b> Generate Previews</a><ul>
+<li class="chapter" data-level="10.1" data-path="generate-previews.html"><a href="generate-previews.html#code-7"><i class="fa fa-check"></i><b>10.1</b> Code</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="defensive-code.html"><a href="defensive-code.html"><i class="fa fa-check"></i><b>11</b> Defensive Code</a><ul>
+<li class="chapter" data-level="11.1" data-path="defensive-code.html"><a href="defensive-code.html#code-8"><i class="fa fa-check"></i><b>11.1</b> Code</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="defensive-code.html"><a href="defensive-code.html#check-if-cos_data-is-clean"><i class="fa fa-check"></i><b>11.1.1</b> Check if <code>cos_data</code> is “clean”</a></li>
+<li class="chapter" data-level="11.1.2" data-path="defensive-code.html"><a href="defensive-code.html#check-date-completeness"><i class="fa fa-check"></i><b>11.1.2</b> Check date completeness</a></li>
+<li class="chapter" data-level="11.1.3" data-path="defensive-code.html"><a href="defensive-code.html#check-if-the-data-is-a-data.frame"><i class="fa fa-check"></i><b>11.1.3</b> Check if the data is a <code>data.frame</code></a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="defensive-code.html"><a href="defensive-code.html#references-3"><i class="fa fa-check"></i><b>11.2</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="helpers.html"><a href="helpers.html"><i class="fa fa-check"></i><b>12</b> Helpers</a><ul>
+<li class="chapter" data-level="12.1" data-path="helpers.html"><a href="helpers.html#code-9"><i class="fa fa-check"></i><b>12.1</b> Code</a><ul>
+<li class="chapter" data-level="12.1.1" data-path="helpers.html"><a href="helpers.html#get-a-regular-expression-string-for-the-needed-columns"><i class="fa fa-check"></i><b>12.1.1</b> Get a Regular Expression String for the needed columns</a></li>
+<li class="chapter" data-level="12.1.2" data-path="helpers.html"><a href="helpers.html#extract-the-numeration-of-the-basins"><i class="fa fa-check"></i><b>12.1.2</b> Extract the numeration of the basins</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -187,7 +188,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">visCOS: documentation</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">visCOS</a>
           </h1>
         </div>
 
@@ -196,10 +197,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="exploring-objective-functions" class="section level1">
-<h1><span class="header-section-number">Chapter 8</span> Exploring Objective Functions</h1>
+<h1><span class="header-section-number">Chapter 9</span> Exploring Objective Functions</h1>
 <p>This section defines the code of a <a href="http://shiny.rstudio.com/">shiny gadget</a>. It enables the interactive exploration of (hydro-) graphs for the different basins. The gadget shows always the corresponding objective function for the selected graph. Furthermore, one can get the selected data by clicking on “done” at the end of a session. The following examples provide a good overview of what the function can do.</p>
 <div id="example-1" class="section level2">
-<h2><span class="header-section-number">8.1</span> Example</h2>
+<h2><span class="header-section-number">9.1</span> Example</h2>
 <p>This chapter gives examples of <code>explore_cos_data</code>. For the pre-requirements take a look at the <a href="LP-Introduction">introduction</a>. Running the <code>explore_cos_data</code> function without any options opens a shiny gadget in the viewer:</p>
 <p><img src="figures/explore_cos_data.gif" style="display: block; margin: auto;" /></p>
 <p>Information on the <em>objective functions</em> can be found <a href="ex-OF_explanation.html">here</a>.</p>
@@ -208,10 +209,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Users can select different basins via the selection box (<em># basins:</em>) on the top-left and interactively zoom and move the graph in the center by clicking on it or moving the date switches below the graph. While doing so the objective functions (presented in the table below) are re-calculated for the chosen time window.</p>
 </div>
 <div id="code-6" class="section level2">
-<h2><span class="header-section-number">8.2</span> Code</h2>
+<h2><span class="header-section-number">9.2</span> Code</h2>
 <p>In the following paragraphs the code of the shiny app is defined. The computations of the app are defined in the <code>server</code> part and the appearance in the <code>ui</code>.</p>
 <div id="explore-the-data" class="section level3">
-<h3><span class="header-section-number">8.2.1</span> Explore the data</h3>
+<h3><span class="header-section-number">9.2.1</span> Explore the data</h3>
 <p>This function represents the main part of the shiny app. The current solution <strong>forces</strong> users to enumerate their basins with and the shiny app needs some pre-calculation, which need to be calculated before the app is started. These calculations are made before the app as such is defined. They include:</p>
 <ul>
 <li><ol style="list-style-type: upper-roman">
@@ -479,7 +480,7 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
   <span class="kw">dyPlugin</span>(
     <span class="dt">dygraph =</span> dygraph,
     <span class="dt">name =</span> <span class="st">&quot;Crosshair&quot;</span>,
-    <span class="dt">path =</span> <span class="kw">system.file</span>(<span class="st">&quot;examples/plugins/crosshair.js&quot;</span>,
+    <span class="dt">path =</span> <span class="kw">system.file</span>(<span class="st">&quot;plugins/crosshair.js&quot;</span>,
                        <span class="dt">package =</span> <span class="st">&quot;dygraphs&quot;</span>),
     <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">direction =</span> <span class="kw">match.arg</span>(direction))
   )
@@ -496,8 +497,9 @@ explore_cos_data &lt;-<span class="st"> </span>function(cos_data,
         </div>
       </div>
 <a href="plotting-runoff-peaks-plots.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="generate-previews.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
-
+<a href="generate-previews.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
@@ -527,7 +529,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["visdoc.pdf"],
+"download": ["visCOS.pdf"],
 "toc": {
 "collapse": "subsection"
 }
