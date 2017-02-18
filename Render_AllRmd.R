@@ -11,7 +11,13 @@
 # new method ==============================================================
   require(bookdown)
   setwd("vignettes")
+  # be sure to change change it to where u want to have the book :)
+  out_dir <- "D:/danklotz.github.io/viscos"
   # generate pdf file 
-  render_book("index.Rmd", "bookdown::pdf_book")
+  render_book(input = "index.Rmd", 
+              output_format = "bookdown::pdf_book", 
+              output_dir = out_dir)
   # generate html book
-  render_book("index.Rmd", "bookdown::gitbook")
+  render_book(input = "index.Rmd", 
+              output_format = "bookdown::gitbook", 
+              output_dir = out_dir)
