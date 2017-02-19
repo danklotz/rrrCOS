@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Code for cooking data 
+# Code for cooking data
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -8,11 +8,9 @@
   #'
   #' Get exemplary runoff data to test the different functions of visCOS
   #' @export
-  get_viscos_example <- function() {
-    file_path <- system.file("extdata", 
-                             "runoff_example.csv", 
-                             package = "visCOS")
-    runoff_example <- read.csv(file_path)
+  get_viscos_example <- function( ) {
+    path <- system.file("extdata", "runoff_example.csv", package = "visCOS")
+    runoff_example <- read.csv(path)
     return(runoff_example)
   }
 
@@ -27,12 +25,11 @@
   #' @return data.frame object without the chunk
   #' @export
   remove_junk <- function(cos_data) {
-    # pre: ====================================================================
     assert_dataframe(cos_data) # see: defensive code
-    # determine names of cos_data and get regex: ==============================
+    # determine names of cos_data and get regex:
     names_in_data <- cos_data %>% names(.)
-    regex_columns <- get_regex_for_cos_data() # see: helpers
-    # get idx and make clean data: ============================================
+    regex_columns <- get_regex_for_cos_data( ) # see: helpers
+    # get idx and clean data: ================================================
     idx <- grep(regex_columns,names_in_data, ignore.case = TRUE)
     clean_cos_data <- only_observed_basins(cos_data[ ,idx])
     return( clean_cos_data )
@@ -68,13 +65,13 @@
     if ( any(colmax < 0.0) ){
       name_o <- viscos_options("name_o")
       neg_o_names <- which(colmax < 0.0) %>% names(.)
-      neg_s_names <- gsub(name_o,viscos_options("name_s"), 
-                          neg_o_names, 
+      neg_s_names <- gsub(name_o,viscos_options("name_s"),
+                          neg_o_names,
                           ignore.case = TRUE)
-      data_selection <-  paste(neg_o_names, 
-                               neg_s_names, 
-                               sep = "|", 
-                               collapse = "|") %>% 
+      data_selection <-  paste(neg_o_names,
+                               neg_s_names,
+                               sep = "|",
+                               collapse = "|") %>%
         grepl(names(cos_data), ignore.case = TRUE) %>%
         not(.)
       data_only_observed <- cos_data[ ,data_selection]
@@ -101,12 +98,12 @@
   #'
   #' @export
   complete_dates <- function(cos_data) {
-    # pre: ==================================================================== 
-    assert_dataframe(cos_data) 
-    date_names <- unlist(viscos_options("name_COSyear", 
-                                        "name_COSmonth", 
-                                        "name_COSmonth", 
-                                        "name_COShour", 
+    # pre: ====================================================================
+    assert_dataframe(cos_data)
+    date_names <- unlist(viscos_options("name_COSyear",
+                                        "name_COSmonth",
+                                        "name_COSmonth",
+                                        "name_COShour",
                                         "name_COSmin")
                         )
     # check dates: ============================================================
@@ -131,7 +128,7 @@
 
   # ---------------------------------------------------------------------------
   implode_cosdate <- function(cos_data) {
-    # pre: ==================================================================== 
+    # pre: ====================================================================
     require("magrittr", quietly = TRUE)
     require("pasta", quietly = TRUE)
     assert_dataframe(cos_data)
@@ -141,10 +138,10 @@
     day_digits    <- sprintf("%02d",cos_data[[viscos_options("name_COSday")]])
     hour_digits   <- sprintf("%02d",cos_data[[viscos_options("name_COShour")]])
     minute_digits <- sprintf("%02d",cos_data[[viscos_options("name_COSmin")]])
-    posix_date <- cos_data[[viscos_options("name_COSyear")]] %&% 
-        month_digits %&% 
-        day_digits %&% 
-        hour_digits %&% 
+    posix_date <- cos_data[[viscos_options("name_COSyear")]] %&%
+        month_digits %&%
+        day_digits %&%
+        hour_digits %&%
         minute_digits %>%
       as.POSIXct(format = "%Y%m%d%H%M",
                  origin = .[1],
@@ -192,8 +189,8 @@
   # ---------------------------------------------------------------------------
   #' Mark Periods
   #'
-  #' Compute/Mark the periods within cos_data. The marking uses a monthly 
-  #' resolution, which are defined by the integers `start_month` and 
+  #' Compute/Mark the periods within cos_data. The marking uses a monthly
+  #' resolution, which are defined by the integers `start_month` and
   #' `end_month`.  
   #'
   #' @param cos_data a data.frame that contains the runoff information.
@@ -209,7 +206,7 @@
     name_year <- viscos_options("name_COSyear")
     name_month <- viscos_options("name_COSmonth")
     cos_data %<>% remove_junk %>% complete_dates()
-    eval_diff <- function(a) {c(a[1],diff(a))}
+    eval_diff <- function(a) {c( a[1],diff(a) )}
     period_correction <- function(cos_data,period) {
       # tests:
       year_is_max <- cos_data[[name_year]] == max_year
@@ -262,7 +259,7 @@
     # set every- name to lover capitals and generate xts frame
     new_names <- cos_data %>% names(.) %>% tolower(.)
     name_posix <- viscos_options("name_COSposix") %>% tolower(.)
-    cos_data <- cos_data %>% 
+    cos_data <- cos_data %>%
       remove_leading_zeros(.) %>%
       magrittr::set_names(new_names)
     cos_data_as_xts <- xts(x = cos_data[], order.by = cos_data[[name_posix]])

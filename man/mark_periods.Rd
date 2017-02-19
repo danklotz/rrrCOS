@@ -12,7 +12,7 @@ mark_periods(cos_data, start_month = 10, end_month = 9)
 `cos_data` with an aditonal column with the marked periods.
 }
 \description{
-Compute/Mark the periods within cos_data. The marking uses a monthly 
-resolution, which are defined by the integers `start_month` and 
+Compute/Mark the periods within cos_data. The marking uses a monthly
+resolution, which are defined by the integers `start_month` and
 `end_month`.
 }

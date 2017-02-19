@@ -88,10 +88,10 @@ plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
     plot_sub <- ggplot() +
       geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
                 aes(x = time, y = sim),
-                col = "orange") +
+                col = viscos_options("color_s")) +
       geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
                 aes(x = time, y = obs),
-                col = "steelblue") +
+                col = viscos_options("color_o")) +
       geom_point(data = point, aes(idx, peak_obs))
     return(plot_sub)
   }

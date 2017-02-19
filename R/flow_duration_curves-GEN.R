@@ -86,6 +86,7 @@
     fdc_data <- fdc_compute(cos_data)
     gplot <- ggplot(fdc_data) + 
       geom_line(aes(x = logfun(exceedance,log_x), y = logfun(value,log_y), color = obs_sim)) +
+      scale_color_manual(values = c(viscos_options("color_o"),viscos_options("color_s"))) +
       facet_wrap(~ basin_idx)
     return(gplot)
   }
