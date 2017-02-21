@@ -1,4 +1,4 @@
-# Summaries of important objective functions
+# Main Objective Functions 
 
 ```{r setup6, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
@@ -59,7 +59,7 @@ of_values <- get_viscos_example() %>%
 ```
 
 
-### Compute the Main Objective Functions
+### Computation
 The purpose of this function is to extract a the main of objective functions
 from the `COSERO` data.frame. The objective functions are extracted for each
 basin separately and computed for the entire length of the data, as well as
@@ -169,7 +169,7 @@ NULL
 
 ```
 
-#### Bar Plot
+#### Bar Plots
 ```{r}
 # ---------------------------------------------------------------------------
 #' Bar plot for the Main Objective Function Values
@@ -221,7 +221,7 @@ main_of_barplot <- function(cos_data) {
 
 ```
 
-#### Raster-Plot
+#### Raster Plots
 ```{r}
 #' Bar plot for the Main Objective Function Values
 #'

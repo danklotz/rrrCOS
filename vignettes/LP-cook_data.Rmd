@@ -119,7 +119,7 @@ The example data is used to test the available functions. It is defined as:
 
 ```
 
-### Remove not needed columns
+### Isolate Needed Columns
 The following function removes all columns not specified in the `viscos_options`,
 as well as basins where no $o$ data (observations) are available. One has to
 be a bit careful with the naming, because **visCOS** is case insensitive. So is
@@ -153,7 +153,7 @@ used to filter out the data. Afterwards, the function `only_observed_basins` is
 
 ```
 
-#### Get only observed basins
+#### Isolate Observed Basins
 This function removes basins that has no observations (`o_data`). Here,
 "no observations" means that all the entries of the respective columns are either
 `NA` or tagged with the value defined with `viscos_options("missing_data")`.
@@ -209,7 +209,7 @@ This function removes basins that has no observations (`o_data`). Here,
 
 ```
 
-### Complete the date formats
+### Complete Dates
 This function is not finished yet! All dates in **viscos** are set to *UTC* and
 hence to a **fixed time-zone** in order to avoid problems with leaps in time
 (summer/winter time). These dates have to be provided in two formats
@@ -269,7 +269,7 @@ the 5-columns representation into `POSIXct` dates via the internally defined
 
 ```
 
-#### Implode date
+#### Implode Date
 This sub-function is used to transform the "old-school" 5 column format into the
 modern `POSIXct`.
 ```{r}
@@ -300,7 +300,7 @@ modern `POSIXct`.
 
 ```
 
-### Remove leading zeros in column names
+### Remove Leading Zeros in Column Names
 This internal function removes leading zeros from column names of the
 `cos_data` data.frame.
 The function has no defensive code but uses `remove_junk` (see: above).
@@ -344,7 +344,7 @@ It should therefore be used with care!
 ```
 
 
-### Mark the needed periods
+### Mark Periods
 This function creates the period column. The period column consists of
 increasing integers for each period and zeros, which indicate that a given row is
 "outside" the period. The name of the column is defined by the option

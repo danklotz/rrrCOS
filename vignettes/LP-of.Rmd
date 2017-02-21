@@ -39,6 +39,7 @@ For the explanation and definition of the objective function it is assumed that
 #' @param s The created data or the simulations (s_data)
 #' @name of_overview
 NULL
+
 ```
 
 ### The "Main" Objective Functions
@@ -63,14 +64,16 @@ good as the mean of $o$ and negative values are even worse.
 The code for the $NSE$ computation is:
 
 ```{r}
-#' Nash-Sutcliffe Efficiency
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_nse <- function(o,s) {
-  as.numeric( NSE(s,o) )
-}
+  # --------------------------------------------------------------------------
+  #' Nash-Sutcliffe Efficiency
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_nse <- function(o,s) {
+    as.numeric( NSE(s,o) )
+  }
+
 ```
 
 
@@ -99,14 +102,16 @@ quality is similar to the $NSE$.
 
 The code for the $KGE$ computation is:
 ```{r}
-#' Kling-Gupta Efficiency
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_kge <- function(o,s) {
-  as.numeric( KGE(s,o) )
-}
+  # --------------------------------------------------------------------------
+  #' Kling-Gupta Efficiency
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_kge <- function(o,s) {
+    as.numeric( KGE(s,o) )
+  }
+
 ```
 
 #### Percentage Bias
@@ -119,14 +124,16 @@ The $100*$ is just a scaling factor applied to express $p_{bias}$ as a percentag
 
 The code for the $p_{bias}$ computation is:
 ```{r}
-#' Percentage Bias
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_p_bias <- function(o,s) {
-  as.numeric( pbias(s,o) )
-}
+  # --------------------------------------------------------------------------
+  #' Percentage Bias
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_p_bias <- function(o,s) {
+    as.numeric( pbias(s,o) )
+  }
+
 ```
 
 #### Pearson's correlation coefficient
@@ -142,14 +149,16 @@ is to zero the weaker is the implied correlation.
 
 The code for the correlation is:
 ```{r}
-#' Correlation
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_cor <- function(o,s) {
-  diag( cor(o,s) )
-}
+  # --------------------------------------------------------------------------
+  #' Correlation
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_cor <- function(o,s) {
+    diag( cor(o,s) )
+  }
+
 ```
 
 ### Ohter Objective Functions
@@ -161,14 +170,16 @@ Descriptions shall follow
 $$ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
               {T} $$
 ```{r}
-#' Root Mean Sqaured Error
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_rmse <- function(o,s) {
-  as.numeric( rmse(s,o) )
-}
+  # --------------------------------------------------------------------------
+  #' Root Mean Sqaured Error
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_rmse <- function(o,s) {
+    as.numeric( rmse(s,o) )
+  }
+
 ```
 
 #### Inverted Nash-Sutcliffe Efficiency
@@ -176,41 +187,47 @@ of_rmse <- function(o,s) {
 $$ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
               {\sum_{t=1}^T \big( s(t)-\bar{s} \big)^2} $$
 ```{r}
-#' Inverted Nash-Sutcliffe Efficiency
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_invert_nse <- function(o,s) {
-  as.numeric( NSE(o,s) )
-}
+  # --------------------------------------------------------------------------
+  #' Inverted Nash-Sutcliffe Efficiency
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_invert_nse <- function(o,s) {
+    as.numeric( NSE(o,s) )
+  }
+
 ```
 
 #### Ratio of the Standard Deviations
 
 $$ rsd = \frac{\sigma_s}{ \sigma_o } $$
 ```{r}
-#' Ratio of Standard Deviations
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_rsd <- function(o,s) {
-  as.numeric( rSD(s,o) )
-}
+  # --------------------------------------------------------------------------
+  #' Ratio of Standard Deviations
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_rsd <- function(o,s) {
+    as.numeric( rSD(s,o) )
+  }
+
 ```
 
 #### Ratio of the Means
 
 $$ rmeans = \mu_s / \mu_o$$
 ```{r}
-#' Ratio of Means
-#'
-#' @rdname of_overview
-#' @export
-of_rmeans <- function(o,s) {
-  as.numeric( mean(s)/mean(o) )
-}
+  # --------------------------------------------------------------------------
+  #' Ratio of Means
+  #'
+  #' @rdname of_overview
+  #' @export
+  of_rmeans <- function(o,s) {
+    as.numeric( mean(s)/mean(o) )
+  }
+
 ```
 
 #### Volumetric Efficiency
@@ -221,14 +238,16 @@ $$ VE = 1- \frac{\sum_{t=1}^T abs\big( s(t)-o(t) \big)}
                 {\sum_{t=1}^T o(t) } $$
 
 ```{r}
-#' Volumetric Efficiency
-#'
-#' @rdname of_overview
-#' @import hydroGOF
-#' @export
-of_ve <- function(o,s) {
-  as.numeric( VE(s,o) )
-}
+  # --------------------------------------------------------------------------
+  #' Volumetric Efficiency
+  #'
+  #' @rdname of_overview
+  #' @import hydroGOF
+  #' @export
+  of_ve <- function(o,s) {
+    as.numeric( VE(s,o) )
+  }
+
 ```
 
 ## References

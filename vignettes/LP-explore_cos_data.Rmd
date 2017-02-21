@@ -44,13 +44,15 @@ In the following paragraphs the code of the shiny app is defined.
 The computations of the app are defined in the `server` part and the
 appearance in the `ui`.
 
-### Explore the data
+### Objective Function Objectivation
 This function represents the main part of the shiny app.
-The current solution **forces** users to enumerate their basins with and the shiny app needs some pre-calculation, which need to be calculated before the app is started. These calculations are
-made before the app as such is defined. They include:
+The current solution **forces** users to enumerate their basins with and the 
+shiny app needs some pre-calculation, which need to be calculated before the app 
+is started. These calculations are made before the app as such is defined.
+They include:
 
-- (I) Defensive code
-- (II) Transform data into `xts` (`d_xts`).
+- (I) Defensive ocde
+- (II) Transformation of data into `xts` (`d_xts`).
 - (III) Save numeration of basins within the variable `d_nums`.
 ```{r}
   # --------------------------------------------------------------------------

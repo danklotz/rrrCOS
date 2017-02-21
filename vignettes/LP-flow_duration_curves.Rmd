@@ -29,7 +29,7 @@ Flow duration curves can be plotted in **visCOS** in the following way:
 ```
 
 ## Code
-### Computing the data for the flow duration curves
+### Computation
 ```{r}
   #' Compute Flow Duration Curves
   #'
@@ -93,7 +93,7 @@ Flow duration curves can be plotted in **visCOS** in the following way:
   }
 ```
 
-### Plotting the Flow duration curves
+### Plotting
 ```{r}
   #' Plot Flow Duration Curves
   #'

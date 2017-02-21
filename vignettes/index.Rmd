@@ -8,7 +8,7 @@ output:
     toc: yes
 ---
 
-# Hello, traveler {-}
+# Hello Traveler {-}
 
 ```{r, fig.align = 'center', out.width = '50%', echo = FALSE}
   knitr::include_graphics("figures/icon_viscos.png")
