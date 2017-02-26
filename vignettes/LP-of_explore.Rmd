@@ -68,7 +68,7 @@ appearance in the `ui`.
   #' # explore the model performance
   #' cos_data <- get_viscos_example()
   #' explore_cos_data(cos_data)
-explore_cos_data <- function(cos_data,
+of_explore <- function(cos_data,
                              of_list = list(
                                nse = of_nse,
                                kge = of_kge,
@@ -304,12 +304,11 @@ dyCrosshair <- function(dygraph,
     dygraph = dygraph,
     name = "Crosshair",
     path = system.file("plugins/crosshair.js",
-                       package = "dygraphs"),
+                       package = "visCOS"),
     options = list(direction = match.arg(direction))
   )
 }
 ```
-
 
 ```{r}
   runGadget(ui,server)
