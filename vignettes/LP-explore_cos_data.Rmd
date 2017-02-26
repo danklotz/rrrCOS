@@ -44,24 +44,12 @@ In the following paragraphs the code of the shiny app is defined.
 The computations of the app are defined in the `server` part and the
 appearance in the `ui`.
 
-### Objective Function Objectivation
-This function represents the main part of the shiny app.
-The current solution **forces** users to enumerate their basins with and the 
-shiny app needs some pre-calculation, which need to be calculated before the app 
-is started. These calculations are made before the app as such is defined.
-They include:
-
-- (I) Defensive ocde
-- (II) Transformation of data into `xts` (`d_xts`).
-- (III) Save numeration of basins within the variable `d_nums`.
 ```{r}
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
   #' Runs a Shiny Gadget which can be used to get an overview of a cos_data time
   #' series object.
-  #'
-  #' @param d_xts cos_data formatted as time series
   #'
   #' @import shiny
   #' @import miniUI
@@ -125,8 +113,6 @@ explore_cos_data <- function(cos_data,
       plot_bounds <- TRUE # switch: plot bounds
     }
   }
-  # (II) =====================================================================
-  d_xts <- cos_data_as_xts(clean_cos_data)
   # (III) ====================================================================
   idx_names <- grepl(viscos_options("name_o"), 
                      names_data, 

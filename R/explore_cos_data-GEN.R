@@ -9,8 +9,6 @@ if (knitr:::is_latex_output()) {
   #' Runs a Shiny Gadget which can be used to get an overview of a cos_data time
   #' series object.
   #'
-  #' @param d_xts cos_data formatted as time series
-  #'
   #' @import shiny
   #' @import miniUI
   #' @importFrom xts xts
@@ -73,8 +71,6 @@ explore_cos_data <- function(cos_data,
       plot_bounds <- TRUE # switch: plot bounds
     }
   }
-  # (II) =====================================================================
-  d_xts <- cos_data_as_xts(clean_cos_data)
   # (III) ====================================================================
   idx_names <- grepl(viscos_options("name_o"), 
                      names_data, 
