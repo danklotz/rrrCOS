@@ -1,14 +1,13 @@
-if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/explore_cos_data.jpg')
-} else {
-  knitr::include_graphics("figures/explore_cos_data.gif")
-}
+# ---------------------------------------------------------------------------
+# Code for of_explore
+# authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
-  #' Runs a Shiny Gadget which can be used to get an overview of a cos_data time
-  #' series object.
-  #'
+  #' Runs a Shiny Gadget which can be used to interactively explore two 
+  #' `cos_data` objects in terms of their respective objective functions. 
   #'
   #' @import shiny
   #' @import miniUI
@@ -149,14 +148,14 @@ of_compare <- function(d1,
   create_dygraph <- function(plot_data, plot_group,plot_bounds){
     if(plot_bounds) {
       base_graph <- dygraph(plot_data, group = plot_group) %>%
-        dyAxis("y", label = name_o) %>%
+        dyAxis("y", label = ylab) %>%
         dySeries("x", label = name_o, color = color_o) %>%
         dySeries("y", label = name_s, color = color_s) %>%
         dySeries("lb", label = name_lb, color = "grey80") %>% 
         dySeries("ub",label = name_ub,color = "grey80")
     } else {
       base_graph <- dygraph(plot_data, group = plot_group) %>%
-        dyAxis("y", label = name_o) %>%
+        dyAxis("y", label = ylab) %>%
         dySeries("x", label = name_o, color = color_o) %>%
         dySeries("y", label = name_s, color = color_s)
     }

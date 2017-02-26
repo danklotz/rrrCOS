@@ -254,7 +254,7 @@ dyCrosshair <- function(dygraph,
     dygraph = dygraph,
     name = "Crosshair",
     path = system.file("plugins/crosshair.js",
-                       package = "dygraphs"),
+                       package = "visCOS"),
     options = list(direction = match.arg(direction))
   )
 }
