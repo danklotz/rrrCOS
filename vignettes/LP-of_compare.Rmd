@@ -282,13 +282,13 @@ for the interactive exploration of the $o$ and $s$ data. The formatted table (`s
 ```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",
-                                "basin d1:",
+                                "d1:",
                                 choices = d_nums,
                                 selected = 1,
                                 selectize = FALSE,
                                 width = '50%'),
                     selectInput("basin_num2",
-                                "basin d2:",
+                                "d2:",
                                 choices = d_nums,
                                 selected = 1,
                                 selectize = FALSE,
