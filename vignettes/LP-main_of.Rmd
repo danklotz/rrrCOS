@@ -11,11 +11,11 @@ on 4 main objective function: NSE, KGE, Pearson's Correlation and the Percentage
 bias (the respective definitions are given [here](LP-of.html)).
 
 The main objective functions for the overall data and the marked periods
-can be computed through the function `main_of_compute`. In order to run the
+can be computed through the function `mof_compute`. In order to run the
 function the period have to be marked first, e.g. through the `mark_periods`
 function. Additionally, **visCOS** already provides two different options
-to create plots for the main objective functions: `main_of_rasterplot`
-and `main_of_barplot`. Both functions create a list with 4 `ggplot` figures. Each entry
+to create plots for the main objective functions: `mof_rasterplot`
+and `mof_barplot`. Both functions create a list with 4 `ggplot` figures. Each entry
 in the list corresponds to one of the main objective functions and both lists
 can be saved to html embedded .jpgs with the [`serve` function](LP-serve.html).
 
@@ -25,28 +25,29 @@ Computing the main objective functions
 ```{r, message=3, purl=FALSE, eval=TRUE}
 require(visCOS)
 require(magrittr)
-of_values <- get_viscos_example() %>%
-  mark_periods() %>%
-  main_of_compute()
-of_values
+get_viscos_example( ) %>%
+  mark_periods(.) %>%
+  mof_compute(.) %>% 
+  print(.)
+
 ```
 
 Plotting the results of main objective function with bar plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
-of_values <- get_viscos_example() %>%
-  mark_periods() %>%
-  main_of_barplot() %>%
+get_viscos_example( ) %>%
+  mark_periods(.) %>%
+  mof_barplot(.) %>%
   extract2(1) %>%
-  plot()
+  plot(.)
 ```
 
 Plotting the results of main objective function with a raster:
 ```{r, message=3, purl=FALSE, eval=TRUE}
-of_values <- get_viscos_example() %>%
-  mark_periods() %>%
-  main_of_rasterplot() %>%
+get_viscos_example( ) %>%
+  mark_periods(.) %>%
+  mof_rasterplot(.) %>%
   extract2(2) %>%
-  plot()
+  plot(.)
 ```
 
 ## Code
@@ -85,7 +86,7 @@ from further calculations. The thereby obtained data.frame is named
 #' @import dplyr
 #'
 #' @export
-main_of_compute <- function(cos_data) {
+mof_compute <- function(cos_data) {
   # def: ====================================================================
   assert_dataframe(cos_data)
   name_o <- viscos_options("name_o")
@@ -176,7 +177,7 @@ NULL
 #'
 #' @rdname of_overview
 #' @export
-main_of_barplot <- function(cos_data) {
+mof_barplot <- function(cos_data) {
   # def: ====================================================================
   assert_dataframe(cos_data)
   # functions: ==============================================================
@@ -209,7 +210,7 @@ main_of_barplot <- function(cos_data) {
   }
   # computations: ===========================================================
   mof_names <- c("NSE","KGE","CORR","p_bias")
-  of <- main_of_compute(cos_data)
+  of <- mof_compute(cos_data)
   num_basins <- ncol(of) - 1
   of_melted <- suppressMessages( reshape2::melt(of) ) %>%
     assign_ofgroups(.,mof_names)
@@ -228,11 +229,11 @@ main_of_barplot <- function(cos_data) {
 #' @rdname of_overview
 #' @import pasta
 #' @export
-main_of_rasterplot <- function(cos_data) {
+mof_rasterplot <- function(cos_data) {
   mof_names <- c("NSE","KGE","CORR","p_bias")
   regex_main_of <- mof_names %.% "*"
   assert_dataframe(cos_data)
-  of <- main_of_compute(cos_data)
+  of <- mof_compute(cos_data)
   #
   plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of)) %>%
     set_names(mof_names)

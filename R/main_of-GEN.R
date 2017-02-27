@@ -17,7 +17,7 @@
 #' @import dplyr
 #'
 #' @export
-main_of_compute <- function(cos_data) {
+mof_compute <- function(cos_data) {
   # def: ====================================================================
   assert_dataframe(cos_data)
   name_o <- viscos_options("name_o")
@@ -100,7 +100,7 @@ NULL
 #'
 #' @rdname of_overview
 #' @export
-main_of_barplot <- function(cos_data) {
+mof_barplot <- function(cos_data) {
   # def: ====================================================================
   assert_dataframe(cos_data)
   # functions: ==============================================================
@@ -133,7 +133,7 @@ main_of_barplot <- function(cos_data) {
   }
   # computations: ===========================================================
   mof_names <- c("NSE","KGE","CORR","p_bias")
-  of <- main_of_compute(cos_data)
+  of <- mof_compute(cos_data)
   num_basins <- ncol(of) - 1
   of_melted <- suppressMessages( reshape2::melt(of) ) %>%
     assign_ofgroups(.,mof_names)
@@ -148,11 +148,11 @@ main_of_barplot <- function(cos_data) {
 #' @rdname of_overview
 #' @import pasta
 #' @export
-main_of_rasterplot <- function(cos_data) {
+mof_rasterplot <- function(cos_data) {
   mof_names <- c("NSE","KGE","CORR","p_bias")
   regex_main_of <- mof_names %.% "*"
   assert_dataframe(cos_data)
-  of <- main_of_compute(cos_data)
+  of <- mof_compute(cos_data)
   #
   plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of)) %>%
     set_names(mof_names)

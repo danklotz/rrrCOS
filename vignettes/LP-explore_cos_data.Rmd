@@ -12,16 +12,16 @@ end of a session. The following examples provide a good overview of what the
 function can do.
 
 ## Example
-This chapter gives examples of `explore_cos_data`. For the pre-requirements take
+This chapter gives examples of `of_explore`. For the pre-requirements take
 a look at the [introduction](LP-Introduction).
-Running the `explore_cos_data` function without any options opens a shiny gadget
+Running the `of_explore` function without any options opens a shiny gadget
 in the viewer:
 
 ```{r, eval=TRUE, echo=FALSE}
 if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/explore_cos_data.jpg')
+  knitr::include_graphics('figures/of_explore.jpg')
 } else {
-  knitr::include_graphics("figures/explore_cos_data.gif")
+  knitr::include_graphics("figures/of_explore.gif")
 }
 ```
 
@@ -29,7 +29,7 @@ Information on the *objective functions* can be found
 [here](ex-OF_explanation.html).
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_o = "green", color_s = "red")
-explore_cos_data(runoff_example)
+of_explore(runoff_example)
 ```
 
 Users can select different basins via the selection box (*# basins:*) on the
@@ -79,8 +79,8 @@ They include:
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_viscos_example()
-  #' explore_cos_data(cos_data)
-explore_cos_data <- function(cos_data,
+  #' of_explore(cos_data)
+of_explore <- function(cos_data,
                              of_list = list(
                                nse = of_nse,
                                kge = of_kge,
@@ -288,7 +288,7 @@ explore_cos_data <- function(cos_data,
 ```
 
 The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
-for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `explore_cos_data` .
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `of_explore` .
 ```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",

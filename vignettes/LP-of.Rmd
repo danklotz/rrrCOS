@@ -22,7 +22,7 @@ calculation is done with the help of the `hydroGOF` package, if not an R-code
 solution is tried.
 Currently 4 main objective functions are provided in **visCOS**. They can
 be directly extracted from the `cos_data` data.frame via the
-[`main_of_`](LP-main_of.html) functions. Other objective functions are provided
+[`mof_`](LP-main_of.html) functions. Other objective functions are provided
 to, but no special extraction and visualisation functions are provided for them.
 
 For the explanation and definition of the objective function it is assumed that

@@ -1,7 +1,7 @@
 % Please edit documentation in R/main_of-GEN.R, R/of-GEN.R
-\name{main_of_barplot}
-\alias{main_of_barplot}
-\alias{main_of_rasterplot}
+\name{mof_barplot}
+\alias{mof_barplot}
+\alias{mof_rasterplot}
 \alias{of_cor}
 \alias{of_invert_nse}
 \alias{of_kge}
@@ -14,9 +14,9 @@
 \alias{of_ve}
 \title{Bar plot for the Main Objective Function Values}
 \usage{
-main_of_barplot(cos_data)
+mof_barplot(cos_data)
 
-main_of_rasterplot(cos_data)
+mof_rasterplot(cos_data)
 
 of_nse(o, s)
 
