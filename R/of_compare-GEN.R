@@ -11,7 +11,7 @@
   #'
   #' @import shiny
   #' @import miniUI
-  #' @importFrom xts
+  #' @import xts
   #' @import dplyr
   #' @import magrittr
   #' @import dygraphs

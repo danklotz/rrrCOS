@@ -3,15 +3,12 @@
 \alias{of_compare}
 \title{Explore with Objective Functions}
 \usage{
-of_compare(cos_data, of_list = list(nse = of_nse, kge = of_kge, p_bias = of_p_bias, 
+of_compare(d1, d2 = NULL, of_list = list(nse = of_nse, kge = of_kge, p_bias = of_p_bias, 
     r = of_cor), start_date = NULL, end_date = NULL)
 }
-\arguments{
-\item{d_xts}{cos_data formatted as time series}
-}
 \description{
-Runs a Shiny Gadget which can be used to get an overview of a cos_data time
-series object.
+Runs a Shiny Gadget which can be used to interactively explore two 
+`cos_data` objects in terms of their respective objective functions.
 }
 \examples{
 # get example data, explore the model performance

@@ -1,8 +1,50 @@
+# Exploring Objective Functions
+
+```{r setup3, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+This section defines the code of a [shiny gadget](http://shiny.rstudio.com/).
+It enables the interactive exploration of (hydro-) graphs for the different basins.
+The gadget shows always the corresponding objective function for the selected
+graph. Furthermore, one can get the selected data by clicking on "done" at the
+end of a session. The following examples provide a good overview of what the
+function can do.
+
+## Example
+This chapter gives examples of `of_explore`. For the pre-requirements take
+a look at the [introduction](LP-Introduction).
+Running the `of_explore` function without any options opens a shiny gadget
+in the viewer:
+
+```{r, eval=TRUE, echo=FALSE}
 if (knitr:::is_latex_output()) {
   knitr::include_graphics('figures/of_explore.jpg')
 } else {
   knitr::include_graphics("figures/of_explore.gif")
 }
+```
+
+Information on the *objective functions* can be found
+[here](ex-OF_explanation.html).
+```{r,purl=FALSE, eval = FALSE}
+viscos_options(color_o = "green", color_s = "red")
+of_explore(runoff_example)
+```
+
+Users can select different basins via the selection box (*# basins:*) on the
+top-left and interactively zoom and move the graph in the center by clicking
+on it or moving the date switches below the graph. While doing so the
+objective functions (presented in the table below) are re-calculated for the
+chosen time window.
+
+
+## Code
+In the following paragraphs the code of the shiny app is defined.
+The computations of the app are defined in the `server` part and the
+appearance in the `ui`.
+
+```{r}
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
@@ -44,27 +86,27 @@ of_explore <- function(cos_data,
     clean_cos_data %<>% complete_dates
   }
   names_data <- names(clean_cos_data) %>% tolower(.)
-  number_lb <- grepl(viscos_options("name_lb"), 
-                     names_data, 
+  number_lb <- grepl(viscos_options("name_lb"),
+                     names_data,
                      ignore.case = TRUE) %>% sum(.)
-  number_ub <- grepl(viscos_options("name_ub"), 
-                     names_data, 
+  number_ub <- grepl(viscos_options("name_ub"),
+                     names_data,
                      ignore.case = TRUE) %>% sum(.)
-  plot_bounds <- FALSE 
+  plot_bounds <- FALSE
   if( (number_lb > 0) & (number_ub > 0)) {
-    number_obs <- grepl(viscos_options("name_o"), 
-                        names_data, 
+    number_obs <- grepl(viscos_options("name_o"),
+                        names_data,
                         ignore.case = TRUE) %>%sum(.)
-    number_sim <- grepl(viscos_options("name_s"), 
-                        names_data, 
+    number_sim <- grepl(viscos_options("name_s"),
+                        names_data,
                         ignore.case = TRUE) %>% sum(.)
     if (number_lb != number_ub) {
-      stop("number of available bounds is not the same!" %&&% 
-             "#lb=" %&% number_lb %&&% 
+      stop("number of available bounds is not the same!" %&&%
+             "#lb=" %&% number_lb %&&%
              "#ub=" %&% number_ub)
     } else if ((number_lb != number_obs) | (number_lb != number_sim)) {
       stop("Number of bounds is not the same as the o/s data!" %&&%
-            "#bounds=" %&% number_lb %&&% 
+            "#bounds=" %&% number_lb %&&%
              "#obs=" %&% number_obs %&&%
              "#sim=" %&% number_sim)
     } else {
@@ -72,8 +114,8 @@ of_explore <- function(cos_data,
     }
   }
   # (III) ====================================================================
-  idx_names <- grepl(viscos_options("name_o"), 
-                     names_data, 
+  idx_names <- grepl(viscos_options("name_o"),
+                     names_data,
                      ignore.case = TRUE)
   d_nums <- names_data %>%
       .[idx_names] %>%
@@ -97,16 +139,16 @@ of_explore <- function(cos_data,
     }
     # (b) select data:
     # note: the regular expressions "$" terminates the searchstring
-    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" }) 
+    selector_x <- reactive({ x_string %&% input$basin_num %&% "$" })
     selector_y <- reactive({ y_string %&% input$basin_num %&% "$" })
-    selector_lb <- reactive({ 
+    selector_lb <- reactive({
       if(plot_bounds){
-        lb_string %&% input$basin_num %&% "$" 
+        lb_string %&% input$basin_num %&% "$"
       } else {
         NA
       }
     })
-    selector_ub <- reactive({ 
+    selector_ub <- reactive({
       if(plot_bounds){
         ub_string %&% input$basin_num %&% "$"
       } else {
@@ -115,21 +157,21 @@ of_explore <- function(cos_data,
     })
     selected_data <- reactive({
       if(plot_bounds) {
-        clean_cos_data %>% 
+        clean_cos_data %>%
           select(matches( selector_x() ),
                  matches( selector_y() ),
                  matches( selector_lb() ),
                  matches( selector_ub() )
-                 ) %>% 
+                 ) %>%
           select(x = matches( selector_x() ),
-                 y = matches( selector_y() ), 
+                 y = matches( selector_y() ),
                  lb = matches( selector_lb() ),
                  ub = matches( selector_ub() ))
       } else {
-        clean_cos_data %>% 
+        clean_cos_data %>%
           select(matches( selector_x() ),
                  matches( selector_y() )
-                 ) %>% 
+                 ) %>%
           select(x = matches( selector_x() ),
                  y = matches( selector_y() ))
       }
@@ -151,10 +193,10 @@ of_explore <- function(cos_data,
         dySeries("y",
                  label = visCOS::viscos_options("name_s"),
                  color = viscos_options("color_s")) %>%
-        dySeries("lb", 
+        dySeries("lb",
                  label = visCOS::viscos_options("name_lb"),
-                 color = "grey80") %>% 
-        dySeries("ub", 
+                 color = "grey80") %>%
+        dySeries("ub",
                  label = visCOS::viscos_options("name_ub"),
                  color = "grey80")
       } else {
@@ -229,6 +271,11 @@ of_explore <- function(cos_data,
       stopApp(returnValue)
     })
   }
+```
+
+The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `of_explore` .
+```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",
                                 "# basin:",
@@ -248,6 +295,9 @@ of_explore <- function(cos_data,
     ),
     gadgetTitleBar("test")
   )
+```
+
+```{r}
 dyCrosshair <- function(dygraph,
                         direction = c("both", "horizontal", "vertical")) {
   dyPlugin(
@@ -258,5 +308,9 @@ dyCrosshair <- function(dygraph,
     options = list(direction = match.arg(direction))
   )
 }
+```
+
+```{r}
   runGadget(ui,server)
 }
+```
