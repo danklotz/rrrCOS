@@ -12,16 +12,16 @@ end of a session. The following examples provide a good overview of what the
 function can do.
 
 ## Example
-This chapter gives examples of `of_explore`. For the pre-requirements take
+This chapter gives examples of `explore_cos_data`. For the pre-requirements take
 a look at the [introduction](LP-Introduction).
-Running the `of_explore` function without any options opens a shiny gadget
+Running the `explore_cos_data` function without any options opens a shiny gadget
 in the viewer:
 
 ```{r, eval=TRUE, echo=FALSE}
 if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/of_explore.jpg')
+  knitr::include_graphics('figures/explore_cos_data.jpg')
 } else {
-  knitr::include_graphics("figures/of_explore.gif")
+  knitr::include_graphics("figures/explore_cos_data.gif")
 }
 ```
 
@@ -29,7 +29,7 @@ Information on the *objective functions* can be found
 [here](ex-OF_explanation.html).
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_o = "green", color_s = "red")
-of_explore(runoff_example)
+explore_cos_data(runoff_example)
 ```
 
 Users can select different basins via the selection box (*# basins:*) on the
@@ -44,24 +44,12 @@ In the following paragraphs the code of the shiny app is defined.
 The computations of the app are defined in the `server` part and the
 appearance in the `ui`.
 
-### Objective Function Objectivation
-This function represents the main part of the shiny app.
-The current solution **forces** users to enumerate their basins with and the 
-shiny app needs some pre-calculation, which need to be calculated before the app 
-is started. These calculations are made before the app as such is defined.
-They include:
-
-- (I) Defensive ocde
-- (II) Transformation of data into `xts` (`d_xts`).
-- (III) Save numeration of basins within the variable `d_nums`.
 ```{r}
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
   #' Runs a Shiny Gadget which can be used to get an overview of a cos_data time
   #' series object.
-  #'
-  #' @param d_xts cos_data formatted as time series
   #'
   #' @import shiny
   #' @import miniUI
@@ -79,7 +67,7 @@ They include:
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_viscos_example()
-  #' of_explore(cos_data)
+  #' explore_cos_data(cos_data)
 of_explore <- function(cos_data,
                              of_list = list(
                                nse = of_nse,
@@ -125,8 +113,6 @@ of_explore <- function(cos_data,
       plot_bounds <- TRUE # switch: plot bounds
     }
   }
-  # (II) =====================================================================
-  d_xts <- cos_data_as_xts(clean_cos_data)
   # (III) ====================================================================
   idx_names <- grepl(viscos_options("name_o"), 
                      names_data, 
@@ -288,7 +274,7 @@ of_explore <- function(cos_data,
 ```
 
 The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
-for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `of_explore` .
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `explore_cos_data` .
 ```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",
@@ -318,12 +304,11 @@ dyCrosshair <- function(dygraph,
     dygraph = dygraph,
     name = "Crosshair",
     path = system.file("plugins/crosshair.js",
-                       package = "dygraphs"),
+                       package = "visCOS"),
     options = list(direction = match.arg(direction))
   )
 }
 ```
-
 
 ```{r}
   runGadget(ui,server)

@@ -1,7 +1,7 @@
 if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/of_explore.jpg')
+  knitr::include_graphics('figures/explore_cos_data.jpg')
 } else {
-  knitr::include_graphics("figures/of_explore.gif")
+  knitr::include_graphics("figures/explore_cos_data.gif")
 }
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
@@ -25,7 +25,7 @@ if (knitr:::is_latex_output()) {
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_viscos_example()
-  #' of_explore(cos_data)
+  #' explore_cos_data(cos_data)
 of_explore <- function(cos_data,
                              of_list = list(
                                nse = of_nse,
