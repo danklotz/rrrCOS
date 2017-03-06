@@ -19,7 +19,7 @@ time dimension. Note, that the name of the dimension can be specified via the
 
 Daily runoff aggregation:
 ```{r, eval = TRUE, purl=FALSE}
-  cos_data <- visCOS::get_cos_data_example()
+  cos_data <- visCOS::get_viscos_example()
   runoff_aggregate_dd <- aggregate_time(cos_data, "dd")
   # plot data:
   ggplot(runoff_aggregate_dd) +

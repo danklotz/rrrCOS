@@ -1,4 +1,5 @@
-get_regex_for_cos_data <- function() {
+get_regex_for_cos_data <- function() 
+  {
   regex_pattern <- paste("^",viscos_options("name_COSyear"),"$|",
                          "^",viscos_options("name_COSmonth"),"$|",
                          "^",viscos_options("name_COSday"),"$|",
@@ -6,6 +7,8 @@ get_regex_for_cos_data <- function() {
                          "^",viscos_options("name_COSmin"),"$|",
                          viscos_options("name_o"),".*|",
                          viscos_options("name_s"),".*|",
+                         viscos_options("name_lb"),".*|",
+                         viscos_options("name_ub"),".*|",
                          viscos_options("name_COSposix"),"|",
                          viscos_options("name_COSperiod"),
                          sep = "")

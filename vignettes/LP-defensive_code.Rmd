@@ -4,7 +4,7 @@
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This section defines the internaly used defensive programming part of **visCOS**.
+This section defines the internally used defensive programming part of **visCOS**.
 This are all functions dedicated to ensure that **visCOS** is working nicely
 even if it is used wrongly for whatever reason. This often means that a given
 function has to return an error if certain criteria are not met!
@@ -20,7 +20,7 @@ function | exported
  `assert_dataframe` | no
 `assert_of` | no
 
-### Check if `cos_data` is "clean"
+### Check for useless Columns
 Tests if the given data.frame (`cos_data`) contains only the
 columns defined within `get_regex_for_cos_data`
 (see: [helpers](LP-helpers.html) and [`viscos_options`](LP-viscos_options.html)).
@@ -29,7 +29,7 @@ An exception throws an error.
 ```{r}
 #' @import magrittr
 assert_junk <- function(cos_data) {
-  regEx <- get_regex_for_cos_data()
+  regEx <- get_regex_for_cos_data( )
   assertChunk <- names(cos_data) %>% grepl(regEx, ., ignore.case = TRUE)
   if (any(assertChunk == FALSE)) {
     stop("there is still unwanted columns in the data. Try: remove_junk")
@@ -37,7 +37,7 @@ assert_junk <- function(cos_data) {
 }
 ```
 
-### Check date completeness
+### Check Date 
 A rough check for the needed date- and/or time-columns within the provided
 `cos_data`. The function is rahter basic. It only checks if the names of the
 `viscos_options("name_COSyear")` column and `viscos_options("name_COSposix") `
@@ -58,7 +58,7 @@ assert_complete_date <- function(cos_data) {
 }
 ```
 
-### Check if the data is a `data.frame`
+### Check for `data.frame`
 Tests if `data` is a data.frame and returns an error if not.
 ```{r}
 # uses stop if the input: "data" is not of class "data.frame"

@@ -5,9 +5,6 @@
 \usage{
 cos_data_as_xts(cos_data)
 }
-\arguments{
-\item{cos_data}{data_frame of the cos_data (see: xxx)}
-}
 \value{
 xts object of the cos_data data.frame
 }

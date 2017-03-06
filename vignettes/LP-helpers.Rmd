@@ -9,21 +9,13 @@ throughout **visCOS**.
 
 None of the functions is exported!
 
-## Code
-The subsequent functions are defined below
-
-function | exported
-------------- | -------------
-`get_regex_for_cos_data` | no
-`get_basin_numbers` | no
-`set_panel_size`| no
-
-### Get a Regular Expression String for the needed columns
+## Search-String the (Option) Names
 This function can be called to get the names of the 8 allowed column-names
 within **visCOS**. `get_regex_for_cos_data` takes no input, as it gets the
 information directly from the global options (see: *viscos_options section*).
 ```{r}
-get_regex_for_cos_data <- function() {
+get_regex_for_cos_data <- function() 
+  {
   regex_pattern <- paste("^",viscos_options("name_COSyear"),"$|",
                          "^",viscos_options("name_COSmonth"),"$|",
                          "^",viscos_options("name_COSday"),"$|",
@@ -31,6 +23,8 @@ get_regex_for_cos_data <- function() {
                          "^",viscos_options("name_COSmin"),"$|",
                          viscos_options("name_o"),".*|",
                          viscos_options("name_s"),".*|",
+                         viscos_options("name_lb"),".*|",
+                         viscos_options("name_ub"),".*|",
                          viscos_options("name_COSposix"),"|",
                          viscos_options("name_COSperiod"),
                          sep = "")
@@ -39,7 +33,7 @@ get_regex_for_cos_data <- function() {
 ```
 
 
-### Extract the numeration of the basins
+## Extract the Numeration
 This function fetches the number of basins from the provided data.frame
 (`cos_data`) by removing all the non-digits characters from the column names.
 ```{r}
