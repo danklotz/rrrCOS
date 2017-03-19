@@ -1,4 +1,4 @@
-% Please edit documentation in R/main_of-GEN.R
+% Please edit documentation in R/mof-GEN.R
 \name{mof_compute}
 \alias{mof_compute}
 \title{Get basic objective function for cos_data}
