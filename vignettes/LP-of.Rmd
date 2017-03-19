@@ -1,4 +1,4 @@
-# Ojective Functions
+# Metrics: Ojective Functions
 
 ```{r setup7, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
