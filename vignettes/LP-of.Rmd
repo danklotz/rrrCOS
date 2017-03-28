@@ -1,20 +1,20 @@
-# Metrics: Ojective Functions
+# Metrics
 
 ```{r setup7, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This chapter defines the objective functions that are used in **visCOS**.
+Metric play an important role in hydrology. Objective functions, 
+short: $of$, are an important part of the hydrological model calibration.
+This chapter defines the objective functions that are provided by **visCOS**.
 
-Objective functions, in short $of$, are an important part of the hydrological
-model calibration. Their importance arises from the approximate nature of the
-models and the large uncertainties of the process. Hydrological models are not
-only imperfect, in the sense that they simplify nature, but in most cases
-structurally different than the reality so that different models or their
-respective parametrisations approximate the hydrograph equally well. Thus,
-over the time a many objective functions have been developed to either
-make the model-results better interpretable/comparable or to address specific
-problems of given objective functions.
+The importance of metrics in hydrology seems to arise ultimately 
+from the approximate nature of the subject and the the large uncertainties 
+involved in the task that hydrologist try to solve. Over the years a many
+different much ink has been spilled for discussing the different merrits and 
+pitfalls of individual objective functions. Thus, with time many different 
+ones have been proposed. Some are more usefull for model comparision and some
+objective functions try to adress specific problems of other ones. 
 
 ## Code
 This section defines the code for different objective functions. If possible the
