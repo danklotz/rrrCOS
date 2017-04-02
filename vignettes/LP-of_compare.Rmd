@@ -1,13 +1,15 @@
-# Runoff Comparison with Objective Functions 
+# Interactive Runoff Comparison with Objective Functions 
 
 ```{r setup_of_compare, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This function is an expansion of the [`of_explore`](LP-of_explore.html) 
-function and assumes some familiarity with the latter. The idea is to explore
-two `cos_data` objects simultanously in the same way is in the `of_explore` 
-counterpart. Even if only one `data.frame` is handed over to the function, it 
+The function `of_compare` is an expansion of the
+[`of_explore`](LP-of_explore.html) function. The idea is to explore
+two `cos_data` objects simultanously, while having interactive feedback through 
+metrics (objective functions) of the selected time-window. The function itself
+works in the same way as `of_explore`, just with two `tibbles` as input. 
+Even if only one `data.frame` is handed over to the function, it 
 copied and two `dygraphs` are shown below each other. 
 
 ## Code
@@ -23,8 +25,9 @@ copied and two `dygraphs` are shown below each other.
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
-  #' Runs a Shiny Gadget which can be used to interactively explore two 
-  #' `cos_data` objects in terms of their respective objective functions. 
+  #' A Shiny Gadget for interactively explore two `cos_data` objects with 
+  #' feedback about the metrics/objective functions of the currently selected 
+  #' time window.
   #'
   #' @import shiny
   #' @import miniUI
@@ -45,24 +48,33 @@ copied and two `dygraphs` are shown below each other.
   #' explore_cos_data(cos_data)
 of_compare <- function(d1,
                        d2 = NULL,
-                             of_list = list(
-                               nse = of_nse,
-                               kge = of_kge,
-                               p_bias = of_p_bias,
-                               r = of_cor
-                               ),
-                             start_date = NULL,
-                             end_date = NULL) {
+                       of_list = list(
+                         nse = of_nse,
+                         kge = of_kge,
+                         p_bias = of_p_bias,
+                         r = of_cor),
+                       start_date = NULL,
+                       end_date = NULL) {
   # (I) pre-sets: ============================================================
   if(!is.list(of_list)){
     of_list = list(of_list)
   }
+  if (is.null(d1)) {
+    stop("d1 data must be provided!")
+  }
   if (is.null(d2)) {
     d2 <- d1
+  }
+  if (!is.data.frame(d1)) {
+    stop("d1 must either be a data.frame or a tibble!")
+  }
+  if(!is.data.frame(d2)) {
+    stop("d2 must either be a data.frame or a tibble!")
   }
   if (is.null(names(of_list))){
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
+  # pre-computation: #######
   clean_data1 <- d1 %>% 
     remove_leading_zeros(.) %>% 
     complete_dates(.)

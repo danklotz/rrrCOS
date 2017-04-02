@@ -4,13 +4,14 @@
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
 ```
 
-This chapter defines the basic functions for adapting given (raw) in such a way
-that it can be used for further use with **visCOS**. In the following we
-exemplify the usage of these functions and then define their code.
+This chapter defines the basic functions for adapting given (raw) data so 
+that it can be used within **visCOS**. In the next chapter we
+exemplify the usage of these functions. Afterwards the code of the respective 
+functions is given.
 
 ## Examples
 The function `get_viscos_example` can be used to get some exemplary data
-from within **visCOS**:
+for **visCOS**:
 ```{r, purl=FALSE, eval=TRUE, message=3:5}
   options(width=80)
   require(visCOS)
@@ -20,39 +21,41 @@ from within **visCOS**:
   head(runoff_example_raw)
 ```
 
-Usually, one would then need to adapt the ([`viscos_options`](LP-viscos_options.html)
-or name the `data.frame` appropriately. But, in this case the options
-are already set as in the data:
+Usually, one would adapt the ([`viscos_options`](LP-viscos_options.html) to the
+given data or transform/name it appropriately. The exemplary data 
+(`runoff_example_raw`) does already come with the right naming. Nevertheless, 
+here are the available options:
 ```{r, purl=FALSE, eval=TRUE}
    viscos_options( ) %>% unlist(.)
 ```
 
-A glimpse of the data shows that some columns - `QOSI_0001` and `QOSI_0002` -
-are not needed for further analysis. We refer to these columns as junk. Another
-example of junk would be columns where no observations are available. These
-columns might has a purpose for some application or in the grater scheme of
-things, but it has no use within **visCOS**. Hence, we need to
-*throw the data away*.
+That said, some columns - nameley `QOSI_0001` and `QOSI_0002` - are not needed 
+for further analysis. We refer to these data-columns as *junk*. *Junk* are 
+either columns in the `data.frame` that are not compatible with the **visCOS** 
+functions or column pairs without observations. They might has a purpose for 
+some other application or provide valuable feedback for you, but they cannot be 
+used by **visCOS**; we need to *throw them away*.
 
-The package provides a function for doing so. The `remove_junk` function. Here
-is an example for its use:
+The package provides a function for doing automatically: `remove_junk`. Here
+is an example:
 ```{r, purl=FALSE, eval=TRUE}
   runoff_example_raw %>%
     remove_junk(.) %>%
     head(.)
 ```
 
-Additionally, `cos_data` data.frame needs to have two different definitions for
+Additionally, the `data.frame` needs to have two different definitions for
 the date of a given row (see: [Introduction](introduction.html)). One is based
-on an old way to write dates out in fortran code. In that case each column
-represents a time-resolution. In concrete, the following columns are used:
+on an archaic way to write dates, which is often used by (old) models: There are 
+for separate columns and each one represents a different time-resolution. These 
+are:
 
--  *yyyy* - year,
-- *mm* - month,
-- *hh* - hour,
-- *min* - minute.
+- *yyyy* - year
+- *mm* - month
+- *hh* - hour
+- *min* - minute
 
-The other format is a more modern way to define time information. That is,
+The other format is a more modern way. That is,
 the `POSIXct` format (see: [link](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html)).
 This format is a standard for `R` and has many usages (e.g. transforming your
 data frame into a time series). In this format all information is saved in one
