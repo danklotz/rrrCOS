@@ -21,8 +21,8 @@
     if (grepl("mm",aggregation)) {
       cutting_bounds[1] <- min(6,cutting_bounds[1])
       cutting_bounds[2] <- max(7,cutting_bounds[2])
-      interval_bounds <- c(min = cos_data[viscos_options("name_COSmonth")] %>% min(.),
-                           max = cos_data[viscos_options("name_COSmonth")] %>% max(.))
+      # interval_bounds <- c(min = cos_data[viscos_options("name_COSmonth")] %>% min(.),
+      #                      max = cos_data[viscos_options("name_COSmonth")] %>% max(.))
     }
     if (grepl("yyyy",aggregation)) {
       cutting_bounds[1] <- min(1,cutting_bounds[1])
@@ -32,13 +32,17 @@
     regex_for_cos_selection <- viscos_options("name_o") %|%  viscos_options("name_s")
     # aggregation function:
     aggregator_fun <- function(k,data_frame){
-      interval <- tibble(idx = seq(interval_bounds["min"],interval_bounds["max"]), 
-                         value = NA)
-      temp_aggregation <- stats::aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean, simplify = FALSE)
-      interval$value[
-        interval$idx %in% 
-          as.integer(temp_aggregation$`data_frame$date_selection`) ] <- unlist(temp_aggregation$`data_frame[[k]]`)
-      return(interval$value)
+      #§ sketch for a fix for the no-data problem!
+      # interval <- tibble(idx = seq(interval_bounds["min"],interval_bounds["max"]), 
+      #                    value = NA)
+      #       temp_aggregation <- stats::aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean, simplify = FALSE)
+      # interval$value[
+      #   interval$idx %in% 
+      #     as.integer(temp_aggregation$`data_frame$date_selection`) ] <- unlist(temp_aggregation$`data_frame[[k]]`)
+      # return(interval$value)
+      the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean)
+      return(the_aggregation[ ,2])
+
     }
     #####
     # If cos_data is not provided fully, the date is completed automatically
@@ -62,7 +66,7 @@
                              names(cos_with_aggreggation),
                              ignore.case = TRUE)
     time_aggregate <- selected_cos_rows %>%
-      sapply(.,function(x) aggregator_fun(x,cos_with_aggreggation)) %>%
+      sapply(.,function(k) aggregator_fun(k,cos_with_aggreggation)) %>%
       data.frame(idx = 1:nrow(.),
                  time_aggregate = unique(cos_with_aggreggation$date_selection),
                  .) %>%
