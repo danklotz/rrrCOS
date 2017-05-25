@@ -500,14 +500,14 @@ This function tries to load the libraries given by `x`. If any of them is not in
   
  libraries <- function(x, ...){
   
-  temp <- suppressWarnings(unlist(lapply(x,library,character.only=TRUE, ...)))
+  temp <- suppressWarnings(unlist(lapply(x,require,character.only=TRUE, ...)))
   
   if(any(!temp)){
     w <- which(!temp)
     install.packages(x[w],...)
 
     
-    temp <- suppressWarnings(unlist(lapply(x[w],library,character.only=TRUE, ...)))
+    temp <- suppressWarnings(unlist(lapply(x[w],require,character.only=TRUE, ...)))
     if(!any(temp)){
       w <- which(!temp)
       stop(paste("Error loading ",x[w],sep=""))

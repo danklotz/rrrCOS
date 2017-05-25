@@ -265,3 +265,33 @@
     cos_data_as_xts <- xts(x = cos_data[], order.by = cos_data[[name_posix]])
     return(cos_data_as_xts)
   }
+
+  #' Loading many libraries at once
+  #' @param x character vector. Name(s) of the libraries that are loaded/installed.
+  #' @param ... Arguments passed to \code{\link{require}} and \code{\link{install.packages}}
+  #' @author Simon Frey
+  #' @description This function tries to load more than one package at once. If any of these packages is not installed it tries to istall them and load them afterward.
+  #' @export
+  #' @examples
+  #' # loading xts 
+  #' libraries("xts")
+  #' libraries(c("xts","shiny"))
+  #' @return Returns nothing but gives a warning if it cannot load/install a library/package
+  #' @seealso \code{\link{require}}, \code{\link{library}}, \code{\link{install.packages}} 
+  
+ libraries <- function(x, ...){
+  
+  temp <- suppressWarnings(unlist(lapply(x,require,character.only=TRUE, ...)))
+  
+  if(any(!temp)){
+    w <- which(!temp)
+    install.packages(x[w],...)
+
+    
+    temp <- suppressWarnings(unlist(lapply(x[w],require,character.only=TRUE, ...)))
+    if(!any(temp)){
+      w <- which(!temp)
+      stop(paste("Error loading ",x[w],sep=""))
+    }
+  }
+ }
