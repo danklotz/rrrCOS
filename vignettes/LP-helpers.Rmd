@@ -38,7 +38,6 @@ This function fetches the number of basins from the provided data.frame
 (`cos_data`) by removing all the non-digits characters from the column names.
 ```{r}
 get_basin_numbers <- function(cos_data) {
-  require("magrittr", quietly = TRUE)
   assert_dataframe(cos_data)
   assert_junk(cos_data)
   #
@@ -47,4 +46,18 @@ get_basin_numbers <- function(cos_data) {
   d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)
 }
+```
+
+
+## Makte the pipre operation available within visCOS 
+```{r}
+  #' Pipe operator
+  #'
+  #' @name %>%
+  #' @rdname pipe
+  #' @keywords internal
+  #' @export
+  #' @importFrom magrittr %>%
+  #' @usage lhs \%>\% rhs
+  NULL
 ```
