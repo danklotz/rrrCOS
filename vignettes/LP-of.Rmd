@@ -1,4 +1,4 @@
-# Metrics
+# Distance Metrics
 
 ```{r setup7, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
@@ -29,15 +29,16 @@ For the explanation and definition of the objective function it is assumed that
  $o$ are the observations (defined by `name_o` in visCOS) and $s$ are the
  simulation(defined by `name_s` in visCOS).
 ```{r}
-#' Objective Functions
+#' Metrics
 #'
 #' Different objective Functions, provided by visCOS. A detailed description
 #' of each of the provided objective function is provided in the respective
 #' vignette
 #'
+#' @useDynLib visCOS
 #' @param o The reference data or observations (o_data)
 #' @param s The created data or the simulations (s_data)
-#' @name of_overview
+#' @name d_metrics
 NULL
 
 ```
@@ -67,15 +68,56 @@ The code for the $NSE$ computation is:
   # --------------------------------------------------------------------------
   #' Nash-Sutcliffe Efficiency
   #'
-  #' @rdname of_overview
+  #' @rdname d_metrics
   #' @import hydroGOF
   #' @export
-  of_nse <- function(o,s) {
-    as.numeric( NSE(s,o) )
+  d_nse <- function(o, s, na.rm = TRUE) {
+    NSE(s,o, na.rm = na.rm) %>% as.numeric(.)
   }
 
 ```
 
+```{r}
+  # --------------------------------------------------------------------------
+  #' Nash-Sutcliffe Efficiency
+  #'
+  #' @rdname d_metrics
+  #' @importFrom purrr map2_dbl
+  #' @importFrom magrittr set_names
+  #' @export
+  d_nse2 <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_nse <- map2_dbl(o, s, 
+                       function(x,y) nse_wrapper(x,y,rows,na.rm = na.rm)) %>% 
+      set_names(paste("nse", 1:cols, sep = ""))
+    return(of_nse)
+  }
+
+  nse_wrapper <- function(obs,sim,rows, ndstart = 1L, ndend = rows, na.rm){
+    idx_to_eval <- as.integer( 1L - (is.na(obs) +is.na(sim)) )
+    na_count <- sum(idx_to_eval)
+    if (!na.rm & (na_count > 0)) {
+      stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
+    }
+    out <- .Fortran("f_nse", 
+                    XSIM = as.double(sim), 
+                    XOBS = as.double(obs),
+                    maxday = rows, 
+                    NDSTART = 1L, 
+                    NDEND = rows, 
+                    EVAL = idx_to_eval, 
+                    NSE = as.double(-999.9), 
+                    NAOK = TRUE) 
+       return(out$NSE)
+  } 
+```
 
 #### Kling-Gupta Efficiency
 The Kling-Gupta Efficiency $KGE$ was introduced by Gupta et al. (2009) to
@@ -105,11 +147,11 @@ The code for the $KGE$ computation is:
   # --------------------------------------------------------------------------
   #' Kling-Gupta Efficiency
   #'
-  #' @rdname of_overview
+  #' @rdname d_metrics
   #' @import hydroGOF
   #' @export
-  of_kge <- function(o,s) {
-    as.numeric( KGE(s,o) )
+  d_kge <- function(o, s, na.rm = TRUE) {
+     KGE(s,o, na.rm = na.rm) %>% as.numeric(.)
   }
 
 ```
@@ -127,11 +169,11 @@ The code for the $p_{bias}$ computation is:
   # --------------------------------------------------------------------------
   #' Percentage Bias
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
+  #' @import hydroGOF 
   #' @export
-  of_p_bias <- function(o,s) {
-    as.numeric( pbias(s,o) )
+  d_pbias <- function(o, s, na.rm = TRUE) {
+     pbias(s, o, na.rm=na.rm) %>% as.numeric(.)
   }
 
 ```
@@ -152,11 +194,10 @@ The code for the correlation is:
   # --------------------------------------------------------------------------
   #' Correlation
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
   #' @export
-  of_cor <- function(o,s) {
-    diag( cor(o,s) )
+  d_cor <- function(o, s, na.rm = TRUE) {
+    stats::cor(o, s, na.rm = na.rm) %>% diag(.)
   }
 
 ```
@@ -173,11 +214,11 @@ $$ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
   # --------------------------------------------------------------------------
   #' Root Mean Sqaured Error
   #'
-  #' @rdname of_overview
+  #' @rdname d_metrics
   #' @import hydroGOF
   #' @export
-  of_rmse <- function(o,s) {
-    as.numeric( rmse(s,o) )
+  d_rmse <- function(o, s, na.rm = TRUE) {
+    as.numeric( hydroGOF::rmse(s, o, na.rm = na.rm) )
   }
 
 ```
@@ -190,11 +231,11 @@ $$ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
   # --------------------------------------------------------------------------
   #' Inverted Nash-Sutcliffe Efficiency
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
+  #' @import hydroGOF 
   #' @export
-  of_invert_nse <- function(o,s) {
-    as.numeric( NSE(o,s) )
+  d_inverted_nse <- function(o, s, na.rm = TRUE) {
+     hydroGOF::NSE(sim = o, obs = s, na.rm = na.rm) 
   }
 
 ```
@@ -206,11 +247,11 @@ $$ rsd = \frac{\sigma_s}{ \sigma_o } $$
   # --------------------------------------------------------------------------
   #' Ratio of Standard Deviations
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
+  #' @import hydroGOF 
   #' @export
-  of_rsd <- function(o,s) {
-    as.numeric( rSD(s,o) )
+  d_rsd <- function(o, s, na.rm = TRUE) {
+    hydroGOF::rSD(s, o, na.rm = na.rm) %>% as.numeric(.)
   }
 
 ```
@@ -222,10 +263,10 @@ $$ rmeans = \mu_s / \mu_o$$
   # --------------------------------------------------------------------------
   #' Ratio of Means
   #'
-  #' @rdname of_overview
+  #' @rdname d_metrics
   #' @export
-  of_rmeans <- function(o,s) {
-    as.numeric( mean(s)/mean(o) )
+  d_rmeans <- function(o, s, na.rm = TRUE) {
+    mean(s, na.rm = na.rm)/mean(o, na.rm = na.rm) %>% as.numeric(.)
   }
 
 ```
@@ -241,12 +282,27 @@ $$ VE = 1- \frac{\sum_{t=1}^T abs\big( s(t)-o(t) \big)}
   # --------------------------------------------------------------------------
   #' Volumetric Efficiency
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
+  #' @import hydroGOF 
   #' @export
-  of_ve <- function(o,s) {
-    as.numeric( VE(s,o) )
+  d_ve <- function(o, s, na.rm = TRUE) {
+    hydroGOF::VE(obs = o, sim = s, na.rm = na.rm) %>% as.numeric(.)
   }
+
+
+```
+
+```{r}
+  # --------------------------------------------------------------------------
+  #' Volumetric Efficiency
+  #'
+  #' @rdname d_metrics
+  #' @import hydroGOF 
+  #' @export
+  d_ve <- function(o, s, na.rm = TRUE) {
+    hydroGOF::VE(obs = o, sim = s, na.rm = na.rm) %>% as.numeric(.)
+  }
+
 
 ```
 
