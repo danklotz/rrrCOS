@@ -94,8 +94,8 @@ NULL
   #'
   #' @rdname d_metrics
   #' @export
-  d_cor <- function(o, s, na.rm = TRUE) {
-    stats::cor(o, s, na.rm = na.rm) %>% diag(.)
+  d_cor <- function(o, s) {
+    stats::cor(o, s) %>% diag(.)
   }
 
   # --------------------------------------------------------------------------

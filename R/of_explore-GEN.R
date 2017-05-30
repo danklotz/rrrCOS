@@ -15,7 +15,6 @@ if (knitr:::is_latex_output()) {
   #' @import dplyr
   #' @import magrittr
   #' @import dygraphs
-  #' @import hydroGOF
   #' @import pasta
   #' @importFrom purrr map_df
   #'
