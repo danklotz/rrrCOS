@@ -28,10 +28,10 @@ if (knitr:::is_latex_output()) {
   #' of_explore(cos_data)
 of_explore <- function(cos_data,
                              of_list = list(
-                               nse = of_nse,
-                               kge = of_kge,
-                               p_bias = of_p_bias,
-                               r = of_cor
+                               nse = d_nse,
+                               kge = d_kge,
+                               p_bias = d_pbias,
+                               r = d_cor
                                ),
                              start_date = NULL,
                              end_date = NULL) {

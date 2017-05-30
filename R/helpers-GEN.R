@@ -15,7 +15,6 @@ get_regex_for_cos_data <- function()
   return(regex_pattern)
 }
 get_basin_numbers <- function(cos_data) {
-  require("magrittr", quietly = TRUE)
   assert_dataframe(cos_data)
   assert_junk(cos_data)
   #
@@ -24,3 +23,12 @@ get_basin_numbers <- function(cos_data) {
   d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)
 }
+  #' Pipe operator
+  #'
+  #' @name %>%
+  #' @rdname pipe
+  #' @keywords internal
+  #' @export
+  #' @importFrom magrittr %>%
+  #' @usage lhs \%>\% rhs
+  NULL

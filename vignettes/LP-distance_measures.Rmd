@@ -17,19 +17,15 @@ ones have been proposed. Some are more usefull for model comparision and some
 objective functions try to adress specific problems of other ones. 
 
 ## Code
-This section defines the code for different objective functions. If possible the
-calculation is done with the help of the `hydroGOF` package, if not an R-code
-solution is tried.
-Currently 4 main objective functions are provided in **visCOS**. They can
-be directly extracted from the `cos_data` data.frame via the
-[`mof_`](LP-main_of.html) functions. Other objective functions are provided
-to, but no special extraction and visualisation functions are provided for them.
-
+This section defines the code for different objective functions. Fortan Routines
+are used for msot of them. The results are slightly different then the ones 
+from the R-code of the `hydroGOF` package (~13th decimal place),
+but always faster. 
 For the explanation and definition of the objective function it is assumed that
  $o$ are the observations (defined by `name_o` in visCOS) and $s$ are the
  simulation(defined by `name_s` in visCOS).
 ```{r}
-#' Metrics
+#' Distance Measures (Metrics)
 #'
 #' Different objective Functions, provided by visCOS. A detailed description
 #' of each of the provided objective function is provided in the respective
@@ -69,23 +65,10 @@ The code for the $NSE$ computation is:
   #' Nash-Sutcliffe Efficiency
   #'
   #' @rdname d_metrics
-  #' @import hydroGOF
-  #' @export
-  d_nse <- function(o, s, na.rm = TRUE) {
-    NSE(s,o, na.rm = na.rm) %>% as.numeric(.)
-  }
-
-```
-
-```{r}
-  # --------------------------------------------------------------------------
-  #' Nash-Sutcliffe Efficiency
-  #'
-  #' @rdname d_metrics
   #' @importFrom purrr map2_dbl
   #' @importFrom magrittr set_names
   #' @export
-  d_nse2 <- function(o, s, na.rm = TRUE) {
+  d_nse <- function(o, s, na.rm = TRUE) {
     # pre sets:
     assert_dataframe(o)
     assert_dataframe(s)
@@ -95,28 +78,11 @@ The code for the $NSE$ computation is:
     if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
     # computation:
     of_nse <- map2_dbl(o, s, 
-                       function(x,y) nse_wrapper(x,y,rows,na.rm = na.rm)) %>% 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_nse", na.rm = na.rm)) %>% 
       set_names(paste("nse", 1:cols, sep = ""))
     return(of_nse)
   }
 
-  nse_wrapper <- function(obs,sim,rows, ndstart = 1L, ndend = rows, na.rm){
-    idx_to_eval <- as.integer( 1L - (is.na(obs) +is.na(sim)) )
-    na_count <- sum(idx_to_eval)
-    if (!na.rm & (na_count > 0)) {
-      stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
-    }
-    out <- .Fortran("f_nse", 
-                    XSIM = as.double(sim), 
-                    XOBS = as.double(obs),
-                    maxday = rows, 
-                    NDSTART = 1L, 
-                    NDEND = rows, 
-                    EVAL = idx_to_eval, 
-                    NSE = as.double(-999.9), 
-                    NAOK = TRUE) 
-       return(out$NSE)
-  } 
 ```
 
 #### Kling-Gupta Efficiency
@@ -143,26 +109,35 @@ Pearson's correlation coefficient (see below). The value range and the
 quality is similar to the $NSE$.
 
 The code for the $KGE$ computation is:
+
 ```{r}
   # --------------------------------------------------------------------------
-  #' Kling-Gupta Efficiency
+  #' KGE 2
   #'
   #' @rdname d_metrics
-  #' @import hydroGOF
   #' @export
   d_kge <- function(o, s, na.rm = TRUE) {
-     KGE(s,o, na.rm = na.rm) %>% as.numeric(.)
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_kge <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows,na.rm = na.rm)) %>% 
+      set_names(paste("kge", 1:cols, sep = ""))
+    return(of_kge)
   }
-
 ```
 
-#### Percentage Bias
-The percentage of bias $p_{bias}$ is defined as the sum of the differences
-between $o$ and $s$ divided by the sum of $o$:
+#### Bias
+The  bias $p_{bias}$ is defined as the sum of the differences
+between $s$ and $o$ divided by the sum of $o$:
 
-$$ p_{bias} = 100*\frac{\sum_{t=1}^T [ o(t)-s(t) ] }{\sum_{t=1}^T o(t)}. $$
+$$ p_{bias} = \frac{\sum_{t=1}^T [ o(t)-s(t) ] }{T}. $$
 
-The $100*$ is just a scaling factor applied to express $p_{bias}$ as a percentage.
 
 The code for the $p_{bias}$ computation is:
 ```{r}
@@ -170,19 +145,58 @@ The code for the $p_{bias}$ computation is:
   #' Percentage Bias
   #'
   #' @rdname d_metrics
-  #' @import hydroGOF 
+  #' @export
+  d_bias <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_pbias <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_bias", na.rm = na.rm)) %>% 
+      set_names(paste("bias", 1:cols, sep = ""))
+    return(of_pbias)
+  }
+```
+
+
+#### Percentage Bias
+The percentage of bias $p_{bias}$ is defined as the sum of the differences
+between $s$ and $o$ divided by the sum of $o$ and multiplied by $100$:
+
+$$ p_{bias} = 100*\frac{\sum_{t=1}^T [ s(t)-o(t) ] }{\sum_{t=1}^T o(t)}. $$
+
+The code for the $p_{bias}$ computation is:
+```{r}
+  # --------------------------------------------------------------------------
+  #' Percentage Bias
+  #'
+  #' @rdname d_metrics
   #' @export
   d_pbias <- function(o, s, na.rm = TRUE) {
-     pbias(s, o, na.rm=na.rm) %>% as.numeric(.)
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_pbias <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_pbias", na.rm = na.rm)) %>% 
+      set_names(paste("pbias", 1:cols, sep = ""))
+    return(of_pbias)
   }
-
 ```
 
 #### Pearson's correlation coefficient
 Pearson's correlation coefficient, $r$ or $corr(o,s)$, is a measure of the
 linear relationship between $o$ and $s$. It is defined as:
 
-$$ r \equiv corr(o,s) = \frac{cov(o,s)}{\sigma_s*\sigma_o}, $$
+$$ r = \frac{cov(o,s)}{\sigma_s*\sigma_o}, $$
 
 where $cov(...)$ denotes the covariance. The correlation
 coefficient can take on values between -1 and 1. The former corresponds to an
@@ -202,106 +216,90 @@ The code for the correlation is:
 
 ```
 
-### Ohter Objective Functions
+### Mean Squared Error 
+Defines as: 
 
-Descriptions shall follow
+$$ MSE = \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}{T} $$
+```{r}
+  # --------------------------------------------------------------------------
+  #' mean squared error
+  #'
+  #' @rdname d_metrics
+  #' @export
+  d_mse <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_mse <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_mse", na.rm = na.rm)) %>% 
+      set_names(paste("mse", 1:cols, sep = ""))
+    return(of_mse)
+  }
+```
 
 #### Root Mean Sqaured Error
-
-$$ \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}
-              {T} $$
+The suare root of the $MSE$
 ```{r}
   # --------------------------------------------------------------------------
   #' Root Mean Sqaured Error
   #'
   #' @rdname d_metrics
-  #' @import hydroGOF
   #' @export
   d_rmse <- function(o, s, na.rm = TRUE) {
-    as.numeric( hydroGOF::rmse(s, o, na.rm = na.rm) )
+    cols <- ncol(s) %>% as.integer(.)
+    d_mse(o,s,na.rm) %>%
+      sqrt(.) %>% 
+      set_names(paste("rmse", 1:cols, sep = "")) %>% 
+      return(.)
   }
 
 ```
 
 #### Inverted Nash-Sutcliffe Efficiency
 
-$$ nse^{-1} = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
+$$ inse = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
               {\sum_{t=1}^T \big( s(t)-\bar{s} \big)^2} $$
+
 ```{r}
   # --------------------------------------------------------------------------
   #' Inverted Nash-Sutcliffe Efficiency
   #'
   #' @rdname d_metrics
-  #' @import hydroGOF 
   #' @export
-  d_inverted_nse <- function(o, s, na.rm = TRUE) {
-     hydroGOF::NSE(sim = o, obs = s, na.rm = na.rm) 
+  d_inse <- function(o, s, na.rm = TRUE) {
+    cols <- ncol(s) %>% as.integer(.)
+    d_nse2(o, s, na.rm = na.rm) %>% 
+      set_names(paste("inse", 1:cols, sep = "")) %>% 
+      return(.)
   }
 
 ```
 
-#### Ratio of the Standard Deviations
-
-$$ rsd = \frac{\sigma_s}{ \sigma_o } $$
+### Distance Function Fortran Wrapper 
 ```{r}
-  # --------------------------------------------------------------------------
-  #' Ratio of Standard Deviations
-  #'
-  #' @rdname d_metrics
-  #' @import hydroGOF 
-  #' @export
-  d_rsd <- function(o, s, na.rm = TRUE) {
-    hydroGOF::rSD(s, o, na.rm = na.rm) %>% as.numeric(.)
-  }
-
+  d_wrapper <- function(obs, sim, rows, ndstart = 1L, ndend = rows, d_name = "f_kge", na.rm) {
+    idx_to_eval <- as.integer( 1L - (is.na(obs) +is.na(sim)) )
+    na_count <- sum(idx_to_eval)
+    if (!na.rm & (na_count > 0)) {
+      stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
+    }
+    out <- .Fortran(d_name, 
+                    XSIM = as.double(sim), 
+                    XOBS = as.double(obs),
+                    maxday = rows, 
+                    NDSTART = 1L, 
+                    NDEND = rows, 
+                    EVAL = idx_to_eval, 
+                    kge = as.double(-999.9), 
+                    NAOK = TRUE) 
+       return(out$kge)
+  } 
 ```
-
-#### Ratio of the Means
-
-$$ rmeans = \mu_s / \mu_o$$
-```{r}
-  # --------------------------------------------------------------------------
-  #' Ratio of Means
-  #'
-  #' @rdname d_metrics
-  #' @export
-  d_rmeans <- function(o, s, na.rm = TRUE) {
-    mean(s, na.rm = na.rm)/mean(o, na.rm = na.rm) %>% as.numeric(.)
-  }
-
-```
-
-#### Volumetric Efficiency
-The volumetric efficiency, $VE$, uses the absolute distance between observation and
-simulation instead of the quadratic and is bound between 0 to 1.
-
-$$ VE = 1- \frac{\sum_{t=1}^T abs\big( s(t)-o(t) \big)}
-                {\sum_{t=1}^T o(t) } $$
-
-```{r}
-  # --------------------------------------------------------------------------
-  #' Volumetric Efficiency
-  #'
-  #' @rdname d_metrics
-  #' @import hydroGOF 
-  #' @export
-  d_ve <- function(o, s, na.rm = TRUE) {
-    hydroGOF::VE(obs = o, sim = s, na.rm = na.rm) %>% as.numeric(.)
-  }
-
-
-```
-
-```{r}
-  # --------------------------------------------------------------------------
-  #' Volumetric Efficiency
-  #'
-  #' @rdname d_metrics
-  #' @import hydroGOF 
-  #' @export
-  d_ve <- function(o, s, na.rm = TRUE) {
-    hydroGOF::VE(obs = o, sim = s, na.rm = na.rm) %>% as.numeric(.)
-  }
 
 
 ```

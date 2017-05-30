@@ -7,7 +7,7 @@
   # rolling funcitons 
   roll_roll <- function(d1, 
                         d2 = NULL, 
-                        fun = hydroGOF::NSE,
+                        fun,
                         width,
                         ...) {
     # functions: =============================================================
@@ -42,20 +42,26 @@
 #' Objectie Function Windowing 
 #' 
 #' Compute the objective function for a set of windows.
+#' @importFrom purrr map2
+#' @importFrom tibble as_tibble
+#' @importFrom magrittr set_names
+#' @importFrom dplyr mutate
+#' @importFrom tidyr gather 
+#'
 #' @export
-  of_windows <- function(cos_data,
+  window_of <- function(cos_data,
                        of,
                        lb = 0.0, 
                        min_window_size = 500,
                        max_window_size = 1000,
                        number_windows = 3, 
                        na_filling = FALSE) {
-    length_data <- nrow(cos_data)
-    data1 <- cos_data %>%
+    cos_data_length <- nrow(cos_data)
+    o_columns <- cos_data %>%
        select( starts_with(viscos_options("name_o")) )
-    data2 <- cos_data %>%
+    s_columns <- cos_data %>%
        select( starts_with(viscos_options("name_s")) )
-    data_numbers <- names(data1) %>%
+    data_numbers <- names(o_columns) %>%
       gsub(viscos_options("name_o"), "", ., ignore.case = TRUE) %>%
       gsub("\\D", "", ., ignore.case = TRUE)
   # make plotlist: =========================================================
@@ -66,7 +72,7 @@
                             length.out = number_windows) %>% 
       as.integer(.)
   # define functions for roll: =============================================
-    fill_na_up <- function(in_data) {
+    na_filler_fun <- function(in_data) {
       if (na_filling) {
         fill_idx <- in_data %>% 
           is.na(.) %>% 
@@ -77,27 +83,33 @@
       }
       return(in_data)
     }
-    confine  <- function(in_data) {
-      pmax(in_data,lb)
+    fill_NAs <- function(in_data) {
+      if (na_filling) {
+        apply(in_data, 2, na_filler_fun)
+      } 
+      return(in_data)
     }
-    roll_of <- function(sub_data1, sub_data2) {
+    apply_ceilings <- function(in_data) {
+      apply(in_data, 2, function(x) pmax(x,lb)) 
+    }
+    roll_of <- function(o_col, s_col) {
       sapply(all_window_sizes, 
-             function(window_size) roll_roll(d1 = sub_data1,
-                                             d2 = sub_data2,
+             function(window_size) roll_roll(d1 = o_col,
+                                             d2 = s_col,
                                              fun = of, 
                                              width = window_size)) %>%
-        apply(., 2, fill_na_up) %>%
-        apply(., 2, confine) %>% 
-        as_tibble(.) %>% 
-        set_names("of_window" %&% sprintf("%.3i",1:length(all_window_sizes))) %>% 
-        dplyr::mutate(idx = 1:length_data,
+        fill_NAs(.) %>%
+        apply_ceilings(.) %>% 
+        tibble::as_tibble(.) %>% 
+        magrittr::set_names("window" %&% sprintf("%.3i",1:length(all_window_sizes))) %>% 
+        dplyr::mutate(idx = 1:cos_data_length,
                       posixdate = cos_data[[viscos_options("name_COSposix")]],
-                      qobs = sub_data1, 
-                      qsim = sub_data2) %>% 
-        gather(., key, value, -idx, -posixdate) %>% 
-        mutate(le_group = ifelse((key == "qobs" | key == "qsim"), "q", "of"))
+                      qobs = o_col, 
+                      qsim = s_col) %>% 
+        tidyr::gather(., key, value, -idx, -posixdate) %>% 
+        dplyr::mutate(le_group = ifelse((key == "qobs" | key == "qsim"), "q", "of"))
     }
     # apply roll_of 
-    window_list <- map2(data1,data2, roll_of)
+    window_list <- purrr::map2(o_columns,s_columns, roll_of)
   }
 

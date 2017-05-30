@@ -86,7 +86,7 @@ from further calculations. The thereby obtained data.frame is named
 #' @import dplyr
 #'
 #' @export
-mof_compute <- function(cos_data) {
+of_compute <- function(cos_data, distance_metrics = d_nse) {
   # def: ====================================================================
   assert_dataframe(cos_data)
   name_o <- viscos_options("name_o")

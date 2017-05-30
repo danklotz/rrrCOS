@@ -1,9 +1,14 @@
-#' @import magrittr
+#' check for unwanted columns:
 assert_junk <- function(cos_data) {
-  regEx <- get_regex_for_cos_data( )
-  assertChunk <- names(cos_data) %>% grepl(regEx, ., ignore.case = TRUE)
-  if (any(assertChunk == FALSE)) {
-    stop("there is still unwanted columns in the data. Try: remove_junk")
+  data_names <- names(cos_data)
+  no_junk_cols <- get_regex_for_cos_data( ) %>% grepl(., data_names, ignore.case = TRUE)
+  if (any(no_junk_cols == FALSE)) {
+    unwanted_cols <- paste(data_names[!no_junk_cols], collapse = ", ")
+    stop(
+      paste("There are still unwanted columns in the data. Check:", 
+            unwanted_cols, 
+            collapse = " ")
+            )
   }
 }
 assert_complete_date <- function(cos_data) {

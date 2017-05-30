@@ -1,100 +1,161 @@
-#' Objective Functions
+#' Distance Measures (Metrics)
 #'
 #' Different objective Functions, provided by visCOS. A detailed description
 #' of each of the provided objective function is provided in the respective
 #' vignette
 #'
+#' @useDynLib visCOS
 #' @param o The reference data or observations (o_data)
 #' @param s The created data or the simulations (s_data)
-#' @name of_overview
+#' @name d_metrics
 NULL
 
   # --------------------------------------------------------------------------
   #' Nash-Sutcliffe Efficiency
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
+  #' @importFrom purrr map2_dbl
+  #' @importFrom magrittr set_names
   #' @export
-  of_nse <- function(o,s) {
-    as.numeric( NSE(s,o) )
+  d_nse <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_nse <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_nse", na.rm = na.rm)) %>% 
+      set_names(paste("nse", 1:cols, sep = ""))
+    return(of_nse)
   }
 
   # --------------------------------------------------------------------------
-  #' Kling-Gupta Efficiency
+  #' KGE 2
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
   #' @export
-  of_kge <- function(o,s) {
-    as.numeric( KGE(s,o) )
+  d_kge <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_kge <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows,na.rm = na.rm)) %>% 
+      set_names(paste("kge", 1:cols, sep = ""))
+    return(of_kge)
   }
-
   # --------------------------------------------------------------------------
   #' Percentage Bias
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
   #' @export
-  of_p_bias <- function(o,s) {
-    as.numeric( pbias(s,o) )
+  d_bias <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_pbias <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_bias", na.rm = na.rm)) %>% 
+      set_names(paste("bias", 1:cols, sep = ""))
+    return(of_pbias)
   }
-
+  # --------------------------------------------------------------------------
+  #' Percentage Bias
+  #'
+  #' @rdname d_metrics
+  #' @export
+  d_pbias <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_pbias <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_pbias", na.rm = na.rm)) %>% 
+      set_names(paste("pbias", 1:cols, sep = ""))
+    return(of_pbias)
+  }
   # --------------------------------------------------------------------------
   #' Correlation
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
   #' @export
-  of_cor <- function(o,s) {
-    diag( cor(o,s) )
+  d_cor <- function(o, s, na.rm = TRUE) {
+    stats::cor(o, s, na.rm = na.rm) %>% diag(.)
   }
 
   # --------------------------------------------------------------------------
+  #' mean squared error
+  #'
+  #' @rdname d_metrics
+  #' @export
+  d_mse <- function(o, s, na.rm = TRUE) {
+    # pre sets:
+    assert_dataframe(o)
+    assert_dataframe(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
+    of_mse <- map2_dbl(o, s, 
+                       function(x,y) d_wrapper(x,y,rows, d_name = "f_mse", na.rm = na.rm)) %>% 
+      set_names(paste("mse", 1:cols, sep = ""))
+    return(of_mse)
+  }
+  # --------------------------------------------------------------------------
   #' Root Mean Sqaured Error
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
   #' @export
-  of_rmse <- function(o,s) {
-    as.numeric( rmse(s,o) )
+  d_rmse <- function(o, s, na.rm = TRUE) {
+    cols <- ncol(s) %>% as.integer(.)
+    d_mse(o,s,na.rm) %>%
+      sqrt(.) %>% 
+      set_names(paste("rmse", 1:cols, sep = "")) %>% 
+      return(.)
   }
 
   # --------------------------------------------------------------------------
   #' Inverted Nash-Sutcliffe Efficiency
   #'
-  #' @rdname of_overview
-  #' @import hydroGOF
+  #' @rdname d_metrics
   #' @export
-  of_invert_nse <- function(o,s) {
-    as.numeric( NSE(o,s) )
+  d_inse <- function(o, s, na.rm = TRUE) {
+    cols <- ncol(s) %>% as.integer(.)
+    d_nse2(o, s, na.rm = na.rm) %>% 
+      set_names(paste("inse", 1:cols, sep = "")) %>% 
+      return(.)
   }
 
-  # --------------------------------------------------------------------------
-  #' Ratio of Standard Deviations
-  #'
-  #' @rdname of_overview
-  #' @import hydroGOF
-  #' @export
-  of_rsd <- function(o,s) {
-    as.numeric( rSD(s,o) )
-  }
-
-  # --------------------------------------------------------------------------
-  #' Ratio of Means
-  #'
-  #' @rdname of_overview
-  #' @export
-  of_rmeans <- function(o,s) {
-    as.numeric( mean(s)/mean(o) )
-  }
-
-  # --------------------------------------------------------------------------
-  #' Volumetric Efficiency
-  #'
-  #' @rdname of_overview
-  #' @import hydroGOF
-  #' @export
-  of_ve <- function(o,s) {
-    as.numeric( VE(s,o) )
-  }
-
+  d_wrapper <- function(obs, sim, rows, ndstart = 1L, ndend = rows, d_name = "f_kge", na.rm) {
+    idx_to_eval <- as.integer( 1L - (is.na(obs) +is.na(sim)) )
+    na_count <- sum(idx_to_eval)
+    if (!na.rm & (na_count > 0)) {
+      stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
+    }
+    out <- .Fortran(d_name, 
+                    XSIM = as.double(sim), 
+                    XOBS = as.double(obs),
+                    maxday = rows, 
+                    NDSTART = 1L, 
+                    NDEND = rows, 
+                    EVAL = idx_to_eval, 
+                    kge = as.double(-999.9), 
+                    NAOK = TRUE) 
+       return(out$kge)
+  } 

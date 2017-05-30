@@ -29,10 +29,10 @@
 of_compare <- function(d1,
                        d2 = NULL,
                              of_list = list(
-                               nse = of_nse,
-                               kge = of_kge,
-                               p_bias = of_p_bias,
-                               r = of_cor
+                               nse = d_nse,
+                               kge = d_kge,
+                               p_bias = d_pbias,
+                               r = d_cor
                                ),
                              start_date = NULL,
                              end_date = NULL) {
