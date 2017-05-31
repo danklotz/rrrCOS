@@ -19,8 +19,8 @@ NULL
   #' @export
   d_nse <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -39,8 +39,8 @@ NULL
   #' @export
   d_kge <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -58,8 +58,8 @@ NULL
   #' @export
   d_bias <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -77,8 +77,8 @@ NULL
   #' @export
   d_pbias <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -95,6 +95,14 @@ NULL
   #' @rdname d_metrics
   #' @export
   d_cor <- function(o, s) {
+    # pre sets:
+    o <- build_tibble(o)
+    s <- build_tibble(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
     stats::cor(o, s) %>% diag(.)
   }
 
@@ -105,8 +113,8 @@ NULL
   #' @export
   d_mse <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -137,13 +145,13 @@ NULL
   #' @export
   d_inse <- function(o, s, na.rm = TRUE) {
     cols <- ncol(s) %>% as.integer(.)
-    d_nse2(o, s, na.rm = na.rm) %>% 
+    d_nse(o, s, na.rm = na.rm) %>% 
       set_names(paste("inse", 1:cols, sep = "")) %>% 
       return(.)
   }
 
   d_wrapper <- function(obs, sim, rows, ndstart = 1L, ndend = rows, d_name = "f_kge", na.rm) {
-    idx_to_eval <- as.integer( 1L - (is.na(obs) +is.na(sim)) )
+    idx_to_eval <- as.integer( 1L - (is.na(obs) + is.na(sim)) )
     na_count <- sum(idx_to_eval)
     if (!na.rm & (na_count > 0)) {
       stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
@@ -155,7 +163,7 @@ NULL
                     NDSTART = 1L, 
                     NDEND = rows, 
                     EVAL = idx_to_eval, 
-                    kge = as.double(-999.9), 
+                    of = as.double(-999.9), 
                     NAOK = TRUE) 
-       return(out$kge)
+       return(out$of)
   } 

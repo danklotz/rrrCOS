@@ -70,8 +70,8 @@ The code for the $NSE$ computation is:
   #' @export
   d_nse <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -118,8 +118,8 @@ The code for the $KGE$ computation is:
   #' @export
   d_kge <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -148,8 +148,8 @@ The code for the $p_{bias}$ computation is:
   #' @export
   d_bias <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -178,8 +178,8 @@ The code for the $p_{bias}$ computation is:
   #' @export
   d_pbias <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -211,6 +211,14 @@ The code for the correlation is:
   #' @rdname d_metrics
   #' @export
   d_cor <- function(o, s) {
+    # pre sets:
+    o <- build_tibble(o)
+    s <- build_tibble(s)
+    rows <- nrow(s) %>% as.integer(.)
+    cols <- ncol(s) %>% as.integer(.)
+    if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
+    if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
+    # computation:
     stats::cor(o, s) %>% diag(.)
   }
 
@@ -228,8 +236,8 @@ $$ MSE = \frac{\sum_{t=1}^T \big( o(t)-s(t) \big)^2}{T} $$
   #' @export
   d_mse <- function(o, s, na.rm = TRUE) {
     # pre sets:
-    assert_dataframe(o)
-    assert_dataframe(s)
+    o <- build_tibble(o)
+    s <- build_tibble(s)
     rows <- nrow(s) %>% as.integer(.)
     cols <- ncol(s) %>% as.integer(.)
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -273,7 +281,7 @@ $$ inse = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
   #' @export
   d_inse <- function(o, s, na.rm = TRUE) {
     cols <- ncol(s) %>% as.integer(.)
-    d_nse2(o, s, na.rm = na.rm) %>% 
+    d_nse(o, s, na.rm = na.rm) %>% 
       set_names(paste("inse", 1:cols, sep = "")) %>% 
       return(.)
   }
@@ -283,7 +291,7 @@ $$ inse = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
 ### Distance Function Fortran Wrapper 
 ```{r}
   d_wrapper <- function(obs, sim, rows, ndstart = 1L, ndend = rows, d_name = "f_kge", na.rm) {
-    idx_to_eval <- as.integer( 1L - (is.na(obs) +is.na(sim)) )
+    idx_to_eval <- as.integer( 1L - (is.na(obs) + is.na(sim)) )
     na_count <- sum(idx_to_eval)
     if (!na.rm & (na_count > 0)) {
       stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
@@ -295,9 +303,9 @@ $$ inse = \frac{\sum_{t=1}^T \big( s(t)-o(t) \big)^2}
                     NDSTART = 1L, 
                     NDEND = rows, 
                     EVAL = idx_to_eval, 
-                    kge = as.double(-999.9), 
+                    of = as.double(-999.9), 
                     NAOK = TRUE) 
-       return(out$kge)
+       return(out$of)
   } 
 ```
 

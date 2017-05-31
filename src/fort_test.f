@@ -1,6 +1,6 @@
 
 ! ---------------------------------------------------------------------------
-      ! mean squared error 
+      ! mean squared error
       subroutine f_mse(XSIM,XOBS,maxday,NDSTART,NDEND,EVAL,mse)
         implicit none
         integer :: maxday
@@ -136,23 +136,7 @@
         return
       end
 
-!      module of_helpers
-!        implicit none
 
-!      interface CORR
-!        module procedure CORR
-!      end interface
-
-!      interface MEANX
-!        module procedure MEANX
-!      end interface
-
-!      interface SIGX
-!        module procedure SIGX
-!      end interface
-
-
-!      contains
         ! -------------------------------------------------------
         ! Correlation coefficient.
         real*8 function CORR(XSIM,XOBS,maxday,NDSTART,NDEND,EVAL)
@@ -238,4 +222,3 @@
         SIGX = SX
         return
         end function
-!      end

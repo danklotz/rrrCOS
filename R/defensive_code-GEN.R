@@ -25,6 +25,14 @@ assert_complete_date <- function(cos_data) {
 }
 # uses stop if the input: "data" is not of class "data.frame"
 assert_dataframe <- function(data) {
-  require("tibble", quietly = TRUE)
-  if ( !is.data.frame(data)&!is.tibble(data) ) stop("data needs to be a data_frame!")
+  library("tibble", quietly = TRUE)
+  if ( !is.data.frame(data) & !is.tibble(data) ) stop("data needs to be a data_frame!")
+}
+# uses stop if the input: "data" is not of class "data.frame"
+build_tibble <- function(data) {
+  library("tibble", quietly = TRUE)
+  if ( !is.data.frame(data) ) {
+    data_framed <- as_tibble(data)
+  } 
+  return(data_framed)
 }

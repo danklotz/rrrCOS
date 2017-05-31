@@ -14,6 +14,7 @@
 #' hydrological years and over the whole timespan.
 #'
 #' @import pasta
+#' @import tibble
 #' @importFrom dplyr select filter starts_with 
 #' @importFrom magrittr set_names
 #'
@@ -31,9 +32,15 @@ of_compute <- function(cos_data,
   if (!exists(name_period, where = cos_data)) {
     stop("Error! Period-Column missing in cos_data, use `mark_periods`")
   }
-    if(!(class(d_metrics) == "list")) {
+  if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
+  if (is.null(names(d_metrics))){
+    d_names <- "d" %&% 1:length(d_metrics)
+  } else {
+    d_names <- names(d_metrics)
+  }
+  #
   evaluation_data <- cos_data[cos_data[[name_period]] > 0, ]
   number_of_basins <- evaluation_data %>%
     names(.) %>%
@@ -44,17 +51,13 @@ of_compute <- function(cos_data,
     .[[name_period]] %>%
     unique(.)
   number_of_periods <- data_periods %>% length
-  if (is.null(names(d_metrics))){
-    d_names <- "d" %&% 1:length(d_metrics)
-  } else {
-    d_names <- names(d_metrics)
-  }
+
   # compute main-of for entire data: ========================================
   d_mean <- sapply(d_metrics, function(of_, x, y) as.numeric(of_(x,y)),
                  x = dplyr::select(evaluation_data,dplyr::starts_with(name_o)) %>% unname(.),
                  y = dplyr::select(evaluation_data,dplyr::starts_with(name_s)) %>% unname(.) ) %>% 
     t(.) %>% 
-    as.tibble(.) %>% 
+    as_tibble(.) %>% 
     magrittr::set_names(., "basin" %_% 1:number_of_basins) %>% 
     cbind.data.frame(of = d_names,.) 
   # compute periodwise main-of: =============================================
@@ -73,13 +76,13 @@ of_compute <- function(cos_data,
   d_names_periods <- d_names %_% "period" %.% rep(1:number_of_periods, each = length(d_names))
   d_periods <- lapply(1:number_of_periods, period_compute) %>%
     do.call(rbind,.) %>% 
-    as.tibble(.) %>% 
+    as_tibble(.) %>% 
     magrittr::set_names("basin" %_% 1:number_of_basins) %>% 
     cbind(of = d_names_periods,.) %>% 
     .[order(.$of), ]
   #
   of_all <- rbind(d_mean,d_periods) %>% 
-    as.tibble(.)
+    as_tibble(.)
   return(of_all)
 }
 
@@ -105,20 +108,29 @@ of_barplot <- function(cos_data, d_metrics = list(nse = d_nse,
                                         corr = d_cor)) {
   # def: ====================================================================
   assert_dataframe(cos_data)
+  if(!(class(d_metrics) == "list")) {
+    d_metrics <- list(d_metrics)
+  }
+  if (is.null(names(d_metrics))){
+    d_names <- "d" %&% 1:length(d_metrics)
+  } else {
+    d_names <- names(d_metrics)
+  }
   # functions: ==============================================================
-  assign_ofgroups <- function(of_melted,mof_names) {
+  assign_ofgroups <- function(of_melted,of_names) {
     of_string <- as.character(of_melted$of)
     of_melted$of_group <- of_string %>% 
-      replace(.,startsWith(of_string,mof_names[1]),mof_names[1]) %>% 
-      replace(.,startsWith(of_string,mof_names[2]),mof_names[2]) %>% 
-      replace(.,startsWith(of_string,mof_names[3]),mof_names[3]) %>% 
-      replace(.,startsWith(of_string,mof_names[4]),mof_names[4])
+      replace(., startsWith(of_string,of_names[1]), of_names[1]) %>% 
+      replace(., startsWith(of_string,of_names[2]), of_names[2]) %>% 
+      replace(., startsWith(of_string,of_names[3]), of_names[3]) %>% 
+      replace(., startsWith(of_string,of_names[4]), of_names[4])
     return(of_melted)
   }
   # plot-list function:
   barplot_fun <- function(of_name,of_melted) {
     of_to_plot <- of_melted %>% filter( of_group == of_name)
-    if (of_name == "p_bias") {
+    # bad solution, but will be fine for now? 
+    if (of_name == "pbias") {
       gglimits <- c(-viscos_options("of_limits")[2]*100,
                    viscos_options("of_limits")[2]*100)
     } else {
@@ -134,13 +146,13 @@ of_barplot <- function(cos_data, d_metrics = list(nse = d_nse,
     return(plt_out)
   }
   # computations: ===========================================================
-  of <- of_compute(cos_data,d_metrics)
-  num_basins <- ncol(of) - 1
-  of_melted <- suppressMessages( reshape2::melt(of) ) %>%
-    assign_ofgroups(.,mof_names)
+  of_data <- of_compute(cos_data,d_metrics)
+  num_basins <- ncol(of_data) - 1
+  of_melted <- suppressMessages( reshape2::melt(of_data) ) %>%
+    assign_ofgroups(.,d_names)
   # plotting ================================================================
-  plot_list <- lapply(mof_names, function(x) barplot_fun(x,of_melted)) %>% 
-    magrittr::set_names(mof_names)
+  plot_list <- lapply(d_names, function(x) barplot_fun(x,of_melted)) %>% 
+    magrittr::set_names(d_names)
   return(plot_list)
 }
 
@@ -149,30 +161,42 @@ of_barplot <- function(cos_data, d_metrics = list(nse = d_nse,
 #' @rdname of_overview
 #' @import pasta
 #' @export
-mof_rasterplot <- function(cos_data) {
-  mof_names <- c("NSE","KGE","CORR","p_bias")
-  regex_main_of <- mof_names %.% "*"
+of_rasterplot <- function(cos_data, d_metrics = list(nse = d_nse, 
+                                        kge = d_kge, 
+                                        pbias = d_pbias, 
+                                        corr = d_cor)) {
+  # def: ====================================================================
   assert_dataframe(cos_data)
-  of <- mof_compute(cos_data)
+  if(!(class(d_metrics) == "list")) {
+    d_metrics <- list(d_metrics)
+  }
+  if (is.null(names(d_metrics))){
+    d_names <- "d" %&% 1:length(d_metrics)
+  } else {
+    d_names <- names(d_metrics)
+  }
+  # computations: ===========================================================
+  regex_main_of <- d_names %.% "*"
+  of_data <- of_compute(cos_data, d_metrics)
   #
-  plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of)) %>%
-    set_names(mof_names)
+  plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,of_data)) %>%
+    magrittr::set_names(d_names)
   return(plot_list)
 }
 
 # plot function -------------------------------------------------------------
-plot_fun_raster <- function(regex_single_of,of) {
+plot_fun_raster <- function(regex_single_of,of_data) {
   # function definitions ====================================================
-  extract_single_of <- function(of){
-    idx <- grep(regex_single_of,of$of)
-    return(of[idx, ])
+  extract_single_of <- function(of_data){
+    idx <- grep(regex_single_of,of_data$of)
+    return(of_data[idx, ])
   }
-  add_facet_info <- function(of) {
-    facet_column <- nrow(of) %>% 
+  add_facet_info <- function(of_data) {
+    facet_column <- nrow(of_data) %>% 
       magrittr::subtract(1) %>% 
       rep("period",.) %>% 
       c("overall",.)
-    return( cbind(of,facets = facet_column) )
+    return( cbind(of_data,facets = facet_column) )
   }
   reverse_basin_levels <- function(prepared_data) {
     prepared_data$variable <- factor(prepared_data$variable,
