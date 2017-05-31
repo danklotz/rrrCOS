@@ -32,7 +32,7 @@ assert_dataframe <- function(data) {
 build_tibble <- function(data) {
   library("tibble", quietly = TRUE)
   if ( !is.data.frame(data) ) {
-    data_framed <- as_tibble(data)
+    data <- as_tibble(data)
   } 
-  return(data_framed)
+  return(data)
 }

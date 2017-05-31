@@ -11,11 +11,11 @@ on 4 main objective function: NSE, KGE, Pearson's Correlation and the Percentage
 bias (the respective definitions are given [here](LP-of.html)).
 
 The main objective functions for the overall data and the marked periods
-can be computed through the function `mof_compute`. In order to run the
+can be computed through the function `of_compute`. In order to run the
 function the period have to be marked first, e.g. through the `mark_periods`
 function. Additionally, **visCOS** already provides two different options
-to create plots for the main objective functions: `mof_rasterplot`
-and `mof_barplot`. Both functions create a list with 4 `ggplot` figures. Each entry
+to create plots for the main objective functions: `of_rasterplot`
+and `of_barplot`. Both functions create a list with 4 `ggplot` figures. Each entry
 in the list corresponds to one of the main objective functions and both lists
 can be saved to html embedded .jpgs with the [`serve` function](LP-serve.html).
 
@@ -27,7 +27,7 @@ require(visCOS)
 require(magrittr)
 get_viscos_example( ) %>%
   mark_periods(.) %>%
-  mof_compute(.) %>% 
+  of_compute(.) %>% 
   print(.)
 
 ```
@@ -36,7 +36,7 @@ Plotting the results of main objective function with bar plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 get_viscos_example( ) %>%
   mark_periods(.) %>%
-  mof_barplot(.) %>%
+  mas_tib_barplot(.) %>%
   extract2(1) %>%
   plot(.)
 ```
@@ -45,7 +45,7 @@ Plotting the results of main objective function with a raster:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 get_viscos_example( ) %>%
   mark_periods(.) %>%
-  mof_rasterplot(.) %>%
+  of_rasterplot(.) %>%
   extract2(2) %>%
   plot(.)
 ```
@@ -152,6 +152,7 @@ of_compute <- function(cos_data,
   #
   of_all <- rbind(d_mean,d_periods) %>% 
     as_tibble(.)
+  of_all$of <- as.character(of_all$of)
   return(of_all)
 }
 
@@ -247,7 +248,7 @@ of_rasterplot <- function(cos_data, d_metrics = list(nse = d_nse,
                                         pbias = d_pbias, 
                                         corr = d_cor)) {
   # def: ====================================================================
-  assert_dataframe(cos_data)
+  build_tibble(cos_data)
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
@@ -311,7 +312,7 @@ plot_fun_raster <- function(regex_single_of,of_data) {
     gglimits <- viscos_options("of_limits")
   }
   #
-  prepared_data <- of %>%
+  prepared_data <- of_data %>%
     extract_single_of() %>%
     add_facet_info() %>%
     reshape2::melt(., id.vars = c("of","facets")) %>%

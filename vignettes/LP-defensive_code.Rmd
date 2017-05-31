@@ -80,9 +80,9 @@ Tests if `data` is a data.frame and returns an error if not.
 build_tibble <- function(data) {
   library("tibble", quietly = TRUE)
   if ( !is.data.frame(data) ) {
-    data_framed <- as_tibble(data)
+    data <- as_tibble(data)
   } 
-  return(data_framed)
+  return(data)
 }
 ```
 

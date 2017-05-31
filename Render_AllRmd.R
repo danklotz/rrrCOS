@@ -1,7 +1,7 @@
 # Render html files -------------------------------------------------------
 
 # old method ==============================================================
-# require(rmarkdown)
+# library(rmarkdown)
 # setwd("vignettes")
 # Rmd_files <- list.files(".",pattern = "*.Rmd")
 # for (name in Rmd_files){
@@ -9,7 +9,7 @@
 # }
 
 # new method ==============================================================
-  require(bookdown)
+  library(bookdown)
   setwd("vignettes")
   # be sure to change change it to where u want to have the book :)
   out_dir <- "D:/danklotz.github.io/viscos" # note: do not end path with /
@@ -21,3 +21,5 @@
   render_book(input = "index.Rmd", 
               output_format = "bookdown::gitbook", 
               output_dir = out_dir)
+
+  
