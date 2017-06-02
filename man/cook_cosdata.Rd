@@ -3,7 +3,7 @@
 \alias{cook_cosdata}
 \title{Cook cos_data}
 \usage{
-cook_cosdata(data_frame, info = "")
+cook_cosdata(raw_data, info = NULL)
 }
 \description{
 `cos_data` builder function

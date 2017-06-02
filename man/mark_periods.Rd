@@ -3,7 +3,7 @@
 \alias{mark_periods}
 \title{Mark Periods}
 \usage{
-mark_periods(cos_data, start_month = 10, end_month = 9)
+mark_periods(cos_data, start_month = 10L, end_month = 9L)
 }
 \arguments{
 \item{cos_data}{a data.frame that contains the runoff information.}

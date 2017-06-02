@@ -97,8 +97,6 @@ completely inside a hydrological year, thus the period counter jumps to one:
 
 ```
 
-
-
 Currently the following *data cooking* tasks are performed:
 
 - Provide example data
@@ -108,16 +106,7 @@ Currently the following *data cooking* tasks are performed:
 
 ### Cooking 
 Main cooking function 
-```{r}
-# -------------------------------------------------------------------------
-# cosdata generator: 
-setOldClass(c("tbl_df", "tbl", "data.frame"))
-cosdata <- setClass("cosdata",
-         slots = c(start_date = "character",
-                   end_date = "character",
-                   meta_info = "character"),
-         contains = c("tbl_df", "tbl", "data.frame"))
-```
+
 
 ```{r}
 # -------------------------------------------------------------------------
@@ -128,41 +117,23 @@ cosdata <- setClass("cosdata",
 #' @import pasta
 #' @import tibble
 #' @export
-cook_cosdata <- function(data_frame, info = "") {
-  # if input is already cosdata, return it unchanged:
-  if (class(data_frame) == "cosdata") {
-    return(data_frame)
+cook_cosdata <- function(raw_data, info = NULL) {
+  if ( "cosdata" %in% class(raw_data)) {
+    # if input is already cosdata, check and return it:
+    check_cosdata(le_cos)
+    return(raw_data)
+  } else {
+    # transformation: 
+    le_cos <- raw_data %>% 
+      remove_junk(.) %>% 
+      complete_dates(.) %>% 
+      mark_periods(.) %>% 
+      as_tibble(.)  
+    check_cosdata(le_cos) # checks 
+    # make pseudo class & return: 
+    class(le_cos) <- append(class(le_cos),"cosdata")
+    return(le_cos)
   }
-  # transformation: =======================================================
-  le_cos <- data_frame %>% 
-    remove_junk(.) %>% 
-    complete_dates(.) %>% 
-    mark_periods(.) %>% 
-    as_tibble(.)  
-  # checks: ===============================================================
-  # check for names: 
-  data_names <- names(le_cos)
-  check_names <- grepl(get_regex_for_cos_data(),
-                       data_names,
-                       ignore.case = TRUE)
-  if( any(check_names == FALSE) ) {
-    error_message <- "Cannot remove all unwanted columns." %&&%
-                     "Try to remove them manually:" %&&%
-                     "\n        " %&&%
-      paste(data_names[1 - check_names], collapse = ", ")
-    stop(error_message)
-  } 
-  # check for dimensions:
-  n_cols <- ncol(le_cos)
-  n_data_cols <- n_cols-7 # 7 == amount of other columns in data 
-  n_date_cols <- n_cols - n_data_cols - 2 # must be 5: yyyy,mm,dd,hh,min
-  if ((n_data_cols %% 2) != 0) stop("the number of o- and s-columns must be equal!")
-  if ((n_cols - n_data_cols - 2) != 5) stop("cos-date columns are not complete")
-  # add meta-data: ========================================================
-  cosdata(le_cos,
-      start_date = le_cos$posixdate[[1]] %>% as.character(.),
-      end_date = le_cos$posixdate[[length(le_cos)]] %>% as.character(.),
-      meta_info = info)
 }
 ```
 
@@ -470,40 +441,42 @@ Suggestions for improvements are welcome!
   #' @import magrittr
   #'
   #' @export
-  mark_periods <- function(cos_data, start_month = 10, end_month = 9) {
+  mark_periods <- function(cos_data, start_month = 10L, end_month = 9L) {
     # pre: ====================================================================
-    assert_dataframe(cos_data)
+    as.integer(start_month)
+    as.integer(end_month)
     name_year <- viscos_options("name_COSyear")
     name_month <- viscos_options("name_COSmonth")
-    cos_data %<>% remove_junk %>% complete_dates()
-    eval_diff <- function(a) {c( a[1],diff(a) )}
+    #
+    eval_diff <- function(a) {c( a[1L],diff(a) )}
     period_correction <- function(cos_data,period) {
       # tests:
       year_is_max <- cos_data[[name_year]] == max_year
       month_after_end <- cos_data[[name_month]] > end_month
       # assigmnet:
-      ifelse((year_is_max & month_after_end), 0, period)
+      ifelse((year_is_max & month_after_end), 0L, period)
     }
+    
     # calc: ===================================================================
-    # (I) get labels for the months: ##########################################
+    # get labels for the months: 
     if (start_month <= end_month) {
       period_range <- seq(start_month,end_month)
-      out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+      out_of_period <- seq(1L,12L) %>% extract( !(seq(1,12) %in% period_range) )
     } else if (start_month > end_month) {
-      range_1 <- seq(start_month,12)
-      range_2 <- seq(1,end_month)
+      range_1 <- seq(start_month,12L)
+      range_2 <- seq(1L,end_month)
       period_range <- c(range_1,range_2)
-      out_of_period <- seq(1,12) %>% extract( !(seq(1,12) %in% period_range) )
+      out_of_period <- seq(1L,12L) %>% extract( !(seq(1L,12L) %in% period_range) )
     }
-    # (II) mark periods: ######################################################
-    start_months_in_data <- cos_data[[name_month]] %in% c(start_month)
+    # mark periods: 
+    start_months_in_data <- as.integer(cos_data[[name_month]] %in% c(start_month))
     cos_data[[viscos_options("name_COSperiod")]] <- start_months_in_data %>%
       eval_diff(.) %>%
-      pmax(.,0) %>%
+      pmax(.,0L) %>%
       cumsum(.)
     out_period_in_data <- cos_data[[name_month]] %in% out_of_period
-    cos_data$period[out_period_in_data] <- 0
-    # (III) corrections for last year #########################################
+    cos_data$period[out_period_in_data] <- 0L
+    # corrections for last year 
     max_year <- max(cos_data[[name_year]])
     marked_cos_data <- dplyr::mutate(cos_data,
                               period = period_correction(cos_data, period)
