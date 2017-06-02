@@ -5,17 +5,19 @@
 
 # -------------------------------------------------------------------------
 # cosdata generator: 
+setOldClass(c("tbl_df", "tbl", "data.frame"))
 cosdata <- setClass("cosdata",
          slots = c(start_date = "character",
                    end_date = "character",
                    meta_info = "character"),
-         contains = "data.frame")
+         contains = c("tbl_df", "tbl", "data.frame"))
 # -------------------------------------------------------------------------
 #' Cook cos_data 
 #' 
 #' `cos_data` builder function
 #' 
 #' @import pasta
+#' @import tibble
 #' @export
 cook_cosdata <- function(data_frame, info = "") {
   # if input is already cosdata, return it unchanged:
@@ -24,10 +26,10 @@ cook_cosdata <- function(data_frame, info = "") {
   }
   # transformation: =======================================================
   le_cos <- data_frame %>% 
-    build_tibble(.) %>% 
     remove_junk(.) %>% 
     complete_dates(.) %>% 
-    mark_periods(.)
+    mark_periods(.) %>% 
+    as_tibble(.)  
   # checks: ===============================================================
   # check for names: 
   data_names <- names(le_cos)
