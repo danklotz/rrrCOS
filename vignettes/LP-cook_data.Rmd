@@ -111,7 +111,7 @@ Main cooking function
 ```{r}
 # -------------------------------------------------------------------------
 # cosdata generator: 
-setClass("cosdata",
+cosdata <- setClass("cosdata",
          slots = c(start_date = "character",
                    end_date = "character",
                    meta_info = "character"),
@@ -139,7 +139,7 @@ cook_cosdata <- function(data_frame, info = "") {
     mark_periods(.)
   # checks: ===============================================================
   # check for names: 
-  data_names <- names(cos_data)
+  data_names <- names(le_cos)
   check_names <- grepl(get_regex_for_cos_data(),
                        data_names,
                        ignore.case = TRUE)
@@ -155,9 +155,9 @@ cook_cosdata <- function(data_frame, info = "") {
   n_data_cols <- n_cols-7 # 7 == amount of other columns in data 
   n_date_cols <- n_cols - n_data_cols - 2 # must be 5: yyyy,mm,dd,hh,min
   if ((n_data_cols %% 2) != 0) stop("the number of o- and s-columns must be equal!")
-  if ((ncols - n_osdata - 2) != 5) stop("cos-date columns are not complete")
+  if ((n_cols - n_data_cols - 2) != 5) stop("cos-date columns are not complete")
   # add meta-data: ========================================================
-  new("cosdata",
+  cosdata(le_cos,
       start_date = le_cos$posixdate[[1]] %>% as.character(.),
       end_date = le_cos$posixdate[[length(le_cos)]] %>% as.character(.),
       meta_info = info)
