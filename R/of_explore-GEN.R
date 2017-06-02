@@ -26,17 +26,15 @@ if (knitr:::is_latex_output()) {
   #' cos_data <- get_viscos_example()
   #' of_explore(cos_data)
 of_explore <- function(cos_data,
-                             of_list = list(
-                               nse = d_nse,
-                               kge = d_kge,
-                               p_bias = d_pbias,
-                               r = d_cor
-                               ),
-                             start_date = NULL,
-                             end_date = NULL) {
+                       d_metrics = list(
+                         nse = d_nse,
+                         kge = d_kge,
+                         p_bias = d_pbias,
+                         r = d_cor
+                         )) {
   # (I) pre-sets: ============================================================
-  if (is.null(names(of_list))){
-    names(of_list) <- paste("of", 1:length(of_list), sep = "_")
+  if (is.null(names(d_metrics))){
+    names(d_metrics) <- paste("of", 1:length(d_metrics), sep = "_")
   }
   clean_cos_data <- cos_data %>% remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
@@ -70,7 +68,7 @@ of_explore <- function(cos_data,
       plot_bounds <- TRUE # switch: plot bounds
     }
   }
-  # (III) ====================================================================
+  # basic stuff: =============================================================
   idx_names <- grepl(viscos_options("name_o"),
                      names_data,
                      ignore.case = TRUE)
@@ -178,16 +176,12 @@ of_explore <- function(cos_data,
     })
     # (e) get dygraph date bounds (switches):
     selcted_from <- reactive({
-      if (!is.null(start_date)) {
-        start_date
-      } else if (!is.null(input$hydrographs_date_window)) {
+      if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[1]]
       }
     })
     selcted_to <- reactive({
-      if (!is.null(end_date)) {
-        end_date
-      } else if (!is.null(input$hydrographs_date_window)) {
+      if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[2]]
       }
 
@@ -209,7 +203,7 @@ of_explore <- function(cos_data,
     })
     out_of <- reactive({
       if (!is.null(input$hydrographs_date_window)) {
-          map_df(of_list, function(of_,x,y) of_(x,y),
+          map_df(d_metrics, function(of_,x,y) of_(x,y),
                  x = sub_slctd()$x,
                  y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
       }

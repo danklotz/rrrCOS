@@ -19,12 +19,7 @@
   #' @importFrom purrr map_df
   #'
   #' @export
-  #'
-  #' @examples
-  #' # get example data,
-  #' # explore the model performance
-  #' cos_data <- get_viscos_example()
-  #' explore_cos_data(cos_data)
+
 of_compare <- function(d1,
                        d2 = NULL,
                              of_list = list(
@@ -32,9 +27,7 @@ of_compare <- function(d1,
                                kge = d_kge,
                                p_bias = d_pbias,
                                r = d_cor
-                               ),
-                             start_date = NULL,
-                             end_date = NULL) {
+                               )) {
   # (I) pre-sets: ============================================================
   if(!is.list(of_list)){
     of_list = list(of_list)
@@ -191,16 +184,12 @@ of_compare <- function(d1,
     
     # (e) get dygraph date bounds (switches):
     selcted_from <- reactive({
-      if (!is.null(start_date)) {
-        start_date
-      } else if (!is.null(input$hydrographs_date_window)) {
+      if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[1]]
       }
     })
     selcted_to <- reactive({
-      if (!is.null(end_date)) {
-        end_date
-      } else if (!is.null(input$hydrographs_date_window)) {
+      if (!is.null(input$hydrographs_date_window)) {
         input$hydrographs_date_window[[2]]
       }
     })

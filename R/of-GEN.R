@@ -3,6 +3,39 @@
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+#' Objective Functions Wrap 
+#'
+#' @import pasta
+#' @import lazyeval 
+#' @export
+of <- function(cos_data,
+               d_metrics = list(nse=d_nse,kge=d_kge,pbias=d_pbias,corr=d_cor),
+               type = "compute",
+               ...) {
+  if(class(type) != "character") stop("Input argument `type` must be a character")
+  le_dots <- lazy_dots(...)
+  # switch:
+  if (type == "compute") {
+    of_compute(cos_data, d_metrics)
+  } else if (type == "barplot") {
+    of_barplot(cos_data, d_metrics)
+  } else if (type == "rasterplot") {
+    of_rasterplot(cos_data, d_metrics)
+  } else if (type == "explore") {
+    of_explore(cos_data, d_metrics)
+  } else if (type == "compare") {
+    start_date <- NULL
+    end_date <- NULL
+    cos_data2 <- NULL
+    if ("cos_data2" %in% names(le_dots)) {
+      cos_data2 <- lazy_eval(le_dots$cos_data2)
+    } 
+    of_compare(d1 = cos_data,
+               d2 = cos_data2)
+  } else {
+    stop("There is no `type` called" %&&% type)
+  }
+}
 # ---------------------------------------------------------------------------
 #' Get basic objective function for cos_data
 #'
@@ -83,6 +116,7 @@ of_compute <- function(cos_data,
   #
   of_all <- rbind(d_mean,d_periods) %>% 
     as_tibble(.)
+  of_all$of <- as.character(of_all$of)
   return(of_all)
 }
 
@@ -166,7 +200,7 @@ of_rasterplot <- function(cos_data, d_metrics = list(nse = d_nse,
                                         pbias = d_pbias, 
                                         corr = d_cor)) {
   # def: ====================================================================
-  assert_dataframe(cos_data)
+  build_tibble(cos_data)
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
@@ -230,7 +264,7 @@ plot_fun_raster <- function(regex_single_of,of_data) {
     gglimits <- viscos_options("of_limits")
   }
   #
-  prepared_data <- of %>%
+  prepared_data <- of_data %>%
     extract_single_of() %>%
     add_facet_info() %>%
     reshape2::melt(., id.vars = c("of","facets")) %>%

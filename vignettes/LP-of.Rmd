@@ -59,6 +59,44 @@ get_viscos_example( ) %>%
 
 ```
 
+### Wrapper 
+```{r}
+#' Objective Functions Wrap 
+#'
+#' @import pasta
+#' @import lazyeval 
+#' @export
+of <- function(cos_data,
+               d_metrics = list(nse=d_nse,kge=d_kge,pbias=d_pbias,corr=d_cor),
+               type = "compute",
+               ...) {
+  if(class(type) != "character") stop("Input argument `type` must be a character")
+  le_dots <- lazy_dots(...)
+  # switch:
+  if (type == "compute") {
+    of_compute(cos_data, d_metrics)
+  } else if (type == "barplot") {
+    of_barplot(cos_data, d_metrics)
+  } else if (type == "rasterplot") {
+    of_rasterplot(cos_data, d_metrics)
+  } else if (type == "explore") {
+    of_explore(cos_data, d_metrics)
+  } else if (type == "compare") {
+    start_date <- NULL
+    end_date <- NULL
+    cos_data2 <- NULL
+    if ("cos_data2" %in% names(le_dots)) {
+      cos_data2 <- lazy_eval(le_dots$cos_data2)
+    } 
+    of_compare(d1 = cos_data,
+               d2 = cos_data2)
+  } else {
+    stop("There is no `type` called" %&&% type)
+  }
+}
+```
+
+
 
 ### Computation
 The purpose of this function is to extract a the main of objective functions
