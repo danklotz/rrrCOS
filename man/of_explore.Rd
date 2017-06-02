@@ -4,15 +4,16 @@
 \alias{of_explore}
 \title{Explore with Objective Functions}
 \usage{
-of_explore(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, p_bias = d_pbias, 
-    r = d_cor))
+of_explore(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, p_bias =
+  d_pbias, r = d_cor))
 }
 \description{
 Runs a Shiny Gadget which can be used to get an overview of a cos_data time
 series object.
 }
 \examples{
-# get example data, explore the model performance
+# get example data,
+# explore the model performance
 cos_data <- get_viscos_example()
 of_explore(cos_data)
 }

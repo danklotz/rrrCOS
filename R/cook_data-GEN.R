@@ -3,6 +3,56 @@
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+# -------------------------------------------------------------------------
+# cosdata generator: 
+setClass("cosdata",
+         slots = c(start_date = "character",
+                   end_date = "character",
+                   meta_info = "character"),
+         contains = "data.frame")
+# -------------------------------------------------------------------------
+#' Cook cos_data 
+#' 
+#' `cos_data` builder function
+#' 
+#' @import pasta
+#' @export
+cook_cosdata <- function(data_frame, info = "") {
+  # if input is already cosdata, return it unchanged:
+  if (class(data_frame) == "cosdata") {
+    return(data_frame)
+  }
+  # transformation: =======================================================
+  le_cos <- data_frame %>% 
+    build_tibble(.) %>% 
+    remove_junk(.) %>% 
+    complete_dates(.) %>% 
+    mark_periods(.)
+  # checks: ===============================================================
+  # check for names: 
+  data_names <- names(cos_data)
+  check_names <- grepl(get_regex_for_cos_data(),
+                       data_names,
+                       ignore.case = TRUE)
+  if( any(check_names == FALSE) ) {
+    error_message <- "Cannot remove all unwanted columns." %&&%
+                     "Try to remove them manually:" %&&%
+                     "\n        " %&&%
+      paste(data_names[1 - check_names], collapse = ", ")
+    stop(error_message)
+  } 
+  # check for dimensions:
+  n_cols <- ncol(le_cos)
+  n_data_cols <- n_cols-7 # 7 == amount of other columns in data 
+  n_date_cols <- n_cols - n_data_cols - 2 # must be 5: yyyy,mm,dd,hh,min
+  if ((n_data_cols %% 2) != 0) stop("the number of o- and s-columns must be equal!")
+  if ((ncols - n_osdata - 2) != 5) stop("cos-date columns are not complete")
+  # add meta-data: ========================================================
+  new("cosdata",
+      start_date = le_cos$posixdate[[1]] %>% as.character(.),
+      end_date = le_cos$posixdate[[length(le_cos)]] %>% as.character(.),
+      meta_info = info)
+}
   # --------------------------------------------------------------------------
   #' Get runoff example
   #'

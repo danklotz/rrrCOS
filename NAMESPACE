@@ -3,6 +3,7 @@
 export("%>%")
 export(aggregate_time)
 export(complete_dates)
+export(cook_cosdata)
 export(d_bias)
 export(d_cor)
 export(d_inse)

@@ -4,8 +4,8 @@
 \alias{of}
 \title{Objective Functions Wrap}
 \usage{
-of(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, pbias = d_pbias, corr = d_cor), 
-    type = "compute", ...)
+of(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, pbias = d_pbias, corr
+  = d_cor), type = "compute", ...)
 }
 \description{
 Objective Functions Wrap

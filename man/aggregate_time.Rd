@@ -15,5 +15,5 @@ aggregate_time(cos_data, aggregation = "mm")
 Aggregates the COSERO data.frame (\code{cos_data}) according to the
 timely resolution defined via \code{aggregation}. Possible
 resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
-\code{'dd}' - day and combinations thereof.
+\code{'dd'} - day and combinations thereof.
 }

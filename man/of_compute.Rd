@@ -4,8 +4,8 @@
 \alias{of_compute}
 \title{Get basic objective function for cos_data}
 \usage{
-of_compute(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, pbias = d_pbias, 
-    corr = d_cor))
+of_compute(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, pbias =
+  d_pbias, corr = d_cor))
 }
 \arguments{
 \item{cos_data}{cos_data data.frame.}

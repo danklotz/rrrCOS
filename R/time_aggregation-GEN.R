@@ -3,7 +3,7 @@
   #' Aggregates the COSERO data.frame (\code{cos_data}) according to the
   #' timely resolution defined via \code{aggregation}. Possible
   #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
-  #' \code{'dd}' - day and combinations thereof.
+  #' \code{'dd'} - day and combinations thereof.
   #'
   #' @param cos_data the COSERO data.frame as used within visCOS
   #' @param aggregation string that defines the resolution of the aggregation.

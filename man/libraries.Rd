@@ -18,9 +18,9 @@ Returns nothing but gives a warning if it cannot load/install a library/package
 This function tries to load more than one package at once. If any of these packages is not installed it tries to istall them and load them afterward.
 }
 \examples{
-# loading xts
+# loading xts 
 libraries("xts")
-libraries(c("xts", "shiny"))
+libraries(c("xts","shiny"))
 }
 \seealso{
 \code{\link{require}}, \code{\link{library}}, \code{\link{install.packages}}
