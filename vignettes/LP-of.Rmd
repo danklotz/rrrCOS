@@ -36,7 +36,7 @@ Plotting the results of main objective function with bar plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 get_viscos_example( ) %>%
   mark_periods(.) %>%
-  mas_tib_barplot(.) %>%
+  of_barplot(.) %>%
   extract2(1) %>%
   plot(.)
 ```
