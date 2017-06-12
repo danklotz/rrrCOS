@@ -366,7 +366,7 @@ plot_fun_raster <- function(regex_single_of,of_data) {
     facet_grid(~ facets,  scales = "free_x", space = "free") +
     theme( legend.position = "none")  +
     geom_tile(color = "white", size = 0.25 ) +
-    geom_text(aes(of,variable, label = as.character(sprintf("0.2f",value,2))),
+    geom_text(aes(of,variable, label = as.character(sprintf("%0.2f",value,2))),
               color = "black")
   return(plt_out)
 }
