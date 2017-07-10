@@ -12,11 +12,12 @@ chop <- function(cosdata, key) {
   key_is_in_data <- names(le_data) %>% 
     grepl(paste(key, collapse = "|"), ., ignore.case = TRUE) %>% 
     any(.)
-  if( !key_is_in_data )
+  if( !key_is_in_data ) {
     stop("The chosen key (" %&% 
            key %&% 
            ") is not part of the `cosdata` columns")
-  # 
+  }
+  # main: =================================================================
   chop_symbols <- cosdata[key] %>% 
     unique(.) %>% 
     as.matrix(.)

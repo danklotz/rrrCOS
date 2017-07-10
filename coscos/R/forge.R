@@ -25,7 +25,7 @@ forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
                           opts$name_COSday,
                           opts$name_COShour,
                           opts$name_COSmin)
-    le_output <- select_(le_data, .dots = "-" %&% columns_2_remove) %>%
+    le_output <- dplyr::select_(le_data, .dots = "-" %&% columns_2_remove) %>%
       gather_(.,
               key_col = c("key"),
               value_col = c("value"),
@@ -45,7 +45,7 @@ forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
                         data_names,
                         opts$name_COSposix, 
                         opts$name_COSperiod)
-    le_output <- select_(le_data, .dots = columns_2_keep)
+    le_output <- dplyr::select_(le_data, .dots = columns_2_keep)
   } else if (form == "s_data") {
     # cosdata with only s-columns =========================================
     le_names <- names(le_data)
@@ -60,23 +60,33 @@ forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
                         data_names,
                         opts$name_COSposix, 
                         opts$name_COSperiod)
-    le_output <- select_(le_data, .dots = columns_2_keep)
+    le_output <- dplyr::select_(le_data, .dots = columns_2_keep)
   } else if (form == "o_only") {
     # only o-columns: ====================================================
     le_names <- names(le_data)
     data_names <- grepl(opts$name_o %&% ".*",
                         le_names,
                         ignore.case = TRUE) %>% le_names[.]
-    le_output <- select_(le_data, .dots = data_names)
+    le_output <- dplyr::select_(le_data, .dots = data_names)
   } else if (form == "s_only") {
     # only s-columns: ====================================================
     le_names <- names(le_data)
     data_names <- grepl(opts$name_s %&% ".*",
                         le_names,
                         ignore.case = TRUE) %>% le_names[.]
-    le_output <- select_(le_data, .dots = data_names)
+    le_output <- dplyr::select_(le_data, .dots = data_names)
+  } else if (form == "shell") {
+    # remove o- and s-columns ============================================
+    columns_2_keep <- c(opts$name_COSyear,
+                        opts$name_COSmonth,
+                        opts$name_COSday,
+                        opts$name_COShour,
+                        opts$name_COSmin, 
+                        opts$name_COSposix, 
+                        opts$name_COSperiod)
+    le_output <- dplyr::select_(le_data, .dots = columns_2_keep)
   } else {
-    stop("`form = " %&&% form %&%"` does not exist! See: ?forge")
+    stop("Sorry. `form = " %&&% form %&%"` does not exist! See: ?forge")
   }
   return(le_output)
 }
