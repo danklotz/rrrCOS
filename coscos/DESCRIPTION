@@ -1,0 +1,12 @@
+Package: coscos
+Title: Basic Setup for working in R with coseroreg
+Version: 0.0.0.9000
+Authors@R: person("Daniel", "Klotz", email = "daniel.klotz@boku.ac.at", role = c("aut", "cre"))
+Description: This package provides basic functions and interfaces for working
+    in `R` with COSEROreg. As such it builds the gateway for the `visCOS` package
+    and possible future extensions build within or outside the IWHW.
+Depends:
+    R (>= 3.2.1)
+License: What license is it under?
+LazyData: true
+RoxygenNote: 6.0.1.9000

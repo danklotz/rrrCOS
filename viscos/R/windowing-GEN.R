@@ -1,0 +1,115 @@
+# ---------------------------------------------------------------------------
+# Code for cooking data
+# authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  # --------------------------------------------------------------------------
+  # rolling funcitons 
+  roll_roll <- function(d1, 
+                        d2 = NULL, 
+                        fun,
+                        width,
+                        ...) {
+    # functions: =============================================================
+    matrix_to_dataframe <- function(x) {
+      if (is.matrix(x)) { x <- as.data.frame(x) }
+      return(x)
+    }
+    funct_bi <- function(which, XX, YY, fun, ...) fun(XX[which], YY[which])
+    replace_xvar_entries <- function(le_list,xvar) {
+      le_list[names(xvar)] <- xvar
+      return(le_list)
+    }
+    # calc: ==================================================================
+    n <- length(d1)
+    from <- pmax((1:n) - width + 1, 1)
+    to <- 1:n
+    elements <- apply(cbind(from, to), 1, function(x) seq(x[1],x[2])) %>% 
+      matrix_to_dataframe(.) %>% 
+      set_names(., paste(from, to, sep = ":") )
+    skip <- sapply(elements, length) %>% 
+      is_less_than(width)
+    Xvar <- elements %>% 
+      .[!skip] %>% 
+      sapply(., function(e_r) funct_bi(e_r,d1,d2,fun))
+    Xvar_final <- rep(new(class(Xvar[1]), NA), length(from)) %>% 
+      set_names(elements) %>% 
+      replace_xvar_entries(.,Xvar)
+    return(Xvar_final)
+  }
+
+# --------------------------------------------------------------------------
+#' Objectie Function Windowing 
+#' 
+#' Compute the objective function for a set of windows.
+#' @importFrom purrr map2
+#' @importFrom tibble as_tibble
+#' @importFrom magrittr set_names
+#' @importFrom dplyr mutate
+#' @importFrom tidyr gather 
+#'
+#' @export
+  window_of <- function(cos_data,
+                       of,
+                       lb = 0.0, 
+                       min_window_size = 500,
+                       max_window_size = 1000,
+                       number_windows = 3, 
+                       na_filling = FALSE) {
+    cos_data_length <- nrow(cos_data)
+    o_columns <- cos_data %>%
+       select( starts_with(viscos_options("name_o")) )
+    s_columns <- cos_data %>%
+       select( starts_with(viscos_options("name_s")) )
+    data_numbers <- names(o_columns) %>%
+      gsub(viscos_options("name_o"), "", ., ignore.case = TRUE) %>%
+      gsub("\\D", "", ., ignore.case = TRUE)
+  # make plotlist: =========================================================
+    #§ care!!  we need to quarantee that step == 0 and window_size == 0 will 
+    # $  not make problems!
+    all_window_sizes <- seq(from = min_window_size,
+                            to = max_window_size, 
+                            length.out = number_windows) %>% 
+      as.integer(.)
+  # define functions for roll: =============================================
+    na_filler_fun <- function(in_data) {
+      if (na_filling) {
+        fill_idx <- in_data %>% 
+          is.na(.) %>% 
+          not(.) %>% 
+          which(.) %>% 
+          min(.)
+        in_data[1:fill_idx] <- in_data[fill_idx]
+      }
+      return(in_data)
+    }
+    fill_NAs <- function(in_data) {
+      if (na_filling) {
+        apply(in_data, 2, na_filler_fun)
+      } 
+      return(in_data)
+    }
+    apply_ceilings <- function(in_data) {
+      apply(in_data, 2, function(x) pmax(x,lb)) 
+    }
+    roll_of <- function(o_col, s_col) {
+      sapply(all_window_sizes, 
+             function(window_size) roll_roll(d1 = o_col,
+                                             d2 = s_col,
+                                             fun = of, 
+                                             width = window_size)) %>%
+        fill_NAs(.) %>%
+        apply_ceilings(.) %>% 
+        tibble::as_tibble(.) %>% 
+        magrittr::set_names("window" %&% sprintf("%.3i",1:length(all_window_sizes))) %>% 
+        dplyr::mutate(idx = 1:cos_data_length,
+                      posixdate = cos_data[[viscos_options("name_COSposix")]],
+                      qobs = o_col, 
+                      qsim = s_col) %>% 
+        tidyr::gather(., key, value, -idx, -posixdate) %>% 
+        dplyr::mutate(le_group = ifelse((key == "qobs" | key == "qsim"), "q", "of"))
+    }
+    # apply roll_of 
+    window_list <- purrr::map2(o_columns,s_columns, roll_of)
+  }
+
