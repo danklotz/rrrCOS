@@ -7,15 +7,21 @@
   #'
   #' @param cos_data the COSERO data.frame as used within visCOS
   #' @param aggregation string that defines the resolution of the aggregation.
-  #' @import pasta
   #' 
+  #' @import pasta
+  #' @importFrom tidyr gather_
   #' @export
-  aggregate_time <- function(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options()) {
-    le_data <- cook_cosdate(cosdata)
-    le_names <- name(le_data)
+  aggregate_time <- function(cosdata, 
+                             key = "mm", 
+                             .funs = base::mean, 
+                             opts = coscos::viscos_options()) {
+    if (class(key) != "character")
+      stop("key must be a chracter. It currently is:" %&&% class(key))
+    le_data <- cook_cosdata(cosdata)
     le_aggr <- clump(le_data, key = key, .funs = .funs) 
     le_aggr[opts$name_COSposix] <- le_data[[opts$name_COSposix]] %>% 
       clump_posix(.,key = key)
+    le_names <- names(le_aggr)
     # melt the data in a tidy format:
     selected_cols <- (opts$name_o %|% opts$name_s) %>% 
       grepl(.,le_names, ignore.case = TRUE) %>% 
@@ -24,16 +30,16 @@
                                 key_col = c("key"),
                                 value_col = "value", 
                                 gather_cols = selected_cols)
-    
-    melted_time_aggregate <- le_aggr %>%
-      reshape2::melt(., id.vars = c(key,"date")) %>%
-      cbind.data.frame(.,
-                       basin =  .$variable %>%
-                         gsub(regex_for_cos_selection,"",.) %>%
-                         gsub("\\D","",.) %>%
-                         as.integer,
-                       obs_sim = .$variable %>%
-                         gsub(viscos_options("name_o") %&% ".*",viscos_options("name_o"),.) %>%
-                         gsub(viscos_options("name_s") %&% ".*",viscos_options("name_s"),.))
-    return(melted_time_aggregate)
+    return(tidy_aggr)
   }
+
+  
+  # functions to extrapolte additional information:
+    # remove_basin_nums <- function(basin_names) {
+    #   basin_names %>% 
+    #     gsub(opts$name_o %&% ".*", opts$name_o , ., ignore.case = TRUE) %>% 
+    #     gsub(opts$name_s %&% ".*", opts$name_s, ., ignore.case = TRUE)
+    # }
+    # remove_basin_names <- function(basin_names) {
+    #   as.integer(gsub("\\D","",basin_names))
+    # }

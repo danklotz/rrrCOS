@@ -4,7 +4,8 @@
 \alias{aggregate_time}
 \title{Time Aggregation}
 \usage{
-aggregate_time(cosdata, key = "mm", .funs = mean)
+aggregate_time(cosdata, key = "mm", .funs = base::mean,
+  opts = coscos::viscos_options())
 }
 \arguments{
 \item{cos_data}{the COSERO data.frame as used within visCOS}
