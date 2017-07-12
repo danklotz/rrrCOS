@@ -2,6 +2,8 @@
 #' 
 #' Filter or change `cosdata` into an other format. 
 #' 
+#' @family cosdata manipulators
+#' 
 #' @importFrom dplyr select starts_with
 #' @importFrom tidyr gather
 #' @import pasta

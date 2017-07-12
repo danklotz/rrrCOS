@@ -9,3 +9,7 @@ forge(cosdata, form = "tidy", opts = coscos::viscos_options())
 \description{
 Filter or change `cosdata` into an other format.
 }
+\seealso{
+Other cosdata manipulators: \code{\link{chop}},
+  \code{\link{clump}}
+}

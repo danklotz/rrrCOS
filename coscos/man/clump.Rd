@@ -2,12 +2,23 @@
 % Please edit documentation in R/clump.R
 \name{clump}
 \alias{clump}
-\title{Aggregate cosdata bykeys}
+\alias{clump_posix}
+\title{Aggregate cosdata by keys}
 \usage{
 clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
+
+clump_posix(le_posix, key = "mm", opts = coscos::viscos_options())
 }
 \description{
-Provides a wrapper around `dplyr::group_by` and `dplyr::summarise_at` that 
-allows for a rowise aggregation of `cosdata` by a set of chosen `key` 
+Provides a wrapper around \code{dplyr::group_by} and 
+\code{dplyr::summarise_at} that allows for a rowise aggregation of 
+\code{cosdata} by a set of chosen \code{key}. 
 columns.
+
+The function \code{clump_posix} emulates the \code{clump} function
+for the \code{posix} column.
+}
+\seealso{
+Other cosdata manipulators: \code{\link{chop}},
+  \code{\link{forge}}
 }

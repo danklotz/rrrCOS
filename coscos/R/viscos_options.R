@@ -1,6 +1,28 @@
-#' visCOS global options
+# --------------------------------------------------------------------------
+# viscos specifica 
+# authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# --------------------------------------------------------------------------
+
+#' Runoff Example
 #'
-#' Get and set the global options of visCOS
+#' Returns some examplary runoff data (i.e. raw \code{cosdata}) for 
+#' \pkg{viscos}
+#' 
+#' @family viscos specifica
+#' 
+#' @export
+viscos_example <- function() {
+  path <- system.file("extdata", "runoff_example.csv", package = "visCOS")
+  runoff_example <- read.csv(path)
+  return(runoff_example)
+}
+
+# --------------------------------------------------------------------------
+
+#' Options for viscos
+#'
+#' Get an optionlist for \pkg{viscos}
 #'
 #' These are the options you can adapt by executing the function
 #' (default values)
@@ -31,6 +53,9 @@
 #' viscos_options("name_o")
 #' viscos_options(name_o = "OtherData")
 #' viscos_options("name_o")
+#' 
+#' @family viscos specifica
+#' 
 #' @export
 viscos_options <- GlobalOptions::setGlobalOptions(
   # data.frame column names

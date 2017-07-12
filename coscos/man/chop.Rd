@@ -10,3 +10,7 @@ chop(cosdata, key)
 Divides `cosdata` into a tibble according to the unique idtentifiers of a 
 given column.
 }
+\seealso{
+Other cosdata manipulators: \code{\link{clump}},
+  \code{\link{forge}}
+}

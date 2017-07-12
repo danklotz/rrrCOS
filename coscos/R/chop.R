@@ -3,6 +3,8 @@
 #' Divides `cosdata` into a tibble according to the unique idtentifiers of a 
 #' given column.
 #'
+#' @family cosdata manipulators
+#'
 #' @import pasta
 #' @export
 chop <- function(cosdata, key) {
