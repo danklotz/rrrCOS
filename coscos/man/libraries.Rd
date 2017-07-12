@@ -12,7 +12,8 @@ libraries(..., verbose = FALSE)
 \item{x}{character vector. Name(s) of the libraries that are loaded/installed.}
 }
 \value{
-Returns nothing but gives a warning if it cannot load/install a library/package
+Returns a logical vector that informas if the given package could be 
+           loaded
 }
 \description{
 This function tries to load more than one package at once.
@@ -36,7 +37,8 @@ libraries(magrittr,"shiny","png",jpg)
 
 }
 \seealso{
-\code{\link{require}}, \code{\link{library}}, \code{\link{install.packages}}
+\code{\link{require}}, \code{\link{library}},
+         \code{\link{install.packages}}
 }
 \author{
 Simon Frey

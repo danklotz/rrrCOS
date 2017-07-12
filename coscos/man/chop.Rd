@@ -4,11 +4,27 @@
 \alias{chop}
 \title{Chop cosdata}
 \usage{
-chop(cosdata, key)
+chop(cosdata, keys)
+}
+\arguments{
+\item{cosdata}{The strictly defined data format (\code{cosdata}) used 
+within \code{viscos} (see: \code{\link{cook_cosdata}}).}
+
+\item{keys}{A \code{string} of one or more column-names that designate 
+the index-columns for the data separation.}
 }
 \description{
-Divides `cosdata` into a tibble according to the unique idtentifiers of a 
-given column.
+\code{chop} divides \code{cosdata} into according to chosen column 
+identifiers (\code{keys}). The result is a subdivided \code{list}  
+which containts the different parts (i.e. rows) of the original data.
+}
+\examples{
+separate the data with regard to the months: 
+chopped <- chop(cosdata, key = c("mm"))
+
+separate the data with regard to the year and months: 
+chopped <- chop(cosdata, key = c("yyyy","mm"))
+
 }
 \seealso{
 Other cosdata manipulators: \code{\link{clump}},

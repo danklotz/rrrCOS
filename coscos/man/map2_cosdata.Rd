@@ -7,6 +7,6 @@
 map2_cosdata(cosdata, .f, mapper = purrr::map2)
 }
 \description{
-A pre set map function for `cosdata`. Simultanious application of the 
-function `.f` to all `o`- and `s`- columns.
+A pre set \code{map} function for \code{cosdata}. Simultanious application of the 
+function \code{.f} to all \eqn{o} and \eqn{s} columns.
 }

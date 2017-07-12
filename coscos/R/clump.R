@@ -1,11 +1,11 @@
 #' Aggregate cosdata by keys 
 #' 
-#' Provides a wrapper around \code{dplyr::group_by} and 
+#' \code{clump} provides a wrapper around \code{dplyr::group_by} and 
 #' \code{dplyr::summarise_at} that allows for a rowise aggregation of 
 #' \code{cosdata} by a set of chosen \code{key}. 
 #' columns. 
-#' 
 #' @name clump
+#' 
 #' @family cosdata manipulators
 #' 
 #' @importFrom dplyr group_by_ summarise_at
@@ -35,8 +35,8 @@ clump <- function(cosdata,
 
 #' Aggregate posixdate by keys 
 #' 
-#' The function \code{clump_posix} emulates the \code{clump} function
-#' for the \code{posix} column.
+#' \code{clump_posix} emulates the \code{clump} function for the 
+#' \code{posix} column.
 #' 
 #' @rdname clump
 #' 

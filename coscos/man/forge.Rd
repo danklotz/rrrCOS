@@ -2,12 +2,43 @@
 % Please edit documentation in R/forge.R
 \name{forge}
 \alias{forge}
-\title{Forge cosdata}
+\title{Forge}
 \usage{
 forge(cosdata, form = "tidy", opts = coscos::viscos_options())
 }
+\arguments{
+\item{cosdata}{The strictly defined data format (\code{cosdata}) used 
+within \code{viscos} (see: \code{\link{cook_cosdata}})}
+
+\item{form}{A string that defines into which form the \code{cosdata} is "forged"
+(see: 'details')}
+
+\item{opts}{The options for viscos (see: \code{\link{viscos_options}})}
+}
 \description{
-Filter or change `cosdata` into an other format.
+\code{forge} allows to filter, tidy or re-arrange \code{cosdata} into 
+new formats.
+}
+\details{
+The forge functions transforms the \code{cosdata} tibble into a number of 
+different forms. Currently the following froms can be used:
+\itemize{
+  \item \strong{tidy:} Transfroms the \code{cosdata} into a tidy form.
+  \item \strong{s_data:} Filters the \eqn{o} columns out of \code{cosdata}.
+  \item \strong{o_data:} Filters the \eqn{s} columns out of \code{cosdata}.
+  \item \strong{s_only:} Extracts the \eqn{s} columns only.
+  \item \strong{o_only:} Extracts the \eqn{o} columns only.
+  \item \strong{shell:} Returns the \code{cosdata} withouth the 
+                           data columns(i.e. the \eqn{o & s} columns).
+}
+}
+\examples{
+# tidy: 
+forge( coscos::viscos_example() )
+   
+# only s-data columns:
+forge( coscos::viscos_example(), form = "s_only" )
+
 }
 \seealso{
 Other cosdata manipulators: \code{\link{chop}},

@@ -1,7 +1,15 @@
-#' pre set regular expressions to serch for cosdta column 
+# --------------------------------------------------------------------------
+# Code for cooking raw data
+# authors: Daniel Klotz, Simon Frey, Johannes Wesemann
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# --------------------------------------------------------------------------
+
+#' Regular Expressions Presets 1
+#' 
+#' A set of preset regular expressions to search for all cosdata columns. 
+#'  
 #' @keywords internal
-regex1_all_cosdata <- function(opts) 
-  {
+regex1_all_cosdata <- function(opts) {
   regex_pattern <- paste("^",opts["name_COSyear"],"$|",
                          "^",opts["name_COSmonth"],"$|",
                          "^",opts["name_COSday"],"$|",
@@ -17,6 +25,7 @@ regex1_all_cosdata <- function(opts)
   return(regex_pattern)
 }
 
+# - -----------------------------------------------------------------------
 
 #' Loading many libraries at once
 #' 
@@ -41,8 +50,10 @@ regex1_all_cosdata <- function(opts)
 #' # mixed arguments are also possible:
 #' libraries(magrittr,"shiny","png",jpg) 
 #' 
-#' @return Returns nothing but gives a warning if it cannot load/install a library/package
-#' @seealso \code{\link{require}}, \code{\link{library}}, \code{\link{install.packages}} 
+#' @return Returns a logical vector that informas if the given package could be 
+#'            loaded
+#' @seealso \code{\link{require}}, \code{\link{library}},
+#'          \code{\link{install.packages}} 
 #' 
 #' @importFrom lazyeval lazy_dots
 #' @importFrom purrr map_lgl
@@ -65,7 +76,8 @@ libraries <- function(..., verbose = FALSE) {
   }
   le_result <- purrr::map_lgl(1:loop_length, loader)
 }
-    
+
+# - -----------------------------------------------------------------------
 
 #' Pipe operator
 #'

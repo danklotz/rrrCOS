@@ -2,11 +2,11 @@
 % Please edit documentation in R/helpers.R
 \name{regex1_all_cosdata}
 \alias{regex1_all_cosdata}
-\title{pre set regular expressions to serch for cosdta column}
+\title{Regular Expressions Presets 1}
 \usage{
 regex1_all_cosdata(opts)
 }
 \description{
-pre set regular expressions to serch for cosdta column
+A set of preset regular expressions to search for all cosdata columns.
 }
 \keyword{internal}

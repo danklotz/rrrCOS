@@ -23,7 +23,7 @@ cook_cosdata <- function(raw_data,
     # transformation: 
     le_cos <- raw_data %>% 
       remove_junk(.) %>% 
-      complete_dates(.) %>% 
+      cook_dates(.) %>% 
       mark_periods(.) %>% 
       as_tibble(.)  
     check_cosdata(le_cos) # checks 
@@ -47,7 +47,7 @@ cook_cosdata <- function(raw_data,
     build_tibble(cosdata) # see: defensive code
     # determine names of cosdata and get regex:
     names_in_data <- cosdata %>% names(.)
-    regex_columns <- regex1_allcosdata(opts) 
+    regex_columns <- regex1_all_cosdata(opts) 
     # get idx and clean data: ================================================
     idx <- grep(regex_columns,names_in_data, ignore.case = TRUE)
     clean_cosdata <- only_observed_basins(cosdata[ ,idx])

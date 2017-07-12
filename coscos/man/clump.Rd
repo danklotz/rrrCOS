@@ -10,13 +10,13 @@ clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
 clump_posix(le_posix, key = "mm", opts = coscos::viscos_options())
 }
 \description{
-Provides a wrapper around \code{dplyr::group_by} and 
+\code{clump} provides a wrapper around \code{dplyr::group_by} and 
 \code{dplyr::summarise_at} that allows for a rowise aggregation of 
 \code{cosdata} by a set of chosen \code{key}. 
 columns.
 
-The function \code{clump_posix} emulates the \code{clump} function
-for the \code{posix} column.
+\code{clump_posix} emulates the \code{clump} function for the 
+\code{posix} column.
 }
 \seealso{
 Other cosdata manipulators: \code{\link{chop}},

@@ -9,7 +9,7 @@
 check_cosdata <- function(cosdata, opts = coscos::viscos_options()) {
     # check for names: 
       data_names <- names(cosdata)
-      check_names <- grepl(regex1_allcosdata(opts), 
+      check_names <- grepl(regex1_all_cosdata(opts), 
                            data_names,
                            ignore.case = TRUE)
       if( any(check_names == FALSE) ) {
@@ -54,21 +54,21 @@ check_cosdata <- function(cosdata, opts = coscos::viscos_options()) {
         opts["name_COSposix"],
         "data_columns"
         )
-      class_tests[1] <- le_classes[[ opts["name_COSyear"] ]] == "integer"
-      class_tests[2] <- le_classes[[ opts["name_COSmonth"] ]] == "integer"
-      class_tests[3] <- le_classes[[ opts["name_COSday"] ]] == "integer"
-      class_tests[4] <- le_classes[[ opts["name_COShour"] ]] == "integer"
-      class_tests[5] <- le_classes[[ opts["name_COSmin"] ]] == "integer"
-      class_tests[6] <- le_classes[[ opts["name_COSperiod"] ]] == "integer"
-      class_tests[7] <- all(le_classes[[ opts["name_COSposix"] ]] == c("POSIXct","POSIXt"))
+      class_tests[1] <- le_classes[[ opts[["name_COSyear"]] ]] == "integer"
+      class_tests[2] <- le_classes[[ opts[["name_COSmonth"]] ]] == "integer"
+      class_tests[3] <- le_classes[[ opts[["name_COSday"]] ]] == "integer"
+      class_tests[4] <- le_classes[[ opts[["name_COShour"]] ]] == "integer"
+      class_tests[5] <- le_classes[[ opts[["name_COSmin"]] ]] == "integer"
+      class_tests[6] <- le_classes[[ opts[["name_COSperiod"]] ]] == "integer"
+      class_tests[7] <- all(le_classes[[ opts[["name_COSposix"]] ]] == c("POSIXct","POSIXt"))
       # set all checked list-entries to NULL to remove them:
-      le_classes[[opts["name_COSyear"]]] <- NULL
-      le_classes[[opts["name_COSmonth"]]] <- NULL
-      le_classes[[opts["name_COSday"]]] <- NULL
-      le_classes[[opts["name_COShour"]]] <- NULL
-      le_classes[[opts["name_COSmin"]]] <- NULL
-      le_classes[[opts["name_COSperiod"]]] <- NULL
-      le_classes[[opts["name_COSposix"]]] <- NULL
+      le_classes[[ opts[["name_COSyear"]] ]] <- NULL
+      le_classes[[ opts[["name_COSmonth"]] ]] <- NULL
+      le_classes[[ opts[["name_COSday"]] ]] <- NULL
+      le_classes[[ opts[["name_COShour"]] ]] <- NULL
+      le_classes[[ opts[["name_COSmin"]] ]] <- NULL
+      le_classes[[ opts[["name_COSperiod"]] ]] <- NULL
+      le_classes[[ opts[["name_COSposix"]] ]] <- NULL
       # check if reminaing columns are all numeric: 
       class_tests[8] <- all(sapply(le_classes, function(x) x == "numeric") )
       if ( any(class_tests == FALSE) ) {

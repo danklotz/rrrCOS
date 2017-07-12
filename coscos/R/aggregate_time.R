@@ -1,12 +1,12 @@
   #' Time Aggregation
   #'
-  #' Aggregates the COSERO data.frame (\code{cos_data}) according to the
+  #' Aggregates the COSERO data.frame (\code{cosdata}) according to the
   #' timely resolution defined via \code{aggregation}. Possible
   #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
   #' \code{'dd'} - day and combinations thereof.
   #'
-  #' @param cos_data the COSERO data.frame as used within visCOS
-  #' @param aggregation string that defines the resolution of the aggregation.
+  #' @param cosdata The strictly defined data format (\code{cosdata}) used within \code{viscos}
+  #' @param aggregation A string that defines the resolution of the aggregation.
   #' 
   #' @import pasta
   #' @importFrom tidyr gather_

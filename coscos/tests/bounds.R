@@ -11,7 +11,7 @@ library(ggplot2)
 # data prep: ---------------------------------------------------------------
 cos_data <- get_viscos_example() %>% 
   remove_junk(.) %>% 
-  complete_dates(.)
+  cook_dates(.)
 # generate bounds: =========================================================
 # cos_data$QOBS_0001 is very noise so we might want to smoooth it,
 # e.g. with loess. 
@@ -44,7 +44,7 @@ ggplot(loess_data) +
 # tests --------------------------------------------------------------------
 # 1. test if remove_junk works on loess_data ===============================
 clean_loess_data <- remove_junk(loess_data) %>% 
-  complete_dates(.) %>% 
+  cook_dates(.) %>% 
   mark_periods(.)
 needed_names <- c("yyyy",
                   "mm",
