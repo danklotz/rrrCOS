@@ -5,7 +5,7 @@
   #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
   #' \code{'dd'} - day and combinations thereof.
   #'
-  #' @param cosdata The strictly defined data format (\code{cosdata}) used within \code{viscos}
+  #' @param cosdata The strictly defined data format (\code{cosdata}) used within \pkg{viscos}
   #' @param aggregation A string that defines the resolution of the aggregation.
   #' 
   #' @import pasta

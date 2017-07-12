@@ -27,16 +27,17 @@ regex1_all_cosdata <- function(opts) {
 
 # - -----------------------------------------------------------------------
 
-#' Loading many libraries at once
+#' Load many libraries at once
 #' 
-#' a conveince functions that wraps the `library` function so that 
-#' multiple packages can be loaded with one function call. 
+#' @description 
+#' \code{libraries} conveniently wraps the \code{\link{base::library}} function so 
+#' that multiple packages can be loaded with a signle one function call. 
+#' @author Simon Frey, Daniel Klotz, Christoph Schürz
 #' 
-#' @param x character vector. Name(s) of the libraries that are loaded/installed.
-#' @param ... Arguments passed to \code{\link{require}} and \code{\link{install.packages}}
-#' @author Simon Frey
-#' @description This function tries to load more than one package at once.
-#' If any of these packages is not installed it tries to istall them and load them afterward.
+#' 
+#' @param ... Arguments passed to \code{\link{library}}.
+#' @param vebrose A logical vector, indicating if the package start-up messages 
+#'                   should be supressed (\code{FALSE}) or not (\code{TRUE}).
 #' 
 #' @examples
 #' # loading can be done by string or by directly insertin an expression: 

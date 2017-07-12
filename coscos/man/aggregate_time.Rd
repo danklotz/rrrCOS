@@ -8,7 +8,7 @@ aggregate_time(cosdata, key = "mm", .funs = base::mean,
   opts = coscos::viscos_options())
 }
 \arguments{
-\item{cosdata}{The strictly defined data format (\code{cosdata}) used within \code{viscos}}
+\item{cosdata}{The strictly defined data format (\code{cosdata}) used within \pkg{viscos}}
 
 \item{aggregation}{A string that defines the resolution of the aggregation.}
 }

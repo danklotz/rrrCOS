@@ -1,11 +1,13 @@
 #' Chop cosdata 
 #' 
+#' @description 
 #' \code{chop} divides \code{cosdata} into according to chosen column 
 #' identifiers (\code{keys}). The result is a subdivided \code{list}  
 #' which containts the different parts (i.e. rows) of the original data.
+#' @author Daniel Klotz
 #'
 #' @param cosdata The strictly defined data format (\code{cosdata}) used 
-#'      within \code{viscos} (see: \code{\link{cook_cosdata}}).
+#'      within \pkg{viscos} (see: \code{\link{cook_cosdata}}).
 #' @param keys A \code{string} of one or more column-names that designate 
 #'      the index-columns for the data separation.
 #' 
@@ -16,6 +18,7 @@
 #' separate the data with regard to the year and months: 
 #' chopped <- chop(cosdata, key = c("yyyy","mm"))
 #' 
+#' @seealso \code{\link{cook_cosdata}}
 #' @family cosdata manipulators
 #'
 #' @import pasta

@@ -13,3 +13,6 @@ Returns some examplary runoff data (i.e. raw \code{cosdata}) for
 \seealso{
 Other viscos specifica: \code{\link{viscos_options}}
 }
+\author{
+Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
+}

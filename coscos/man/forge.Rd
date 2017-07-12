@@ -2,33 +2,33 @@
 % Please edit documentation in R/forge.R
 \name{forge}
 \alias{forge}
-\title{Forge}
+\title{Forge cosdata}
 \usage{
 forge(cosdata, form = "tidy", opts = coscos::viscos_options())
 }
 \arguments{
 \item{cosdata}{The strictly defined data format (\code{cosdata}) used 
-within \code{viscos} (see: \code{\link{cook_cosdata}})}
+within \pkg{viscos} (see: \code{\link{cook_cosdata}})}
 
 \item{form}{A string that defines into which form the \code{cosdata} is "forged"
 (see: 'details')}
 
-\item{opts}{The options for viscos (see: \code{\link{viscos_options}})}
+\item{opts}{The options for \pkg{viscos} (see: \code{\link{viscos_options}})}
 }
 \description{
 \code{forge} allows to filter, tidy or re-arrange \code{cosdata} into 
 new formats.
 }
 \details{
-The forge functions transforms the \code{cosdata} tibble into a number of 
-different forms. Currently the following froms can be used:
+The forge function transforms  \code{cosdata} into a number of different 
+forms. Currently the following forms (strings) can be used:
 \itemize{
-  \item \strong{tidy:} Transfroms the \code{cosdata} into a tidy form.
-  \item \strong{s_data:} Filters the \eqn{o} columns out of \code{cosdata}.
-  \item \strong{o_data:} Filters the \eqn{s} columns out of \code{cosdata}.
-  \item \strong{s_only:} Extracts the \eqn{s} columns only.
-  \item \strong{o_only:} Extracts the \eqn{o} columns only.
-  \item \strong{shell:} Returns the \code{cosdata} withouth the 
+  \item \emph{tidy} ... Transfroms the \code{cosdata} into a tidy form.
+  \item \emph{s_data} ... Filters the \eqn{o} columns out of \code{cosdata}.
+  \item \emph{o_data} ... Filters the \eqn{s} columns out of \code{cosdata}.
+  \item \emph{s_only} ... Extracts the \eqn{s} columns only.
+  \item \emph{o_only} ... Extracts the \eqn{o} columns only.
+  \item \emph{shell} ... Returns the \code{cosdata} withouth the 
                            data columns(i.e. the \eqn{o & s} columns).
 }
 }
@@ -41,6 +41,11 @@ forge( coscos::viscos_example(), form = "s_only" )
 
 }
 \seealso{
+\code{\link{cook_cosdata}}
+
 Other cosdata manipulators: \code{\link{chop}},
   \code{\link{clump}}
+}
+\author{
+Daniel Klotz
 }

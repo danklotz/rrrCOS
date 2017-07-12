@@ -2,26 +2,23 @@
 % Please edit documentation in R/helpers.R
 \name{libraries}
 \alias{libraries}
-\title{Loading many libraries at once}
+\title{Load many libraries at once}
 \usage{
 libraries(..., verbose = FALSE)
 }
 \arguments{
-\item{...}{Arguments passed to \code{\link{require}} and \code{\link{install.packages}}}
+\item{...}{Arguments passed to \code{\link{library}}.}
 
-\item{x}{character vector. Name(s) of the libraries that are loaded/installed.}
+\item{vebrose}{A logical vector, indicating if the package start-up messages 
+should be supressed (\code{FALSE}) or not (\code{TRUE}).}
 }
 \value{
 Returns a logical vector that informas if the given package could be 
            loaded
 }
 \description{
-This function tries to load more than one package at once.
-If any of these packages is not installed it tries to istall them and load them afterward.
-}
-\details{
-a conveince functions that wraps the `library` function so that 
-multiple packages can be loaded with one function call.
+\code{libraries} conveniently wraps the \code{\link{base::library}} function so 
+that multiple packages can be loaded with a signle one function call.
 }
 \examples{
 # loading can be done by string or by directly insertin an expression: 
@@ -41,5 +38,5 @@ libraries(magrittr,"shiny","png",jpg)
          \code{\link{install.packages}}
 }
 \author{
-Simon Frey
+Simon Frey, Daniel Klotz, Christoph Schürz
 }

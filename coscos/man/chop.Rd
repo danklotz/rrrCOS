@@ -8,7 +8,7 @@ chop(cosdata, keys)
 }
 \arguments{
 \item{cosdata}{The strictly defined data format (\code{cosdata}) used 
-within \code{viscos} (see: \code{\link{cook_cosdata}}).}
+within \pkg{viscos} (see: \code{\link{cook_cosdata}}).}
 
 \item{keys}{A \code{string} of one or more column-names that designate 
 the index-columns for the data separation.}
@@ -27,6 +27,11 @@ chopped <- chop(cosdata, key = c("yyyy","mm"))
 
 }
 \seealso{
+\code{\link{cook_cosdata}}
+
 Other cosdata manipulators: \code{\link{clump}},
   \code{\link{forge}}
+}
+\author{
+Daniel Klotz
 }
