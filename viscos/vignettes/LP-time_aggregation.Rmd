@@ -1,4 +1,4 @@
-# Time Aggregates
+# Aggregate according to time
 
 ```{r setup10, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
@@ -11,19 +11,19 @@ given time dimension. In **visCOS** this can be done by using the
 time dimension. Note, that the name of the dimension can be specified via the
 [options](LP-viscos_options.html).
 
-## Examples
 ```{r, eval = TRUE, purl=FALSE}
-  require(ggplot2, quietly = TRUE)
-  require(visCOS, quietly = TRUE)
+  coscos::libraries(visCOS, ggplot2, dplyr, magrittr)
 ```
 
 Daily runoff aggregation:
 ```{r, eval = TRUE, purl=FALSE}
-  cos_data <- visCOS::get_viscos_example()
-  runoff_aggregate_dd <- aggregate_time(cos_data, "dd")
+  cosdata <- coscos::viscos_example()
+  runoff_aggregate_dd <- aggregate_time(cosdata, "dd") %>% 
+    dplyr::mutate(obs_sim = substr(key,1,4), 
+                  basin = substr(key,6,9) %>% as.integer(.))
   # plot data:
   ggplot(runoff_aggregate_dd) +
-      geom_line(aes(x = idx, y = value, col = obs_sim)) +
+      geom_line(aes(x = dd, y = value, col = obs_sim)) +
       scale_colour_manual(values = c(viscos_options("color_o"),
                                      viscos_options("color_s"))) +
       facet_wrap( ~ basin,ncol = 1) +
@@ -32,139 +32,126 @@ Daily runoff aggregation:
 
 Monthly runoff aggregation:
 ```{r, eval = TRUE, purl=FALSE}
-  runoff_aggregate_mm <- aggregate_time(cos_data, "mm")
+  runoff_aggregate_mm <- aggregate_time(cosdata, "mm") %>% 
+    dplyr::mutate(obs_sim = substr(key,1,4), 
+                  basin = substr(key,6,9) %>% as.integer(.))
   # plot data:
   ggplot(runoff_aggregate_mm) +
-      geom_line(aes(x = idx, y = value, col = obs_sim)) +
+      geom_line(aes(x = mm, y = value, col = obs_sim)) +
       scale_colour_manual(values = c(viscos_options("color_o"),
                                      viscos_options("color_s"))) +
-      scale_x_discrete(limits = runoff_aggregate_mm$time_aggregate) +
-      facet_wrap( ~ basin, scales = "free") +
+      scale_x_discrete(limits = runoff_aggregate_mm$mm) +
+      facet_wrap( ~ basin) +
       theme_minimal()
 ```
 
 Yearly runoff aggregation:
 ```{r, eval = TRUE, purl=FALSE}
-  runoff_aggregate_yyyy <- aggregate_time(cos_data, "yyyy")
+  runoff_aggregate_yyyy <- aggregate_time(cosdata, "yyyy") %>% 
+    dplyr::mutate(obs_sim = substr(key,1,4), 
+                  basin = substr(key,6,9) %>% as.integer(.))
   # plot data:
   ggplot(runoff_aggregate_yyyy) +
-    geom_point(aes(x = idx, y = value, col = obs_sim)) +
+    geom_line(aes(x = yyyy, y = value, col = obs_sim)) +
+    geom_point(aes(x = yyyy, y = value, col = obs_sim)) +
     scale_colour_manual(values = c(viscos_options("color_o"),
                                    viscos_options("color_s"))) +
     facet_wrap( ~ basin) +
-    scale_x_discrete(limits = runoff_aggregate_yyyy$time_aggregate,  
+    scale_x_discrete(limits = runoff_aggregate_yyyy$yyyy,  
                     labels = abbreviate) +
     theme_minimal()
 ```
 
 Yearly and monthly runoff aggregation:
 ```{r, eval = TRUE, purl=FALSE}
-  runoff_aggregate_yyyymm <- aggregate_time(cos_data, "yyyy-mm")
+  runoff_aggregate_yyyymm <- aggregate_time(cosdata, c("yyyy","mm")) %>% 
+    dplyr::mutate(obs_sim = substr(key,1,4), 
+                  basin = substr(key,6,9) %>% as.integer(.), 
+                  idx = yyyy + mm/12) # a small hack to get a unique identifier
   # plot data:
   ggplot(runoff_aggregate_yyyymm) +
     geom_line(aes(x = idx, y = value, col = obs_sim)) +
     scale_colour_manual(values = c(viscos_options("color_o"),
                                    viscos_options("color_s"))) +
-    scale_x_discrete(limits = runoff_aggregate_yyyymm$time_aggregate,  
-                     labels = abbreviate) +
+    scale_x_discrete(limits = runoff_aggregate_yyyymm$idx,  
+                     labels = runoff_aggregate_yyyymm$posixdate) +
     facet_wrap( ~ basin,ncol = 1) +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-## Code
-This section defines the code for the `aggregate_time` function.
-The time aggregation is done by cutting the needed information out of the
-date-string. This is a rough, but works nicely and seems to be more
-commonly used than you would expect.
+`aggregate_time` is useful to get a quick overview. However, for larger basins 
+the facetting can become confusing. It is then useful to save the data as larger
+pictures and/or arange them into one plot. The latter can, for example,
+be done by using using the `ggjoy` package: 
+```{r, eval = FALSE, purl=FALSE}
+  library("ggjoy") # devtools::install_github("clauswilke/ggjoy")
+
+  big_cosdata <- data.table::fread("path_to_your_data") %>% 
+    coscos::cook_cosdata(your_data)
+  runoff_aggregate_mm <- aggregate_time(big_cosdata, "mm") %>% 
+    dplyr::mutate(obs_sim = substr(key,1,4), 
+                  basin = substr(key,6,9) %>% as.integer(.) ) 
+  runoff_aggregate_mm$key_factor = factor(runoff_aggregate_mm$key,
+                                          levels = unique(runoff_aggregate_mm$key))
+  # plot data:
+  ggplot(runoff_aggregate_mm, aes(x=value, y= key_factor, height = ..density.., fill = obs_sim)) +
+    geom_joy() +
+    scale_fill_manual(values = c("dodgerblue","orange")) +
+    theme_minimal()
+
+```
+![joy plot](figures/aggregation_joyplot-example.png)
+
+
+## Code: `aggregate_time`
+`aggregate_time` is basically wrapper for `coscos::clump`. Here is the code:
 ```{r}
   #' Time Aggregation
   #'
-  #' Aggregates the COSERO data.frame (\code{cos_data}) according to the
+  #' Aggregates the COSERO data.frame (\code{cosdata}) according to the
   #' timely resolution defined via \code{aggregation}. Possible
   #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
   #' \code{'dd'} - day and combinations thereof.
   #'
-  #' @param cos_data the COSERO data.frame as used within visCOS
-  #' @param aggregation string that defines the resolution of the aggregation.
-  #' @import magrittr
-  #' @import ggplot2
+  #' @param cosdata The strictly defined data format (\code{cosdata}) used 
+  #'          within \pkg{viscos}
+  #' @param aggregation A string that defines the resolution of the aggregation.
+  #' 
+  #' @import coscos
   #' @import pasta
+  #' @importFrom tidyr gather_
   #' @export
-  aggregate_time <- function(cos_data, aggregation = "mm") {
-    #
-    cutting_bounds <- c(Inf,-Inf)
-    if (grepl("dd",aggregation)) {
-      cutting_bounds[1] <- min(9,cutting_bounds[1])
-      cutting_bounds[2] <- max(11,cutting_bounds[2])
-    }
-    if (grepl("mm",aggregation)) {
-      cutting_bounds[1] <- min(6,cutting_bounds[1])
-      cutting_bounds[2] <- max(7,cutting_bounds[2])
-      # interval_bounds <- c(min = cos_data[viscos_options("name_COSmonth")] %>% min(.),
-      #                      max = cos_data[viscos_options("name_COSmonth")] %>% max(.))
-    }
-    if (grepl("yyyy",aggregation)) {
-      cutting_bounds[1] <- min(1,cutting_bounds[1])
-      cutting_bounds[2] <- max(4,cutting_bounds[2])
-    }
-```
-
-```{r}
-    ###### function and string definitions
-    regex_for_cos_selection <- viscos_options("name_o") %|%  viscos_options("name_s")
-    # aggregation function:
-    aggregator_fun <- function(k,data_frame){
-      #§ sketch for a fix for the no-data problem!
-      # interval <- tibble(idx = seq(interval_bounds["min"],interval_bounds["max"]), 
-      #                    value = NA)
-      #       temp_aggregation <- stats::aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean, simplify = FALSE)
-      # interval$value[
-      #   interval$idx %in% 
-      #     as.integer(temp_aggregation$`data_frame$date_selection`) ] <- unlist(temp_aggregation$`data_frame[[k]]`)
-      # return(interval$value)
-      the_aggregation <- aggregate(data_frame[[k]] ~ data_frame$date_selection, FUN = mean)
-      return(the_aggregation[ ,2])
-
-    }
-    #####
-    # If cos_data is not provided fully, the date is completed automatically
-    # + junk is removed from the data frame
-    full_cos_data <- cos_data %>%
-      visCOS::complete_dates() %>%
-      visCOS::remove_junk()
-    # aggregate:
-    cos_with_aggreggation <- cbind.data.frame(
-      full_cos_data,
-      date_selection = substr(full_cos_data$posixdate,
-                              cutting_bounds[1],
-                              cutting_bounds[2]) %>% as.factor()
-      )
-    names_cos_selection <- grep(
-      regex_for_cos_selection,
-      names(cos_with_aggreggation) %>% tolower,
-      value = TRUE
-      )
-    selected_cos_rows <- grep(regex_for_cos_selection,
-                             names(cos_with_aggreggation),
-                             ignore.case = TRUE)
-    time_aggregate <- selected_cos_rows %>%
-      sapply(.,function(k) aggregator_fun(k,cos_with_aggreggation)) %>%
-      data.frame(idx = 1:nrow(.),
-                 time_aggregate = unique(cos_with_aggreggation$date_selection),
-                 .) %>%
-      set_names(., c("idx","time_aggregate",names_cos_selection))
+  aggregate_time <- function(cosdata, 
+                             key = "mm", 
+                             .funs = base::mean, 
+                             opts = coscos::viscos_options()) {
+    if (class(key) != "character")
+      stop("key must be a chracter. It currently is:" %&&% class(key))
+    le_data <- coscos::cook_cosdata(cosdata)
+    le_aggr <- coscos::clump(le_data, key = key, .funs = .funs) 
+    le_aggr[opts$name_COSposix] <- le_data[[opts$name_COSposix]] %>% 
+      coscos::clump_posix(.,key = key)
+    le_names <- names(le_aggr)
     # melt the data in a tidy format:
-    melted_time_aggregate <- time_aggregate %>%
-      reshape2::melt(., id.vars = c("idx","time_aggregate")) %>%
-      cbind.data.frame(.,
-                       basin =  .$variable %>%
-                         gsub(regex_for_cos_selection,"",.) %>%
-                         gsub("\\D","",.) %>%
-                         as.integer,
-                       obs_sim = .$variable %>%
-                         gsub(viscos_options("name_o") %&% ".*",viscos_options("name_o"),.) %>%
-                         gsub(viscos_options("name_s") %&% ".*",viscos_options("name_s"),.))
-    return(melted_time_aggregate)
+    selected_cols <- (opts$name_o %|% opts$name_s) %>% 
+      grepl(.,le_names, ignore.case = TRUE) %>% 
+      le_names[.]
+    tidy_aggr <- tidyr::gather_(le_aggr,
+                                key_col = c("key"),
+                                value_col = "value", 
+                                gather_cols = selected_cols)
+    return(tidy_aggr)
   }
+
+  
+  # functions to extrapolte additional information:
+    # remove_basin_nums <- function(basin_names) {
+    #   basin_names %>% 
+    #     gsub(opts$name_o %&% ".*", opts$name_o , ., ignore.case = TRUE) %>% 
+    #     gsub(opts$name_s %&% ".*", opts$name_s, ., ignore.case = TRUE)
+    # }
+    # remove_basin_names <- function(basin_names) {
+    #   as.integer(gsub("\\D","",basin_names))
+    # }
 ```

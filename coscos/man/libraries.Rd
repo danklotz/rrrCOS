@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{libraries}
 \alias{libraries}
-\title{Load many libraries at once}
+\title{Load multiple Libraries}
 \usage{
 libraries(..., verbose = FALSE)
 }
@@ -38,5 +38,5 @@ libraries(magrittr,"shiny","png",jpg)
          \code{\link{install.packages}}
 }
 \author{
-Simon Frey, Daniel Klotz, Christoph Schürz
+Simon Frey, Daniel Klotz
 }

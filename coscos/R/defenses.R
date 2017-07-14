@@ -36,9 +36,9 @@ check_cosdata <- function(cosdata, opts = coscos::viscos_options()) {
       if (!OK_COSdate & !OK_POSIXdates) {
         stop("No COSdates and no POSIXct-dates in the data!")
       } else if (OK_COSdate & !OK_POSIXdates) {
-        stop("NO POSIXct fomrated column within the cos_data!")
+        stop("NO POSIXct fomrated column within the cosdata!")
       } else if (!OK_COSdate & OK_POSIXdates) {
-        stop("NO COSdate year within the cos_data!")
+        stop("NO COSdate year within the cosdata!")
       }
     # check correct data types: 
       # first get classes then test all fixed columns:

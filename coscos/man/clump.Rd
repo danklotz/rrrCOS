@@ -8,7 +8,7 @@ clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
 }
 \description{
 \code{clump} provides a wrapper around \code{dplyr::group_by} and 
-\code{dplyr::summarise_at} that allows for a rowise aggregation of 
+\code{dplyr::summarise_at} that allows for a row-wise aggregation of 
 \code{cosdata} by a set of chosen colums (\code{keys})
 }
 \seealso{

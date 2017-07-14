@@ -2,7 +2,7 @@
 #' 
 #' @description 
 #' \code{clump} provides a wrapper around \code{dplyr::group_by} and 
-#' \code{dplyr::summarise_at} that allows for a rowise aggregation of 
+#' \code{dplyr::summarise_at} that allows for a row-wise aggregation of 
 #' \code{cosdata} by a set of chosen colums (\code{keys})
 #' @author Daniel Klotz
 #' 
@@ -60,15 +60,17 @@ clump_posix <- function(le_posix,
   if (  key %>% grepl("mm",.,ignore.case = TRUE) %>% any()  ) {
     str_bounds[1] <- min(6,str_bounds[1])
     str_bounds[2] <- max(7,str_bounds[2])
-    # interval_bounds <- c(min = cos_data[viscos_options("name_COSmonth")] %>% min(.),
-    #                      max = cos_data[viscos_options("name_COSmonth")] %>% max(.))
+    # interval_bounds <- c(min = cosdata[viscos_options("name_COSmonth")] %>% min(.),
+    #                      max = cosdata[viscos_options("name_COSmonth")] %>% max(.))
   }
   if (  key %>% grepl("yyyy",.,ignore.case = TRUE) %>% any()  ) {
     str_bounds[1] <- min(1,str_bounds[1])
     str_bounds[2] <- max(4,str_bounds[2])
   }
   cut_str <- function(x) substr(x,str_bounds[1],str_bounds[2])
+  eliminate_spaces <- function(chr) gsub(" ","",chr)
   le_result <- purrr::map_chr(le_posix, cut_str) %>% 
+    purrr::map_chr(.,eliminate_spaces) %>% 
     unique(.) 
   return(le_result)
 }

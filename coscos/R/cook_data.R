@@ -293,11 +293,11 @@ cosdata_as_xts <- function(cosdata, opts = coscos::viscos_options()) {
   return(cosdata_as_xts)
 }
 
-get_basin_numbers <- function(cos_data) {
-  build_tibble(cos_data)
-  assert_junk(cos_data)
+get_basin_numbers <- function(cosdata) {
+  build_tibble(cosdata)
+  assert_junk(cosdata)
   #
-  d_names <- names(cos_data)
+  d_names <- names(cosdata)
   d_nums <- d_names  %>% gsub('\\D','',.) %>% unique
   d_nums <- d_nums[!(d_nums == "")] %>% as.integer
   return(d_nums)

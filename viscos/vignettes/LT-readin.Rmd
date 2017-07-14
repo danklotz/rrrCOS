@@ -1,0 +1,54 @@
+# Read in Data 
+
+Before working in `R` you need to get the data into it. Here we discuss 
+differnt optionsfor doing so. 
+
+```{r readin, include=FALSE}
+  knitr::opts_chunk$set( fig.align = 'center')
+```
+
+```{r} 
+  library(magrittr)
+```
+
+
+Simons stuff. Maybe be useful in the future:
+```{r}
+  # qobs_qsim von COSERO lesen und als getrennte Zeitreihen in einer Liste zurückgeben
+  read.qobsqsim <- function(x){
+    library(xts)
+    output <- list()
+    out <- read.table(x,nrow=1,header=TRUE)
+    nc <- ncol(out)
+    out <- read.table(x,header=TRUE,colClasses=
+                        c(rep("character",5),rep("numeric",nc-5)))
+    datum <- as.POSIXct(paste(out[,1],out[,2],out[,3],out[,4],out[,5],sep=" "),
+                        format="%Y %m %d %H %M",tz="utc")
+    out <- xts(out[,6:nc],order.by=datum)
+    
+    output$QOBS <- out[ ,grep("Qobs",colnames(out))]
+    output$QSIM <- out[ ,grep("Qsim",colnames(out))]
+    
+    return(output)
+  }
+  
+  read.xts <- function(x,datecolums=c(1:5),format="%Y %m %d %H %M",header=TRUE,...){
+    library(xts)
+    temp <- read.table(x,nrow=1,header=header,...)
+    nc <- ncol(temp)
+    temp <- read.table(x,colClasses=c(rep("character",max(datecolums)),
+                                      rep("numeric",nc-max(datecolums))),
+                       header=header,...)
+    for(k in datecolums){
+      if(k == datecolums[1]){
+        datum <- temp[,k]
+      } else {
+        datum <- paste(datum,temp[,k],sep=" ")
+      }
+    }
+    datum <- as.POSIXct(datum, format=format,tz="utc")
+    output <- xts(temp[,(max(datecolums)+1):nc], order.by=datum)
+    return(output)
+  }
+```
+
