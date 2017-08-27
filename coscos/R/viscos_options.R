@@ -13,7 +13,7 @@
 #' 
 #' @export
 viscos_example <- function() {
-  path <- system.file("extdata", "runoff_example.csv", package = "visCOS")
+  path <- system.file("extdata", "runoff_example.csv", package = "coscos")
   runoff_example <- read.csv(path)
   return(runoff_example)
 }
