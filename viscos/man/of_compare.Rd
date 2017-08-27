@@ -5,7 +5,7 @@
 \title{Explore with Objective Functions}
 \usage{
 of_compare(d1, d2 = NULL, of_list = list(nse = d_nse, kge = d_kge, p_bias = d_pbias, 
-    r = d_cor))
+    r = d_cor), opts = coscos::viscos_options())
 }
 \description{
 Runs a Shiny Gadget which can be used to interactively explore two 

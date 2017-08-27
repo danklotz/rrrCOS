@@ -6,7 +6,7 @@
 #' @keywords internal
 #' 
 #' @import pasta
-check_cosdata <- function(cosdata, opts = coscos::viscos_options()) {
+  check_cosdata <- function(cosdata, opts = coscos::viscos_options()) {
     # check for names: 
       data_names <- names(cosdata)
       check_names <- grepl(regex1_all_cosdata(opts), 
@@ -87,6 +87,7 @@ check_cosdata <- function(cosdata, opts = coscos::viscos_options()) {
 #' @keywords internal
 #' 
 #' @import tibble
+#' @export 
 build_tibble <- function(data) {
   if ( !is_tibble(data) ) {
     data <- as_tibble(data)

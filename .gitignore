@@ -33,3 +33,5 @@ packrat/src/
 packrat/packrat.lock
 packrat/src/stringr/stringr_1.0.0.tar.gz
 Datenreihe_App_analyse.pptx
+
+*.gz

@@ -8,9 +8,9 @@
   #' @importFrom purrr map_df
   #' @import pasta
   #' @export
-  fdc_compute <- function(cos_data) {
-    # defensive code:
-    assert_dataframe(cos_data)
+  fdc_compute <- function(cosdata) {
+    # pre:
+    cos_data <- coscos::cook_cosdata(cosdata)
     # def:
     order_bound_data <- function(bound_data) {
       ordred_fdc_data <- bound_data %>% 

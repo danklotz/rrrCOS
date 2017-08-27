@@ -63,10 +63,11 @@ This part of the document defines the code of `peak_plot`
   #' @import ggplot2
   #' @import dplyr
   #' @import magrittr
+  #' @import coscos
   #' @importFrom tibble tibble
-  peak_plot <- function(cos_data,n_events= 10L, window_size = 24L) {
+  peak_plot <- function(cosdata, n_events= 10L, window_size = 24L) {
     # pre:
-    assert_dataframe(cos_data)
+    cos_data <- coscos::check_cosdata(cosdata)
     n_events_int <- as.integer(n_events)
     window_size_int <- as.integer(window_size)
     if( is.na(n_events_int)  |

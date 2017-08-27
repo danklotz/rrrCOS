@@ -16,18 +16,19 @@
   #' @import magrittr
   #' @import dygraphs
   #' @import pasta
+  #' @import coscos
   #' @importFrom purrr map_df
   #'
   #' @export
 
 of_compare <- function(d1,
                        d2 = NULL,
-                             of_list = list(
-                               nse = d_nse,
-                               kge = d_kge,
-                               p_bias = d_pbias,
-                               r = d_cor
-                               )) {
+                       of_list = list(
+                         nse = d_nse,
+                         kge = d_kge,
+                         p_bias = d_pbias,
+                         r = d_cor), 
+                       opts = coscos::viscos_options()) {
   # (I) pre-sets: ============================================================
   if(!is.list(of_list)){
     of_list = list(of_list)
@@ -39,20 +40,20 @@ of_compare <- function(d1,
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
   clean_data1 <- d1 %>% 
-    remove_leading_zeros(.) %>% 
-    complete_dates(.)
-  clean_data2 <- d2 %>% 
-    remove_leading_zeros(.) %>% 
-    complete_dates(.)
+    coscos::cook_cosdata(.) %>% 
+    coscos::remove_leading_zeros(.) 
+  clean_data2 <- d2 %>%
+    coscos::cook_cosdata(.) %>% 
+    coscos::remove_leading_zeros(.) 
   # convenience variables: ===================================================
-  name_o <- visCOS::viscos_options("name_o")
-  name_s <- visCOS::viscos_options("name_s")
-  color_o <- visCOS::viscos_options("color_o")
-  color_s <- visCOS::viscos_options("color_s")
-  ylab <- visCOS::viscos_options("data_unit")
+  name_o <- opts[["name_o"]]
+  name_s <- opts[["name_s"]]
+  color_o <- opts[["color_o"]]
+  color_s <- opts[["color_s"]]
+  ylab <- opts[["data_unit"]]
   # 
-  name_lb <- visCOS::viscos_options("name_lb")
-  name_ub <-visCOS::viscos_options("name_ub")
+  name_lb <- opts[["name_lb"]]
+  name_ub <- opts[["name_ub"]]
   names_d1 <- names(clean_data1) %>% tolower(.)
   names_d2 <- names(clean_data2) %>% tolower(.)
   #
@@ -81,11 +82,11 @@ of_compare <- function(d1,
     #
     plot_bounds <- FALSE
     if( (number_lb > 0) & (number_ub > 0)) {
-      number_obs <- grepl(viscos_options("name_o"), 
+      number_obs <- grepl(name_o, 
                           names_d1, 
                           ignore.case = TRUE) %>% 
         sum(.)
-      number_sim <- grepl(viscos_options("name_s"), 
+      number_sim <- grepl(name_s, 
                           names_d1, 
                           ignore.case = TRUE) %>% 
         sum(.)
@@ -134,7 +135,7 @@ of_compare <- function(d1,
           select(x = matches( x_sel ), y = matches( y_sel ))
       } 
     selected_data %<>% 
-      xts(.,order.by = cos_data[[viscos_options("name_COSposix")]])
+      xts(.,order.by = cos_data[[ opts[["name_COSposix"]] ]])
   }
   # plotting: ################################################################
   create_dygraph <- function(plot_data, plot_group,plot_bounds){

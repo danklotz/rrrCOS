@@ -16,6 +16,7 @@ if (knitr:::is_latex_output()) {
   #' @import magrittr
   #' @import dygraphs
   #' @import pasta
+  #' @import coscos
   #' @importFrom purrr map_df
   #'
   #' @export
@@ -36,7 +37,7 @@ of_explore <- function(cos_data,
   if (is.null(names(d_metrics))){
     names(d_metrics) <- paste("of", 1:length(d_metrics), sep = "_")
   }
-  clean_cos_data <- cos_data %>% remove_leading_zeros
+  clean_cos_data <- cos_data %>% coscos::remove_leading_zeros
   if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
     clean_cos_data %<>% complete_dates
   }

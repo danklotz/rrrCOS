@@ -4,7 +4,7 @@
 \alias{fdc_compute}
 \title{Compute Flow Duration Curves}
 \usage{
-fdc_compute(cos_data)
+fdc_compute(cosdata)
 }
 \arguments{
 \item{cos_data}{A data.frame with columns as used throughout visCOS}

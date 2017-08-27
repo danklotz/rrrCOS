@@ -14,6 +14,7 @@ NULL
   #' Nash-Sutcliffe Efficiency
   #'
   #' @rdname d_metrics
+  #' @importFrom coscos build_tibble
   #' @importFrom purrr map2_dbl
   #' @importFrom magrittr set_names
   #' @export
@@ -36,6 +37,7 @@ NULL
   #' KGE 2
   #'
   #' @rdname d_metrics
+  #' @importFrom coscos build_tibble
   #' @export
   d_kge <- function(o, s, na.rm = TRUE) {
     # pre sets:
@@ -55,6 +57,9 @@ NULL
   #' Percentage Bias
   #'
   #' @rdname d_metrics
+  #'
+  #' @importFrom coscos build_tibble
+  #'
   #' @export
   d_bias <- function(o, s, na.rm = TRUE) {
     # pre sets:
@@ -74,6 +79,9 @@ NULL
   #' Percentage Bias
   #'
   #' @rdname d_metrics
+  #' 
+  #' @importFrom coscos build_tibble
+  #' 
   #' @export
   d_pbias <- function(o, s, na.rm = TRUE) {
     # pre sets:
@@ -93,6 +101,9 @@ NULL
   #' Correlation
   #'
   #' @rdname d_metrics
+  #' 
+  #' @importFrom coscos build_tibble
+  #' 
   #' @export
   d_cor <- function(o, s) {
     # pre sets:
@@ -110,6 +121,9 @@ NULL
   #' mean squared error
   #'
   #' @rdname d_metrics
+  #'
+  #' @importFrom coscos build_tibble
+  #' 
   #' @export
   d_mse <- function(o, s, na.rm = TRUE) {
     # pre sets:
@@ -129,6 +143,9 @@ NULL
   #' Root Mean Sqaured Error
   #'
   #' @rdname d_metrics
+  #' 
+  #' @importFrom coscos build_tibble
+  #' 
   #' @export
   d_rmse <- function(o, s, na.rm = TRUE) {
     cols <- ncol(s) %>% as.integer(.)
@@ -142,6 +159,9 @@ NULL
   #' Inverted Nash-Sutcliffe Efficiency
   #'
   #' @rdname d_metrics
+  #' 
+  #' @importFrom coscos build_tibble
+  #' 
   #' @export
   d_inse <- function(o, s, na.rm = TRUE) {
     cols <- ncol(s) %>% as.integer(.)

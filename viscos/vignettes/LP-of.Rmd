@@ -121,24 +121,19 @@ from further calculations. The thereby obtained data.frame is named
 #' hydrological years and over the whole timespan.
 #'
 #' @import pasta
+#' @import coscos
 #' @import tibble
 #' @importFrom dplyr select filter starts_with 
 #' @importFrom magrittr set_names
 #'
 #' @export
-of_compute <- function(cos_data, 
+of_compute <- function(cosdata, 
                        d_metrics = list(nse = d_nse, 
                                         kge = d_kge, 
                                         pbias = d_pbias, 
                                         corr = d_cor)) {
-  # def: ====================================================================
-  assert_dataframe(cos_data)
-  name_o <- viscos_options("name_o")
-  name_s <- viscos_options("name_s")
-  name_period <- viscos_options("name_COSperiod")
-  if (!exists(name_period, where = cos_data)) {
-    stop("Error! Period-Column missing in cos_data, use `mark_periods`")
-  }
+  # pre: ====================================================================
+  cos_data <- coscos::check_cosdata(cosdata)
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
@@ -217,13 +212,16 @@ NULL
 #' Bar plot for the Main Objective Function Values
 #'
 #' @rdname of_overview
+#'
+#' @import coscos
+#' 
 #' @export
-of_barplot <- function(cos_data, d_metrics = list(nse = d_nse, 
+of_barplot <- function(cosdata, d_metrics = list(nse = d_nse, 
                                         kge = d_kge, 
                                         pbias = d_pbias, 
                                         corr = d_cor)) {
-  # def: ====================================================================
-  assert_dataframe(cos_data)
+  # pre: ====================================================================
+  cos_data <- coscos::check_cosdata(cosdata)
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }

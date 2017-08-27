@@ -175,7 +175,10 @@ cook_cosdata <- function(raw_data,
   }
 
   # ---------------------------------------------------------------------------
-  # remove leading zeros from the names of cosdata (data.frame)
+  #' Remove Leading Zeros
+  #' 
+  #' remove leading zeros from the 'cosdata' anmes
+  #' @export
   remove_leading_zeros <- function(cosdata) {
     # pre: ====================================================================
     require("magrittr", quietly = TRUE)
