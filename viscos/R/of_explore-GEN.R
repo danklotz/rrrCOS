@@ -11,7 +11,7 @@ if (knitr:::is_latex_output()) {
   #'
   #' @import shiny
   #' @import miniUI
-  #' @importFrom xts xts
+  #' @import xts 
   #' @import dplyr
   #' @import magrittr
   #' @import dygraphs
@@ -32,28 +32,35 @@ of_explore <- function(cos_data,
                          kge = d_kge,
                          p_bias = d_pbias,
                          r = d_cor
-                         )) {
+                         ),
+                       opts =coscos::viscos_options() 
+                       ) {
   # (I) pre-sets: ============================================================
+  name_o <- opts[["name_o"]]
+  name_s <- opts[["name_s"]]
+  name_lb <- opts[["name_lb"]]
+  name_ub <-  opts[["name_ub"]]
+  #
   if (is.null(names(d_metrics))){
     names(d_metrics) <- paste("of", 1:length(d_metrics), sep = "_")
   }
-  clean_cos_data <- cos_data %>% coscos::remove_leading_zeros
-  if ( !viscos_options("name_COSposix") %in% names(clean_cos_data) ) {
-    clean_cos_data %<>% complete_dates
-  }
+  clean_cos_data <- cos_data %>% 
+    coscos::cook_cosdata(.) %>% 
+    coscos::remove_leading_zeros(.)
+  #
   names_data <- names(clean_cos_data) %>% tolower(.)
-  number_lb <- grepl(viscos_options("name_lb"),
+  number_lb <- grepl(name_lb,
                      names_data,
                      ignore.case = TRUE) %>% sum(.)
-  number_ub <- grepl(viscos_options("name_ub"),
+  number_ub <- grepl(name_ub,
                      names_data,
                      ignore.case = TRUE) %>% sum(.)
   plot_bounds <- FALSE
   if( (number_lb > 0) & (number_ub > 0)) {
-    number_obs <- grepl(viscos_options("name_o"),
+    number_obs <- grepl(name_o,
                         names_data,
-                        ignore.case = TRUE) %>%sum(.)
-    number_sim <- grepl(viscos_options("name_s"),
+                        ignore.case = TRUE) %>% sum(.)
+    number_sim <- grepl(name_s,
                         names_data,
                         ignore.case = TRUE) %>% sum(.)
     if (number_lb != number_ub) {
@@ -70,7 +77,7 @@ of_explore <- function(cos_data,
     }
   }
   # basic stuff: =============================================================
-  idx_names <- grepl(viscos_options("name_o"),
+  idx_names <- grepl(name_o,
                      names_data,
                      ignore.case = TRUE)
   d_nums <- names_data %>%
@@ -83,14 +90,14 @@ of_explore <- function(cos_data,
     # (a) get needed strings: ###############################################
     unique_data_names <- gsub("\\d","",names_data) %>%
       unique(.)
-    x_string <- unique_data_names[ grep(viscos_options("name_o"),
+    x_string <- unique_data_names[ grep(name_o,
                                         unique_data_names) ]
-    y_string <- unique_data_names[ grep(viscos_options("name_s"),
+    y_string <- unique_data_names[ grep(name_s,
                                         unique_data_names) ]
     if (plot_bounds) {
-      lb_string <-  unique_data_names[ grep(viscos_options("name_lb"),
+      lb_string <-  unique_data_names[ grep(name_lb,
                                             unique_data_names) ]
-      ub_string <-  unique_data_names[ grep(viscos_options("name_ub"),
+      ub_string <-  unique_data_names[ grep(name_ub,
                                             unique_data_names) ]
     }
     # (b) select data:
@@ -135,36 +142,36 @@ of_explore <- function(cos_data,
     # (c) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
-          order.by = clean_cos_data[[viscos_options("name_COSposix")]])
+          order.by = clean_cos_data[[ opts[["name_COSposix"]] ]])
     })
     # (d) create plots:
     base_graph <- reactive({
       if(plot_bounds) {
         dygraph( xts_selected_data() ) %>%
         dyAxis("y",
-               label = visCOS::viscos_options("data_unit")) %>%
+               label = opts[["data_unit"]]) %>%
         dySeries("x",
-                 label = visCOS::viscos_options("name_o"),
-                 color = viscos_options("color_o")) %>%
+                 label = name_o,
+                 color = opts[["color_o"]]) %>%
         dySeries("y",
-                 label = visCOS::viscos_options("name_s"),
-                 color = viscos_options("color_s")) %>%
+                 label = name_s,
+                 color = opts[["color_s"]]) %>%
         dySeries("lb",
-                 label = visCOS::viscos_options("name_lb"),
+                 label = name_lb,
                  color = "grey80") %>%
         dySeries("ub",
-                 label = visCOS::viscos_options("name_ub"),
+                 label = name_ub,
                  color = "grey80")
       } else {
         dygraph( xts_selected_data() ) %>%
         dyAxis("y",
-               label = visCOS::viscos_options("data_unit")) %>%
+               label = opts[["data_unit"]]) %>%
         dySeries("x",
-                 label = visCOS::viscos_options("name_o"),
-                 color = viscos_options("color_o")) %>%
+                 label = name_o,
+                 color = opts[["color_o"]]) %>%
         dySeries("y",
-                 label = visCOS::viscos_options("name_s"),
-                 color = viscos_options("color_s"))
+                 label = "name_s",
+                 color = opts[["color_s"]])
       }
     })
     output$hydrographs <- renderDygraph({
