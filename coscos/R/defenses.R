@@ -70,7 +70,7 @@
       le_classes[[ opts[["name_COSperiod"]] ]] <- NULL
       le_classes[[ opts[["name_COSposix"]] ]] <- NULL
       # check if reminaing columns are all numeric: 
-      class_tests[8] <- all(sapply(le_classes, function(x) x == "numeric") )
+      class_tests[8] <- all( sapply(le_classes, function(x) x == "numeric") )
       if ( any(class_tests == FALSE) ) {
         error_message = "One of more columns have the wrong class/type. \n" %&%
                         "Tests failed are associated the following columns:  \n" %&%

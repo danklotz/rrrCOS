@@ -57,9 +57,14 @@ of_compute <- function(cosdata,
                        d_metrics = list(nse = d_nse, 
                                         kge = d_kge, 
                                         pbias = d_pbias, 
-                                        corr = d_cor)) {
+                                        corr = d_cor), 
+                       opts = coscos::viscos_options()) {
   # pre: ====================================================================
-  cos_data <- coscos::check_cosdata(cosdata)
+  cos_data <- coscos::cook_cosdata(cosdata)
+  name_period <- opts[["name_COSperiod"]]
+  name_o <- opts[["name_o"]]
+  name_s <- opts[["name_s"]]
+  #
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
@@ -139,7 +144,7 @@ of_barplot <- function(cosdata, d_metrics = list(nse = d_nse,
                                         pbias = d_pbias, 
                                         corr = d_cor)) {
   # pre: ====================================================================
-  cos_data <- coscos::check_cosdata(cosdata)
+  cos_data <- coscos::cook_cosdata(cosdata)
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }

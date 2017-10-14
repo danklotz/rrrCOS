@@ -23,18 +23,18 @@ can be saved to html embedded .jpgs with the [`serve` function](LP-serve.html).
 
 Computing the main objective functions
 ```{r, message=3, purl=FALSE, eval=TRUE}
+require(coscos)
 require(visCOS)
 require(magrittr)
-get_viscos_example( ) %>%
-  mark_periods(.) %>%
-  of_compute(.) %>% 
+coscos::viscos_example( ) %>%
+  visCOS::of_compute(.) %>% 
   print(.)
 
 ```
 
 Plotting the results of main objective function with bar plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
-get_viscos_example( ) %>%
+coscos::viscos_example( ) %>%
   mark_periods(.) %>%
   of_barplot(.) %>%
   extract2(1) %>%
@@ -43,7 +43,7 @@ get_viscos_example( ) %>%
 
 Plotting the results of main objective function with a raster:
 ```{r, message=3, purl=FALSE, eval=TRUE}
-get_viscos_example( ) %>%
+coscos::viscos_example( ) %>%
   mark_periods(.) %>%
   of_rasterplot(.) %>%
   extract2(2) %>%
@@ -131,9 +131,14 @@ of_compute <- function(cosdata,
                        d_metrics = list(nse = d_nse, 
                                         kge = d_kge, 
                                         pbias = d_pbias, 
-                                        corr = d_cor)) {
+                                        corr = d_cor), 
+                       opts = coscos::viscos_options()) {
   # pre: ====================================================================
-  cos_data <- coscos::check_cosdata(cosdata)
+  cos_data <- coscos::cook_cosdata(cosdata)
+  name_period <- opts[["name_COSperiod"]]
+  name_o <- opts[["name_o"]]
+  name_s <- opts[["name_s"]]
+  #
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
@@ -221,7 +226,7 @@ of_barplot <- function(cosdata, d_metrics = list(nse = d_nse,
                                         pbias = d_pbias, 
                                         corr = d_cor)) {
   # pre: ====================================================================
-  cos_data <- coscos::check_cosdata(cosdata)
+  cos_data <- coscos::cook_cosdata(cosdata)
   if(!(class(d_metrics) == "list")) {
     d_metrics <- list(d_metrics)
   }
