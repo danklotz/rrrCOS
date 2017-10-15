@@ -19,9 +19,14 @@ and `judge_barplot`. Both functions create a list with 4 `ggplot` figures. Each 
 in the list corresponds to one of the main objective functions and both lists
 can be saved to html embedded .jpgs with the [`serve` function](LP-serve.html).
 
-**Examples:**
+The `judge` function provides a wrapper for all other `judge_` and `of_` 
+functions. The selection is done via the non-standardly-evaluated `type` 
+argument (search for lazy-evaluation if you want to know more. This implies, 
+among other things, that 
 
-Computing the main objective functions
+In the following are some examples:
+
+**Example 1** Computing the main objective functions
 ```{r, message=3, purl=FALSE, eval=TRUE}
 require(coscos)
 require(visCOS)
@@ -33,7 +38,7 @@ viscos_example( ) %>%
 
 ```
 
-Plotting the results of main objective function with bar plots:
+**Example 2** Plotting the results of main objective function with bar plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example() %>%
   judge_barplot(.) %>%
@@ -41,7 +46,7 @@ viscos_example() %>%
   plot(.)
 ```
 
-Plotting the results of main objective function with a raster:
+**Example 3** Plotting the results of main objective function with a raster:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example() %>%
   judge_rasterplot(.) %>%
@@ -49,8 +54,13 @@ viscos_example() %>%
   plot(.)
 ```
 
-The `judge` function provides a wrapper for all other `judge_` and `of_` 
-functions. The selection is done via the lazy-evaluated `type` argument. 
+**Example 4** Using the `judge` function as a wrapper: 
+```{r, message=3, purl=FALSE, eval=TRUE}
+viscos_example() %>%
+  judge(.,rasterplot) %>%
+  .[[1]] %>%
+  plot(.)
+```
 
 ## Code
 ```{r}
