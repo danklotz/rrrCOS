@@ -1,10 +1,10 @@
 % Please edit documentation in R/of-GEN.R
-\name{of_compute}
-\alias{of_compute}
+\name{judge_compute}
+\alias{judge_compute}
 \title{Get basic objective function for cos_data}
 \usage{
-of_compute(cosdata, d_metrics = list(nse = d_nse, kge = d_kge, pbias = d_pbias, 
-    corr = d_cor))
+judge_compute(cosdata, d_metrics = list(nse = d_nse, kge = d_kge, pbias = d_pbias, 
+    corr = d_cor), opts = coscos::viscos_options())
 }
 \arguments{
 \item{cos_data}{cos_data data.frame.}

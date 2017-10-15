@@ -4,7 +4,7 @@
 \title{Explore with Objective Functions}
 \usage{
 of_explore(cos_data, d_metrics = list(nse = d_nse, kge = d_kge, p_bias = d_pbias, 
-    r = d_cor))
+    r = d_cor), opts = coscos::viscos_options())
 }
 \description{
 Runs a Shiny Gadget which can be used to get an overview of a cos_data time
