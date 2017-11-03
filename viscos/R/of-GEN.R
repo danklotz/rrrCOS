@@ -16,7 +16,7 @@
 #' @import pasta
 #' @import lazyeval 
 #' @export
-judge <- function(cos_data,
+judge <- function(cosdata,
                   type = "compute",
                   d_metrics = list(nse = d_nse, 
                                    kge = d_kge, 
@@ -28,28 +28,33 @@ judge <- function(cos_data,
   le_dots <-  match.call(expand.dots = FALSE) %>% 
     .["..."] %>% 
     .[[1]]
-  le_type = substitute(type) %>% 
+  if (class(type) == "character") {
+    le_type <- type
+  } else {
+    le_type <- substitute(type) %>% 
     as.character(.) %>% 
     .[1]
+  }
+
   if (class(le_type) != "character") {
     stop("Cannot resolve 'type' argument. Try to provide a character.")
   }
   # compute options: ------------------------------------------------------
   if (le_type == "compute") {
-    judge_compute(cos_data, d_metrics)
+    judge_compute(cosdata, d_metrics)
   } else if (le_type == "judge_barplot" | le_type == "barplot") {
-    judge_barplot(cos_data, d_metrics)
+    judge_barplot(cosdata, d_metrics)
   } else if (le_type == "judge_rasterplot" | le_type == "rasterplot") {
-    judge_rasterplot(cos_data, d_metrics)
+    judge_rasterplot(cosdata, d_metrics)
   } else if (le_type == "of_explore" | le_type == "explore") {
-    of_explore(cos_data, d_metrics)
+    of_explore(cosdata, d_metrics)
   } else if (le_type == "of_compare" | le_type == "compare") {
-    cos_data2 <- NULL
+    cosdata2 <- NULL
     if ("cos_data2" %in% names(le_dots)) {
       cos_data2 <- eval(le_dots$cos_data2)
     } 
-    of_compare(d1 = cos_data,
-               d2 = cos_data2)
+    of_compare(d1 = cosdata,
+               d2 = cosdata2)
   } else {
     stop("There is no option (`type`) called" %&&% le_type)
   }
@@ -67,6 +72,7 @@ judge <- function(cos_data,
 #' @import pasta
 #' @import coscos
 #' @import tibble
+#' @importFrom purrr map_df
 #' @importFrom dplyr select filter starts_with 
 #' @importFrom magrittr set_names
 judge_compute <- function(cosdata, 
@@ -81,7 +87,7 @@ judge_compute <- function(cosdata,
   name_o <- opts[["name_o"]]
   name_s <- opts[["name_s"]]
   #
-  if(!(class(d_metrics) == "list")) {
+  if( !(class(d_metrics) == "list") ) {
     d_metrics <- list(d_metrics)
   }
   if (is.null(names(d_metrics))){
@@ -102,7 +108,7 @@ judge_compute <- function(cosdata,
   number_judge_periods <- data_periods %>% length
 
   # compute main-of for entire data: ========================================
-  d_mean <- sapply(d_metrics, function(judge_, x, y) as.numeric(judge_(x,y)),
+  d_mean <- purrr::map_df(d_metrics, function(judge_, x, y) as.numeric(judge_(x,y)),
                  x = dplyr::select(evaluation_data,dplyr::starts_with(name_o)) %>% unname(.),
                  y = dplyr::select(evaluation_data,dplyr::starts_with(name_s)) %>% unname(.) ) %>% 
     t(.) %>% 
@@ -117,10 +123,10 @@ judge_compute <- function(cosdata,
     s_pick <- dplyr::filter(evaluation_data,period == data_periods[k]) %>%
       dplyr::select(.,starts_with(name_s)) %>%
       unname(.)
-    d_measures <- t(sapply(d_metrics, function(judge_,x,y) as.numeric(judge_(x,y)),
+    d_measures <- purrr::map_df(d_metrics, function(judge_,x,y) as.numeric(judge_(x,y)),
                  x = o_pick,
-                 y = s_pick ))
-    return(d_measures)
+                 y = s_pick ) %>% t()
+    return(measure = d_measures)
   }
   d_names_periods <- d_names %_% "period" %.% rep(1:number_judge_periods, each = length(d_names))
   d_periods <- lapply(1:number_judge_periods, period_compute) %>%
