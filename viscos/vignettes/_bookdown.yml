@@ -3,8 +3,4 @@ language:
   ui:
     chapter_name: "Chapter "
 rmd_files: ["index.Rmd",
-"introduction.Rmd",
-"LT-readin.Rmd",
-"LP-time_aggregation.Rmd",
-"LT-useful.Rmd", 
-"proposal_libraries.Rmd"]
+"introduction.Rmd"]

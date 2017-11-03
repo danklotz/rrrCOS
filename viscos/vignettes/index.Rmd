@@ -8,40 +8,17 @@ output:
     toc: yes
 ---
 
-# Hello Traveler {-}
+# Guide
 
 ```{r, fig.align = 'center', out.width = '50%', echo = FALSE}
   knitr::include_graphics("figures/icon_viscos.png")
 ```
 
-This is documentation and code for the R-package **visCOS**. **visCOS** stands
-for  *vis*ual *c*omparison of *o*bservations and *s*imulations. The package is
-still under (heavy) development and we therefore do not recommended to use the package, yet.
+This is the guide and definition of **visCOS**. 
+
+visCOS stands for "visual comparison of observations and simulations".
+The package is still changing quite often. We therefore recommend to not use it 
+yet.  
 
 ---
 
-There exist many R-packages dedicated to hydrology.
-
-Among then, several have provide help to the calibration of (conceptual)
-rainfall-runoff models. As their name suggests, these models relate the a
-rainfall input to a generated runoff for some given basins They have found
-a wide array of applications in hydrology. Form the analysis of catchment
-properties to climate impact studies, so to speak. From the point o view of the
-R package ecosystem there are to packages, which are of particular interest with
-regard to **visCOS**:
-The [`hydroGOF`](https://CRAN.R-project.org/package=hydroGOF) package and the
-[`hydroTSM`](https://CRAN.R-project.org/package=hydroTSM) package. The former
-provides the most commonly used (and discussed) objective functions. The
-latter, helps with the analysis, interpolation and the plotting of hydrological
-time series.
-
-As an R-package that aim of **visCOS** is to provide summaries - in a visual
-and numerical sense - to aid a concurrent and comparative parameter estimation
-for multiple (related) basins or catchments. Topic wise, **visCOS** might
-therefore be positioned somewhere in-between the two previously mentioned
-packages. **visCOS** is usable for conceptual rainfall runoff models
-in general, but almost all of its functionality has been derived from different
-applications of the COSERO model. COSERO is a HBV-like distributed
-rainfall-runoff model, developed at the institute for water management,
-hydrology and hydraulic engineering at BOKU, Vienna. The name is an abbreviation
-for "**Co**nceptual **Se**mi-Distributed **R**ainfall Run**o**ff Model".
