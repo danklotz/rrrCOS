@@ -1,16 +1,24 @@
 # Introduction
+This guide defines the code for the R-package visCOS and provides instructions,
+examples and tips for using it.
 
-The goal of visCOS is to provide a possibility to streamline the R based 
-visual-analysis for the hydrologcal model COSERO. COSERO is a HBV-like 
-distributed rainfall-runoff model, developed at the institute for water 
+The goal of visCOS is to provide a possibility to streamline the R based
+visual-analysis for the hydrological model COSERO. COSERO is a HBV-like
+distributed rainfall-runoff model, developed at the institute for water
 management, hydrology and hydraulic engineering at BOKU, Vienna. The name is an
 abbreviation for "Conceptual Semi-Distributed Rainfall Runoff Model".
 
-visCOS consists of two parts, the current document and the R-package, and is
-embedded into a broader effor which aims at establishing strong 
-and easy to use workflows between R and COSERO. 
+visCOS is embedded into a broader effort that aims to establish practical and
+easy-to-use workflows between R and COSERO. The overall concept of that project
+is shown in **Figure xyz**. The R-package `coscos` provides the backbone
+of the projects. It provides the basic interface between COSERO and R, generic
+helper functions and primitives, and defines the options for all subsequent
+package. Currently, visCOS is the only package that builds on it, but hopefully    
+soon we will have more packages, ideas and scripts that are able to use it. s
 
-## Relation to other R-package
+**Figure xyz**
+
+## visCOS and other R-package
 There exist many R-packages dedicated to hydrology.
 
 Among then, several have provide help to the calibration of (conceptual)
@@ -26,15 +34,15 @@ provides the most commonly used (and discussed) objective functions. The
 latter, helps with the analysis, interpolation and the plotting of hydrological
 time series.
 
-As an R-package that aim of **visCOS** is to provide visual aids for 
+As an R-package that aim of **visCOS** is to provide visual aids for
 the parameter estimation process of multiple (related) basins or catchments.
 
-Thus, topic wise, **visCOS** can be positioned somewhere in-between the two 
-previously mentioned packages. **visCOS** is usable for conceptual rainfall 
-runoff models in general, but almost all of its functionality has been derived 
-from different applications of the COSERO model. 
+Thus, topic wise, **visCOS** can be positioned somewhere in-between the two
+previously mentioned packages. **visCOS** is usable for conceptual rainfall
+runoff models in general, but almost all of its functionality has been derived
+from different applications of the COSERO model.
 
-## Basic Concepts 
+## Basic Concepts
 
 ### Cooking Data
 Within **visCOS** "cooking data" is is used as a synonym for the process of
