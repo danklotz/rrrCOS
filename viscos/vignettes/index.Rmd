@@ -1,6 +1,6 @@
 ---
 title: "visCOS"
-author: "Daniel Klotz, Johannes Wesemann, Mathew Herrnegger"
+author: "Daniel Klotz, Johannes Wesemann, Simon Frey, Mathew Herrnegger"
 output:
   html_document:
     toc: yes
