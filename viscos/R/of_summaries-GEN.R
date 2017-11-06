@@ -3,39 +3,38 @@
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-#' Wrapper for the different of functions 
+#' Wrapper for the different of functions
 #'
-#' This function provides a wrapper for all `judge_` and `of_` functions. The 
-#' input arguments `type` is lazyily-evaluated (which basically implies that 
-#' it does not have to be provided as a character argument). 
+#' This function provides a wrapper for all `judge_` and `of_` functions. The
+#' input arguments `type` is lazyily-evaluated (which basically implies that
+#' it does not have to be provided as a character argument).
 #' which function is chosen (the "pre fix" part of
 #' the selected functions, i.e. `judge_` and `of_`, do not need to be provided).
 #' Th
-#' 
+#'
 #' @import coscos
 #' @import pasta
-#' @import lazyeval 
+#' @import lazyeval
 #' @export
 judge <- function(cosdata,
                   type = "compute",
-                  d_metrics = list(nse = d_nse, 
-                                   kge = d_kge, 
-                                   pbias = d_pbias, 
+                  d_metrics = list(nse = d_nse,
+                                   kge = d_kge,
+                                   pbias = d_pbias,
                                    corr = d_cor),
                   opts = coscos::viscos_options(),
                   ...) {
   # lazy evaluation: ------------------------------------------------------
-  le_dots <-  match.call(expand.dots = FALSE) %>% 
-    .["..."] %>% 
+  le_dots <-  match.call(expand.dots = FALSE) %>%
+    .["..."] %>%
     .[[1]]
-  if (class(type) == "character") {
-    le_type <- type
-  } else {
-    le_type <- substitute(type) %>% 
-    as.character(.) %>% 
-    .[1]
+  le_type <- match.call(expand.dots = FALSE) %>%
+    .["type"] %>%
+    .[[1]] %>% 
+    as.character(.)
+  if (length(le_type) == 0) {
+    le_type = "compute"
   }
-
   if (class(le_type) != "character") {
     stop("Cannot resolve 'type' argument. Try to provide a character.")
   }
@@ -52,7 +51,7 @@ judge <- function(cosdata,
     cosdata2 <- NULL
     if ("cos_data2" %in% names(le_dots)) {
       cos_data2 <- eval(le_dots$cos_data2)
-    } 
+    }
     of_compare(d1 = cosdata,
                d2 = cosdata2)
   } else {
@@ -73,13 +72,13 @@ judge <- function(cosdata,
 #' @import coscos
 #' @import tibble
 #' @importFrom purrr map_df
-#' @importFrom dplyr select filter starts_with 
+#' @importFrom dplyr select filter starts_with
 #' @importFrom magrittr set_names
-judge_compute <- function(cosdata, 
-                       d_metrics = list(nse = d_nse, 
-                                        kge = d_kge, 
-                                        pbias = d_pbias, 
-                                        corr = d_cor), 
+judge_compute <- function(cosdata,
+                       d_metrics = list(nse = d_nse,
+                                        kge = d_kge,
+                                        pbias = d_pbias,
+                                        corr = d_cor),
                        opts = coscos::viscos_options()) {
   # pre: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
@@ -110,11 +109,11 @@ judge_compute <- function(cosdata,
   # compute main-of for entire data: ========================================
   d_mean <- purrr::map_df(d_metrics, function(judge_, x, y) as.numeric(judge_(x,y)),
                  x = dplyr::select(evaluation_data,dplyr::starts_with(name_o)) %>% unname(.),
-                 y = dplyr::select(evaluation_data,dplyr::starts_with(name_s)) %>% unname(.) ) %>% 
-    t(.) %>% 
-    as_tibble(.) %>% 
-    magrittr::set_names(., "basin" %_% 1:number_judge_basins) %>% 
-    cbind.data.frame(of = d_names,.) 
+                 y = dplyr::select(evaluation_data,dplyr::starts_with(name_s)) %>% unname(.) ) %>%
+    t(.) %>%
+    as_tibble(.) %>%
+    magrittr::set_names(., "basin" %_% 1:number_judge_basins) %>%
+    cbind.data.frame(of = d_names,.)
   # compute periodwise main-of: =============================================
   period_compute <- function(k) {
     o_pick <- dplyr::filter(evaluation_data,period == data_periods[k]) %>%
@@ -130,13 +129,13 @@ judge_compute <- function(cosdata,
   }
   d_names_periods <- d_names %_% "period" %.% rep(1:number_judge_periods, each = length(d_names))
   d_periods <- lapply(1:number_judge_periods, period_compute) %>%
-    do.call(rbind,.) %>% 
-    as_tibble(.) %>% 
-    magrittr::set_names("basin" %_% 1:number_judge_basins) %>% 
-    cbind(of = d_names_periods,.) %>% 
+    do.call(rbind,.) %>%
+    as_tibble(.) %>%
+    magrittr::set_names("basin" %_% 1:number_judge_basins) %>%
+    cbind(of = d_names_periods,.) %>%
     .[order(.$of), ]
   #
-  judge_all <- rbind(d_mean,d_periods) %>% 
+  judge_all <- rbind(d_mean,d_periods) %>%
     as_tibble(.)
   judge_all$of <- as.character(judge_all$of)
   return(judge_all)
@@ -159,11 +158,11 @@ NULL
 #' @rdname judge_overview
 #'
 #' @import coscos
-#' 
+#'
 #' @export
-judge_barplot <- function(cosdata, d_metrics = list(nse = d_nse, 
-                                        kge = d_kge, 
-                                        pbias = d_pbias, 
+judge_barplot <- function(cosdata, d_metrics = list(nse = d_nse,
+                                        kge = d_kge,
+                                        pbias = d_pbias,
                                         corr = d_cor)) {
   # pre: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
@@ -178,17 +177,17 @@ judge_barplot <- function(cosdata, d_metrics = list(nse = d_nse,
   # functions: ==============================================================
   assign_ofgroups <- function(judge_melted,judge_names) {
     judge_string <- as.character(judge_melted$of)
-    judge_melted$judge_group <- judge_string %>% 
-      replace(., startsWith(judge_string,judge_names[1]), judge_names[1]) %>% 
-      replace(., startsWith(judge_string,judge_names[2]), judge_names[2]) %>% 
-      replace(., startsWith(judge_string,judge_names[3]), judge_names[3]) %>% 
+    judge_melted$judge_group <- judge_string %>%
+      replace(., startsWith(judge_string,judge_names[1]), judge_names[1]) %>%
+      replace(., startsWith(judge_string,judge_names[2]), judge_names[2]) %>%
+      replace(., startsWith(judge_string,judge_names[3]), judge_names[3]) %>%
       replace(., startsWith(judge_string,judge_names[4]), judge_names[4])
     return(judge_melted)
   }
   # plot-list function:
   barplot_fun <- function(judge_name,judge_melted) {
     judge_to_plot <- judge_melted %>% filter( judge_group == judge_name)
-    # bad solution, but will be fine for now? 
+    # bad solution, but will be fine for now?
     if (judge_name == "pbias") {
       gglimits <- c(-viscos_options("of_limits")[2]*100,
                    viscos_options("of_limits")[2]*100)
@@ -210,7 +209,7 @@ judge_barplot <- function(cosdata, d_metrics = list(nse = d_nse,
   judge_melted <- suppressMessages( reshape2::melt(judge_data) ) %>%
     assign_ofgroups(.,d_names)
   # plotting ================================================================
-  plot_list <- lapply(d_names, function(x) barplot_fun(x,judge_melted)) %>% 
+  plot_list <- lapply(d_names, function(x) barplot_fun(x,judge_melted)) %>%
     magrittr::set_names(d_names)
   return(plot_list)
 }
@@ -220,9 +219,9 @@ judge_barplot <- function(cosdata, d_metrics = list(nse = d_nse,
 #' @rdname judge_overview
 #' @import pasta
 #' @export
-judge_rasterplot <- function(cos_data, d_metrics = list(nse = d_nse, 
-                                        kge = d_kge, 
-                                        pbias = d_pbias, 
+judge_rasterplot <- function(cos_data, d_metrics = list(nse = d_nse,
+                                        kge = d_kge,
+                                        pbias = d_pbias,
                                         corr = d_cor)) {
   # def: ====================================================================
   build_tibble(cos_data)
@@ -251,9 +250,9 @@ plot_fun_raster <- function(regex_single_of,judge_data) {
     return(judge_data[idx, ])
   }
   add_facet_info <- function(judge_data) {
-    facet_column <- nrow(judge_data) %>% 
-      magrittr::subtract(1) %>% 
-      rep("period",.) %>% 
+    facet_column <- nrow(judge_data) %>%
+      magrittr::subtract(1) %>%
+      rep("period",.) %>%
       c("overall",.)
     return( cbind(judge_data,facets = facet_column) )
   }
@@ -275,8 +274,8 @@ plot_fun_raster <- function(regex_single_of,judge_data) {
   }
   bind_and_round_value <- function(of,gglimits,digits) {
     dplyr::mutate(of,
-                  value = pmax(value,gglimits[1]) %>% 
-                    pmin(.,gglimits[2]) %>% 
+                  value = pmax(value,gglimits[1]) %>%
+                    pmin(.,gglimits[2]) %>%
                     round(.,digits)
                   )
   }

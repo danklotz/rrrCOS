@@ -3,4 +3,7 @@ language:
   ui:
     chapter_name: "Chapter "
 rmd_files: ["index.Rmd",
-"LP-cook_data.Rmd"]
+"LP-cook_data.Rmd", 
+"LP-time_aggregation.Rmd",
+"LP-distance_metrics.Rmd",
+"LP-of_summaries.Rmd"]

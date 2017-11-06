@@ -22,7 +22,7 @@ visCOS.
 Snipptes:
 
 
-Currently **visCOS** only allows to compare between *numbered catchments*! The
+Currently visCOSonly allows to compare between *numbered catchments*! The
 data **must** include an integer number at the end of its name, e.g.
 `QObs_001` and `QSim_001`).
 
@@ -62,7 +62,7 @@ options are as following:
 An option can be changed by providing the new option-value as functional
 argument of the option. Here is an example for changing the $o$ column color:
 ```{r, purl=FALSE, eval=TRUE}
-   viscos_options(color_o = "green")
+   viscos_options(color_o = "dodgerblue")
    viscos_options( ) %>% unlist(.)
 ```
 
@@ -97,7 +97,7 @@ is used at the start of almost all visCOS functions. Thus, it is very likely
 that your data is fine if `cook_cosdata` works on it.
 
 ## Examples plots from cosdata
-It is already possible to do a lot with just the cosdata. In the following are 
+It is already possible to do a lot with just the cosdata. In the following are
 some examples:
 ```{r, purl=FALSE, eval=TRUE}
   library(ggplot2)

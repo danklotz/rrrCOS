@@ -9,7 +9,7 @@ frequency of a streamflow. They provide an estimate of the percentage of time
 a given streamflow was exceeded within the evaluated time frame. Foster [1934]
 attributes the first use of flow duration curves to Clemens Herschel around 1880.
 Since they have been used for a wide array of applications.
-**visCOS** provides a function to compute the data for flow-duration curves and
+visCOSprovides a function to compute the data for flow-duration curves and
 a function to plot them directly.
 The former function is called `fdc_compute`. It computes the flow exceedance
 properties and returns a data.frame. The calculations are adapted from the
@@ -21,7 +21,7 @@ each basin is a facet and each sub-plot shows the $o$-data and $s$-data (see:
 [Introduction](Introduction.html)).
 
 ## Example
-Flow duration curves can be plotted in **visCOS** in the following way:
+Flow duration curves can be plotted in visCOSin the following way:
 ```{r example, purl=FALSE, eval=TRUE}
   library(visCOS)
   cos_data <- get_viscos_example()

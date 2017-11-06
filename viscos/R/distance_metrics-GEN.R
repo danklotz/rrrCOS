@@ -27,8 +27,9 @@ NULL
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
     if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
     # computation:
-    of_nse <- map2_dbl(o, s, 
-                       function(x,y) d_wrapper(x,y,rows, d_name = "f_nse", na.rm = na.rm)) %>% 
+    of_nse <- map2_dbl(o,
+                       s,
+                       function(x,y) d_wrapper(x, y, rows, d_name = "f_nse", na.rm = na.rm)) %>%
       set_names(paste("nse", 1:cols, sep = ""))
     return(of_nse)
   }
@@ -48,8 +49,10 @@ NULL
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
     if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
     # computation:
-    of_kge <- map2_dbl(o, s, 
-                       function(x,y) d_wrapper(x,y,rows,na.rm = na.rm)) %>% 
+    of_kge <- map2_dbl(o,
+                       s,
+                       function(x,y) d_wrapper(x, y, rows, na.rm = na.rm)
+      ) %>%
       set_names(paste("kge", 1:cols, sep = ""))
     return(of_kge)
   }
@@ -70,8 +73,8 @@ NULL
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
     if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
     # computation:
-    of_pbias <- map2_dbl(o, s, 
-                       function(x,y) d_wrapper(x,y,rows, d_name = "f_bias", na.rm = na.rm)) %>% 
+    of_pbias <- map2_dbl(o, s,
+                       function(x,y) d_wrapper(x, y, rows, d_name = "f_bias", na.rm = na.rm)) %>%
       set_names(paste("bias", 1:cols, sep = ""))
     return(of_pbias)
   }
@@ -79,9 +82,9 @@ NULL
   #' Percentage Bias
   #'
   #' @rdname d_metrics
-  #' 
+  #'
   #' @importFrom coscos build_tibble
-  #' 
+  #'
   #' @export
   d_pbias <- function(o, s, na.rm = TRUE) {
     # pre sets:
@@ -92,8 +95,8 @@ NULL
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
     if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
     # computation:
-    of_pbias <- map2_dbl(o, s, 
-                       function(x,y) d_wrapper(x,y,rows, d_name = "f_pbias", na.rm = na.rm)) %>% 
+    of_pbias <- map2_dbl(o, s,
+                       function(x,y) d_wrapper(x, y, rows, d_name = "f_pbias", na.rm = na.rm)) %>%
       set_names(paste("pbias", 1:cols, sep = ""))
     return(of_pbias)
   }
@@ -101,9 +104,9 @@ NULL
   #' Correlation
   #'
   #' @rdname d_metrics
-  #' 
+  #'
   #' @importFrom coscos build_tibble
-  #' 
+  #'
   #' @export
   d_cor <- function(o, s) {
     # pre sets:
@@ -118,12 +121,12 @@ NULL
   }
 
   # --------------------------------------------------------------------------
-  #' mean squared error
+  #' Mean Squared Error
   #'
   #' @rdname d_metrics
   #'
   #' @importFrom coscos build_tibble
-  #' 
+  #'
   #' @export
   d_mse <- function(o, s, na.rm = TRUE) {
     # pre sets:
@@ -134,24 +137,24 @@ NULL
     if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
     if(cols != ncol(o)) stop("o and s must have the same amount of columns (variables)")
     # computation:
-    of_mse <- map2_dbl(o, s, 
-                       function(x,y) d_wrapper(x,y,rows, d_name = "f_mse", na.rm = na.rm)) %>% 
+    of_mse <- map2_dbl(o, s,
+                       function(x,y) d_wrapper(x, y, rows, d_name = "f_mse", na.rm = na.rm)) %>%
       set_names(paste("mse", 1:cols, sep = ""))
     return(of_mse)
   }
   # --------------------------------------------------------------------------
-  #' Root Mean Sqaured Error
+  #' Root Mean Squared Error
   #'
   #' @rdname d_metrics
-  #' 
+  #'
   #' @importFrom coscos build_tibble
-  #' 
+  #'
   #' @export
   d_rmse <- function(o, s, na.rm = TRUE) {
     cols <- ncol(s) %>% as.integer(.)
     d_mse(o,s,na.rm) %>%
-      sqrt(.) %>% 
-      set_names(paste("rmse", 1:cols, sep = "")) %>% 
+      sqrt(.) %>%
+      set_names(paste("rmse", 1:cols, sep = "")) %>%
       return(.)
   }
 
@@ -159,14 +162,14 @@ NULL
   #' Inverted Nash-Sutcliffe Efficiency
   #'
   #' @rdname d_metrics
-  #' 
+  #'
   #' @importFrom coscos build_tibble
-  #' 
+  #'
   #' @export
   d_inse <- function(o, s, na.rm = TRUE) {
     cols <- ncol(s) %>% as.integer(.)
-    d_nse(o, s, na.rm = na.rm) %>% 
-      set_names(paste("inse", 1:cols, sep = "")) %>% 
+    d_nse(o, s, na.rm = na.rm) %>%
+      set_names(paste("inse", 1:cols, sep = "")) %>%
       return(.)
   }
 
@@ -176,14 +179,14 @@ NULL
     if (!na.rm & (na_count > 0)) {
       stop("There are NAs in the data but `na.rm` is set to `FALSE`!")
     }
-    out <- .Fortran(d_name, 
-                    XSIM = as.double(sim), 
+    out <- .Fortran(d_name,
+                    XSIM = as.double(sim),
                     XOBS = as.double(obs),
-                    maxday = rows, 
-                    NDSTART = 1L, 
-                    NDEND = rows, 
-                    EVAL = idx_to_eval, 
-                    of = as.double(-999.9), 
-                    NAOK = TRUE) 
+                    maxday = rows,
+                    NDSTART = 1L,
+                    NDEND = rows,
+                    EVAL = idx_to_eval,
+                    of = as.double(-999.9),
+                    NAOK = TRUE)
        return(out$of)
-  } 
+  }
