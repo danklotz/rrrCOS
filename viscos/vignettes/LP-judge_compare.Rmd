@@ -1,19 +1,19 @@
 # Runoff Comparison with Objective Functions 
 
-```{r setup_of_compare, include=FALSE, purl=FALSE}
+```{r setup_judge_explore2, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This function is an expansion of the [`of_explore`](LP-of_explore.html) 
+This function is an expansion of the [`judge_explore`](LP-judge_explore.html) 
 function and assumes some familiarity with the latter. The idea is to explore
-two `cos_data` objects simultanously in the same way is in the `of_explore` 
+two `cos_data` objects simultanously in the same way is in the `judge_explore` 
 counterpart. Even if only one `data.frame` is handed over to the function, it 
 copied and two `dygraphs` are shown below each other. 
 
 ## Code
 ```{r}
 # ---------------------------------------------------------------------------
-# Code for of_explore
+# Code for judge_explore
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -33,21 +33,19 @@ copied and two `dygraphs` are shown below each other.
   #' @import magrittr
   #' @import dygraphs
   #' @import pasta
-  #' @import coscos
   #' @importFrom purrr map_df
   #'
   #' @export
 
-of_compare <- function(d1,
-                       d2 = NULL,
-                       of_list = list(
-                         nse = d_nse,
-                         kge = d_kge,
-                         p_bias = d_pbias,
-                         r = d_cor), 
+judge_explore2 <- function(d1,
+                           d2 = NULL,
+                           of_metrics = list(nse   = coscos::of_nse,
+                                             kge   = coscos::of_kge,
+                                             pbias = coscos::of_pbias,
+                                             corr  = coscos::of_cor),
                        opts = coscos::viscos_options()) {
   # (I) pre-sets: ============================================================
-  if(!is.list(of_list)){
+  if(!is.list(of_list)) {
     of_list = list(of_list)
   }
   if (is.null(d2)) {

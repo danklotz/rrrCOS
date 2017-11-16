@@ -5,7 +5,6 @@
   #' @import ggplot2
   #' @import dplyr
   #' @import magrittr
-  #' @import coscos
   #' @importFrom tibble tibble
   peak_plot <- function(cosdata, n_events= 10L, window_size = 24L) {
     # pre:

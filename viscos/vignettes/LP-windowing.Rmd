@@ -18,7 +18,7 @@ findings optained in the interactive functions(`of_explore` and `of_compare`).
     coscos::cook_cosdata()
   window_sizes <- c(168,250,500,1000,2000,4000,6000,8000,10000,15000)
   list_of_windows <- window_of(cos_data,
-                              ofun = d_nse, 
+                              ofun = coscos::of_nse, 
                               lb = -1,
                               window_sizes = window_sizes)
 ```
@@ -78,7 +78,6 @@ Possible plots:
 #' Objectie Function Rolling Functionallity
 #' 
 #' Roll an objective fucntion over two sets of data d1 and 2
-#' @import coscos
 #' @import dplyr
 #' @import purrr 
 #' @importFrom magrittr set_names
@@ -126,7 +125,6 @@ Possible plots:
 #' Objectie Function Windowing 
 #' 
 #' Compute the objective function for a set of windows.
-#' @import coscos
 #' @import dplyr
 #' @importFrom purrr map2
 #' @importFrom tibble as_tibble

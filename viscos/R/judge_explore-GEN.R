@@ -1,7 +1,7 @@
 if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/of_explore.jpg')
+  knitr::include_graphics('figures/judge_explore.jpg')
 } else {
-  knitr::include_graphics("figures/of_explore.gif")
+  knitr::include_graphics("figures/judge_explore.gif")
 }
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
@@ -16,25 +16,24 @@ if (knitr:::is_latex_output()) {
   #' @import magrittr
   #' @import dygraphs
   #' @import pasta
-  #' @import coscos
   #' @importFrom purrr map_df
   #'
   #' @export
+  #' 
+  #' @rdname judge
   #'
   #' @examples
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_viscos_example()
-  #' of_explore(cos_data)
-of_explore <- function(cos_data,
-                       d_metrics = list(
-                         nse = d_nse,
-                         kge = d_kge,
-                         p_bias = d_pbias,
-                         r = d_cor
-                         ),
-                       opts =coscos::viscos_options() 
-                       ) {
+  #' judge_explore(cos_data)
+judge_explore <- function(cos_data,
+                          of_metrics = list(nse   = coscos::of_nse,
+                                            kge   = coscos::of_kge,
+                                            pbias = coscos::of_pbias,
+                                            corr  = coscos::of_cor),
+                          opts =coscos::viscos_options()
+                          ) {
   # (I) pre-sets: ============================================================
   name_o <- opts[["name_o"]]
   name_s <- opts[["name_s"]]
@@ -119,7 +118,7 @@ of_explore <- function(cos_data,
       }
     })
     selected_data <- reactive({
-      if(plot_bounds) {
+      if (plot_bounds) {
         clean_cos_data %>%
           select(matches( selector_x() ),
                  matches( selector_y() ),

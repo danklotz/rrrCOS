@@ -9,7 +9,6 @@
   #'          within \pkg{viscos}
   #' @param aggregation A string that defines the resolution of the aggregation.
   #'
-  #' @import coscos
   #' @import pasta
   #' @importFrom tidyr gather_
   #' @export

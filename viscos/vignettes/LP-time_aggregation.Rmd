@@ -10,7 +10,7 @@ given time dimension. In visCOS this can be done by using the
 aggregates them according to a chosen time dimension. In the following are
 some examples of its use:
 
-```{r, eval = TRUE, purl=FALSE}
+```{r, eval=TRUE, purl=FALSE}
   coscos::libraries(visCOS, ggplot2, dplyr, magrittr)
 ```
 
@@ -94,7 +94,6 @@ Here is the code:
   #'          within \pkg{viscos}
   #' @param aggregation A string that defines the resolution of the aggregation.
   #'
-  #' @import coscos
   #' @import pasta
   #' @importFrom tidyr gather_
   #' @export

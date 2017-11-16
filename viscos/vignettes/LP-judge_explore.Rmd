@@ -12,16 +12,16 @@ end of a session. The following examples provide a good overview of what the
 function can do.
 
 ## Example
-This chapter gives examples of `of_explore`. For the pre-requirements take
+This chapter gives examples of `judge_explore`. For the pre-requirements take
 a look at the [introduction](LP-Introduction).
-Running the `of_explore` function without any options opens a shiny gadget
+Running the `judge_explore` function without any options opens a shiny gadget
 in the viewer:
 
 ```{r, eval=TRUE, echo=FALSE}
 if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/of_explore.jpg')
+  knitr::include_graphics('figures/judge_explore.jpg')
 } else {
-  knitr::include_graphics("figures/of_explore.gif")
+  knitr::include_graphics("figures/judge_explore.gif")
 }
 ```
 
@@ -29,7 +29,7 @@ Information on the *objective functions* can be found
 [here](ex-OF_explanation.html).
 ```{r,purl=FALSE, eval = FALSE}
 viscos_options(color_o = "green", color_s = "red")
-of_explore(runoff_example)
+judge(runoff_example,explore)
 ```
 
 Users can select different basins via the selection box (*# basins:*) on the
@@ -43,7 +43,6 @@ chosen time window.
 In the following paragraphs the code of the shiny app is defined.
 The computations of the app are defined in the `server` part and the
 appearance in the `ui`.
-
 ```{r}
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
@@ -58,25 +57,24 @@ appearance in the `ui`.
   #' @import magrittr
   #' @import dygraphs
   #' @import pasta
-  #' @import coscos
   #' @importFrom purrr map_df
   #'
   #' @export
+  #' 
+  #' @rdname judge
   #'
   #' @examples
   #' # get example data,
   #' # explore the model performance
   #' cos_data <- get_viscos_example()
-  #' of_explore(cos_data)
-of_explore <- function(cos_data,
-                       d_metrics = list(
-                         nse = d_nse,
-                         kge = d_kge,
-                         p_bias = d_pbias,
-                         r = d_cor
-                         ),
-                       opts =coscos::viscos_options() 
-                       ) {
+  #' judge_explore(cos_data)
+judge_explore <- function(cos_data,
+                          of_metrics = list(nse   = coscos::of_nse,
+                                            kge   = coscos::of_kge,
+                                            pbias = coscos::of_pbias,
+                                            corr  = coscos::of_cor),
+                          opts =coscos::viscos_options()
+                          ) {
   # (I) pre-sets: ============================================================
   name_o <- opts[["name_o"]]
   name_s <- opts[["name_s"]]
@@ -161,7 +159,7 @@ of_explore <- function(cos_data,
       }
     })
     selected_data <- reactive({
-      if(plot_bounds) {
+      if (plot_bounds) {
         clean_cos_data %>%
           select(matches( selector_x() ),
                  matches( selector_y() ),
@@ -275,7 +273,7 @@ of_explore <- function(cos_data,
 ```
 
 The `miniUI` is quite spartan. There is an `miniButtonBlock` that allows to select different basin, as as the `dygraph` output (i.e `hydrographs`)
-for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `of_explore` .
+for the interactive exploration of the $o$ and $s$ data. The formatted table (`slctd_OF`) displays the different objective functions, that can be given to `judge_explore` .
 ```{r}
   ui <- miniPage(
     miniButtonBlock(selectInput("basin_num",

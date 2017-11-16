@@ -7,7 +7,6 @@
 #' Objectie Function Rolling Functionallity
 #' 
 #' Roll an objective fucntion over two sets of data d1 and 2
-#' @import coscos
 #' @import dplyr
 #' @import purrr 
 #' @importFrom magrittr set_names
@@ -51,7 +50,6 @@
 #' Objectie Function Windowing 
 #' 
 #' Compute the objective function for a set of windows.
-#' @import coscos
 #' @import dplyr
 #' @importFrom purrr map2
 #' @importFrom tibble as_tibble
