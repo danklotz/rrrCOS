@@ -14,8 +14,9 @@ of the function by looking at some examples.
 ## Examples:
 For the examples 10 events are extracted from a runoff example
 ```{r, eval = TRUE, purl=FALSE}
-  require(visCOS)
-  cos_data <- get_viscos_example()
+  library(coscos)
+  library(visCOS)
+  cos_data <- viscos_example()
   peakplots <- peak_plot(cos_data, n_events = 10L)
 
 ```
@@ -64,35 +65,43 @@ This part of the document defines the code of `peak_plot`
   #' @import dplyr
   #' @import magrittr
   #' @importFrom tibble tibble
-  peak_plot <- function(cosdata, n_events= 10L, window_size = 24L) {
+  peak_plot <- function(cos_data, 
+                        n_events= 10L, 
+                        window_size = 24L, 
+                        opts = coscos::viscos_options()) {
     # pre:
-    cos_data <- coscos::check_cosdata(cosdata)
+    cosdata <- coscos::cook_cosdata(cos_data)
     n_events_int <- as.integer(n_events)
     window_size_int <- as.integer(window_size)
-    if( is.na(n_events_int)  |
+    if (is.na(n_events_int)  |
         is.nan(n_events_int) |
         is.infinite(n_events_int) |
         !is.integer(n_events_int) ) {
       stop("n_events is ill defined")
     }
-    if( is.na(window_size)  |
+    if (is.na(window_size)  |
         is.nan(window_size) |
         is.infinite(window_size) |
         !is.integer(window_size) ) {
       stop("window_size is ill defined")
     }
-    data1 <- cos_data %>%
-       select( starts_with(viscos_options("name_o")) )
-    data2 <- cos_data %>%
-       select( starts_with(viscos_options("name_s")) )
+    data1 <- cosdata %>%
+      dplyr::select( starts_with(opts[["name_o"]]) )
+    data2 <- cosdata %>%
+      dplyr::select( starts_with(opts[["name_s"]]) )
+    data_posix <- cosdata %>% 
+      dplyr::select(matches(opts[["name_COSposix"]]))
     data_numbers <- names(data1) %>%
-      gsub(viscos_options("name_o"),"",.,ignore.case = TRUE) %>%
+      gsub(opts[["name_o"]], "", ., ignore.case = TRUE) %>%
       gsub("\\D","",.,ignore.case = TRUE)
     # make plotlist:
-    plotlist <- lapply(1:ncol(data1), function(x) plotlist_one_basin(data1[ ,x],
-                                                                     data2[ ,x],
-                                                                     n_events_int,
-                                                                     window_size_int)) %>%
+    plotlist <- lapply(1:ncol(data1), 
+                       function(x) plotlist_one_basin(data1[ ,x],
+                                                      data2[ ,x],
+                                                      data_posix,
+                                                      n_events_int,
+                                                      window_size_int,
+                                                      opts)) %>%
       set_names(., paste("basin", data_numbers, sep = ""))
     return(plotlist)
   }
@@ -104,10 +113,14 @@ At first the provided time series are grouped into a `tibble`, then the
 peaks of the observations are obtained via the peak_finder function and
 organised. Then `ggplot2` is used for plotting.
 ```{r}
-  plotlist_one_basin <- function(qobs,qsim,n_events_int,window_size_int) {
-    single_data <- tibble::tibble(time = as.integer(1:length(qobs)),
-                                  obs = as.double(qobs),
-                                  sim = as.double(qsim))
+  plotlist_one_basin <- function(qobs, 
+                                 qsim, 
+                                 data_posix,
+                                 n_events_int, 
+                                 window_size_int, 
+                                 opts) {
+    single_data <- cbind(data_posix,qobs,qsim) %>% 
+      magrittr::set_names(c("time","obs","sim"))
     #
     peak_idx <- find_peaks(single_data$obs,m = window_size_int)
     peak_organised <- tibble::tibble(idx = as.integer(peak_idx),
@@ -122,9 +135,9 @@ organised. Then `ggplot2` is used for plotting.
     #
     overview_plot <- ggplot( ) +
       geom_line(data = single_data,aes(x = time, y = sim), 
-                col = viscos_options("color_s")) +
+                col = opts[["color_s"]]) +
       geom_line(data = single_data,aes(x = time, y = obs), 
-                col = viscos_options("color_o")) +
+                col = opts[["color_o"]]) +
       geom_point(data = highest_peaks_organised, aes(idx, peak_obs))
     overview_scatter <- ggplot() +
       geom_point(data = single_data, aes(obs,sim), color = "#DDDDDD") +
@@ -134,8 +147,9 @@ organised. Then `ggplot2` is used for plotting.
     sub_plots <- lapply(1:nrow(highest_peaks_organised),
                         function(x) sub_peakplot_fun(x, 
                                                      window_size_int, 
-                                                     highest_peaks_organised, 
-                                                     single_data)
+                                                     highest_peaks_organised[x,]$idx, 
+                                                     single_data, 
+                                                     opts)
                         ) %>%
       set_names(.,paste("event_plot", 1:length(.), sep = ""))
     return(overview = append(list(overview = overview_plot, 
@@ -153,7 +167,7 @@ cross validated thread.
 ```{r}
   ####
   # peak finder function:
-  find_peaks <- function (x, m = 3){
+  find_peaks <- function(x, m = 3){
     shape <- diff(sign(diff(x, na.pad = FALSE)))
     pks <- sapply(which(shape < 0), FUN = function(i){
       z <- i - m + 1
@@ -173,16 +187,15 @@ individual event plots.
 ```{r}
   ####
   # sub plot function:
-  sub_peakplot_fun <- function(x, window_size, highest_peaks_organised, peak_data) {
-    point <- highest_peaks_organised[x,]
-    plot_sub <- ggplot() +
-      geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
-                aes(x = time, y = sim),
-                col = viscos_options("color_s")) +
-      geom_line(data = peak_data[(point$idx - window_size):(point$idx + window_size),],
-                aes(x = time, y = obs),
-                col = viscos_options("color_o")) +
-      geom_point(data = point, aes(idx, peak_obs))
+  sub_peakplot_fun <- function(x, window_size, idx, peak_data, opts) {
+    point <- peak_data[idx,]
+    plot_sub <- peak_data[(idx - window_size):(idx + window_size), ] %>% 
+      ggplot(data = .) +
+      geom_line(aes(x = time, y = sim),
+                col = opts[["color_s"]]) +
+      geom_line(aes(x = time, y = obs),
+                col = opts[["color_o"]]) +
+      geom_point(data = point, aes(time, obs))
     return(plot_sub)
   }
 

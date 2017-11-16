@@ -47,13 +47,13 @@ judge <- function(cosdata,
   } else if (le_type == "judge_rasterplot" | le_type == "rasterplot") {
     judge_rasterplot(cosdata, of_metrics)
   } else if (le_type == "of_explore" | le_type == "explore") {
-    of_explore(cosdata, of_metrics)
+    judge_explore(cosdata, of_metrics)
   } else if (le_type == "of_compare" | le_type == "compare") {
     cosdata2 <- NULL
     if ("cos_data2" %in% names(le_dots)) {
       cos_data2 <- eval(le_dots$cos_data2)
     }
-    of_compare(d1 = cosdata,
+    judge_compare(d1 = cosdata,
                d2 = cosdata2)
   } else {
     stop("There is no option (`type`) called" %&&% le_type)
