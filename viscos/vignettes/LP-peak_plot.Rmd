@@ -124,13 +124,12 @@ organised. Then `ggplot2` is used for plotting.
     #
     peak_idx <- find_peaks(single_data$obs,m = window_size_int)
     peak_organised <- tibble::tibble(idx = as.integer(peak_idx),
-                             peak_obs = single_data$obs[peak_idx],
-                             peak_sim = single_data$sim[peak_idx])
+                                     peak_obs = single_data$obs[peak_idx],
+                                     peak_sim = single_data$sim[peak_idx])
     highest_peaks_organised <- peak_organised$peak_obs %>%
       sort(decreasing = TRUE) %>%
       .[1:n_events_int] %>%
-      '%in%'(peak_organised$peak_obs,.) %>%
-      which(.) %>%
+      match(.,peak_organised$peak_obs) %>%
       peak_organised[., ]
     #
     overview_plot <- ggplot( ) +
