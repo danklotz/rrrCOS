@@ -1,4 +1,4 @@
-# Runoff Peak Analysis
+# Runoff Peaks
 
 ```{r setup8, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')

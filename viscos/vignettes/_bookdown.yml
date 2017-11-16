@@ -4,6 +4,7 @@ language:
     chapter_name: "Chapter "
 rmd_files: ["index.Rmd",
 "LP-cook_data.Rmd", 
-"LP-time_aggregation.Rmd",
-"LP-distance_metrics.Rmd",
-"LP-of_summaries.Rmd"]
+"LP-peack.Rmd",
+"LP-judge.Rmd",
+"LP-judge_explore.Rmd",
+"LP-judge_compare.Rmd"]

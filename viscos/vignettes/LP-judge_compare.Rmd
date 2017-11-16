@@ -1,4 +1,4 @@
-# Runoff Comparison with Objective Functions 
+# Comparisons: Exploring Objective Functions II
 
 ```{r setup_judge_explore2, include=FALSE, purl=FALSE}
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
