@@ -1,16 +1,16 @@
-# Other helpful functions 
-
-Here you can find helpful functions that are not included in `viscos`.
-
+# Tips & Tricks
 ```{r lruseful, include=FALSE}
   knitr::opts_chunk$set( fig.align = 'center')
 ```
+
+This chapter provides useful tricks, scripts and functions, that are not part 
+of *coscos* or *visCOS* but are still handy for working with COSERO.
 
 ```{r} 
   library(magrittr)
 ```
 
-Get last `n` letters of a character: 
+Get last `n` letters of a character from the right: 
 ```{r}
 substr_right <- function(x, n){
   # author: Simon Frey
@@ -57,7 +57,6 @@ Check if a give year is a [leap year](http://en.wikipedia.org/wiki/Leap_year)
 ```{r}
 is_leapyear = function(year) {
   # author: Simon Frey
-
   return(((year %% 4 == 0) & (year %% 100 != 0)) | (year %% 400 == 0))
 }
 ```

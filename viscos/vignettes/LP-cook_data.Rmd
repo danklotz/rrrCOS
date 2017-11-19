@@ -84,7 +84,7 @@ the `posixdate` and the `period` columns are still missing in the data. Again,
 the `coscos` provides a streamlined function, called `cook_cosdata` to get rid
 of the non-needed columns, complete the date columns and add the `period`
 column with pre-specified settings. With the raw-data example from before, the
-finished cosdata would look as following:
+finished cosdata might then look as following:
 ```{r, purl=FALSE, eval=TRUE, message=3:5}
   raw_data_example %>%
     cook_cosdata(.) %>%

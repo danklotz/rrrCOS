@@ -117,19 +117,25 @@ judge <- function(cosdata,
   # compute options: ------------------------------------------------------
   if (le_type == "compute") {
     judge_compute(cosdata, of_metrics)
+    
   } else if (le_type == "judge_barplot" | le_type == "barplot") {
     judge_barplot(cosdata, of_metrics)
+    
   } else if (le_type == "judge_rasterplot" | le_type == "rasterplot") {
     judge_rasterplot(cosdata, of_metrics)
-  } else if (le_type == "of_explore" | le_type == "explore") {
+    
+  } else if (le_type == "judge_explore" | le_type == "explore") {
     judge_explore(cosdata, of_metrics)
-  } else if (le_type == "of_compare" | le_type == "compare") {
+    
+  } else if (le_type == "judge_explore" | le_type == "compare") {
     cosdata2 <- NULL
-    if ("cos_data2" %in% names(le_dots)) {
-      cos_data2 <- eval(le_dots$cos_data2)
-    }
-    judge_compare(d1 = cosdata,
-               d2 = cosdata2)
+    if ("cos_data2" %in% names(le_dots)) {cos_data2 <- eval(le_dots$cos_data2)}
+    judge_compare(d1 = cosdata, d2 = cosdata2, of_metrics)
+    
+  } else if (le_type == "judge_window" | le_type == "window") {
+    windows <- c(20L,500L)
+    if (window_sizes %in% names(le_dots)) {windows <- window_sizes}
+    judge_window(cosdata, of_metrics, window_sizes)
   } else {
     stop("There is no option (`type`) called" %&&% le_type)
   }
