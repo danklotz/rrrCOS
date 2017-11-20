@@ -24,8 +24,8 @@ each basin is a facet and each sub-plot shows the $o$-data and $s$-data (see:
 Flow duration curves can be plotted in visCOSin the following way:
 ```{r example, purl=FALSE, eval=TRUE}
   library(visCOS)
-  cos_data <- get_viscos_example()
-  fdc_plot(cos_data)
+  cosdata <- get_viscos_example()
+  fdc_plot(cosdata)
 ```
 
 ## Code
@@ -33,13 +33,15 @@ Flow duration curves can be plotted in visCOSin the following way:
 ```{r}
   #' Compute Flow Duration Curves
   #'
-  #' Computes the flow duration curves (fdc) for the `cos_data` data.frame.
+  #' Computes the flow duration curves (fdc) for the `cosdata` data.frame.
   #' The calculations are adapted from the method used within the hydroTSM package.
-  #' @param cos_data A data.frame with columns as used throughout visCOS
+  #' @param cosdata A data.frame with columns as used throughout visCOS
+  #'
   #' @import magrittr
   #' @import dplyr
   #' @importFrom purrr map_df
   #' @import pasta
+  #'
   #' @export
   fdc_compute <- function(cosdata) {
     # pre:

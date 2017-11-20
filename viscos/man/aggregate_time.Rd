@@ -7,13 +7,10 @@
 aggregate_time(cosdata, key = "mm", .funs = base::mean, opts = coscos::viscos_options())
 }
 \arguments{
-\item{cosdata}{The strictly defined data format (\code{cosdata}) used
-within \pkg{viscos}}
-
-\item{aggregation}{A string that defines the resolution of the aggregation.}
+\item{cosdata}{Data-Format used within visCOS. A longer definition and explenation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).}
 }
 \description{
-Aggregates the COSERO data.frame (\code{cosdata}) according to the
+Aggregates \code{cosdata}) according to the
 timely resolution defined via \code{aggregation}. Possible
 resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
 \code{'dd'} - day and combinations thereof.

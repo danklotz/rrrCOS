@@ -20,27 +20,27 @@
   #'
   #' @export
 
-judge_explore2 <- function(d1,
-                           d2 = NULL,
+judge_explore2 <- function(cosdata1,
+                           cosdata2 = NULL,
                            of_metrics = list(nse   = coscos::of_nse,
                                              kge   = coscos::of_kge,
                                              pbias = coscos::of_pbias,
                                              corr  = coscos::of_cor),
-                       opts = coscos::viscos_options()) {
+                           opts = coscos::viscos_options()) {
   # (I) pre-sets: ============================================================
   if(!is.list(of_list)) {
     of_list = list(of_list)
   }
-  if (is.null(d2)) {
-    d2 <- d1
+  if (is.null(cosdata2)) {
+    cosdata2 <- cosdata1
   }
   if (is.null(names(of_list))){
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
-  clean_data1 <- d1 %>% 
+  clean_data1 <- cosdata1 %>% 
     coscos::cook_cosdata(.) %>% 
     coscos::remove_leading_zeros(.) 
-  clean_data2 <- d2 %>%
+  clean_data2 <- cosdata2 %>%
     coscos::cook_cosdata(.) %>% 
     coscos::remove_leading_zeros(.) 
   # convenience variables: ===================================================

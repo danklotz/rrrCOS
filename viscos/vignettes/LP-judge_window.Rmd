@@ -15,10 +15,10 @@ Here is an example of its use, together with an example plot:
                     tidyverse, 
                     ggridges)
   # 
-  cos_data <- coscos::viscos_example( ) %>% 
+  cosdata <- coscos::viscos_example( ) %>% 
     coscos::cook_cosdata()
   window_sizes <- c(168,250,500,1000,2000,4000,6000,8000,10000,15000)
-  windows <- judge_window(cos_data,
+  windows <- judge_window(cosdata,
                           of_metrics = list(nse = coscos::of_nse, 
                                             kge = coscos::of_kge), 
                           window_sizes = window_sizes)
@@ -92,7 +92,7 @@ windows$nse %>%
 #' @importFrom tidyr gather 
 #'
 #' @export
-judge_window <- function(cos_data,
+judge_window <- function(cosdata,
                          of_metrics = list(
                            nse   = coscos::of_nse,
                            kge   = coscos::of_kge,
@@ -113,7 +113,7 @@ judge_window <- function(cos_data,
   #
   map(of_metrics, 
       function(of) {
-        window_fun(cos_data,
+        window_fun(cosdata,
                    of,
                    window_sizes = window_sizes,
                    na_filling = FALSE,
@@ -136,18 +136,18 @@ judge_window <- function(cos_data,
 #' @importFrom tibble as_tibble
 #' @importFrom magrittr set_names
 #' @importFrom tidyr gather 
-window_fun <- function(cos_data,
+window_fun <- function(cosdata,
                        of_metric,
                        window_sizes = c(20L,500L), 
                        na_filling = FALSE,
                        opts = coscos::viscos_options()) {
-  cosdata <- coscos::cook_cosdata(cos_data)
-  cosdata_length <- nrow(cosdata)
+  cos_data <- coscos::cook_cosdata(cosdata)
+  cosdata_length <- nrow(cos_data)
   lb <- opts[["of_limits"]] %>% 
     .[1]
-  o_columns <- cosdata %>%
+  o_columns <- cos_data %>%
      select( starts_with(opts[["name_o"]]) )
-  s_columns <- cosdata %>%
+  s_columns <- cos_data %>%
      select( starts_with(opts[["name_s"]]) )
   data_numbers <- names(o_columns) %>%
     gsub(opts[["name_o"]], "", ., ignore.case = TRUE) %>%
@@ -192,9 +192,9 @@ window_fun <- function(cos_data,
   roll_of <- function(o_col, s_col) {
     sapply(all_window_sizes, 
            function(width) roll_roll(d1 = o_col,
-                                           d2 = s_col,
-                                           fun = of_metric, 
-                                           width = width)) %>%
+                                     d2 = s_col,
+                                     fun = of_metric, 
+                                     width = width)) %>%
       fill_NAs(.) %>%
       apply_ceilings(.) %>% 
       tibble::as_tibble(.) %>% 

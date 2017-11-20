@@ -16,13 +16,13 @@ For the examples 10 events are extracted from a runoff example
 ```{r, eval = TRUE, purl=FALSE}
   library(coscos)
   library(visCOS)
-  cos_data <- viscos_example()
-  peakplots <- peack(cos_data, action = "plots", n_events = 10L)
+  cosdata <- viscos_example()
+  peakplots <- peack(cosdata, action = "plots", n_events = 10L)
 
 ```
 
 The `peakplots` list does now contain plots for each basin within the
-`cos_data` data.frame:
+`cosdata` data.frame:
 ```{r, eval = TRUE, purl=FALSE}
   names(peakplots)
 ```
@@ -66,7 +66,7 @@ This part of the document defines the code of `peack`
   #' @import dplyr
   #' @import magrittr
   #' @importFrom tibble tibble
-  peack <- function(cos_data, 
+  peack <- function(cosdata, 
                     action = "compute",
                     n_events= 10L, 
                     window_size = 24L, 
@@ -80,7 +80,7 @@ This part of the document defines the code of `peack`
       action_string = "compute"
     }
     #
-    cosdata <- coscos::cook_cosdata(cos_data)
+    cos_data <- coscos::cook_cosdata(cosdata)
     n_events_int <- as.integer(n_events)
     window_size_int <- as.integer(window_size)
     if (is.na(n_events_int)  |
@@ -95,11 +95,11 @@ This part of the document defines the code of `peack`
         !is.integer(window_size) ) {
       stop("window_size is ill defined")
     }
-    data1 <- cosdata %>%
+    data1 <- cos_data %>%
       dplyr::select( starts_with(opts[["name_o"]]) )
-    data2 <- cosdata %>%
+    data2 <- cos_data %>%
       dplyr::select( starts_with(opts[["name_s"]]) )
-    data_posix <- cosdata %>% 
+    data_posix <- cos_data %>% 
       dplyr::select(matches(opts[["name_COSposix"]]))
     data_numbers <- names(data1) %>%
       gsub(opts[["name_o"]], "", ., ignore.case = TRUE) %>%

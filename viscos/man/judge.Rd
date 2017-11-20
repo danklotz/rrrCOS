@@ -5,11 +5,11 @@
 \alias{judge_explore}
 \title{Wrapper for the different of functions}
 \usage{
-judge(cosdata, type = "compute", of_metrics = list(nse = coscos::of_nse, 
+judge(cosdata, type = "compute", .ofuns = list(nse = coscos::of_nse, 
     kge = coscos::of_kge, pbias = coscos::of_pbias, corr = coscos::of_cor), 
     opts = coscos::viscos_options(), ...)
 
-judge_explore(cos_data, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_kge, 
+judge_explore(cosdata, .ofuns = list(nse = coscos::of_nse, kge = coscos::of_kge, 
     pbias = coscos::of_pbias, corr = coscos::of_cor), opts = coscos::viscos_options())
 }
 \description{
@@ -20,11 +20,11 @@ which function is chosen (the "pre fix" part of
 the selected functions, i.e. `judge_` and `of_`, do not need to be provided).
 Th
 
-Runs a Shiny Gadget which can be used to get an overview of a cos_data time
+Runs a Shiny Gadget which can be used to get an overview of a cosdata time
 series object.
 }
 \examples{
 # get example data, explore the model performance
-cos_data <- get_viscos_example()
-judge_explore(cos_data)
+cosdata <- get_viscos_example()
+judge_explore(cosdata)
 }

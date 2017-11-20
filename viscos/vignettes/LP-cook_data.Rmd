@@ -26,7 +26,7 @@ Currently visCOSonly allows to compare between *numbered catchments*! The
 data **must** include an integer number at the end of its name, e.g.
 `QObs_001` and `QSim_001`).
 
-Additionally, `cos_data` data.frame needs to have two different definitions for
+Additionally, `cosdata` data.frame needs to have two different definitions for
 the date of a given row (see: [Introduction](introduction.html)). One is based
 on an old way to write dates out in fortran code. In that case each column
 represents a time-resolution. In concrete, the following columns are used:

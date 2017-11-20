@@ -5,10 +5,10 @@
 \alias{judge_rasterplot}
 \title{Bar plot for the Main Objective Function Values}
 \usage{
-judge_barplot(cosdata, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_kge, 
+judge_barplot(cosdata, .ofuns = list(nse = coscos::of_nse, kge = coscos::of_kge, 
     pbias = coscos::of_pbias, corr = coscos::of_cor))
 
-judge_rasterplot(cos_data, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_kge, 
+judge_rasterplot(cosdata, .ofuns = list(nse = coscos::of_nse, kge = coscos::of_kge, 
     pbias = coscos::of_pbias, corr = coscos::of_cor))
 }
 \description{

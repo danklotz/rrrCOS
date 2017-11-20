@@ -19,10 +19,10 @@
 #' @export
 judge <- function(cosdata,
                   type = "compute",
-                  of_metrics = list(nse   = coscos::of_nse,
-                                    kge   = coscos::of_kge,
-                                    pbias = coscos::of_pbias,
-                                    corr  = coscos::of_cor),
+                  .ofuns = list(nse   = coscos::of_nse,
+                                kge   = coscos::of_kge,
+                                pbias = coscos::of_pbias,
+                                corr  = coscos::of_cor),
                   opts = coscos::viscos_options(),
                   ...) {
   # lazy evaluation: ------------------------------------------------------
@@ -41,37 +41,37 @@ judge <- function(cosdata,
   }
   # compute options: ------------------------------------------------------
   if (le_type == "compute") {
-    judge_compute(cosdata, of_metrics)
+    judge_compute(cosdata, .ofuns)
     
   } else if (le_type == "judge_barplot" | le_type == "barplot") {
-    judge_barplot(cosdata, of_metrics)
+    judge_barplot(cosdata, .ofuns)
     
   } else if (le_type == "judge_rasterplot" | le_type == "rasterplot") {
-    judge_rasterplot(cosdata, of_metrics)
+    judge_rasterplot(cosdata, .ofuns)
     
   } else if (le_type == "judge_explore" | le_type == "explore") {
-    judge_explore(cosdata, of_metrics)
+    judge_explore(cosdata, .ofuns)
     
   } else if (le_type == "judge_explore" | le_type == "compare") {
     cosdata2 <- NULL
-    if ("cos_data2" %in% names(le_dots)) {cos_data2 <- eval(le_dots$cos_data2)}
-    judge_compare(d1 = cosdata, d2 = cosdata2)
+    if ("cosdata2" %in% names(le_dots)) {2 <- eval(le_dots$cosdata2)}
+    judge_compare(cosdata, cosdata2, .ofuns)
     
   } else if (le_type == "judge_window" | le_type == "window") {
     windows <- c(20L,500L)
     if (window_sizes %in% names(le_dots)) {windows <- window_sizes}
-    
+    judge_window(cosdata, .ofuns, window_sizes)
   } else {
     stop("There is no option (`type`) called" %&&% le_type)
   }
 }
 # ---------------------------------------------------------------------------
-#' Get basic objective function for cos_data
+#' Get basic objective function for 
 #'
 #' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation)
 #' for every basin and the chosen periods.
 #'
-#' @param cos_data cos_data data.frame.
+#' @param cosdata cosdata data.frame.
 #' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
 #'
@@ -81,10 +81,10 @@ judge <- function(cosdata,
 #' @importFrom dplyr select filter starts_with
 #' @importFrom magrittr set_names
 judge_compute <- function(cosdata,
-                          of_metrics = list(nse   = coscos::of_nse,
-                                            kge   = coscos::of_kge,
-                                            pbias = coscos::of_pbias,
-                                            corr  = coscos::of_cor),
+                          .ofuns = list(nse   = coscos::of_nse,
+                                        kge   = coscos::of_kge,
+                                        pbias = coscos::of_pbias,
+                                        corr  = coscos::of_cor),
                        opts = coscos::viscos_options()) {
   # pre: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
@@ -92,13 +92,13 @@ judge_compute <- function(cosdata,
   name_o <- opts[["name_o"]]
   name_s <- opts[["name_s"]]
   #
-  if( !(class(of_metrics) == "list") ) {
-    of_metrics <- list(of_metrics)
+  if( !(class(.ofuns) == "list") ) {
+    .ofuns <- list(.ofuns)
   }
-  if (is.null(names(of_metrics))){
-    d_names <- "d" %&% 1:length(of_metrics)
+  if (is.null(names(.ofuns))){
+    d_names <- "d" %&% 1:length(.ofuns)
   } else {
-    d_names <- names(of_metrics)
+    d_names <- names(.ofuns)
   }
   #
   evaluation_data <- cos_data[cos_data[[name_period]] > 0, ]
@@ -113,7 +113,7 @@ judge_compute <- function(cosdata,
   number_judge_periods <- data_periods %>% length
 
   # compute main-of for entire data: ========================================
-  d_mean <- purrr::map_df(of_metrics, function(judge_, x, y) as.numeric(judge_(x,y)),
+  d_mean <- purrr::map_df(.ofuns, function(judge_, x, y) as.numeric(judge_(x,y)),
                  x = dplyr::select(evaluation_data,dplyr::starts_with(name_o)) %>% unname(.),
                  y = dplyr::select(evaluation_data,dplyr::starts_with(name_s)) %>% unname(.) ) %>%
     t(.) %>%
@@ -128,7 +128,7 @@ judge_compute <- function(cosdata,
     s_pick <- dplyr::filter(evaluation_data,period == data_periods[k]) %>%
       dplyr::select(.,starts_with(name_s)) %>%
       unname(.)
-    d_measures <- purrr::map_df(of_metrics, function(judge_,x,y) as.numeric(judge_(x,y)),
+    d_measures <- purrr::map_df(.ofuns, function(judge_,x,y) as.numeric(judge_(x,y)),
                  x = o_pick,
                  y = s_pick ) %>% t()
     return(measure = d_measures)
@@ -154,19 +154,19 @@ judge_compute <- function(cosdata,
 #'
 #' @export
 judge_barplot <- function(cosdata,
-                          of_metrics = list(nse   = coscos::of_nse,
+                          .ofuns = list(nse   = coscos::of_nse,
                                             kge   = coscos::of_kge,
                                             pbias = coscos::of_pbias,
                                             corr  = coscos::of_cor)) {
   # pre: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
-  if(!(class(of_metrics) == "list")) {
-    of_metrics <- list(of_metrics)
+  if(!(class(.ofuns) == "list")) {
+    .ofuns <- list(.ofuns)
   }
-  if (is.null(names(of_metrics))){
-    d_names <- "d" %&% 1:length(of_metrics)
+  if (is.null(names(.ofuns))){
+    d_names <- "d" %&% 1:length(.ofuns)
   } else {
-    d_names <- names(of_metrics)
+    d_names <- names(.ofuns)
   }
   # functions: ==============================================================
   assign_ofgroups <- function(judge_melted,judge_names) {
@@ -198,7 +198,7 @@ judge_barplot <- function(cosdata,
     return(plt_out)
   }
   # computations: ===========================================================
-  judge_data <- judge_compute(cos_data,of_metrics)
+  judge_data <- judge_compute(cos_data,.ofuns)
   num_basins <- ncol(judge_data) - 1
   judge_melted <- suppressMessages( reshape2::melt(judge_data) ) %>%
     assign_ofgroups(.,d_names)
@@ -213,24 +213,24 @@ judge_barplot <- function(cosdata,
 #' @rdname judge_overview
 #' @import pasta
 #' @export
-judge_rasterplot <- function(cos_data,
-                             of_metrics = list(nse   = coscos::of_nse,
+judge_rasterplot <- function(cosdata,
+                             .ofuns = list(nse   = coscos::of_nse,
                                                kge   = coscos::of_kge,
                                                pbias = coscos::of_pbias,
                                                corr  = coscos::of_cor)) {
   # def: ====================================================================
-  build_tibble(cos_data)
-  if(!(class(of_metrics) == "list")) {
-    of_metrics <- list(of_metrics)
+  cos_data <- coscos::cook_cosdata(cosdata)
+  if(!(class(.ofuns) == "list")) {
+    .ofuns <- list(.ofuns)
   }
-  if (is.null(names(of_metrics))){
-    d_names <- "d" %&% 1:length(of_metrics)
+  if (is.null(names(.ofuns))){
+    d_names <- "d" %&% 1:length(.ofuns)
   } else {
-    d_names <- names(of_metrics)
+    d_names <- names(.ofuns)
   }
   # computations: ===========================================================
   regex_main_of <- d_names %.% "*"
-  judge_data <- judge_compute(cos_data, of_metrics)
+  judge_data <- judge_compute(cos_data, .ofuns)
   #
   plot_list <- lapply(regex_main_of,function(x) plot_fun_raster(x,judge_data)) %>%
     magrittr::set_names(d_names)

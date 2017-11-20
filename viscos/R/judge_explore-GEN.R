@@ -6,7 +6,7 @@ if (knitr:::is_latex_output()) {
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
-  #' Runs a Shiny Gadget which can be used to get an overview of a cos_data time
+  #' Runs a Shiny Gadget which can be used to get an overview of a cosdata time
   #' series object.
   #'
   #' @import shiny
@@ -25,10 +25,10 @@ if (knitr:::is_latex_output()) {
   #' @examples
   #' # get example data,
   #' # explore the model performance
-  #' cos_data <- get_viscos_example()
-  #' judge_explore(cos_data)
-judge_explore <- function(cos_data,
-                          of_metrics = list(nse   = coscos::of_nse,
+  #' cosdata <- get_viscos_example()
+  #' judge_explore(cosdata)
+judge_explore <- function(cosdata,
+                          .ofuns = list(nse   = coscos::of_nse,
                                             kge   = coscos::of_kge,
                                             pbias = coscos::of_pbias,
                                             corr  = coscos::of_cor),
@@ -43,11 +43,11 @@ judge_explore <- function(cos_data,
   if (is.null(names(of_metrics))){
     names(of_metrics) <- paste("of", 1:length(of_metrics), sep = "_")
   }
-  clean_cos_data <- cos_data %>% 
+  cos_data <- cosdata %>% 
     coscos::cook_cosdata(.) %>% 
     coscos::remove_leading_zeros(.)
   #
-  names_data <- names(clean_cos_data) %>% tolower(.)
+  names_data <- names(cos_data) %>% tolower(.)
   number_lb <- grepl(name_lb,
                      names_data,
                      ignore.case = TRUE) %>% sum(.)
@@ -119,7 +119,7 @@ judge_explore <- function(cos_data,
     })
     selected_data <- reactive({
       if (plot_bounds) {
-        clean_cos_data %>%
+        cos_data %>%
           select(matches( selector_x() ),
                  matches( selector_y() ),
                  matches( selector_lb() ),
@@ -130,7 +130,7 @@ judge_explore <- function(cos_data,
                  lb = matches( selector_lb() ),
                  ub = matches( selector_ub() ))
       } else {
-        clean_cos_data %>%
+        cos_data %>%
           select(matches( selector_x() ),
                  matches( selector_y() )
                  ) %>%
@@ -141,7 +141,7 @@ judge_explore <- function(cos_data,
     # (c) create xts-formated table for use in dygraphs:
     xts_selected_data <- reactive ({
       xts(selected_data(),
-          order.by = clean_cos_data[[ opts[["name_COSposix"]] ]])
+          order.by = cos_data[[ opts[["name_COSposix"]] ]])
     })
     # (d) create plots:
     base_graph <- reactive({

@@ -1,12 +1,14 @@
   #' Compute Flow Duration Curves
   #'
-  #' Computes the flow duration curves (fdc) for the `cos_data` data.frame.
+  #' Computes the flow duration curves (fdc) for the `cosdata` data.frame.
   #' The calculations are adapted from the method used within the hydroTSM package.
-  #' @param cos_data A data.frame with columns as used throughout visCOS
+  #' @param cosdata A data.frame with columns as used throughout visCOS
+  #'
   #' @import magrittr
   #' @import dplyr
   #' @importFrom purrr map_df
   #' @import pasta
+  #'
   #' @export
   fdc_compute <- function(cosdata) {
     # pre:

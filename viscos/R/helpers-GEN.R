@@ -3,7 +3,10 @@
   #' @name %>%
   #' @rdname pipe
   #' @keywords internal
-  #' @export
+  #'
   #' @importFrom magrittr %>%
+  #'
+  #' @export
+  #'
   #' @usage lhs \%>\% rhs
   NULL

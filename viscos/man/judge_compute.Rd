@@ -2,13 +2,13 @@
 % Please edit documentation in R/judge-GEN.R
 \name{judge_compute}
 \alias{judge_compute}
-\title{Get basic objective function for cos_data}
+\title{Get basic objective function for}
 \usage{
-judge_compute(cosdata, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_kge, 
+judge_compute(cosdata, .ofuns = list(nse = coscos::of_nse, kge = coscos::of_kge, 
     pbias = coscos::of_pbias, corr = coscos::of_cor), opts = coscos::viscos_options())
 }
 \arguments{
-\item{cos_data}{cos_data data.frame.}
+\item{cosdata}{cosdata data.frame.}
 }
 \value{
 list of basic objective function evaluated for the different
