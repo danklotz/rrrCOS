@@ -3,7 +3,7 @@
 \name{judge}
 \alias{judge}
 \alias{judge_explore}
-\title{Wrapper for the different of functions}
+\title{Wrapper for the different judge functions}
 \usage{
 judge(cosdata, type = "compute", .ofuns = list(nse = coscos::of_nse, 
     kge = coscos::of_kge, pbias = coscos::of_pbias, corr = coscos::of_cor), 
@@ -13,12 +13,11 @@ judge_explore(cosdata, .ofuns = list(nse = coscos::of_nse, kge = coscos::of_kge,
     pbias = coscos::of_pbias, corr = coscos::of_cor), opts = coscos::viscos_options())
 }
 \description{
-This function provides a wrapper for all `judge_` functions. The
+A wrapper for all `judge_` functions. The
 input arguments `type` is lazyily-evaluated (which basically implies that
 it does not have to be provided as a character argument).
 which function is chosen (the "pre fix" part of
-the selected functions, i.e. `judge_` and `of_`, do not need to be provided).
-Th
+the selected functions, i.e. the `judge_` prefix does not need to be provided).
 
 Runs a Shiny Gadget which can be used to get an overview of a cosdata time
 series object.

@@ -1,16 +1,15 @@
 # ---------------------------------------------------------------------------
-# Code for the Main Objective Functions (main_of)
+# Code for the the judge functions
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-#' Wrapper for the different of functions
+#' Wrapper for the different judge functions
 #'
-#' This function provides a wrapper for all `judge_` functions. The
+#' A wrapper for all `judge_` functions. The
 #' input arguments `type` is lazyily-evaluated (which basically implies that
 #' it does not have to be provided as a character argument).
 #' which function is chosen (the "pre fix" part of
-#' the selected functions, i.e. `judge_` and `of_`, do not need to be provided).
-#' Th
+#' the selected functions, i.e. the `judge_` prefix does not need to be provided).
 #'
 #' @import pasta
 #' @import lazyeval
@@ -24,7 +23,8 @@ judge <- function(cosdata,
                                 pbias = coscos::of_pbias,
                                 corr  = coscos::of_cor),
                   opts = coscos::viscos_options(),
-                  ...) {
+                  ...
+                  ) {
   # lazy evaluation: ------------------------------------------------------
   le_dots <-  match.call(expand.dots = FALSE) %>%
     .["..."] %>%
@@ -80,12 +80,14 @@ judge <- function(cosdata,
 #' @importFrom purrr map_df
 #' @importFrom dplyr select filter starts_with
 #' @importFrom magrittr set_names
+#' @importFrom tibble as_tibble
 judge_compute <- function(cosdata,
                           .ofuns = list(nse   = coscos::of_nse,
                                         kge   = coscos::of_kge,
                                         pbias = coscos::of_pbias,
                                         corr  = coscos::of_cor),
-                       opts = coscos::viscos_options()) {
+                          opts = coscos::viscos_options()
+                          ) {
   # pre: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
   name_period <- opts[["name_COSperiod"]]
@@ -155,9 +157,10 @@ judge_compute <- function(cosdata,
 #' @export
 judge_barplot <- function(cosdata,
                           .ofuns = list(nse   = coscos::of_nse,
-                                            kge   = coscos::of_kge,
-                                            pbias = coscos::of_pbias,
-                                            corr  = coscos::of_cor)) {
+                                        kge   = coscos::of_kge,
+                                        pbias = coscos::of_pbias,
+                                        corr  = coscos::of_cor)
+                          ) {
   # pre: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
   if(!(class(.ofuns) == "list")) {
@@ -215,9 +218,10 @@ judge_barplot <- function(cosdata,
 #' @export
 judge_rasterplot <- function(cosdata,
                              .ofuns = list(nse   = coscos::of_nse,
-                                               kge   = coscos::of_kge,
-                                               pbias = coscos::of_pbias,
-                                               corr  = coscos::of_cor)) {
+                                           kge   = coscos::of_kge,
+                                           pbias = coscos::of_pbias,
+                                           corr  = coscos::of_cor)
+                             ) {
   # def: ====================================================================
   cos_data <- coscos::cook_cosdata(cosdata)
   if(!(class(.ofuns) == "list")) {

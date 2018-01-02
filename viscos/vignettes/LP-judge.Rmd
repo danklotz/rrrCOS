@@ -4,73 +4,73 @@
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This chapter presents the objective function summary functions in visCOS. They
-compute basin-wise objective functions of the overall data and for the
-individual basins.
+This chapter presents a set of functions to organize and/or visualize a 
+set of objective functions that ought to be evaluated over all basins. The 
+objective funcitons can be provided as a list via `.ofuns`. The pre-set 
+objective functions are (these are provided by the `coscos` package, see also: 
+[distance metrics](LP-distance_measures.html)):
 
-As explained in [previous section](LP-distance_measures.html) objective
-functions are a pivotal part of model calibration. If no specific options are
-chosen visCOS uses 4 objective functions, i.e.:
-$NSE$,
-$KGE$,
-Pearson's Correlation and
-the Percentage Bias (the function definitions have been given in the chapter
-about [distance metrics](LP-distance_measures.html)).
+- Nash-Sutcliffe Efficency: `of_nse`
+- Kling-Gupta Efficency: `of_kge`
+- Percentage Bias: `of_pbias`
+- Pearson's Correlation Coefficient: `of_corr`
 
-The objective functions for the overall data and the marked periods
-can be computed through the function `judge_compute`. Additionally, visCOS
-already provides two different options to create plots for the main objective
-functions: `judge_rasterplot` and `judge_barplot`. Both functions create a list
-with `ggplot` figures. Each entry in the list corresponds to one of the main
-objective functions and both lists can be saved to html embedded pictures with
-the [`serve` function](LP-serve.html).
+The function `judge_compute` applies the provided objective functions to all 
+basins. The computation is done for the overall time-span and for the 
+*marked periods*. On top of that two functions for summary plots are implemented:
+`judge_rasterplot` and `judge_barplot`. A notable quirk of both functions is 
+that they return a list as output (whereby each entry or sub-entry of the list 
+contains a `ggplot2` figure). Two interactive tools for exploration are provided
+by the `judge_explore` and `judge_explore2` functions. Finally, the `judge` 
+function wraps for all other `judge_` functions. The selection is done via the 
+`type` argument (the variable is evaluated in a non-standard fashion, which 
+implies, among other things, that the argument can be provided withouth it 
+beeing a character). Here are some examples:
 
-The `judge` function provides a wrapper for all other `judge_` and `of_`
-functions. The selection is done via the non-standardly-evaluated `type`
-argument (search for lazy-evaluation if you want to know more. This implies,
-among other things, that
-
-In the following are some examples:
-
-**Example 1.** Computing the main objective functions
 ```{r, message=3, purl=FALSE, eval=TRUE}
 library(magrittr)
 library(coscos)
 library(visCOS)
-#
+```
+
+**Example 1.** Evaluatig the `judge` function withouth arguments executes 
+`judge_compute`, which returns a data.frame with the objective functions for the
+entire time-series and the marked periods (of each basin): 
+```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example( ) %>%
   judge(.) %>%
   print(.)
 ```
 
-**Example 2.** Plotting the results of main objective function with bar plots:
+**Example 2.** Plotting the computed objective functions as barplots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example() %>%
-  judge(.,barplot) %>%
-  .[[1]] %>%
+  judge(., barplot) %>%
+  .[[1]] %>% # a list with the plots is returned; select first entry
   plot(.)
 ```
 
-**Example 3.** Plotting the results of main objective function with a raster:
+**Example 3.** Using the `judge_` functionality:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example() %>%
-  judge(.,rasterplot) %>%
+  judge_barplot(.) %>%
+  .[[1]] %>% # a list with the plots is returned; select one entry
+  plot(.)
+```
+
+**Example 4.** Plotting the results of main objective function with a raster:
+```{r, message=3, purl=FALSE, eval=TRUE}
+viscos_example() %>%
+  judge(., "rasterplot") %>%
   .[[2]] %>%
   plot(.)
 ```
 
-**Example 4.** Using the `judge_` functionality:
-```{r, message=3, purl=FALSE, eval=TRUE}
-viscos_example() %>%
-  judge_barplot(.) %>%
-  .[[1]] %>%
-  plot(.)
-```
 
 ## Code
 ```{r}
 # ---------------------------------------------------------------------------
-# Code for the Main Objective Functions (main_of)
+# Code for the the judge functions
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -78,14 +78,13 @@ viscos_example() %>%
 
 ### Wrapper
 ```{r}
-#' Wrapper for the different of functions
+#' Wrapper for the different judge functions
 #'
-#' This function provides a wrapper for all `judge_` functions. The
+#' A wrapper for all `judge_` functions. The
 #' input arguments `type` is lazyily-evaluated (which basically implies that
 #' it does not have to be provided as a character argument).
 #' which function is chosen (the "pre fix" part of
-#' the selected functions, i.e. `judge_` and `of_`, do not need to be provided).
-#' Th
+#' the selected functions, i.e. the `judge_` prefix does not need to be provided).
 #'
 #' @import pasta
 #' @import lazyeval
@@ -164,6 +163,7 @@ The purpose of this function is to compute a set of objective functions for `cos
 #' @importFrom purrr map_df
 #' @importFrom dplyr select filter starts_with
 #' @importFrom magrittr set_names
+#' @importFrom tibble as_tibble
 judge_compute <- function(cosdata,
                           .ofuns = list(nse   = coscos::of_nse,
                                         kge   = coscos::of_kge,

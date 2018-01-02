@@ -7,6 +7,5 @@ rmd_files: ["index.Rmd",
 "LP-peack.Rmd",
 "LP-judge.Rmd",
 "LP-judge_explore.Rmd",
-"LP-judge_compare.Rmd", 
-"LP-judge_window.Rmd",
-"LT-useful.Rmd"]
+"LP-judge_explore2.Rmd", 
+"LP-judge_window.Rmd"]
