@@ -10,12 +10,13 @@ However, for larger files we recommend the read functionality of the
 Lastly, we recommend `readr` package for well structured and large data.
 
 After the data is read into R it needs to be transformed (*cooked*) into a
-rigidly defined format, which we call **cosdata**. The format has some redundant
-columns, but provides a large optionality. It is also a good middle ground
+rigidly defined format, which we call **cosdata**. Admittedly, the format has
+some redundancies, but this is compensated by the many options for operating
+on the data. Furthermore, it is a good "middle ground"
 between the output of COSERO and the formats used within the R ecosystem.
 
-All cosdata formated data can be used for further exploratory analysis with
-visCOS.
+Note: All cosdata formatted data can be used for further exploratory analysis
+with visCOS.
 
 **NOW WE NEED TO EXPLAIN COSDATA!**
 

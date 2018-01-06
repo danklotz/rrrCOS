@@ -4,10 +4,10 @@
   knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
 
-This chapter presents a set of functions to organize and/or visualize a 
-set of objective functions that ought to be evaluated over all basins. The 
-objective funcitons can be provided as a list via `.ofuns`. The pre-set 
-objective functions are (these are provided by the `coscos` package, see also: 
+This chapter presents a set of functions to organize and/or visualize a
+set of objective functions that ought to be evaluated over all basins. The
+objective functions can be provided as a list via `.ofuns`. The pre-set
+objective functions are (these are provided by the `coscos` package, see also:
 [distance metrics](LP-distance_measures.html)):
 
 - Nash-Sutcliffe Efficency: `of_nse`
@@ -15,17 +15,17 @@ objective functions are (these are provided by the `coscos` package, see also:
 - Percentage Bias: `of_pbias`
 - Pearson's Correlation Coefficient: `of_corr`
 
-The function `judge_compute` applies the provided objective functions to all 
-basins. The computation is done for the overall time-span and for the 
+The function `judge_compute` applies the provided objective functions to all
+basins. The computation is done for the overall time-span and for the
 *marked periods*. On top of that two functions for summary plots are implemented:
-`judge_rasterplot` and `judge_barplot`. A notable quirk of both functions is 
-that they return a list as output (whereby each entry or sub-entry of the list 
+`judge_rasterplot` and `judge_barplot`. A notable quirk of both functions is
+that they return a list as output (whereby each entry or sub-entry of the list
 contains a `ggplot2` figure). Two interactive tools for exploration are provided
-by the `judge_explore` and `judge_explore2` functions. Finally, the `judge` 
-function wraps for all other `judge_` functions. The selection is done via the 
-`type` argument (the variable is evaluated in a non-standard fashion, which 
-implies, among other things, that the argument can be provided withouth it 
-beeing a character). Here are some examples:
+by the `judge_explore` and `judge_explore2` functions. Finally, the `judge`
+function wraps for all other `judge_` functions. The selection is done via the
+`type` argument (the variable is evaluated in a non-standard fashion, which
+implies, among other things, that the argument can be provided without it
+being a character). Here are some examples:
 
 ```{r, message=3, purl=FALSE, eval=TRUE}
 library(magrittr)
@@ -33,16 +33,16 @@ library(coscos)
 library(visCOS)
 ```
 
-**Example 1.** Evaluatig the `judge` function withouth arguments executes 
+**Example 1.** Evaluating the `judge` function without arguments executes
 `judge_compute`, which returns a data.frame with the objective functions for the
-entire time-series and the marked periods (of each basin): 
+entire time-series and the marked periods (of each basin):
 ```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example( ) %>%
   judge(.) %>%
   print(.)
 ```
 
-**Example 2.** Plotting the computed objective functions as barplots:
+**Example 2.** Plotting the computed objective functions as bar-plots:
 ```{r, message=3, purl=FALSE, eval=TRUE}
 viscos_example() %>%
   judge(., barplot) %>%
@@ -81,14 +81,14 @@ viscos_example() %>%
 #' Wrapper for the different judge functions
 #'
 #' A wrapper for all `judge_` functions. The
-#' input arguments `type` is lazyily-evaluated (which basically implies that
+#' input arguments `type` is lazily-evaluated (which basically implies that
 #' it does not have to be provided as a character argument).
 #' which function is chosen (the "pre fix" part of
 #' the selected functions, i.e. the `judge_` prefix does not need to be provided).
 #'
 #' @import pasta
 #' @import lazyeval
-#' 
+#'
 #' @rdname judge
 #' @export
 judge <- function(cosdata,
@@ -106,7 +106,7 @@ judge <- function(cosdata,
     .[[1]]
   le_type <- match.call(expand.dots = FALSE) %>%
     .["type"] %>%
-    .[[1]] %>% 
+    .[[1]] %>%
     as.character(.)
   if (length(le_type) == 0) {
     le_type = "compute"
@@ -117,21 +117,21 @@ judge <- function(cosdata,
   # compute options: ------------------------------------------------------
   if (le_type == "compute") {
     judge_compute(cosdata, .ofuns)
-    
+
   } else if (le_type == "judge_barplot" | le_type == "barplot") {
     judge_barplot(cosdata, .ofuns)
-    
+
   } else if (le_type == "judge_rasterplot" | le_type == "rasterplot") {
     judge_rasterplot(cosdata, .ofuns)
-    
+
   } else if (le_type == "judge_explore" | le_type == "explore") {
     judge_explore(cosdata, .ofuns)
-    
+
   } else if (le_type == "judge_explore" | le_type == "compare") {
     cosdata2 <- NULL
     if ("cosdata2" %in% names(le_dots)) {2 <- eval(le_dots$cosdata2)}
     judge_compare(cosdata, cosdata2, .ofuns)
-    
+
   } else if (le_type == "judge_window" | le_type == "window") {
     windows <- c(20L,500L)
     if (window_sizes %in% names(le_dots)) {windows <- window_sizes}
@@ -145,11 +145,11 @@ judge <- function(cosdata,
 
 
 ### Computation
-The purpose of this function is to compute a set of objective functions for `cosdata`. 
+The purpose of this function is to compute a set of objective functions for `cosdata`.
 
 ```{r}
 # ---------------------------------------------------------------------------
-#' Get basic objective function for 
+#' Get basic objective function for
 #'
 #' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation)
 #' for every basin and the chosen periods.

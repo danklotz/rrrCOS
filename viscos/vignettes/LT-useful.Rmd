@@ -1,23 +1,23 @@
 # Tips & Tricks
-```{r lruseful, include=FALSE}
+```{r useful, include=FALSE}
   knitr::opts_chunk$set( fig.align = 'center')
 ```
 
-This chapter provides useful tricks, scripts and functions, that are not part 
+This chapter provides useful tricks, scripts and functions, that are not part
 of *coscos* or *visCOS* but are still handy for working with COSERO.
 
-```{r} 
+```{r}
   library(magrittr)
 ```
 
-Get last `n` letters of a character from the right: 
+Get last `n` letters of a character from the right:
 ```{r}
 substr_right <- function(x, n){
   # author: Simon Frey
   #
-  # x ... character vector 
+  # x ... character vector
   # n ... number of letters to extract
-  
+
   substr(x, nchar(x)-n+1, nchar(x))
 }
 substr_right("abcdefgh",5) %>% print(.)
@@ -32,7 +32,7 @@ mm_to_m3s <- function(input, area = 1000, dt = 1) {
   # area ... Area in m^2
   # dt ... timesetp in sec
   # output ... runoff m^3*s^-1
-  
+
   return(output = input/(dt*1000)*area)
 }
 mm_to_m3s(1000,1,1) %>% print(.)
@@ -47,7 +47,7 @@ m3s_to_mm <- function(input, area = 1000, dt = 1) {
   # area ... Area in m^2
   # dt ... timesetp in sec
   # output ... runoff mmm
-  
+
   return(output = input*1000*dt/area)
 }
 m3s_to_mm(1,1,1) %>% print(.)
@@ -60,4 +60,3 @@ is_leapyear = function(year) {
   return(((year %% 4 == 0) & (year %% 100 != 0)) | (year %% 400 == 0))
 }
 ```
-

@@ -90,7 +90,7 @@ Here is the code:
 #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
 #' \code{'dd'} - day and combinations thereof.
 #'
-#' @param cosdata Data-Format used within visCOS. A longer definition and explenation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).
+#' @param cosdata Data-Format used within visCOS. A longer definition and explanation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).
 #'
 #' @import pasta
 #' @importFrom tidyr gather_
