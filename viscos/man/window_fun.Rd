@@ -4,7 +4,7 @@
 \alias{window_fun}
 \title{Objectie Function Windowing}
 \usage{
-window_fun(cos_data, of_metric, window_sizes = c(20L, 500L), na_filling = FALSE, 
+window_fun(cosdata, of_metric, window_sizes = c(20L, 500L), na_filling = FALSE, 
     opts = coscos::viscos_options())
 }
 \description{

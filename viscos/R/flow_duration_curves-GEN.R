@@ -15,7 +15,7 @@
     cos_data <- coscos::cook_cosdata(cosdata)
     # def:
     order_bound_data <- function(bound_data) {
-      ordred_fdc_data <- bound_data %>% 
+      ordred_fdc_data <- bound_data %>%
         mutate(obs_sim = key %>%
                gsub( viscos_options("name_o") %&% ".*",
                      viscos_options("name_o"),
@@ -37,7 +37,7 @@
     exceedance_values <- map_df(cos_data_only,calc_percent_exceedance) %>%
                          tidyr::gather() %>%
                          magrittr::extract("value")
-    fdc_data <- cos_data_only %>% 
+    fdc_data <- cos_data_only %>%
       tidyr::gather() %>%
       cbind.data.frame(exceedance = exceedance_values) %>%
       magrittr::set_names(c("key","value","exceedance")) %>%
@@ -70,7 +70,7 @@
                        log_x = FALSE,
                        ...) {
     # def:
-    # maybe we have to account certain limits for the logs, e.g: 
+    # maybe we have to account certain limits for the logs, e.g:
     # if (log_y | log_x & min(ylim) == 0) {
     #   ylim <- range(q, na.rm = TRUE)
     #   tmp <- unlist(q)
@@ -86,7 +86,7 @@
     }
     # computation:
     fdc_data <- fdc_compute(cos_data)
-    gplot <- ggplot(fdc_data) + 
+    gplot <- ggplot(fdc_data) +
       geom_line(aes(x = logfun(exceedance,log_x), y = logfun(value,log_y), color = obs_sim)) +
       scale_color_manual(values = c(viscos_options("color_o"),viscos_options("color_s"))) +
       facet_wrap(~ basin_idx)

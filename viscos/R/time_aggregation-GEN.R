@@ -5,7 +5,7 @@
 #' resolution-choices are \code{'yyyy'} - year, \code{'mm'} - month and
 #' \code{'dd'} - day and combinations thereof.
 #'
-#' @param cosdata Data-Format used within visCOS. A longer definition and explenation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).
+#' @param cosdata Data-Format used within visCOS. A longer definition and explanation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).
 #'
 #' @import pasta
 #' @importFrom tidyr gather_
@@ -17,9 +17,9 @@ aggregate_time <- function(cosdata,
                            opts = coscos::viscos_options()) {
   if (class(key) != "character")
     stop("key must be a chracter. It currently is:" %&&% class(key))
-  le_data <- coscos::cook_cosdata(cosdata)
-  le_aggr <- coscos::clump(le_data, key = key, .funs = .funs)
-  le_aggr[opts$name_COSposix] <- le_data[[opts$name_COSposix]] %>%
+  cos_data <- coscos::cook_cosdata(cosdata)
+  le_aggr <- coscos::clump(cos_data, key = key, .funs = .funs)
+  le_aggr[opts$name_COSposix] <- cos_data[[opts$name_COSposix]] %>%
     coscos::clump_posix(.,key = key)
   le_names <- names(le_aggr)
   # melt the data in a tidy format:

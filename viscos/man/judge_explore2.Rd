@@ -23,7 +23,7 @@ judge_explore2(d1, d2 = NULL, of_metrics = list(nse = coscos::of_nse,
 Runs a Shiny Gadget which can be used to interactively explore two 
 `cos_data` objects in terms of their respective objective functions.
 
-Runs a Shiny Gadget which can be used to interactively explore two 
+Runs a Shiny Gadget which can be used to interactively explore two
 `cos_data` objects in terms of their respective objective functions.
 
 Runs a Shiny Gadget which can be used to interactively explore two 

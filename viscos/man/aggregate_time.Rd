@@ -7,7 +7,7 @@
 aggregate_time(cosdata, key = "mm", .funs = base::mean, opts = coscos::viscos_options())
 }
 \arguments{
-\item{cosdata}{Data-Format used within visCOS. A longer definition and explenation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).}
+\item{cosdata}{Data-Format used within visCOS. A longer definition and explanation is provided in the introduction vignette; and the \code{coscos} function \pkg{cook_cosdata} provides a pre-set function to transform and check if your data is in the correct format).}
 }
 \description{
 Aggregates \code{cosdata}) according to the

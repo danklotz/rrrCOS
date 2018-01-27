@@ -4,7 +4,7 @@
 \alias{judge_window}
 \title{Objectie Function Windowing}
 \usage{
-judge_window(cos_data, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_kge, 
+judge_window(cosdata, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_kge, 
     pbias = coscos::of_pbias, corr = coscos::of_cor), window_sizes = c(20L, 500L), 
     na_filling = FALSE, opts = coscos::viscos_options())
 }
