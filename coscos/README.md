@@ -1,8 +1,5 @@
-# coscos
 
-**csocos** is an R-package which inclused a collection of useful primitives (basic funcitons) for wokring hydrological time series data from the rainfall-runoff model COSERO. It is the sister package of **visCOS**, which collects graphing routines (mostly by using `ggplot2` and `dygraphs`). 
+![logo](coscos_logo.jpg)
 
-**Authors:** Daniel Klotz
-**Maintainer:** Daniel Klotz ([danklotz](https://github.com/danklotz))
-
+**coscos** is an R-package that to collect useful primitives and basic functions for working hydrological (time series) data from the rainfall-runoff model *COSERO*. It is the sister package of **visCOS** (which collects plotting functions, and is mostly build upon `ggplot2` and `dygraphs`). 
 

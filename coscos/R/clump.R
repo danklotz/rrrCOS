@@ -11,7 +11,6 @@
 #' @family cosdata manipulators
 #' 
 #' @importFrom dplyr group_by_ summarise_at
-#' @importFrom tibble as_tibble
 #' @export
 clump <- function(cosdata, 
                   key = "mm", 
@@ -30,7 +29,7 @@ clump <- function(cosdata,
     grepl(opts$name_o %|% opts$name_s, le_names, ignore.case = TRUE)]
   le_result <- dplyr::group_by_(le_data, .dots = key) %>% 
     dplyr::summarise_at(., .vars = data_names, .funs = .funs)
-  return(  as_tibble(le_result)  )
+  return(  build_tibble(le_result)  )
 }
 
 # other aggregators -------------------------------------------------------

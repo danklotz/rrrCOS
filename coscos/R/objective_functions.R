@@ -21,8 +21,8 @@ NULL
 #' @export
 of_nse <- function(o, s, na.rm = TRUE) {
   # pre sets:
-  o <- as_tibble(o)
-  s <- as_tibble(s)
+  o <- build_tibble(o)
+  s <- build_tibble(s)
   rows <- nrow(s) %>% as.integer(.)
   cols <- ncol(s) %>% as.integer(.)
   if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -42,8 +42,8 @@ of_nse <- function(o, s, na.rm = TRUE) {
 #' @export
 of_kge <- function(o, s, na.rm = TRUE) {
   # pre sets:
-  o <- as_tibble(o)
-  s <- as_tibble(s)
+  o <- build_tibble(o)
+  s <- build_tibble(s)
   rows <- nrow(s) %>% as.integer(.)
   cols <- ncol(s) %>% as.integer(.)
   if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -64,8 +64,8 @@ of_kge <- function(o, s, na.rm = TRUE) {
 #' @export
 of_bias <- function(o, s, na.rm = TRUE) {
   # pre sets:
-  o <- as_tibble(o)
-  s <- as_tibble(s)
+  o <- build_tibble(o)
+  s <- build_tibble(s)
   rows <- nrow(s) %>% as.integer(.)
   cols <- ncol(s) %>% as.integer(.)
   if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -84,8 +84,8 @@ of_bias <- function(o, s, na.rm = TRUE) {
 #' @export
 of_pbias <- function(o, s, na.rm = TRUE) {
   # pre sets:
-  o <- as_tibble(o)
-  s <- as_tibble(s)
+  o <- build_tibble(o)
+  s <- build_tibble(s)
   rows <- nrow(s) %>% as.integer(.)
   cols <- ncol(s) %>% as.integer(.)
   if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -104,8 +104,8 @@ of_pbias <- function(o, s, na.rm = TRUE) {
 #' @export
 of_cor <- function(o, s) {
   # pre sets:
-  o <- as_tibble(o)
-  s <- as_tibble(s)
+  o <- build_tibble(o)
+  s <- build_tibble(s)
   rows <- nrow(s) %>% as.integer(.)
   cols <- ncol(s) %>% as.integer(.)
   if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")
@@ -122,8 +122,8 @@ of_cor <- function(o, s) {
 #' @export
 of_mse <- function(o, s, na.rm = TRUE) {
   # pre sets:
-  o <- as_tibble(o)
-  s <- as_tibble(s)
+  o <- build_tibble(o)
+  s <- build_tibble(s)
   rows <- nrow(s) %>% as.integer(.)
   cols <- ncol(s) %>% as.integer(.)
   if(rows != nrow(o)) stop("o and s must have the same amount of rows (data points)")

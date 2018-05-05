@@ -89,8 +89,8 @@
 #' @import tibble
 #' @export 
 build_tibble <- function(data) {
-  if ( !is_tibble(data) ) {
-    data <- as_tibble(data)
+  if ( !tibble::is_tibble(data) ) {
+    data <- tibble::as_tibble(data)
   } 
   return(data)
 }

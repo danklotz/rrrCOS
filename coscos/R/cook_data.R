@@ -25,7 +25,7 @@ cook_cosdata <- function(raw_data,
       remove_junk(.) %>% 
       cook_dates(.) %>% 
       mark_periods(.) %>% 
-      as_tibble(.)  
+      build_tibble(.)  
     check_cosdata(le_cos) # checks 
     # make pseudo class & return: 
     class(le_cos) <- append(class(le_cos),"cosdata")

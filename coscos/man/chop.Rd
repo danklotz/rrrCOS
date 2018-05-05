@@ -19,11 +19,14 @@ identifiers (\code{keys}). The result is a subdivided \code{list}
 which containts the different parts (i.e. rows) of the original data.
 }
 \examples{
-separate the data with regard to the months: 
-chopped <- chop(cosdata, key = c("mm"))
+# separate the data with regard to the months: 
+cosdata <- viscos_example()
+chopped <- chop(cosdata, keys = c("mm"))
+print(head(chopped$slice1_mm))
 
-separate the data with regard to the year and months: 
-chopped <- chop(cosdata, key = c("yyyy","mm"))
+# separate the data with regard to the year and months: 
+chopped <- chop(cosdata, keys = c("yyyy","mm"))
+print(head(chopped$slice1_yyyy_mm))
 
 }
 \seealso{
