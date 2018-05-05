@@ -1,0 +1,63 @@
+---
+title: "Runoff Peaks"
+author: "Daniel Klotz"
+---
+
+```{r setup8, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE, fig.align = 'center')
+```
+
+The function `peack` lets users explore the highest events in
+among the available basins. It provides a list of [ggplot2](http://ggplot2.org/)
+plots, containing an overview plot (`overview`), a scatter plot (`scatter`)
+and detail plots of the individual events (`event_plot`). Instead of
+explaining the properties of each plot in detail it is best to get an intuition
+of the function by looking at some examples.
+
+
+## Examples
+For the examples 10 events are extracted from a runoff example
+```{r, eval = TRUE, purl=FALSE}
+  library(coscos)
+  library(visCOS)
+  cosdata <- viscos_example()
+  peakplots <- peack(cosdata, action = "plots", n_events = 10L)
+
+```
+
+The `peakplots` list does now contain plots for each basin within the
+`cosdata` data.frame:
+```{r, eval = TRUE, purl=FALSE}
+  names(peakplots)
+```
+
+For each basin the a set of plots (`overview`,`scatter`,`event_plot`) are saved
+within a list for each basin. In the following the plots for basin 1 are shown:
+```{r, eval = TRUE, purl=FALSE}
+  names(peakplots$basin0001)
+```
+
+The `overview` plot shows the entire time series of `data1` and `data2` of the
+basin. The found events are marked with black dots. The `overview` plot for
+basin 1 is:
+```{r, eval = TRUE, purl=FALSE}
+  peakplots$basin0001$overview
+```
+
+The `scatter` plot shows the found events within a scatter plot, where  `data1`
+is the x-axis and `data2` on the y-axis. In the following an example for basin 1
+is given.
+```{r, eval = TRUE, purl=FALSE}
+  peakplots$basin0001$scatter
+```
+
+Detail plots for each of the found events are given in form of the `event_plot`
+objects. Here an example:
+```{r, eval = TRUE, purl=FALSE}
+  peakplots$basin0001$event_plot5
+```
+
+
+## References
+- http://stats.stackexchange.com/questions/22974/how-to-find-local-peaks-valleys-in-a-series-of-data (checked 12/2016)
+- http://stats.stackexchange.com/questions/36309/how-do-i-find-peaks-in-a-dataset (checked 12/2016)

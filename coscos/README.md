@@ -1,8 +1,8 @@
-# visCOS
+# coscos
 
-**visCOS** is an R-based visualisation tool for COSEROreg. It will be available soon, please do not use the current version. 
+**csocos** is an R-package which inclused a collection of useful primitives (basic funcitons) for wokring hydrological time series data from the rainfall-runoff model COSERO. It is the sister package of **visCOS**, which collects graphing routines (mostly by using `ggplot2` and `dygraphs`). 
 
-**Authors:** Daniel Klotz, Christoph Schürz, Johannes Wesemann, Mathew Herrnegger  
+**Authors:** Daniel Klotz
 **Maintainer:** Daniel Klotz ([danklotz](https://github.com/danklotz))
-***
+
 

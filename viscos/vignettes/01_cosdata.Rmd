@@ -1,0 +1,124 @@
+---
+title: "cosdata"
+author: "Daniel Klotz"
+---
+
+For visCOS raw-data is data directly taken from COSERO. In general, raw-data
+can have many forms. The focus of visCOS are time series of observations, $o$,
+and model simulations, $s$. It assumes that the data is already loaded in to R.
+
+R has many options to read data. Most file-formats can be accessed with the
+native `read.` functions (for an example enter `?read.table` in your R-terminal).
+However, for larger files we recommend the read functionality of the
+`data.table` package. In our tests it was fastest and most flexible choice.
+Lastly, we recommend `readr` package for well structured and large data.
+
+After the data is read into R it needs to be transformed (*cooked*) into a
+rigidly defined format, which we call **cosdata**. Admittedly, the format has
+some redundancies, but this is compensated by the many options for operating
+on the data. Furthermore, it is a good "middle ground"
+between the output of COSERO and the formats used within the R ecosystem.
+
+Note: All cosdata formatted data can be used for further exploratory analysis
+with visCOS.
+
+**NOW WE NEED TO EXPLAIN COSDATA!**
+
+Snipptes:
+
+
+Currently visCOSonly allows to compare between *numbered catchments*! The
+data **must** include an integer number at the end of its name, e.g.
+`QObs_001` and `QSim_001`).
+
+Additionally, `cosdata` data.frame needs to have two different definitions for
+the date of a given row (see: [Introduction](introduction.html)). One is based
+on an old way to write dates out in fortran code. In that case each column
+represents a time-resolution. In concrete, the following columns are used:
+
+-  *yyyy* - year,
+- *mm* - month,
+- *hh* - hour,
+- *min* - minute.
+
+The other format is a more modern way to define time information. That is,
+the `POSIXct` format (see: [link](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html)).
+This format is a standard for `R` and has many usages (e.g. transforming your
+data frame into a time series).
+
+visCOS can differentiate seasonal information on a monthly
+resolution. The in- and out-of-period markings are stored in a separate column
+(defined by `viscos_options("name_COSperiod")`). Here, each season is defined
+by an number (integer), which starts 1 and is raised for each new season. A 0
+indicates the out-of-period rows.
+
+If needed, the column-names of the cosdata can adapted by using the
+`viscos_options` function from `coscos` (alternatively one might prefer to set
+the column-name the `data.frame` accordingly). Calling the function
+`viscos_options()` will return a list with the available options. The available
+options are as following:
+```{r, purl=FALSE, eval=TRUE}
+   # showing the options:
+   library(coscos)
+   library(magrittr)
+   viscos_options() %>% unlist(.)
+```
+
+An option can be changed by providing the new option-value as functional
+argument of the option. Here is an example for changing the $o$ column color:
+```{r, purl=FALSE, eval=TRUE}
+   viscos_options(color_o = "dodgerblue")
+   viscos_options( ) %>% unlist(.)
+```
+
+The `coscos` package also provides a function to get some exemplary data to use
+in visCOS. Throughout this guide we will use it to demonstrate the different
+functionalities of visCOS. The data can be loaded with the function
+`viscos_example`, e.g.:
+```{r, purl=FALSE, eval=TRUE, message=3:5}
+  options(width=80)
+  require(coscos)
+  #
+  raw_data_example <- viscos_example( )
+  head(raw_data_example)
+```
+
+One can see that the example data still has some columns that are not needed for
+further analysis, i.e. the columns `QOSI_0001` and `QOSI_0002`. Furthermore,
+the `posixdate` and the `period` columns are still missing in the data. Again,
+the `coscos` provides a streamlined function, called `cook_cosdata` to get rid
+of the non-needed columns, complete the date columns and add the `period`
+column with pre-specified settings. With the raw-data example from before, the
+finished cosdata might then look as following:
+```{r, purl=FALSE, eval=TRUE, message=3:5}
+  raw_data_example %>%
+    cook_cosdata(.) %>%
+    head(.)
+```
+
+The `cook_cosdata` function can be very useful. If you are not sure that your
+data has the right format yet, just try to use `cook_cosdata` on it. The function
+is used at the start of almost all visCOS functions. Thus, it is very likely
+that your data is fine if `cook_cosdata` works on it.
+
+## Examples plots from cosdata
+It is already possible to do a lot with just the cosdata. In the following are
+some examples:
+```{r, purl=FALSE, eval=TRUE}
+  library(ggplot2)
+  raw_data_example %>%
+    cook_cosdata(.) %>%
+    ggplot(.) +
+      geom_line(aes(x = posixdate, y = QOBS_0002),
+                color = viscos_options("color_o")) +
+       geom_line(aes(x = posixdate, y = QSIM_0002),
+                color = viscos_options("color_s"))   
+```
+
+```{r, purl=FALSE, eval=TRUE}
+  library(ggplot2)
+  raw_data_example %>%
+    cook_cosdata(.) %>%
+    ggplot(.) +
+      geom_point(aes(x = QOBS_0001, y = QOBS_0002))  
+```

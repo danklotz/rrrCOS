@@ -1,0 +1,36 @@
+---
+title: "Interactive Judgment"
+author: "Daniel Klotz"
+---
+
+```{r setup3, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+This section defines the code of a [shiny gadget](http://shiny.rstudio.com/). It enables the interactive exploration of (hydro-) graphs for the different basins.
+The gadget shows always the corresponding objective function for the selected graph. Furthermore, one can get the selected data by clicking on "done" at the end of a session. The following examples provide a good overview of what the function can do.
+
+## Example
+This chapter gives examples of `judge_explore`. For the pre-requirements take a look at the [introduction](LP-Introduction).
+Running the `judge_explore` function without any options opens a shiny gadget in the viewer:
+
+```{r, eval=TRUE, echo=FALSE}
+if (knitr:::is_latex_output()) {
+  knitr::include_graphics('figures/judge_explore.jpg')
+} else {
+  knitr::include_graphics("figures/judge_explore.gif")
+}
+```
+
+Information on the *objective functions* can be found[here](ex-OF_explanation.html). 
+
+Users can select different basins via the selection box (*# basins:*) on the
+top-left and interactively zoom and move the graph in the center by clicking
+on it or moving the date switches below the graph. While doing so the
+objective functions (presented in the table below) are re-calculated for the
+chosen time window.
+
+```{r, purl=FALSE, eval = FALSE}
+viscos_options(color_o = "green", color_s = "red")
+judge(runoff_example,explore)
+```
