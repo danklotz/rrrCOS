@@ -145,7 +145,20 @@ forms. Currently the following forms (strings) can be used:</p><ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># tidy: </span>
-<span class='fu'>forge</span>( <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_example'>viscos_example</a></span>() )</div><div class='output co'>#&gt; <span class='error'>Error in gather_(., key_col = c("key"), value_col = c("value"), gather_cols = c(le_q_names)): konnte Funktion "gather_" nicht finden</span></div><div class='input'>
+<span class='fu'>forge</span>( <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_example'>viscos_example</a></span>() )</div><div class='output co'>#&gt; # A tibble: 105,216 x 4
+#&gt;    posixdate           period key       value
+#&gt;    &lt;dttm&gt;               &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt;
+#&gt;  1 2007-01-01 00:00:00      0 QOBS_0001  2.98
+#&gt;  2 2007-01-01 01:00:00      0 QOBS_0001  2.89
+#&gt;  3 2007-01-01 02:00:00      0 QOBS_0001  2.64
+#&gt;  4 2007-01-01 03:00:00      0 QOBS_0001  2.51
+#&gt;  5 2007-01-01 04:00:00      0 QOBS_0001  2.42
+#&gt;  6 2007-01-01 05:00:00      0 QOBS_0001  2.34
+#&gt;  7 2007-01-01 06:00:00      0 QOBS_0001  2.32
+#&gt;  8 2007-01-01 07:00:00      0 QOBS_0001  2.31
+#&gt;  9 2007-01-01 08:00:00      0 QOBS_0001  2.27
+#&gt; 10 2007-01-01 09:00:00      0 QOBS_0001  2.25
+#&gt; # ... with 105,206 more rows</div><div class='input'>
 <span class='co'># only s-data columns:</span>
 <span class='fu'>forge</span>( <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_example'>viscos_example</a></span>(), <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"s_only"</span> )</div><div class='output co'>#&gt; # A tibble: 26,304 x 2
 #&gt;    QSIM_0001 QSIM_0002

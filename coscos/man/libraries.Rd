@@ -23,14 +23,14 @@ that multiple packages can be loaded with a signle one function call.
 \examples{
 # loading can be done by string or by directly insertin an expression: 
 libraries(xts)
-libraries(shin)
+libraries(shiny)
 
 # load multiple libraries: 
 libraries("xts","shiny")
 libraries(xts, shiny)
 
 # mixed arguments are also possible:
-libraries(magrittr,"shiny","png",jpg) 
+libraries(magrittr,"shiny","png",stats) 
 
 }
 \seealso{

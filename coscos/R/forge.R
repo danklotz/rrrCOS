@@ -36,7 +36,7 @@
 #' forge( coscos::viscos_example(), form = "s_only" )
 #' 
 #' @importFrom dplyr select starts_with
-#' @importFrom tidyr gather
+#' @importFrom tidyr gather_ gather
 #' @import pasta
 #' @export
 forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
@@ -59,7 +59,7 @@ forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
                           opts$name_COShour,
                           opts$name_COSmin)
     le_output <- dplyr::select_(le_data, .dots = "-" %&% columns_2_remove) %>%
-      gather_(.,
+      tidyr::gather_(.,
               key_col = c("key"),
               value_col = c("value"),
               gather_cols = c(le_q_names)

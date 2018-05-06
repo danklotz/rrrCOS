@@ -7,6 +7,5 @@
 map2_cosdata(cosdata, .f, mapper = purrr::map2)
 }
 \description{
-A pre set \code{map} function for \code{cosdata}. Simultanious application of the 
-function \code{.f} to all \eqn{o} and \eqn{s} columns.
+A preset \code{fold} function that wraps around the \link[purrr]{map2}) function from \code{purrr} package, so that the provided function \code{.f} is applied in pairwise order to all \eqn{o} and \eqn{s} columns. The \link[purrr]{map2} function is not fixed; other mapping functions can be used by changing the \code{mapper}.
 }

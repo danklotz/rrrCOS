@@ -42,14 +42,14 @@ regex1_all_cosdata <- function(opts) {
 #' @examples
 #' # loading can be done by string or by directly insertin an expression: 
 #' libraries(xts)
-#' libraries(shin)
+#' libraries(shiny)
 #' 
 #' # load multiple libraries: 
 #' libraries("xts","shiny")
 #' libraries(xts, shiny)
 #' 
 #' # mixed arguments are also possible:
-#' libraries(magrittr,"shiny","png",jpg) 
+#' libraries(magrittr,"shiny","png",stats) 
 #' 
 #' @return Returns a logical vector that informas if the given package could be 
 #'            loaded
