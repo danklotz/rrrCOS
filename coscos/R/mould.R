@@ -1,18 +1,18 @@
-#' Forge cosdata
+#' mould cosdata
 #' 
 #' @description 
-#' \code{forge} allows to filter, tidy or re-arrange \code{cosdata} into 
+#' \code{mould} allows to filter, tidy or re-arrange \code{cosdata} into 
 #' new formats. 
 #' @author Daniel Klotz
 #' 
 #' @param cosdata The strictly defined data format (\code{cosdata}) used 
 #'      within \pkg{viscos} (see: \code{\link{cook_cosdata}})
-#' @param form A string that defines into which form the \code{cosdata} is "forged"
+#' @param form A string that defines into which form the \code{cosdata} is "mouldd"
 #'      (see: 'details')
 #' @param opts The options for \pkg{viscos} (see: \code{\link{viscos_options}}) 
 #' 
 #' @details
-#' The forge function transforms  \code{cosdata} into a number of different 
+#' The mould function transforms  \code{cosdata} into a number of different 
 #' forms. Currently the following forms (strings) can be used:
 #' \itemize{
 #'   \item \emph{tidy} ... Transfroms the \code{cosdata} into a tidy form.
@@ -30,16 +30,16 @@
 #' 
 #' @examples
 #' # tidy: 
-#' forge( coscos::viscos_example() )
-#'    
+#' mould( coscos::viscos_example() )
+#'
 #' # only s-data columns:
-#' forge( coscos::viscos_example(), form = "s_only" )
+#' mould( coscos::viscos_example(), form = "s_only" )
 #' 
 #' @importFrom dplyr select starts_with
 #' @importFrom tidyr gather_ gather
 #' @import pasta
 #' @export
-forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
+mould <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
   # pre sets:
   if (!is.character(form)) 
     stop("form must be a character!")
@@ -119,7 +119,7 @@ forge <- function(cosdata, form = "tidy", opts = coscos::viscos_options()) {
                         opts$name_COSperiod)
     le_output <- dplyr::select_(le_data, .dots = columns_2_keep)
   } else {
-    stop("Sorry. `form = " %&&% form %&%"` does not exist! See: ?forge")
+    stop("Sorry. `form = " %&&% form %&%"` does not exist! See: ?mould")
   }
   return(le_output)
 }

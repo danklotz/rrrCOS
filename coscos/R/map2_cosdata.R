@@ -15,8 +15,8 @@ map2_cosdata <- function(cosdata,
   if (class(mapper) != "function") stop("mapper needs to be of class `function`!")
   le_data <- coscos::cook_cosdata(cosdata)
   # 
-  le_o <- coscos::forge(le_data, form = "o_only")
-  le_s <- coscos::forge(le_data, form = "s_only")
+  le_o <- coscos::mold(le_data, form = "o_only")
+  le_s <- coscos::mold(le_data, form = "s_only")
   le_fun_names <- paste(lazyeval::expr_text(.f), collapse = "_")
   le_result <- mapper(le_o, le_s, .f) %>% 
     as.list(.) %>% 

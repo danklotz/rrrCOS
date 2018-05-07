@@ -7,24 +7,20 @@
 chop(cosdata, keys)
 }
 \arguments{
-\item{cosdata}{The strictly defined data format (\code{cosdata}) used 
-within \pkg{viscos} (see: \code{\link{cook_cosdata}}).}
+\item{cosdata}{The \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).}
 
-\item{keys}{A \code{string} of one or more column-names that designate 
-the index-columns for the data separation.}
+\item{keys}{A \code{string}, indicating one or more column-names for data separation.}
 }
 \description{
-\code{chop} divides \code{cosdata} into according to chosen column 
-identifiers (\code{keys}). The result is a subdivided \code{list}  
-which containts the different parts (i.e. rows) of the original data.
+A slicing function, which divides the \emph{cosdata} \code{tibble} into a list of \code{tibbles}. The slicing is done according to one or multiple chosen identifiers columns (referred to as \code{keys}). The envisioned use case is to apply it to subdivide the \emph{cosdata} \code{tibble} according to time dimensiona (e.g. by years). The result is a \code{list} that containts the different parts of the original data.
 }
 \examples{
-# separate the data with regard to the months: 
+# separate the data with regard to months: 
 cosdata <- viscos_example()
 chopped <- chop(cosdata, keys = c("mm"))
 print(head(chopped$slice1_mm))
 
-# separate the data with regard to the year and months: 
+# separate the data with regard to years and months: 
 chopped <- chop(cosdata, keys = c("yyyy","mm"))
 print(head(chopped$slice1_yyyy_mm))
 
@@ -33,7 +29,7 @@ print(head(chopped$slice1_yyyy_mm))
 \code{\link{cook_cosdata}}
 
 Other cosdata manipulators: \code{\link{clump}},
-  \code{\link{forge}}
+  \code{\link{mould}}
 }
 \author{
 Daniel Klotz

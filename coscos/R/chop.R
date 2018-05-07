@@ -1,23 +1,19 @@
 #' Chop cosdata 
 #' 
 #' @description 
-#' \code{chop} divides \code{cosdata} into according to chosen column 
-#' identifiers (\code{keys}). The result is a subdivided \code{list}  
-#' which containts the different parts (i.e. rows) of the original data.
+#' A slicing function, which divides the \emph{cosdata} \code{tibble} into a list of \code{tibbles}. The slicing is done according to one or multiple chosen identifiers columns (referred to as \code{keys}). The envisioned use case is to apply it to subdivide the \emph{cosdata} \code{tibble} according to time dimensiona (e.g. by years). The result is a \code{list} that containts the different parts of the original data. 
 #' @author Daniel Klotz
 #'
-#' @param cosdata The strictly defined data format (\code{cosdata}) used 
-#'      within \pkg{viscos} (see: \code{\link{cook_cosdata}}).
-#' @param keys A \code{string} of one or more column-names that designate 
-#'      the index-columns for the data separation.
+#' @param cosdata The \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).
+#' @param keys A \code{string}, indicating one or more column-names for data separation.
 #' 
 #' @examples 
-#' # separate the data with regard to the months: 
+#' # separate the data with regard to months: 
 #' cosdata <- viscos_example()
 #' chopped <- chop(cosdata, keys = c("mm"))
 #' print(head(chopped$slice1_mm))
 #' 
-#' # separate the data with regard to the year and months: 
+#' # separate the data with regard to years and months: 
 #' chopped <- chop(cosdata, keys = c("yyyy","mm"))
 #' print(head(chopped$slice1_yyyy_mm))
 #' 
@@ -25,7 +21,7 @@
 #' @family cosdata manipulators
 #'
 #' @import pasta
-#' @importFrom purrr map_dfc
+#' @importFrom purrr map2_dfc
 #' @export
 chop <- function(cosdata, keys) {
   if(missing(keys))
@@ -48,7 +44,10 @@ chop <- function(cosdata, keys) {
     chop_symbols,
     1, 
     function(x_symbol) {
-      c_mask <- map2_dfc(x_symbol,keys, function(xx, key) le_data[key]==xx) %>% 
+      c_mask <- purrr::map2_dfc(x_symbol,
+                                keys, 
+                                function(xx, key) le_data[key]==xx
+                                ) %>% 
         apply(., 1, all)
       le_data[c_mask, ]
       }

@@ -1,14 +1,10 @@
 #' Objective Functions
 #'
-#' Objective Functions (Performance metrics) play an important role for 
-#' hydrological model calibraiton. Therefore, `coscos` provides a set of innate
-#' objective functions that can be used for model evaluation. The currently 
-#' implemented functions are executed fortran code and the handling is inspired
-#' by the `hydroGOF` package. 
+#' Objective Functions (aka \emph{costs} or \emph{performance metrics}) play an important role in hydrology. The following objective functions are the ones mostly used while working with \strong{COSERO}: 
 #'
 #' @useDynLib coscos
-#' @param o The reference data or observations (o_data)
-#' @param s The created data or the simulations (s_data)
+#' @param o The observations or reference data (each row a timesetp and each column a catchment)
+#' @param s The simulation data (each row a timesetp and each column a catchment)
 #' @name objective_functions
 NULL
 
@@ -35,6 +31,7 @@ of_nse <- function(o, s, na.rm = TRUE) {
   return(of_nse)
 }
 
+
 # --------------------------------------------------------------------------
 #' KGE 
 #'
@@ -56,6 +53,8 @@ of_kge <- function(o, s, na.rm = TRUE) {
     set_names(paste("kge", 1:cols, sep = ""))
   return(of_kge)
 }
+
+
 # --------------------------------------------------------------------------
 #' Percentage Bias
 #'
@@ -76,6 +75,8 @@ of_bias <- function(o, s, na.rm = TRUE) {
     set_names(paste("bias", 1:cols, sep = ""))
   return(of_pbias)
 }
+
+
 # --------------------------------------------------------------------------
 #' Percentage Bias
 #'
@@ -96,6 +97,8 @@ of_pbias <- function(o, s, na.rm = TRUE) {
     set_names(paste("pbias", 1:cols, sep = ""))
   return(of_pbias)
 }
+
+
 # --------------------------------------------------------------------------
 #' Correlation
 #'
@@ -113,6 +116,7 @@ of_cor <- function(o, s) {
   # computation:
   stats::cor(o, s) %>% diag(.)
 }
+
 
 # --------------------------------------------------------------------------
 #' Mean Squared Error
@@ -134,6 +138,8 @@ of_mse <- function(o, s, na.rm = TRUE) {
     set_names(paste("mse", 1:cols, sep = ""))
   return(of_mse)
 }
+
+
 # --------------------------------------------------------------------------
 #' Root Mean Squared Error
 #'
@@ -147,6 +153,7 @@ of_rmse <- function(o, s, na.rm = TRUE) {
     set_names(paste("rmse", 1:cols, sep = "")) %>%
     return(.)
 }
+
 
 # --------------------------------------------------------------------------
 #' Inverted Nash-Sutcliffe Efficiency

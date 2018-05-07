@@ -1,11 +1,20 @@
 #' Aggregate cosdata by keys 
 #' 
 #' @description 
-#' \code{clump} provides a wrapper around \code{dplyr::group_by} and 
-#' \code{dplyr::summarise_at} that allows for a row-wise aggregation of 
-#' \code{cosdata} by a set of chosen colums (\code{keys})
+#' Aggregate function, which wraps the \code{dplyr} functions \code{group_by} and \code{summarise_at} so that row-wise aggregation of the \emph{cosdata} \code{tibble} can be made. The operation is defined by a set of functions (given as a \code{list} to the \code{.funs} variable) and the \code{keys} string. The latter speficies the columns, according to whose unique entries the row-wise aggregationis done.
 #' @author Daniel Klotz
 #' 
+#' @return A aggregated \code{tibble} 
+#' 
+#' @param cosdata The \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).
+#' @param keys A \code{string}, indicating one or more column-names for data aggregation.
+#' 
+#' @examples 
+#' # aggregate according to month
+#' clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
+#' 
+#' # aggregate according to year and month
+#' clump(cosdata, key = c("yyyy","mm"), .funs = mean, opts = coscos::viscos_options())
 #' 
 #' @seealso \code{\link{cook_cosdata}}
 #' @family cosdata manipulators
@@ -13,21 +22,21 @@
 #' @importFrom dplyr group_by_ summarise_at
 #' @export
 clump <- function(cosdata, 
-                  key = "mm", 
+                  keys = "mm", 
                   .funs = mean, 
                   opts = coscos::viscos_options()) {
-  if(missing(key))
-    stop(simpleError("Error: Key column must be defined!"))
+  if(missing(keys))
+    stop(simpleError("Error: keys column must be defined!"))
   le_data <- cook_cosdata(cosdata)
   le_names <- names(le_data) 
   le_names %>% 
-    grepl(paste(key, collapse = "|"), ., ignore.case = TRUE) %>% 
+    grepl(paste(keys, collapse = "|"), ., ignore.case = TRUE) %>% 
     any(.) %>% 
-    if(!.) stop("The chosen key (" %&% key %&% ") is not in `cosdata`")
+    if(!.) stop("The chosen keys (" %&% keys %&% ") is not in `cosdata`")
   # main: =================================================================
   data_names <- le_names[
     grepl(opts$name_o %|% opts$name_s, le_names, ignore.case = TRUE)]
-  le_result <- dplyr::group_by_(le_data, .dots = key) %>% 
+  le_result <- dplyr::group_by_(le_data, .dots = keys) %>% 
     dplyr::summarise_at(., .vars = data_names, .funs = .funs)
   return(  build_tibble(le_result)  )
 }

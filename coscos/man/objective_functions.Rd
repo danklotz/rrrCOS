@@ -29,16 +29,12 @@ of_rmse(o, s, na.rm = TRUE)
 of_inse(o, s, na.rm = TRUE)
 }
 \arguments{
-\item{o}{The reference data or observations (o_data)}
+\item{o}{The observations or reference data (each row a timesetp and each column a catchment)}
 
-\item{s}{The created data or the simulations (s_data)}
+\item{s}{The simulation data (each row a timesetp and each column a catchment)}
 }
 \description{
-Objective Functions (Performance metrics) play an important role for 
-hydrological model calibraiton. Therefore, `coscos` provides a set of innate
-objective functions that can be used for model evaluation. The currently 
-implemented functions are executed fortran code and the handling is inspired
-by the `hydroGOF` package.
+Objective Functions (aka \emph{costs} or \emph{performance metrics}) play an important role in hydrology. The following objective functions are the ones mostly used while working with \strong{COSERO}:
 
 Nash-Sutcliffe Efficiency
 

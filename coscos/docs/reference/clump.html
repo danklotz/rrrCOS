@@ -30,9 +30,7 @@
 
 <meta property="og:title" content="Aggregate cosdata by keys — clump" />
 
-<meta property="og:description" content="clump provides a wrapper around dplyr::group_by and 
-dplyr::summarise_at that allows for a row-wise aggregation of 
-cosdata by a set of chosen colums (keys)" />
+<meta property="og:description" content="Aggregatuib function, which basically wraps the dplyr functions group_by and summarise_at so that row-wise aggregation of the cosdata tibble can be made. The operation is defined by a set of functions (given as a list to the .funs variable) and the keys string. The latter speficies the columns, that gives the criterium for the row-wise aggregation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -98,28 +96,82 @@ cosdata by a set of chosen colums (keys)" />
 
     <div class="ref-description">
     
-    <p><code>clump</code> provides a wrapper around <code><a href='http://dplyr.tidyverse.org/reference/group_by.html'>dplyr::group_by</a></code> and 
-<code><a href='http://dplyr.tidyverse.org/reference/summarise_all.html'>dplyr::summarise_at</a></code> that allows for a row-wise aggregation of 
-<code>cosdata</code> by a set of chosen colums (<code>keys</code>)</p>
+    <p>Aggregatuib function, which basically wraps the <code>dplyr</code> functions <code>group_by</code> and <code>summarise_at</code> so that row-wise aggregation of the <em>cosdata</em> <code>tibble</code> can be made. The operation is defined by a set of functions (given as a <code>list</code> to the <code>.funs</code> variable) and the <code>keys</code> string. The latter speficies the columns, that gives the criterium for the row-wise aggregation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"mm"</span>, <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</pre>
-        
+    <pre class="usage"><span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>keys</span> <span class='kw'>=</span> <span class='st'>"mm"</span>, <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>cosdata</th>
+      <td><p>The <em>cosdata</em> <code>tibble</code> (see: <code><a href='cook_cosdata.html'>cook_cosdata</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>keys</th>
+      <td><p>A <code>string</code>, indicating one or more column-names for data aggregation.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A aggregated <code>tibble</code></p>
+    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='cook_cosdata.html'>cook_cosdata</a></code></p>
 <p>Other cosdata manipulators: <code><a href='chop.html'>chop</a></code>,
-  <code><a href='forge.html'>forge</a></code></p></div>
+  <code><a href='mould.html'>mould</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># aggregate according to month</span>
+<span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"mm"</span>, <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</div><div class='output co'>#&gt; # A tibble: 12 x 5
+#&gt;       mm QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002
+#&gt;    &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1     1      3.87      3.38      5.06      4.56
+#&gt;  2     2      3.07      2.91      4.11      3.72
+#&gt;  3     3      3.52      3.26      7.73      6.45
+#&gt;  4     4      7.94     10.2      18.0      14.7 
+#&gt;  5     5     16.1      19.4      11.2      12.3 
+#&gt;  6     6     15.4      17.3      11.6      11.9 
+#&gt;  7     7     13.3      11.7      10.8      11.7 
+#&gt;  8     8      8.46      7.93      7.62      7.40
+#&gt;  9     9     10.3       9.00     10.9       9.90
+#&gt; 10    10      6.98      6.20      6.36      5.02
+#&gt; 11    11      5.51      5.02      6.48      5.52
+#&gt; 12    12      4.81      3.61      6.18      4.36</div><div class='input'>
+<span class='co'># aggregate according to year and month</span>
+<span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"yyyy"</span>,<span class='st'>"mm"</span>), <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</div><div class='output co'>#&gt; # A tibble: 36 x 6
+#&gt; # Groups:   yyyy [?]
+#&gt;     yyyy    mm QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002
+#&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1  2007     1      3.55      4.05      6.08      6.61
+#&gt;  2  2007     2      2.99      3.03      3.95      4.17
+#&gt;  3  2007     3      3.25      3.94      9.05      6.97
+#&gt;  4  2007     4      8.06     11.8       8.72      8.31
+#&gt;  5  2007     5     11.6      12.5       7.21      8.68
+#&gt;  6  2007     6     10.7      13.0       4.14      8.73
+#&gt;  7  2007     7     14.3      12.1       3.44      5.54
+#&gt;  8  2007     8      7.24      7.13      3.15      4.55
+#&gt;  9  2007     9     13.6      10.4      19.1      17.5 
+#&gt; 10  2007    10      8.13      5.83      7.13      5.32
+#&gt; # ... with 26 more rows</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

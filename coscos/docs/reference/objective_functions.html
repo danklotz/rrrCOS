@@ -30,11 +30,7 @@
 
 <meta property="og:title" content="Objective Functions — objective_functions" />
 
-<meta property="og:description" content="Objective Functions (Performance metrics) play an important role for 
-hydrological model calibraiton. Therefore, `coscos` provides a set of innate
-objective functions that can be used for model evaluation. The currently 
-implemented functions are executed fortran code and the handling is inspired
-by the `hydroGOF` package.
+<meta property="og:description" content="Objective Functions (aka costs or performance metrics) play an important role in hydrology. The following objective functions are the ones mostly used while working with COSERO:
 Nash-Sutcliffe Efficiency
 KGE
 Percentage Bias
@@ -108,11 +104,7 @@ Inverted Nash-Sutcliffe Efficiency" />
 
     <div class="ref-description">
     
-    <p>Objective Functions (Performance metrics) play an important role for 
-hydrological model calibraiton. Therefore, `coscos` provides a set of innate
-objective functions that can be used for model evaluation. The currently 
-implemented functions are executed fortran code and the handling is inspired
-by the `hydroGOF` package.</p>
+    <p>Objective Functions (aka <em>costs</em> or <em>performance metrics</em>) play an important role in hydrology. The following objective functions are the ones mostly used while working with <strong>COSERO</strong>:</p>
 <p>Nash-Sutcliffe Efficiency</p>
 <p>KGE</p>
 <p>Percentage Bias</p>
@@ -145,11 +137,11 @@ by the `hydroGOF` package.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>The reference data or observations (o_data)</p></td>
+      <td><p>The observations or reference data (each row a timesetp and each column a catchment)</p></td>
     </tr>
     <tr>
       <th>s</th>
-      <td><p>The created data or the simulations (s_data)</p></td>
+      <td><p>The simulation data (each row a timesetp and each column a catchment)</p></td>
     </tr>
     </table>
     

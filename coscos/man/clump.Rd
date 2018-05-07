@@ -4,18 +4,32 @@
 \alias{clump}
 \title{Aggregate cosdata by keys}
 \usage{
-clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
+clump(cosdata, keys = "mm", .funs = mean, opts = coscos::viscos_options())
+}
+\arguments{
+\item{cosdata}{The \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).}
+
+\item{keys}{A \code{string}, indicating one or more column-names for data aggregation.}
+}
+\value{
+A aggregated \code{tibble}
 }
 \description{
-\code{clump} provides a wrapper around \code{dplyr::group_by} and 
-\code{dplyr::summarise_at} that allows for a row-wise aggregation of 
-\code{cosdata} by a set of chosen colums (\code{keys})
+Aggregate function, which wraps the \code{dplyr} functions \code{group_by} and \code{summarise_at} so that row-wise aggregation of the \emph{cosdata} \code{tibble} can be made. The operation is defined by a set of functions (given as a \code{list} to the \code{.funs} variable) and the \code{keys} string. The latter speficies the columns, according to whose unique entries the row-wise aggregationis done.
+}
+\examples{
+# aggregate according to month
+clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
+
+# aggregate according to year and month
+clump(cosdata, key = c("yyyy","mm"), .funs = mean, opts = coscos::viscos_options())
+
 }
 \seealso{
 \code{\link{cook_cosdata}}
 
 Other cosdata manipulators: \code{\link{chop}},
-  \code{\link{forge}}
+  \code{\link{mould}}
 }
 \author{
 Daniel Klotz
