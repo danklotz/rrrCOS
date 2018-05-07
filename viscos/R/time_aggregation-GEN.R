@@ -19,7 +19,7 @@ aggregate_time <- function(cosdata,
     stop("key must be a chracter. It currently is:" %&&% class(key))
   cos_data <- coscos::cook_cosdata(cosdata)
   le_aggr <- coscos::clump(cos_data, key = key, .funs = .funs)
-  le_aggr[opts$name_COSposix] <- cos_data[[opts$name_COSposix]] %>%
+  le_aggr[opts$name_COSposix] <- cos_data[[opts$name_COSposix]] %>%Ï
     coscos::clump_posix(.,key = key)
   le_names <- names(le_aggr)
   # melt the data in a tidy format:

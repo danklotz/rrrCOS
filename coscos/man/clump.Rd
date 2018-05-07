@@ -2,7 +2,7 @@
 % Please edit documentation in R/clump.R
 \name{clump}
 \alias{clump}
-\title{Aggregate or clump by keys}
+\title{Aggregate (or clump) cosdata by keys}
 \usage{
 clump(cosdata, keys = "mm", .funs = mean, opts = coscos::viscos_options())
 }

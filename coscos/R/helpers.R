@@ -129,7 +129,7 @@ regex1_all_cosdata <- function(opts) {
 
 
 # -------------------------------------------------------------------------
-#' Load multiple Libraries
+#' Load multiple libraries
 #' 
 #' @description 
 #' \code{libraries} conveniently wraps the \code{\link{base::library}} function so 

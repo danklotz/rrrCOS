@@ -4,7 +4,7 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # --------------------------------------------------------------------------
 
-#' Runoff Example
+#' Runoff example
 #'
 #' Returns some examplary runoff data (i.e. raw \code{cosdata}) for 
 #' \pkg{viscos}

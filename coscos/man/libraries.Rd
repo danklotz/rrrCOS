@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{libraries}
 \alias{libraries}
-\title{Load multiple Libraries}
+\title{Load multiple libraries}
 \usage{
 libraries(..., verbose = FALSE)
 }

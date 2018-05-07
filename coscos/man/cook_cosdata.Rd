@@ -2,7 +2,7 @@
 % Please edit documentation in R/cook_data.R
 \name{cook_cosdata}
 \alias{cook_cosdata}
-\title{Cook cosdata}
+\title{Generate and check cosdata}
 \usage{
 cook_cosdata(raw_data, opts = coscos::viscos_options())
 }

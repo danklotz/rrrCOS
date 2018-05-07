@@ -2,7 +2,7 @@
 % Please edit documentation in R/cook_data.R
 \name{mark_periods}
 \alias{mark_periods}
-\title{Mark Periods}
+\title{Marking-function for defining periods}
 \usage{
 mark_periods(cosdata, start_month = 10L, end_month = 9L)
 }

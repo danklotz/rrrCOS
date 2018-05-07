@@ -4,7 +4,7 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # --------------------------------------------------------------------------
 
-#' Cook cosdata 
+#' Generate and check cosdata 
 #' 
 #' Generates a \emph{cosdata} \code{tibble} from given raw-data (\code{raw_data}).
 #' 
@@ -188,9 +188,9 @@ implode_cosdate <- function(cosdata) {
 
 
 # -------------------------------------------------------------------------
-#' Remove Leading Zeros
+#' Remove leading zeros from cosdata-names
 #' 
-#' remove leading zeros from the 'cosdata' anmes
+#' Function to remove the leading zeros from the counting part of the \code{cosdata} column-names; e.g. \code{"Qobs_001" -> "qobs_1"}
 #' @export
 remove_leading_zeros <- function(cosdata) {
   # pre: ==================================================================
@@ -227,7 +227,7 @@ remove_leading_zeros <- function(cosdata) {
 
 
 # ---------------------------------------------------------------------------
-#' Mark Periods
+#' Marking-function for defining periods
 #'
 #' Compute/Mark the periods within cosdata. The marking uses a monthly
 #' resolution, which are defined by the integers `start_month` and

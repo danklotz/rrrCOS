@@ -1,4 +1,4 @@
-#' map cosdata 
+#' Map2 for cosdata 
 #' 
 #' A preset \code{fold} function that wraps around the \link[purrr]{map2}) function from \code{purrr} package, so that the provided function \code{.f} is applied in pairwise order to all \eqn{o} and \eqn{s} columns. The \link[purrr]{map2} function is not fixed; other mapping functions can be used by changing the \code{mapper}. 
 #' 

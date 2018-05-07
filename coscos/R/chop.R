@@ -1,4 +1,4 @@
-#' Chop cosdata 
+#' Row-slice functionality for cosdata
 #' 
 #' @description 
 #' A slicing function, which divides the \emph{cosdata} \code{tibble} into a list of \code{tibbles}. The slicing is done according to one or multiple chosen identifiers columns (referred to as \code{keys}). The envisioned use case is to apply it to subdivide the \emph{cosdata} \code{tibble} according to time dimensiona (e.g. by years). The result is a \code{list} that containts the different parts of the original data. 

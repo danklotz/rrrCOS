@@ -2,7 +2,7 @@
 % Please edit documentation in R/chop.R
 \name{chop}
 \alias{chop}
-\title{Chop cosdata}
+\title{Row-slice functionality for cosdata}
 \usage{
 chop(cosdata, keys)
 }

@@ -1,4 +1,4 @@
-#' Objective Functions
+#' Objective functions
 #'
 #' Objective Functions (aka \emph{costs} or \emph{performance metrics}) play an important role in hydrology. The following objective functions are the ones mostly used while working with \strong{COSERO}: 
 #'

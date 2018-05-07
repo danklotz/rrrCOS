@@ -1,4 +1,4 @@
-#' Aggregate or clump by keys 
+#' Aggregate (or clump) cosdata by keys 
 #' 
 #' @description 
 #' An aggregate function, which wraps the \code{dplyr} functions \code{group_by} and \code{summarise_at} for a row-wise summary of the \emph{cosdata} \code{tibble}. It is defined by the set of functions given by \code{.funs} variable, and the \code{keys} string. The latter specifies the columns, according to whose unique entries the row-wise aggregation is conducted.
@@ -49,7 +49,7 @@ clump <- function(cosdata,
 
 # other aggregators -------------------------------------------------------
 
-#' Aggregate posixdate by keys 
+#' Aggregate dates (the posix-colum) by keys 
 #' 
 #' Mirrors the \code{\link{clump}} function, but is used for the \code{posix} column only (see: \code{\link{cook_cosdata}}).
 #' 

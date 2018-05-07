@@ -2,7 +2,7 @@
 % Please edit documentation in R/clump.R
 \name{clump_posix}
 \alias{clump_posix}
-\title{Aggregate posixdate by keys}
+\title{Aggregate dates (the posix-colum) by keys}
 \usage{
 clump_posix(le_posix, keys = "mm")
 }

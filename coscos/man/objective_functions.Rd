@@ -10,7 +10,7 @@
 \alias{of_mse}
 \alias{of_rmse}
 \alias{of_inse}
-\title{Objective Functions}
+\title{Objective functions}
 \usage{
 of_nse(o, s, na.rm = TRUE)
 

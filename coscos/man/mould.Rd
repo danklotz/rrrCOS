@@ -2,7 +2,7 @@
 % Please edit documentation in R/mould.R
 \name{mould}
 \alias{mould}
-\title{mould cosdata}
+\title{Shape-transformations for cosdata}
 \usage{
 mould(cosdata, form = "tidy", opts = coscos::viscos_options())
 }

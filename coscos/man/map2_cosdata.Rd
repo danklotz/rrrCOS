@@ -2,7 +2,7 @@
 % Please edit documentation in R/map2_cosdata.R
 \name{map2_cosdata}
 \alias{map2_cosdata}
-\title{map cosdata}
+\title{Map2 for cosdata}
 \usage{
 map2_cosdata(cosdata, .f, mapper = purrr::map2)
 }

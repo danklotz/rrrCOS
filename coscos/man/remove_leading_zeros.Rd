@@ -2,10 +2,10 @@
 % Please edit documentation in R/cook_data.R
 \name{remove_leading_zeros}
 \alias{remove_leading_zeros}
-\title{Remove Leading Zeros}
+\title{Remove leading zeros from cosdata-names}
 \usage{
 remove_leading_zeros(cosdata)
 }
 \description{
-remove leading zeros from the 'cosdata' anmes
+Function to remove the leading zeros from the counting part of the \code{cosdata} column-names; e.g. \code{"Qobs_001" -> "qobs_1"}
 }

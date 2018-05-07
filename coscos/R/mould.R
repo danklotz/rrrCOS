@@ -1,4 +1,4 @@
-#' mould cosdata
+#' Shape-transformations for cosdata
 #' 
 #' @description 
 #' \code{mould} allows to filter, tidy or re-arrange \code{cosdata} into 

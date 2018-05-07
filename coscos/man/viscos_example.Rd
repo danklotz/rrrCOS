@@ -2,7 +2,7 @@
 % Please edit documentation in R/viscos_options.R
 \name{viscos_example}
 \alias{viscos_example}
-\title{Runoff Example}
+\title{Runoff example}
 \usage{
 viscos_example()
 }
