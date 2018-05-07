@@ -22,3 +22,4 @@ Complete the data-formats of your data.frame `POSIXct` and/or `COSdate`
 \seealso{
 Other cooking functions: \code{\link{cook_cosdata}}
 }
+\keyword{internal}

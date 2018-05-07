@@ -16,3 +16,4 @@ data.frame object without the chunk
 Removes all columns which are not foreseen (see: viscos_options) from
 runoff data
 }
+\keyword{internal}
