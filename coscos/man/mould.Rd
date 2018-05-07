@@ -8,12 +8,12 @@ mould(cosdata, form = "tidy", opts = coscos::viscos_options())
 }
 \arguments{
 \item{cosdata}{The strictly defined data format (\code{cosdata}) used 
-within \pkg{viscos} (see: \code{\link{cook_cosdata}})}
+within \pkg{visCOS} (see: \code{\link{cook_cosdata}})}
 
 \item{form}{A string that defines into which form the \code{cosdata} is "mouldd"
 (see: 'details')}
 
-\item{opts}{The options for \pkg{viscos} (see: \code{\link{viscos_options}})}
+\item{opts}{The options for \pkg{visCOS} (see: \code{\link{viscos_options}})}
 }
 \description{
 \code{mould} allows to filter, tidy or re-arrange \code{cosdata} into 

@@ -7,7 +7,7 @@
 cook_cosdata(raw_data, opts = coscos::viscos_options())
 }
 \arguments{
-\item{raw_data}{Some raw-data that can be transformed into the \emph{cosdata} \code{tibble}. The data columns can be specified via the \code{opts} variable (the standard setting uses the \code{visCOS} options, i.e. \code{opts = coscos::viscos_options}).}
+\item{raw_data}{Some raw-data that can be transformed into the \emph{cosdata} \code{tibble}. The data columns can be specified via the \code{opts} variable (the standard setting uses the \pkg{visCOS} options, i.e. \code{opts = coscos::viscos_options}).}
 }
 \value{
 A \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).

@@ -1,15 +1,18 @@
-# --------------------------------------------------------------------------
-# viscos specifica 
+# -------------------------------------------------------------------------
+# viscos specs 
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# --------------------------------------------------------------------------
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# ------------------------------------------------------------------------
 
 #' Runoff example
 #'
-#' Returns some examplary runoff data (i.e. raw \code{cosdata}) for 
-#' \pkg{viscos}
+#' Returns some examplary runoff raw-data that can be transformed into a \emph{cosdata} \code{tibble}, and used to test the functions of \pkg{visCOS}.
 #' @author Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
-#' @family viscos specifica
+#' @family viscos specs
+#' 
+#' @examples 
+#' viscos_example() %>% head()
+#' 
 #' 
 #' @export
 viscos_example <- function() {
@@ -23,15 +26,11 @@ viscos_example <- function() {
 #' Options for viscos
 #'
 #' @description 
-#' Get the list of options for \pkg{viscos}. The available settings are listed 
-#' in the details.
-#'
+#' List of options for \pkg{visCOS}. 
 #' @author Daniel Klotz, Johannes Wesemann
 #'
 #' @details 
-#' The provided options are listed below. In the following the standard setting 
-#' for each option is given alongside a short explenation. Each one can be 
-#' changed at will. 
+#' The provided options are listed below´(where standard setting for each option is given alongside a short explanation). Each options can be changed at will. 
 #' \itemize{
 #'   \item \strong{name_o = "qobs"} ... Name of the \eqn{o}-column (observations).
 #'   \item \strong{name_s = "qsim"} ... Name of the \eqn{s}-column (simulations).
@@ -48,18 +47,18 @@ viscos_example <- function() {
 #'   \item \strong{missing_data = -999} ... Additional marker for missing data.
 #'   \item \strong{color_o = "steelblue"} ... Color associated with \eqn{o}-data.
 #'   \item \strong{color_o = "orange"} ... Color associated with \eqn{s}-data.
-#'   \item \strong{of_limits = c(0,1)} ... Limits for the objective functions visualization,
+#'   \item \strong{of_limits = c(0,1)} ... Limits for the objective function visualiations
 #' }
 #'
 #' @examples
-#' check "name_o":
+#' # check "name_o":
 #' viscos_options("name_o")
 #' 
-#' change and check "name_o":
-#' viscos_options(name_o = "OtherData")
+#' # change and check "name_o":
+#' viscos_options(name_o = "other_name")
 #' viscos_options("name_o")
 #' 
-#' @family viscos specifica
+#' @family viscos specs
 #' 
 #' @export
 viscos_options <- GlobalOptions::setGlobalOptions(

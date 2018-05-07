@@ -6,10 +6,10 @@
 #' @author Daniel Klotz
 #' 
 #' @param cosdata The strictly defined data format (\code{cosdata}) used 
-#'      within \pkg{viscos} (see: \code{\link{cook_cosdata}})
+#'      within \pkg{visCOS} (see: \code{\link{cook_cosdata}})
 #' @param form A string that defines into which form the \code{cosdata} is "mouldd"
 #'      (see: 'details')
-#' @param opts The options for \pkg{viscos} (see: \code{\link{viscos_options}}) 
+#' @param opts The options for \pkg{visCOS} (see: \code{\link{viscos_options}}) 
 #' 
 #' @details
 #' The mould function transforms  \code{cosdata} into a number of different 

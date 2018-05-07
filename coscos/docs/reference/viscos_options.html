@@ -30,8 +30,7 @@
 
 <meta property="og:title" content="Options for viscos — viscos_options" />
 
-<meta property="og:description" content="Get the list of options for viscos. The available settings are listed 
-in the details." />
+<meta property="og:description" content="List of options for visCOS." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -97,8 +96,7 @@ in the details." />
 
     <div class="ref-description">
     
-    <p>Get the list of options for <span class="pkg">viscos</span>. The available settings are listed 
-in the details.</p>
+    <p>List of options for <span class="pkg">visCOS</span>.</p>
     
     </div>
 
@@ -106,9 +104,7 @@ in the details.</p>
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The provided options are listed below. In the following the standard setting 
-for each option is given alongside a short explenation. Each one can be 
-changed at will.</p><ul>
+    <p>The provided options are listed below´(where standard setting for each option is given alongside a short explanation). Each options can be changed at will.</p><ul>
 <li><p><strong>name_o = "qobs"</strong> ... Name of the \(o\)-column (observations).</p></li>
 <li><p><strong>name_s = "qsim"</strong> ... Name of the \(s\)-column (simulations).</p></li>
 <li><p><strong>name_lb = "lb"</strong> ... Optional lower bounds of the \(s\) data.</p></li>
@@ -124,25 +120,21 @@ changed at will.</p><ul>
 <li><p><strong>missing_data = -999</strong> ... Additional marker for missing data.</p></li>
 <li><p><strong>color_o = "steelblue"</strong> ... Color associated with \(o\)-data.</p></li>
 <li><p><strong>color_o = "orange"</strong> ... Color associated with \(s\)-data.</p></li>
-<li><p><strong>of_limits = c(0,1)</strong> ... Limits for the objective functions visualization,</p></li>
+<li><p><strong>of_limits = c(0,1)</strong> ... Limits for the objective function visualiations</p></li>
 </ul>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other viscos specifica: <code><a href='viscos_example.html'>viscos_example</a></code></p></div>
+    <div class='dont-index'><p>Other viscos specs: <code><a href='viscos_example.html'>viscos_example</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>check "name_o":
-viscos_options("name_o")
-
-change and check "name_o":
-viscos_options(name_o = "OtherData")
-viscos_options("name_o")
-
-</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:1:7: unerwartete Zeichenkettenkonstante</span>
-#&gt; <span class='error'>1: check "name_o"</span>
-#&gt; <span class='error'>          ^</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'># check "name_o":</span>
+<span class='fu'>viscos_options</span>(<span class='st'>"name_o"</span>)</div><div class='output co'>#&gt; [1] "qobs"</div><div class='input'>
+<span class='co'># change and check "name_o":</span>
+<span class='fu'>viscos_options</span>(<span class='kw'>name_o</span> <span class='kw'>=</span> <span class='st'>"other_name"</span>)
+<span class='fu'>viscos_options</span>(<span class='st'>"name_o"</span>)</div><div class='output co'>#&gt; [1] "other_name"</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

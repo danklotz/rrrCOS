@@ -8,7 +8,7 @@
 #' 
 #' Generates a \emph{cosdata} \code{tibble} from given raw-data (\code{raw_data}).
 #' 
-#' @param raw_data Some raw-data that can be transformed into the \emph{cosdata} \code{tibble}. The data columns can be specified via the \code{opts} variable (the standard setting uses the \code{visCOS} options, i.e. \code{opts = coscos::viscos_options}).
+#' @param raw_data Some raw-data that can be transformed into the \emph{cosdata} \code{tibble}. The data columns can be specified via the \code{opts} variable (the standard setting uses the \pkg{visCOS} options, i.e. \code{opts = coscos::viscos_options}).
 #' 
 #' @return A \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).
 #' 
