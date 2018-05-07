@@ -4,9 +4,28 @@
 \alias{clump_posix}
 \title{Aggregate posixdate by keys}
 \usage{
-clump_posix(le_posix, key = "mm", opts = coscos::viscos_options())
+clump_posix(le_posix, keys = "mm")
+}
+\arguments{
+\item{keys}{A \code{string} that contains the short-hand defintions for the aggregation. The used notation is: \code{yyyy} for \emph{years}, \code{mm} for \emph{months} and \code{dd} for \emph{days}.}
+}
+\value{
+A character vector with the aggregated date-entries.
 }
 \description{
-\code{clump_posix} emulates the \code{\link{clump}} function for the 
-\code{posix} column.
+Mirrors the \code{\link{clump}} function, but is used for the \code{posix} column only (see: \code{\link{cook_cosdata}}).
+}
+\examples{
+# clump dates by month
+cosdata <- viscos_example() \%>\% cook_cosdata
+clump_posix(cosdata$posixdate, keys = "mm")
+
+# clump dates by years
+cosdata <- viscos_example() \%>\% cook_cosdata
+clump_posix(cosdata$posixdate, keys = "yyyy")
+
+# clump dates by years and months
+cosdata <- viscos_example() \%>\% cook_cosdata
+clump_posix(cosdata$posixdate, keys = c("yyyy","mm"))
+
 }

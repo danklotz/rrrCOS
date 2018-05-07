@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Aggregate cosdata by keys — clump • coscos</title>
+<title>Aggregate or clump by keys — clump • coscos</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,9 +28,9 @@
 
 
 
-<meta property="og:title" content="Aggregate cosdata by keys — clump" />
+<meta property="og:title" content="Aggregate or clump by keys — clump" />
 
-<meta property="og:description" content="Aggregatuib function, which basically wraps the dplyr functions group_by and summarise_at so that row-wise aggregation of the cosdata tibble can be made. The operation is defined by a set of functions (given as a list to the .funs variable) and the keys string. The latter speficies the columns, that gives the criterium for the row-wise aggregation." />
+<meta property="og:description" content="An aggregate function, which wraps the dplyr functions group_by and summarise_at for a row-wise summary of the cosdata tibble. It is defined by the set of functions given by .funs variable, and the keys string. The latter specifies the columns, according to whose unique entries the row-wise aggregation is conducted." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -89,14 +89,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Aggregate cosdata by keys</h1>
+    <h1>Aggregate or clump by keys</h1>
     
     <div class="hidden name"><code>clump.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Aggregatuib function, which basically wraps the <code>dplyr</code> functions <code>group_by</code> and <code>summarise_at</code> so that row-wise aggregation of the <em>cosdata</em> <code>tibble</code> can be made. The operation is defined by a set of functions (given as a <code>list</code> to the <code>.funs</code> variable) and the <code>keys</code> string. The latter speficies the columns, that gives the criterium for the row-wise aggregation.</p>
+    <p>An aggregate function, which wraps the <code>dplyr</code> functions <code>group_by</code> and <code>summarise_at</code> for a row-wise summary of the <em>cosdata</em> <code>tibble</code>. It is defined by the set of functions given by <code>.funs</code> variable, and the <code>keys</code> string. The latter specifies the columns, according to whose unique entries the row-wise aggregation is conducted.</p>
     
     </div>
 
@@ -113,11 +113,15 @@
       <th>keys</th>
       <td><p>A <code>string</code>, indicating one or more column-names for data aggregation.</p></td>
     </tr>
+    <tr>
+      <th>.funs</th>
+      <td><p>A aggregation function or list of aggregation functions.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A aggregated <code>tibble</code></p>
+    <p>An aggregated <code>tibble</code>.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -128,7 +132,8 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># aggregate according to month</span>
-<span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"mm"</span>, <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</div><div class='output co'>#&gt; # A tibble: 12 x 5
+<span class='no'>cosdata</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='viscos_example.html'>viscos_example</a></span>()
+<span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"mm"</span>, <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>)</div><div class='output co'>#&gt; # A tibble: 12 x 5
 #&gt;       mm QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002
 #&gt;    &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 #&gt;  1     1      3.87      3.38      5.06      4.56
@@ -144,21 +149,31 @@
 #&gt; 11    11      5.51      5.02      6.48      5.52
 #&gt; 12    12      4.81      3.61      6.18      4.36</div><div class='input'>
 <span class='co'># aggregate according to year and month</span>
-<span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"yyyy"</span>,<span class='st'>"mm"</span>), <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</div><div class='output co'>#&gt; # A tibble: 36 x 6
+<span class='no'>cosdata</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='viscos_example.html'>viscos_example</a></span>()
+<span class='fu'>clump</span>(<span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"yyyy"</span>, <span class='st'>"mm"</span>), <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='no'>median</span>)</div><div class='output co'>#&gt; # A tibble: 36 x 6
 #&gt; # Groups:   yyyy [?]
 #&gt;     yyyy    mm QOBS_0001 QSIM_0001 QOBS_0002 QSIM_0002
 #&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-#&gt;  1  2007     1      3.55      4.05      6.08      6.61
-#&gt;  2  2007     2      2.99      3.03      3.95      4.17
-#&gt;  3  2007     3      3.25      3.94      9.05      6.97
-#&gt;  4  2007     4      8.06     11.8       8.72      8.31
-#&gt;  5  2007     5     11.6      12.5       7.21      8.68
-#&gt;  6  2007     6     10.7      13.0       4.14      8.73
-#&gt;  7  2007     7     14.3      12.1       3.44      5.54
-#&gt;  8  2007     8      7.24      7.13      3.15      4.55
-#&gt;  9  2007     9     13.6      10.4      19.1      17.5 
-#&gt; 10  2007    10      8.13      5.83      7.13      5.32
+#&gt;  1  2007     1      2.71      3.50      4.15      4.47
+#&gt;  2  2007     2      2.55      3.03      3.80      4.05
+#&gt;  3  2007     3      2.79      3.50      8.47      6.79
+#&gt;  4  2007     4      8.84     13.0       8.98      8.41
+#&gt;  5  2007     5     11.6      11.7       5.51      7.50
+#&gt;  6  2007     6     10.4      11.3       4.01      7.77
+#&gt;  7  2007     7     13.4       9.83      3.06      5.07
+#&gt;  8  2007     8      6.86      6.06      2.81      4.24
+#&gt;  9  2007     9     13.5       9.49      9.80     10.6 
+#&gt; 10  2007    10      7.27      5.38      4.39      3.91
 #&gt; # ... with 26 more rows</div><div class='input'>
+<span class='co'># aggregate with two functions according to year </span>
+<span class='no'>cosdata</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='viscos_example.html'>viscos_example</a></span>()
+<span class='fu'>clump</span>( <span class='no'>cosdata</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"yyyy"</span>, <span class='kw'>.funs</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='no'>median</span>) )</div><div class='output co'>#&gt; # A tibble: 3 x 9
+#&gt;    yyyy QOBS_0001_a QSIM_0001_a QOBS_0002_a QSIM_0002_a QOBS_0001_b QSIM_0001_b
+#&gt;   &lt;int&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+#&gt; 1  2007        7.93        7.65        7.41        7.27        6.55        5.61
+#&gt; 2  2008        7.56        8.77        8.24        7.95        5.59        5.25
+#&gt; 3  2009        9.39        8.59       10.9         9.18        6.82        5.52
+#&gt; # ... with 2 more variables: QOBS_0002_b &lt;dbl&gt;, QSIM_0002_b &lt;dbl&gt;</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

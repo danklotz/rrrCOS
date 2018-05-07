@@ -2,7 +2,7 @@
 % Please edit documentation in R/clump.R
 \name{clump}
 \alias{clump}
-\title{Aggregate cosdata by keys}
+\title{Aggregate or clump by keys}
 \usage{
 clump(cosdata, keys = "mm", .funs = mean, opts = coscos::viscos_options())
 }
@@ -10,19 +10,27 @@ clump(cosdata, keys = "mm", .funs = mean, opts = coscos::viscos_options())
 \item{cosdata}{The \emph{cosdata} \code{tibble} (see: \code{\link{cook_cosdata}}).}
 
 \item{keys}{A \code{string}, indicating one or more column-names for data aggregation.}
+
+\item{.funs}{A aggregation function or list of aggregation functions.}
 }
 \value{
-A aggregated \code{tibble}
+An aggregated \code{tibble}.
 }
 \description{
-Aggregate function, which wraps the \code{dplyr} functions \code{group_by} and \code{summarise_at} so that row-wise aggregation of the \emph{cosdata} \code{tibble} can be made. The operation is defined by a set of functions (given as a \code{list} to the \code{.funs} variable) and the \code{keys} string. The latter speficies the columns, according to whose unique entries the row-wise aggregationis done.
+An aggregate function, which wraps the \code{dplyr} functions \code{group_by} and \code{summarise_at} for a row-wise summary of the \emph{cosdata} \code{tibble}. It is defined by the set of functions given by \code{.funs} variable, and the \code{keys} string. The latter specifies the columns, according to whose unique entries the row-wise aggregation is conducted.
 }
 \examples{
 # aggregate according to month
-clump(cosdata, key = "mm", .funs = mean, opts = coscos::viscos_options())
+cosdata <- viscos_example()
+clump(cosdata, key = "mm", .funs = mean)
 
 # aggregate according to year and month
-clump(cosdata, key = c("yyyy","mm"), .funs = mean, opts = coscos::viscos_options())
+cosdata <- viscos_example()
+clump(cosdata, key = c("yyyy", "mm"), .funs = median)
+
+# aggregate with two functions according to year 
+cosdata <- viscos_example()
+clump( cosdata, key = "yyyy", .funs = list(a = mean, b = median) )
 
 }
 \seealso{
