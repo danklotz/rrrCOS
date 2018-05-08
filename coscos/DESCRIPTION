@@ -1,6 +1,6 @@
 Package: coscos
 Title: Basic Funcitons to deal with COSEROreg
-Version: 0.0.1.0000
+Version: 0.1.0.0000
 Authors@R: person("Daniel Klotz", email = "daniel.klotz@boku.ac.at", role = c("aut", "cre"))
 Description: This package provides basic functions and interfaces for working
     in `R` with COSEROreg. As such it builds the gateway for the `visCOS` package
