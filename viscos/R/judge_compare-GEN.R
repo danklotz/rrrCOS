@@ -1,3 +1,22 @@
+<<<<<<< HEAD:viscos/R/judge_compare-GEN.R
+=======
+# Interactive Runoff Comparison with Objective Functions 
+
+```{r setup_of_compare, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+The function `of_compare` is an expansion of the
+[`of_explore`](LP-of_explore.html) function. The idea is to explore
+two `cos_data` objects simultanously, while having interactive feedback through 
+metrics (objective functions) of the selected time-window. The function itself
+works in the same way as `of_explore`, just with two `tibbles` as input. 
+Even if only one `data.frame` is handed over to the function, it 
+copied and two `dygraphs` are shown below each other. 
+
+## Code
+```{r}
+>>>>>>> master:vignettes/LP-of_compare.Rmd
 # ---------------------------------------------------------------------------
 # Code for judge_explore
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
@@ -6,8 +25,9 @@
   # --------------------------------------------------------------------------
   #' Explore with Objective Functions
   #'
-  #' Runs a Shiny Gadget which can be used to interactively explore two 
-  #' `cos_data` objects in terms of their respective objective functions. 
+  #' A Shiny Gadget for interactively explore two `cos_data` objects with 
+  #' feedback about the metrics/objective functions of the currently selected 
+  #' time window.
   #'
   #' @import shiny
   #' @import miniUI
@@ -19,6 +39,7 @@
   #' @importFrom purrr map_df
   #'
   #' @export
+<<<<<<< HEAD:viscos/R/judge_compare-GEN.R
 
 judge_explore2 <- function(cosdata1,
                            cosdata2 = NULL,
@@ -27,22 +48,63 @@ judge_explore2 <- function(cosdata1,
                                              pbias = coscos::of_pbias,
                                              corr  = coscos::of_cor),
                            opts = coscos::viscos_options()) {
+=======
+  #'
+  #' @examples
+  #' # get example data,
+  #' # explore the model performance
+  #' cos_data <- get_viscos_example()
+  #' explore_cos_data(cos_data)
+of_compare <- function(d1,
+                       d2 = NULL,
+                       of_list = list(
+                         nse = of_nse,
+                         kge = of_kge,
+                         p_bias = of_p_bias,
+                         r = of_cor),
+                       start_date = NULL,
+                       end_date = NULL) {
+>>>>>>> master:vignettes/LP-of_compare.Rmd
   # (I) pre-sets: ============================================================
   if(!is.list(of_list)) {
     of_list = list(of_list)
   }
+<<<<<<< HEAD:viscos/R/judge_compare-GEN.R
   if (is.null(cosdata2)) {
     cosdata2 <- cosdata1
+=======
+  if (is.null(d1)) {
+    stop("d1 data must be provided!")
+  }
+  if (is.null(d2)) {
+    d2 <- d1
+>>>>>>> master:vignettes/LP-of_compare.Rmd
+  }
+  if (!is.data.frame(d1)) {
+    stop("d1 must either be a data.frame or a tibble!")
+  }
+  if(!is.data.frame(d2)) {
+    stop("d2 must either be a data.frame or a tibble!")
   }
   if (is.null(names(of_list))){
     names(of_list) <- paste("of", 1:length(of_list), sep = "_")
   }
+<<<<<<< HEAD:viscos/R/judge_compare-GEN.R
   clean_data1 <- cosdata1 %>% 
     coscos::cook_cosdata(.) %>% 
     coscos::remove_leading_zeros(.) 
   clean_data2 <- cosdata2 %>%
     coscos::cook_cosdata(.) %>% 
     coscos::remove_leading_zeros(.) 
+=======
+  # pre-computation: #######
+  clean_data1 <- d1 %>% 
+    remove_leading_zeros(.) %>% 
+    complete_dates(.)
+  clean_data2 <- d2 %>% 
+    remove_leading_zeros(.) %>% 
+    complete_dates(.)
+>>>>>>> master:vignettes/LP-of_compare.Rmd
   # convenience variables: ===================================================
   name_o <- opts[["name_o"]]
   name_s <- opts[["name_s"]]
