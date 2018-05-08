@@ -10,3 +10,4 @@ window_fun(cosdata, of_metric, window_sizes = c(20L, 500L), na_filling = FALSE,
 \description{
 Compute the objective function for a set of windows.
 }
+\keyword{internal}

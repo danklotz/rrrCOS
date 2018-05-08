@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objectie Function Rolling Functionallity — roll_roll • visCOS</title>
+<title>Flow duration curves — fdc • visCOS</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,9 +28,15 @@
 
 
 
-<meta property="og:title" content="Objectie Function Rolling Functionallity — roll_roll" />
+<meta property="og:title" content="Flow duration curves — fdc" />
 
-<meta property="og:description" content="Roll an objective fucntion over two sets of data (d1 and d2)" />
+<meta property="og:description" content="Flow duration curves
+Computes the flow duration curves (fdc) for the cosdata tibble.
+The calculations are adapted from the method used within the hydroTSM package.
+Plots the flow duration curves (fdc) for the cosdata tibble.
+The function uses ggplot to so and facets the different basins into
+separate subplots. Each subplot shows the fdc of the \(o\)-data and
+the \(s\)-data." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -122,24 +128,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objectie Function Rolling Functionallity</h1>
+    <h1>Flow duration curves</h1>
     
-    <div class="hidden name"><code>roll_roll.Rd</code></div>
+    <div class="hidden name"><code>fdc.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Roll an objective fucntion over two sets of data (d1 and d2)</p>
+    <p>Flow duration curves</p>
+<p>Computes the flow duration curves (fdc) for the <em>cosdata</em> <code>tibble</code>.
+The calculations are adapted from the method used within the hydroTSM package.</p>
+<p>Plots the flow duration curves (fdc) for the <em>cosdata</em> <code>tibble</code>.
+The function uses <code>ggplot</code> to so and facets the different basins into
+separate subplots. Each subplot shows the fdc of the \(o\)-data and
+the \(s\)-data.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>roll_roll</span>(<span class='no'>d1</span>, <span class='kw'>d2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>of_metric</span>, <span class='no'>width</span>, <span class='no'>...</span>)</pre>
-        
+    <pre class="usage"><span class='fu'>fdc_compute</span>(<span class='no'>cosdata</span>)
+
+<span class='fu'>fdc_plot</span>(<span class='no'>cos_data</span>, <span class='kw'>log_y</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log_x</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>cosdata</th>
+      <td><p>A data.frame with columns as used throughout visCOS</p></td>
+    </tr>
+    </table>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
   </div>

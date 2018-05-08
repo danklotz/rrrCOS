@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objectie Function Rolling Functionallity — roll_roll • visCOS</title>
+<title>Explore with Objective Functions — judge_explore2 • visCOS</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,9 +28,12 @@
 
 
 
-<meta property="og:title" content="Objectie Function Rolling Functionallity — roll_roll" />
+<meta property="og:title" content="Explore with Objective Functions — judge_explore2" />
 
-<meta property="og:description" content="Roll an objective fucntion over two sets of data (d1 and d2)" />
+<meta property="og:description" content="Runs a Shiny Gadget which can be used to interactively explore two 
+`cos_data` objects in terms of their respective objective functions.
+Runs a Shiny Gadget which can be used to get an overview of a cosdata time 
+series object." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -122,25 +125,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objectie Function Rolling Functionallity</h1>
+    <h1>Explore with Objective Functions</h1>
     
-    <div class="hidden name"><code>roll_roll.Rd</code></div>
+    <div class="hidden name"><code>judge_explore.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Roll an objective fucntion over two sets of data (d1 and d2)</p>
+    <p>Runs a Shiny Gadget which can be used to interactively explore two 
+`cos_data` objects in terms of their respective objective functions.</p>
+<p>Runs a Shiny Gadget which can be used to get an overview of a cosdata time 
+series object.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>roll_roll</span>(<span class='no'>d1</span>, <span class='kw'>d2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>of_metric</span>, <span class='no'>width</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>judge_explore2</span>(<span class='no'>d1</span>, <span class='kw'>d2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>of_metrics</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>nse</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_nse</a></span>,
+    <span class='kw'>kge</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_kge</a></span>, <span class='kw'>pbias</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_pbias</a></span>, <span class='kw'>corr</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_cor</a></span>),
+    <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())
+
+<span class='fu'>judge_explore</span>(<span class='no'>cosdata</span>, <span class='kw'>.ofuns</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>nse</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_nse</a></span>, <span class='kw'>kge</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_kge</a></span>,
+    <span class='kw'>pbias</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_pbias</a></span>, <span class='kw'>corr</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/coscos/topics/objective_functions'>of_cor</a></span>), <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</pre>
         
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other judge functions: <code><a href='judge.html'>judge</a></code></p></div>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-                </ul>
+      
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>

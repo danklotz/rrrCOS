@@ -9,3 +9,4 @@ serve(plotlist, path = "", fig_width = 800L, fig_height = 500L)
 \description{
 More description shall follow
 }
+\keyword{internal}

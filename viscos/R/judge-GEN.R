@@ -3,15 +3,14 @@
 # authors: Daniel Klotz, Johannes Wesemann, Mathew Herrnegger
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-#' Wrapper for the different judge functions
+#' Wrapper for several judge-functions
 #'
-#' A wrapper for all `judge_` functions. The
-#' input arguments `type` is lazily-evaluated (which basically implies that
-#' it does not have to be provided as a character argument).
+#' A wrapper for several \code{judge} functions. The input arguments \code{type} is lazily-evaluated (that basically means that it does not have to be provided as a character argument).
 #'
 #' @import pasta
 #' @import lazyeval
 #'
+#' @family judge functions
 #' @rdname judge
 #' @export
 judge <- function(cosdata,
@@ -64,15 +63,18 @@ judge <- function(cosdata,
     stop("There is no option (`type`) called" %&&% le_type)
   }
 }
+
+
 # ---------------------------------------------------------------------------
-#' Get basic objective function for
-#'
-#' Calculate basic objective functions(NSE, KGE, percentage BIAS, Correlation)
-#' for every basin and the chosen periods.
+#' Computation of objective functions 
+#' 
+#' Computes one or several objective functions for each basin in the \emph{cosdata} \code{tibble}.
 #'
 #' @param cosdata cosdata data.frame.
 #' @return list of basic objective function evaluated for the different
 #' hydrological years and over the whole timespan.
+#'
+#' @rdname judge
 #'
 #' @import pasta
 #' @import tibble
@@ -163,7 +165,7 @@ judge_compute <- function(cosdata,
 # ---------------------------------------------------------------------------
 #' Bar plot for the Main Objective Function Values
 #'
-#' @rdname judge_overview
+#' @rdname judge
 #'
 #' @export
 judge_barplot <- function(cosdata,
@@ -222,9 +224,10 @@ judge_barplot <- function(cosdata,
   return(plot_list)
 }
 
+# -------------------------------------------------------------------------
 #' Bar plot for the Main Objective Function Values
 #'
-#' @rdname judge_overview
+#' @rdname judge
 #' @import pasta
 #' @export
 judge_rasterplot <- function(cosdata,

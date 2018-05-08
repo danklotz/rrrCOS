@@ -14,7 +14,7 @@
 #' @importFrom magrittr set_names
 #' @importFrom tidyr gather
 #'
-#' @export
+#' @keywords internal
 judge_window <- function(cosdata,
                          of_metrics = list(
                            nse   = coscos::of_nse,
@@ -49,6 +49,8 @@ judge_window <- function(cosdata,
 #' Objectie Function Windowing
 #'
 #' Compute the objective function for a set of windows.
+#'
+#' @keywords internal
 #'
 #' @import dplyr
 #' @importFrom purrr map2

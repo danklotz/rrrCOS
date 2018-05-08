@@ -1,32 +1,22 @@
-if (knitr:::is_latex_output()) {
-  knitr::include_graphics('figures/judge_explore.jpg')
-} else {
-  knitr::include_graphics("figures/judge_explore.gif")
-}
-  # --------------------------------------------------------------------------
-  #' Explore with Objective Functions
-  #'
-  #' Runs a Shiny Gadget which can be used to get an overview of a cosdata time
-  #' series object.
-  #'
-  #' @import shiny
-  #' @import miniUI
-  #' @import xts 
-  #' @import dplyr
-  #' @import magrittr
-  #' @import dygraphs
-  #' @import pasta
-  #' @importFrom purrr map_df
-  #'
-  #' @export
-  #' 
-  #' @rdname judge
-  #'
-  #' @examples
-  #' # get example data,
-  #' # explore the model performance
-  #' cosdata <- get_viscos_example()
-  #' judge_explore(cosdata)
+# -------------------------------------------------------------------------
+#' Explore with Objective Functions
+#'
+#' Runs a Shiny Gadget which can be used to get an overview of a cosdata time 
+#' series object.
+#'
+#' @import shiny
+#' @import miniUI
+#' @import xts 
+#' @import dplyr
+#' @import magrittr
+#' @import dygraphs
+#' @import pasta
+#' @importFrom purrr map_df
+#'
+#' @export
+#' 
+#' @family judge functions
+#' @rdname judge_explore
 judge_explore <- function(cosdata,
                           .ofuns = list(nse   = coscos::of_nse,
                                             kge   = coscos::of_kge,
@@ -34,7 +24,7 @@ judge_explore <- function(cosdata,
                                             corr  = coscos::of_cor),
                           opts =coscos::viscos_options()
                           ) {
-  # (I) pre-sets: ============================================================
+  # (I) pre-sets: =========================================================
   name_o <- opts[["name_o"]]
   name_s <- opts[["name_s"]]
   name_lb <- opts[["name_lb"]]

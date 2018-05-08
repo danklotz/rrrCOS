@@ -11,3 +11,4 @@ judge_window(cosdata, of_metrics = list(nse = coscos::of_nse, kge = coscos::of_k
 \description{
 Compute the objective function for a set of windows.
 }
+\keyword{internal}

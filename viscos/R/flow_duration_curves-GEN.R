@@ -1,15 +1,25 @@
-  #' Compute Flow Duration Curves
-  #'
-  #' Computes the flow duration curves (fdc) for the `cosdata` data.frame.
-  #' The calculations are adapted from the method used within the hydroTSM package.
-  #' @param cosdata A data.frame with columns as used throughout visCOS
-  #'
-  #' @import magrittr
-  #' @import dplyr
-  #' @importFrom purrr map_df
-  #' @import pasta
-  #'
-  #' @export
+#' Flow duration curves
+#'
+#'
+#' @name fdc
+NULL
+
+
+#' Compute fdc
+#'
+#' Computes the flow duration curves (fdc) for the \emph{cosdata} \code{tibble}.
+#' The calculations are adapted from the method used within the hydroTSM package.
+#' 
+#' @param cosdata A data.frame with columns as used throughout visCOS
+#'
+#' @rdname fdc
+#'
+#' @import magrittr
+#' @import dplyr
+#' @importFrom purrr map_df
+#' @import pasta
+#'
+#' @export
   fdc_compute <- function(cosdata) {
     # pre:
     cos_data <- coscos::cook_cosdata(cosdata)
@@ -57,14 +67,20 @@
     percent_exeedence <- percent_exeedence/n
     return(percent_exeedence)
   }
-  #' Plot Flow Duration Curves
-  #'
-  #' Plots the flow duration curves (fdc) for `cos_data`.
-  #' The function uses `ggplot` to so and facets the different basins into
-  #' separate subplots. Each subplot shows the fdc of the \eqn{o}-data and
-  #' the \eqn{s}-data.
-  #' @export
-  #' @import ggplot2
+  
+
+#   -----------------------------------------------------------------------
+#' Plot flow duration curves
+#'
+#' Plots the flow duration curves (fdc) for the \emph{cosdata} \code{tibble}.
+#' The function uses \code{ggplot} to so and facets the different basins into
+#' separate subplots. Each subplot shows the fdc of the \eqn{o}-data and
+#' the \eqn{s}-data.
+#' 
+#' @rdname fdc
+#' 
+#' @import ggplot2
+#' @export
   fdc_plot <- function(cos_data,
                        log_y = TRUE,
                        log_x = FALSE,
