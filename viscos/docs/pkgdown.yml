@@ -1,0 +1,13 @@
+pandoc: 1.19.2.1
+pkgdown: 1.0.0
+pkgdown_sha: ~
+articles:
+  01_cosdata: 01_cosdata.html
+  02_time-aggregation: 02_time-aggregation.html
+  03_peacks: 03_peacks.html
+  04_judgment: 04_judgment.html
+  05_judge_explore1: 05_judge_explore1.html
+  06_judge_window: 06_judge_window.html
+  07_flow-duration-curves: 07_flow-duration-curves.html
+  09_tips: 09_tips.html
+

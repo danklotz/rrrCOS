@@ -1,0 +1,41 @@
+---
+title: "Flow Duration Curves"
+author: "Daniel Klotz"
+---
+
+
+```{r setup4, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+Flow-duration curves represent the relationship between the magnitude and the
+frequency of a streamflow. They provide an estimate of the percentage of time
+a given streamflow was exceeded within the evaluated time frame. Foster [1934]
+attributes the first use of flow duration curves to Clemens Herschel around 1880.
+Since they have been used for a wide array of applications.
+visCOS provides a function to compute the data for flow-duration curves and
+a function to plot them directly.
+The former function is called `fdc_compute`. It computes the flow exceedance
+properties and returns a data.frame. The calculations are adapted from the
+method used within the [hydroTSM](https://CRAN.R-project.org/package=hydroTSM)
+package. It is currently rather slow.
+The plot-function is called `fdc_plot`. Internally it uses `fdc_compute` for the
+data preparation and generates a facetted `ggplot` object from it. In the plot
+each basin is a facet and each sub-plot shows the $o$-data and $s$-data (see:
+[Introduction](Introduction.html)).
+
+
+## Example
+Flow duration curves can be plotted in visCOSin the following way:
+```{r example, purl=FALSE, eval=TRUE}
+  library(coscos)
+  library(visCOS)
+  cosdata <- coscos::viscos_example()
+  fdc_plot(cosdata)
+```
+
+
+## References
+- Foster, H.A. (1934): Duration curves. ASCE Trans., 99, 1213-1267
+- Vogel, R. M.; Fennessy, N. M. (1994): Flow-Duration Curves. I: New Interpretation
+and Confidence Intervals. JWRMD 120, No. 4

@@ -1,0 +1,72 @@
+---
+title: "Judging with Objective Functions"
+author: "Daniel Klotz"
+---
+
+
+```{r setup6, include=FALSE, purl=FALSE}
+  knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+This chapter presents a set of functions to organize and/or visualize a
+set of objective functions that ought to be evaluated over all basins. The
+objective functions can be provided as a list via `.ofuns`. The pre-set
+objective functions are (these are provided by the `coscos` package, see also:
+[distance metrics](LP-distance_measures.html)):
+
+- Nash-Sutcliffe Efficency: `of_nse`
+- Kling-Gupta Efficency: `of_kge`
+- Percentage Bias: `of_pbias`
+- Pearson's Correlation Coefficient: `of_corr`
+
+The function `judge_compute` applies the provided objective functions to all
+basins. The computation is done for the overall time-span and for the
+*marked periods*. On top of that two functions for summary plots are implemented:
+`judge_rasterplot` and `judge_barplot`. A notable quirk of both functions is
+that they return a list as output (whereby each entry or sub-entry of the list
+contains a `ggplot2` figure). Two interactive tools for exploration are provided
+by the `judge_explore` and `judge_explore2` functions. Finally, the `judge`
+function wraps for all other `judge_` functions. The selection is done via the
+`type` argument (the variable is evaluated in a non-standard fashion, which
+implies, among other things, that the argument can be provided without it
+being a character). Here are some examples:
+
+```{r, message=3, purl=FALSE, eval=TRUE}
+library(magrittr)
+library(coscos)
+library(visCOS)
+library(pasta)
+```
+
+**Example 1.** Evaluating the `judge` function without arguments executes
+`judge_compute`, which returns a data.frame with the objective functions for the
+entire time-series and the marked periods (of each basin):
+```{r, message=3, purl=FALSE, eval=TRUE}
+viscos_example( ) %>%
+  judge(.) %>%
+  print(.)
+```
+
+**Example 2.** Plotting the computed objective functions as bar-plots:
+```{r, message=3, purl=FALSE, eval=TRUE}
+viscos_example() %>%
+  judge(., barplot) %>%
+  .[[1]] %>% # a list with the plots is returned; select first entry
+  plot(.)
+```
+
+**Example 3.** Using the `judge_` functionality:
+```{r, message=3, purl=FALSE, eval=TRUE}
+viscos_example() %>%
+  judge_barplot(.) %>%
+  .[[1]] %>% # a list with the plots is returned; select one entry
+  plot(.)
+```
+
+**Example 4.** Plotting the results of main objective function with a raster:
+```{r, message=3, purl=FALSE, eval=FALSE}
+viscos_example() %>%
+  judge(., "rasterplot") %>%
+  .[[2]] %>%
+  plot(.)
+```
