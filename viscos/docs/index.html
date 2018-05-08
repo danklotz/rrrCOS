@@ -89,18 +89,22 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    <div id="viscos" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#viscos" class="anchor"></a>visCOS</h1></div>
-<p>The <strong>visCOS</strong> package is an R-based visualisation tool for COSEROreg. It will be available soon, please do not use the current version.</p>
-<p>The acronym stands for “visual comparison of observations and simulations”. The package is still changing quite often. We therefore recommend to not use it yet.</p>
+    
+<center>
+<img src="viscos_logo.png" align="center">
+</center>
+<hr>
+<p>The <strong>visCOS</strong> package is an R-based visualisation tool for COSEROreg. It will be available soon, please do not use the current version. The acronym stands for “visual comparison of observations and simulations”. The package is still changing quite often. We therefore recommend to not use it yet.</p>
 <p><strong>Authors:</strong> Daniel Klotz, Christoph Schürz, Johannes Wesemann, Mathew Herrnegger<br><strong>Maintainer:</strong> Daniel Klotz (<a href="https://github.com/danklotz">danklotz</a>)</p>
 <hr>
-<p>This guide defines the code for the R-package visCOS and provides instructions, examples and tips for using it.</p>
+<div id="purpose" class="section level2">
+<h2 class="hasAnchor">
+<a href="#purpose" class="anchor"></a>Purpose</h2>
 <p>The goal of visCOS is to provide a possibility to streamline the R based visual-analysis for the hydrological model COSERO. COSERO is a HBV-like distributed rainfall-runoff model, developed at the institute for water management, hydrology and hydraulic engineering at BOKU, Vienna. The name is an abbreviation for “Conceptual Semi-Distributed Rainfall Runoff Model”.</p>
 <p>visCOS is embedded into a broader effort that aims to establish practical and easy-to-use workflows between R and COSERO. The overall concept of that project is shown in <strong>Figure xyz</strong>. The R-package <code>coscos</code> provides the backbone of the projects. It provides the basic interface between COSERO and R, generic helper functions and primitives, and defines the options for all subsequent package. Currently, visCOS is the only package that builds on it, but hopefully<br>
 soon we will have more packages, ideas and scripts that are able to use it. s</p>
 <p><strong>Figure xyz</strong></p>
+</div>
 <div id="viscos-and-other-r-package" class="section level2">
 <h2 class="hasAnchor">
 <a href="#viscos-and-other-r-package" class="anchor"></a>visCOS and other R-package</h2>
@@ -109,7 +113,7 @@ soon we will have more packages, ideas and scripts that are able to use it. s</p
 <p>As an R-package that aim of visCOSis to provide visual aids for the parameter estimation process of multiple (related) basins or catchments.</p>
 <p>Thus, topic wise, visCOS can be positioned somewhere in-between the two previously mentioned packages. visCOS is usable for conceptual rainfall runoff models in general, but almost all of its functionality has been derived from different applications of the COSERO model.</p>
 </div>
-</div>
+
   </div>
 
   <div class="col-md-3" id="sidebar">

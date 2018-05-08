@@ -1,8 +1,11 @@
-# visCOS
 
-The **visCOS** package is an R-based visualisation tool for COSEROreg. It will be available soon, please do not use the current version. 
+<center>
+<img src="viscos_logo.png" align="center" />
+</center>
 
-The acronym stands for "visual comparison of observations and simulations". The package is still changing quite often. We therefore recommend to not use it
+---
+
+The **visCOS** package is an R-based visualisation tool for COSEROreg. It will be available soon, please do not use the current version. The acronym stands for "visual comparison of observations and simulations". The package is still changing quite often. We therefore recommend to not use it
 yet.  
 
 **Authors:** Daniel Klotz, Christoph Schürz, Johannes Wesemann, Mathew Herrnegger  
@@ -10,8 +13,7 @@ yet.
 
 ---
 
-This guide defines the code for the R-package visCOS and provides instructions,
-examples and tips for using it.
+## Purpose
 
 The goal of visCOS is to provide a possibility to streamline the R based
 visual-analysis for the hydrological model COSERO. COSERO is a HBV-like
