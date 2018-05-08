@@ -30,7 +30,7 @@ viscos_example <- function() {
 #' @author Daniel Klotz, Johannes Wesemann
 #'
 #' @details 
-#' The provided options are listed below´(where standard setting for each option is given alongside a short explanation). Each options can be changed at will. 
+#' The provided options are listed below (where standard setting for each option is given alongside a short explanation). Each options can be changed at will.
 #' \itemize{
 #'   \item \strong{name_o = "qobs"} ... Name of the \eqn{o}-column (observations).
 #'   \item \strong{name_s = "qsim"} ... Name of the \eqn{s}-column (simulations).

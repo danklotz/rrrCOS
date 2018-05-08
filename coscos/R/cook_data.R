@@ -36,7 +36,7 @@ cook_cosdata <- function(raw_data,
     le_cos <- raw_data %>% 
       remove_junk(.) %>% 
       cook_dates(.) %>% 
-      mark_periods(.) %>% 
+      mark_periods(., opts = opts) %>% 
       build_tibble(.)  
     check_cosdata(le_cos) # checks 
     # make pseudo class & return: 
@@ -50,7 +50,7 @@ cook_cosdata <- function(raw_data,
 #' remove not needed column in cosdata
 #'
 #' Removes all columns which are not foreseen (see: viscos_options) from
-#' runoff data
+#' runoff data.
 #'
 #' @return data.frame object without the chunk
 #' @param cosdata The cosdata data.frame (see vignette for info)
@@ -115,6 +115,7 @@ only_observed_basins <- function(cosdata) {
   data_only_observed[idx_NA] <- NA
   return(data_only_observed)
 }
+
 
 # -------------------------------------------------------------------------
 #' Complete the date-formats with POSIXct or COSdate
@@ -229,26 +230,28 @@ remove_leading_zeros <- function(cosdata) {
 # ---------------------------------------------------------------------------
 #' Marking-function for defining periods
 #'
-#' Compute/Mark the periods within cosdata. The marking uses a monthly
-#' resolution, which are defined by the integers `start_month` and
-#' `end_month`.  
+#' Compure the periods within the \emph{cosdata} \code{tibble}. The function uses a monthly resolution; the bounds of which are defined by the integers \code{start_month} and \code{end_month}.  
 #'
-#' @param cosdata a data.frame that contains the runoff information.
-#' @return `cosdata` with an additonal column with the marked periods.
+#' @param cosdata A \emph{cosdata} \code{tibble} with missing \code{posixdate} column.
+#' @return A \emph{cosdata} \code{tibble} with an additional column with the marked periods.
 #'
-#' @import dplyr
-#' @import magrittr
+#' @importFrom dplyr mutate
+#' @importFrom magrittr extract
 #'
 #' @export
-mark_periods <- function(cosdata, start_month = 10L, end_month = 9L) {
+mark_periods <- function(cosdata, 
+                         start_month = 10L, 
+                         end_month = 9L, 
+                         opts = coscos::viscos_options()
+                         ) {
   # pre: ====================================================================
   as.integer(start_month)
   as.integer(end_month)
-  name_year <- viscos_options("name_COSyear")
-  name_month <- viscos_options("name_COSmonth")
+  name_year  <- opts$name_COSyear
+  name_month <- opts$name_COSmonth
   #
   eval_diff <- function(a) {c( a[1L],diff(a) )}
-  period_correction <- function(cosdata,period) {
+  correct_periods <- function(cosdata,period) {
     # tests:
     year_is_max <- cosdata[[name_year]] == max_year
     month_after_end <- cosdata[[name_month]] > end_month
@@ -278,7 +281,7 @@ mark_periods <- function(cosdata, start_month = 10L, end_month = 9L) {
   # corrections for last year 
   max_year <- max(cosdata[[name_year]])
   marked_cosdata <- dplyr::mutate(cosdata,
-                            period = period_correction(cosdata, period)
+                            period = correct_periods(cosdata, period)
     )
   return(marked_cosdata)
 }

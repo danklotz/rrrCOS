@@ -7,17 +7,10 @@
 mould(cosdata, form = "tidy", opts = coscos::viscos_options())
 }
 \arguments{
-\item{cosdata}{The strictly defined data format (\code{cosdata}) used 
-within \pkg{visCOS} (see: \code{\link{cook_cosdata}})}
-
-\item{form}{A string that defines into which form the \code{cosdata} is "mouldd"
-(see: 'details')}
-
 \item{opts}{The options for \pkg{visCOS} (see: \code{\link{viscos_options}})}
 }
 \description{
-\code{mould} allows to filter, tidy or re-arrange \code{cosdata} into 
-new formats.
+Allows to filter, tidy or re-arrange the \emph{cosdata} \code{tibble} into  new formats.
 }
 \details{
 The mould function transforms  \code{cosdata} into a number of different 

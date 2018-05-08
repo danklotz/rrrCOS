@@ -30,9 +30,7 @@
 
 <meta property="og:title" content="Marking-function for defining periods — mark_periods" />
 
-<meta property="og:description" content="Compute/Mark the periods within cosdata. The marking uses a monthly
-resolution, which are defined by the integers `start_month` and
-`end_month`." />
+<meta property="og:description" content="Compure the periods within the cosdata tibble. The function uses a monthly resolution; the bounds of which are defined by the integers start_month and end_month." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -98,26 +96,25 @@ resolution, which are defined by the integers `start_month` and
 
     <div class="ref-description">
     
-    <p>Compute/Mark the periods within cosdata. The marking uses a monthly
-resolution, which are defined by the integers `start_month` and
-`end_month`.</p>
+    <p>Compure the periods within the <em>cosdata</em> <code>tibble</code>. The function uses a monthly resolution; the bounds of which are defined by the integers <code>start_month</code> and <code>end_month</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>mark_periods</span>(<span class='no'>cosdata</span>, <span class='kw'>start_month</span> <span class='kw'>=</span> <span class='fl'>10L</span>, <span class='kw'>end_month</span> <span class='kw'>=</span> <span class='fl'>9L</span>)</pre>
+    <pre class="usage"><span class='fu'>mark_periods</span>(<span class='no'>cosdata</span>, <span class='kw'>start_month</span> <span class='kw'>=</span> <span class='fl'>10L</span>, <span class='kw'>end_month</span> <span class='kw'>=</span> <span class='fl'>9L</span>,
+  <span class='kw'>opts</span> <span class='kw'>=</span> <span class='kw pkg'>coscos</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/coscos/topics/viscos_options'>viscos_options</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>cosdata</th>
-      <td><p>a data.frame that contains the runoff information.</p></td>
+      <td><p>A <em>cosdata</em> <code>tibble</code> with missing <code>posixdate</code> column.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>`cosdata` with an additonal column with the marked periods.</p>
+    <p>A <em>cosdata</em> <code>tibble</code> with an additional column with the marked periods.</p>
     
 
   </div>

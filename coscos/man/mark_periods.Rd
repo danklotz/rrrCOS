@@ -4,16 +4,15 @@
 \alias{mark_periods}
 \title{Marking-function for defining periods}
 \usage{
-mark_periods(cosdata, start_month = 10L, end_month = 9L)
+mark_periods(cosdata, start_month = 10L, end_month = 9L,
+  opts = coscos::viscos_options())
 }
 \arguments{
-\item{cosdata}{a data.frame that contains the runoff information.}
+\item{cosdata}{A \emph{cosdata} \code{tibble} with missing \code{posixdate} column.}
 }
 \value{
-`cosdata` with an additonal column with the marked periods.
+A \emph{cosdata} \code{tibble} with an additional column with the marked periods.
 }
 \description{
-Compute/Mark the periods within cosdata. The marking uses a monthly
-resolution, which are defined by the integers `start_month` and
-`end_month`.
+Compure the periods within the \emph{cosdata} \code{tibble}. The function uses a monthly resolution; the bounds of which are defined by the integers \code{start_month} and \code{end_month}.
 }
