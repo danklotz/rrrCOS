@@ -30,8 +30,8 @@ judge_explore <- function(cosdata,
   name_lb <- opts[["name_lb"]]
   name_ub <-  opts[["name_ub"]]
   #
-  if (is.null(names(of_metrics))){
-    names(of_metrics) <- paste("of", 1:length(of_metrics), sep = "_")
+  if (is.null(names(.ofuns))){
+    names(.ofuns) <- paste("of", 1:length(.ofuns), sep = "_")
   }
   cos_data <- cosdata %>% 
     coscos::cook_cosdata(.) %>% 
@@ -200,7 +200,7 @@ judge_explore <- function(cosdata,
     })
     out_of <- reactive({
       if (!is.null(input$hydrographs_date_window)) {
-          map_df(of_metrics, function(of_,x,y) of_(x,y),
+          map_df(.ofuns, function(of_,x,y) of_(x,y),
                  x = sub_slctd()$x,
                  y = sub_slctd()$y ) #serve_of( sub_slctd()$x,sub_slctd()$y )
       }
